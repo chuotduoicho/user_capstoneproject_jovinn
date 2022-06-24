@@ -1,0 +1,123 @@
+@import "../../../global.scss";
+
+.sellerHeader {
+  width: 100%;
+  height: 63px;
+  background-color: white;
+  color: $mainColor;
+  position: relative;
+  top: 0;
+  z-index: 3;
+  transition: all 1s ease;
+  flex-direction: column;
+  border-bottom: 1px solid #7f7276;
+  margin-bottom: 10px;
+  .wrapper {
+    padding: 10px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .left {
+      display: flex;
+      align-items: center;
+      .btn_group {
+        display: flex;
+        flex-direction: row;
+        border: 0.5px solid rgb(211, 211, 211);
+        padding: 3px;
+        margin-left: 300px;
+        .search_text {
+          width: 500px;
+          height: 25px;
+        }
+        .search_icon {
+          cursor: pointer;
+        }
+      }
+      .logo {
+        font-size: 40px;
+        font-weight: 700;
+        text-decoration: none;
+        color: inherit;
+        margin-right: 40px;
+      }
+
+      .itemContainer {
+        display: flex;
+        align-items: center;
+        margin-left: 30px;
+
+        @include mobile {
+          display: none;
+        }
+
+        .icon {
+          font-size: 18px;
+          margin-right: 5px;
+        }
+
+        span {
+          font-size: 15px;
+          font-weight: 500;
+        }
+      }
+    }
+    .itemButtons {
+      display: flex;
+      align-items: center;
+      // float: right;
+      margin-left: 500px;
+
+      .button {
+        margin-right: 10px;
+        color: inherit;
+        border-color: inherit;
+      }
+    }
+
+    .right {
+      display: flex;
+      text-align: center;
+      .item {
+        display: flex;
+        align-items: center;
+        margin-right: 20px;
+        position: relative;
+        cursor: pointer;
+        .icon {
+          font-size: 20px;
+        }
+
+        .avatar {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          margin-right: 5px;
+        }
+
+        .counter {
+          width: 15px;
+          height: 15px;
+          background-color: red;
+          border-radius: 50%;
+          color: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 10px;
+          font-weight: bold;
+          position: absolute;
+          top: 7px;
+          right: -5px;
+        }
+      }
+    }
+  }
+  .list {
+    display: flex;
+    background-color: white;
+    justify-content: center;
+    list-style: none;
+    padding: 10px 0;
+  }
+}

@@ -1,0 +1,66 @@
+.sellerIntro_top {
+  padding: 20px;
+  display: flex;
+  gap: 20px;
+  height: 300px;
+  width: 700px;
+  .sellerIntro_left {
+    flex: 1;
+    -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+    box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+    padding: 20px;
+    position: relative;
+
+    .sellerIntro_editButton {
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 5px;
+      font-size: 12px;
+      color: #7451f8;
+      background-color: #7551f818;
+      cursor: pointer;
+      border-radius: 0px 0px 0px 5px;
+    }
+
+    .sellerIntro_item {
+      display: flex;
+      gap: 20px;
+
+      .sellerIntro_itemImg {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .sellerIntro_details {
+        display: flex;
+        flex-direction: column;
+        .sellerIntro_itemTitle {
+          margin-bottom: 10px;
+          color: #555;
+        }
+
+        .sellerIntro_detailItem {
+          margin-bottom: 10px;
+          font-size: 14px;
+
+          .sellerIntro_itemKey {
+            font-weight: bold;
+            color: gray;
+            margin-right: 5px;
+          }
+
+          .sellerIntro_itemValue {
+            font-weight: 300;
+          }
+        }
+      }
+    }
+  }
+
+  .sellerIntro_right {
+    flex: 2;
+  }
+}

@@ -1,0 +1,56 @@
+.service_detail {
+  height: 100vh;
+  overflow-x: hidden;
+  .service_detail2 {
+    display: flex;
+    width: inherit;
+    height: auto;
+    .detail_left {
+      margin-left: 20px;
+      flex: 9;
+      h2 {
+        margin-top: 20px;
+      }
+      img {
+        width: 600px;
+        height: 400px;
+      }
+      .seller_header {
+        display: flex;
+        margin: 10px;
+        .avatar {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          margin-right: 5px;
+        }
+        p {
+          margin-top: 4px;
+          font-weight: 500;
+        }
+      }
+    }
+    .detail_right {
+      margin-right: 20px;
+    }
+  }
+  .sections {
+    width: 100%;
+    height: calc(100vh - 70px);
+    background-color: white;
+    position: relative;
+    top: 70px;
+    scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
+    scrollbar-width: none; //for firefox
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    > * {
+      width: 100vw;
+      height: calc(100vh - 70px);
+      scroll-snap-align: start;
+    }
+  }
+}

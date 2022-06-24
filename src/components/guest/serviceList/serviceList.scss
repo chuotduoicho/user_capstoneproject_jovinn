@@ -1,0 +1,52 @@
+@import "../../../global.scss";
+
+.serviceList {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  margin-top: 15px;
+  position: inherit;
+  @include mobile {
+    flex-direction: column;
+    align-items: center;
+  }
+  .list {
+    display: flex;
+    background-color: white;
+    justify-content: center;
+    list-style: none;
+    padding: 10px 0;
+    margin-bottom: 20px;
+  }
+  .service_cardGrid {
+    .service_card {
+      .service_cardContent {
+        .service_intro {
+          display: flex;
+          flex-direction: row;
+          padding-top: 0px;
+          margin-top: 0px;
+          margin-bottom: 15px;
+          .image {
+            height: 40px;
+            width: 40px;
+            border-radius: 40%;
+            margin-left: 15px;
+            margin-right: 15px;
+          }
+        }
+      }
+      .service_cardAction {
+        .service_rating {
+          float: right;
+          margin-left: 35px;
+        }
+      }
+    }
+    .service_pagging {
+      float: right;
+      margin-top: 40px;
+      color: rgb(203, 174, 122);
+    }
+  }
+}

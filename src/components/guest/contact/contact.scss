@@ -1,0 +1,27 @@
+@import "../../../global.scss";
+
+.contact {
+  background-color: rgb(171, 113, 113);
+  display: flex;
+  @include mobile {
+    flex-direction: column;
+  }
+
+  .box {
+    color: whitesmoke;
+    width: 100%;
+    font-size: 20px;
+    .head {
+      margin-bottom: 40px;
+      font-size: 30px;
+    }
+    .item {
+      margin-bottom: 20px;
+      .icon {
+        margin-top: 10px;
+        width: 55px;
+        cursor: pointer;
+      }
+    }
+  }
+}
