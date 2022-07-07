@@ -1,0 +1,113 @@
+.buyerHome {
+  height: 100vh;
+  overflow-x: hidden;
+  .buyerHome_form {
+    display: flex;
+    flex-direction: row;
+    .buyerHome_left {
+      margin-top: 50px;
+      margin-left: 50px;
+      .listSearch {
+        flex: 1;
+        background-color: bisque;
+        padding: 10px;
+        border-radius: 10px;
+        position: sticky;
+        top: 10px;
+        height: max-content;
+        .lsTitle {
+          // font-size: 50px;
+          color: #555;
+          margin-bottom: 10px;
+        }
+
+        .lsItem {
+          display: flex;
+          flex-direction: column;
+          gap: 5px;
+          margin-bottom: 10px;
+        }
+
+        .lsItem > label {
+          // font-size: 12px;
+        }
+
+        .lsItem > input {
+          height: 30px;
+          border: none;
+          padding: 5px;
+        }
+        .lsItem > span {
+          height: 30px;
+          padding: 5px;
+          background-color: white;
+          display: flex;
+          align-items: center;
+          cursor: pointer;
+        }
+
+        .lsOptions {
+          padding: 10px;
+        }
+
+        .lsOptionItem {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 10px;
+          color: #555;
+          // font-size: 12px;
+        }
+
+        .lsOptionInput {
+          width: 50px;
+        }
+
+        .listSearch > button {
+          padding: 10px;
+          background-color: #0071c2;
+          color: white;
+          border: none;
+          width: 100%;
+          font-weight: 500;
+          cursor: pointer;
+        }
+
+        .listResult {
+          flex: 3;
+        }
+      }
+    }
+    .buyerHome_right {
+      .service {
+        width: 100%;
+        height: auto;
+      }
+      .list {
+        display: flex;
+        background-color: white;
+        justify-content: center;
+        list-style: none;
+      }
+    }
+  }
+
+  .sections {
+    width: 100%;
+    height: calc(100vh - 70px);
+    background-color: lightsalmon;
+    position: relative;
+    top: 70px;
+    scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
+    scrollbar-width: none; //for firefox
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    > * {
+      width: 100vw;
+      height: calc(100vh - 70px);
+      scroll-snap-align: start;
+    }
+  }
+}

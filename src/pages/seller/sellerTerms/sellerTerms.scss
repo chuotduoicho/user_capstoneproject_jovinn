@@ -1,0 +1,23 @@
+.seller_term {
+  height: 100vh;
+  overflow-x: hidden;
+  .seller_term_title {
+    text-align: center;
+    color: rgb(76, 0, 255);
+    padding: 2%;
+  }
+  .seller_term_content {
+    padding-left: 5%;
+    .seller_term_content_p {
+      color: darkblue;
+      padding: 0.5%;
+      font-size: 120%;
+    }
+    .seller_term_content_btn {
+      margin-right: 2%;
+      margin-top: 3%;
+      text-align: center;
+      justify-content: center;
+    }
+  }
+}
