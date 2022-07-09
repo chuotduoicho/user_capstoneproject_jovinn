@@ -3,12 +3,21 @@
   overflow-x: hidden;
   .buyer_profile_title {
     text-align: center;
+    color: blueviolet;
   }
   .profession_form {
     flex-direction: column;
     width: 1600px;
     text-align: center;
-    margin: 0 auto;
+
+    .profession_itemStage {
+      border: 2px solid rgb(238, 225, 225);
+      padding: 20px;
+      margin-bottom: 20px;
+      // width: 80%;
+      // text-align: center;
+      // margin: 0 auto;
+    }
     .profession_row {
       margin-bottom: 15px;
       .input_radio {

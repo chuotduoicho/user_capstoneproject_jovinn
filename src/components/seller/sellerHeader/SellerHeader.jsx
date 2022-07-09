@@ -74,7 +74,9 @@ export default function SellerHeader() {
             <Link to="/sellerHome/createService">
               <Button>Tạo dịch vụ</Button>
             </Link>
-            <Button>Yêu cầu</Button>
+            <Link to="/sellerHome/listRequest">
+              <Button>Yêu cầu</Button>
+            </Link>
             <Button>Hợp đồng</Button>
             <Button>Ví</Button>
           </ButtonGroup>

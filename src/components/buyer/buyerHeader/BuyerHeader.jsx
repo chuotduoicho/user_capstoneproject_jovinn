@@ -141,6 +141,22 @@ export default function BuyerHeader({ search }) {
                       </MenuItem>
                       {/* </Link> */}
                       <Link
+                        to="/buyerhome/createRequest"
+                        style={{ textDecoration: "none" }}
+                      >
+                        <MenuItem style={{ color: "black" }}>
+                          Tạo yêu cầu
+                        </MenuItem>
+                      </Link>
+                      <Link
+                        to="/buyerhome/manageRequest"
+                        style={{ textDecoration: "none" }}
+                      >
+                        <MenuItem style={{ color: "black" }}>
+                          Quản lí yêu cầu
+                        </MenuItem>
+                      </Link>
+                      <Link
                         to="/buyerhome/offers"
                         style={{ textDecoration: "none" }}
                       >
