@@ -3,7 +3,7 @@ import authHeader from "./auth-header";
 const API_URL = "http://localhost:8080/api/v1/users";
 const getTopSellers = () => {
   return axios
-    .get("http://localhost:8080/api/v1/seller/getTop3SellerByRank")
+    .get("http://localhost:8080/api/v1/seller/sellers")
     .then((response) => {
       localStorage.setItem("topSeller", JSON.stringify(response.data));
       return response.data;
@@ -26,8 +26,18 @@ const updateUserProfile = ({
   birthDate,
   phone,
   address,
+  city,
 }) => {
-  console.log({ id, firstName, lastName, gender, birthDate, phone, address });
+  console.log({
+    id,
+    firstName,
+    lastName,
+    gender,
+    birthDate,
+    phone,
+    address,
+    city,
+  });
   return axios
     .put(
       API_URL + "/profile/" + id,
@@ -39,6 +49,7 @@ const updateUserProfile = ({
         birthDate,
         phoneNumber: phone,
         country: address,
+        city: city,
       },
       { headers: authHeader() }
     )
@@ -48,6 +59,7 @@ const updateUserProfile = ({
       return response.data;
     });
 };
+
 const joinSeller = (obj) => {
   // const info = obj.info;
   // const userId = obj.userId;
@@ -78,6 +90,7 @@ const changePassword = (oldPassword, newPassword, confirmPassword) => {
     { headers: authHeader() }
   );
 };
+
 const userService = {
   getTopSellers,
   getUser,

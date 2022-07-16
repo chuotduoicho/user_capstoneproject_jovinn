@@ -9,21 +9,22 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
+import Alert from "@material-ui/lab/Alert";
 import {
   Button,
-  FormControl,
-  FormControlLabel,
-  Modal,
-  Radio,
-  RadioGroup,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
 } from "@material-ui/core";
 import { Divider, Avatar, Grid, Paper } from "@material-ui/core";
 import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
-import FalseStage from "../../../components/buyer/buyerOptionFalseStage/FalseStage";
-import TrueStage from "../../../components/buyer/buyerOptionTrueStage/TrueStage";
-import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { selectServiceById } from "../../../redux/serviceSlice";
+import { addContract } from "../../../redux/contractSlice";
+import { fetchCurrentUser } from "../../../redux/userSlice";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -58,6 +59,11 @@ function a11yProps(index) {
 }
 export default function ServiceDetail() {
   const { serviceId } = useParams();
+  const navigate = useNavigate();
+  const [amount, setAmount] = useState(1);
+  const [requirement, setRequirement] = useState("");
+  const [packageId, setPackageId] = useState("");
+  const [error, setError] = useState("");
   const serviceDetail = useSelector((state) =>
     selectServiceById(state, serviceId)
   );
@@ -65,11 +71,7 @@ export default function ServiceDetail() {
   const theme = useTheme();
   const [value, setValue] = useState(0);
 
-  const [selected, setSelected] = useState("false");
-  const handleChangeSelect = (ev) => {
-    setSelected(ev.target.value);
-  };
-  console.log(selected);
+  const dispatch = useDispatch();
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -78,10 +80,27 @@ export default function ServiceDetail() {
     setValue(index);
   };
 
-  //modal
+  //dialog
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+
+  const handleOpenPayment = () => {
+    const order = {
+      packageId,
+      requirement,
+      quantity: amount,
+    };
+    console.log("order", order);
+    if (requirement.length >= 30 && requirement.length <= 500) {
+      navigate("/buyerHome/payment/test", { state: { order } });
+    } else {
+      setError("Mô tả yêu cầu phải từ 30 đến 500 kí tự");
+    }
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   const packages = [...serviceDetail.packages].sort(
     (a, b) => a.price - b.price
   );
@@ -183,7 +202,6 @@ export default function ServiceDetail() {
               <Tab label="Cơ bản" {...a11yProps(0)} />
               <Tab label="Nâng cao" {...a11yProps(1)} />
               <Tab label="Cao cấp" {...a11yProps(2)} />
-              {/* <Tab label="Tùy chọn" {...a11yProps(3)} /> */}
             </Tabs>
           </AppBar>
           <SwipeableViews
@@ -192,108 +210,94 @@ export default function ServiceDetail() {
             onChangeIndex={handleChangeIndex}
             style={{ border: "2px groove #d8d0d2" }}
           >
-            <TabPanel value={value} index={0} dir={theme.direction}>
-              <h1>{packages[0].price}$</h1>
-              <p style={{ marginTop: "15px", marginBottom: "15px" }}>
-                {packages[0].shortDescription}
-              </p>
-              <h4>⏲️ {packages[0].deliveryTime} Day Delivery</h4>
-              {/* <p>✔️ Theme Installation</p>
-              <p>✔️ 2 Plugins/Extensions</p> */}
-              <Button
-                variant="contained"
-                color="primary"
-                style={{
-                  marginTop: "15px",
-                  marginBottom: "15px",
-                  marginLeft: "180px",
-                }}
-              >
-                Mua
-              </Button>
-            </TabPanel>
-            <TabPanel value={value} index={1} dir={theme.direction}>
-              <h1>{packages[1].price}$</h1>
-              <p style={{ marginTop: "15px", marginBottom: "15px" }}>
-                {packages[1].shortDescription}
-              </p>
-              <h4>⏲️ {packages[1].deliveryTime} Day Delivery</h4>
-              {/* <p>✔️ Theme Installation</p>
-              <p>✔️ 2 Plugins/Extensions</p> */}
-              <Button
-                variant="contained"
-                color="primary"
-                style={{
-                  marginTop: "15px",
-                  marginBottom: "15px",
-                  marginLeft: "180px",
-                }}
-              >
-                Mua
-              </Button>
-            </TabPanel>
-            <TabPanel value={value} index={2} dir={theme.direction}>
-              <h1>{packages[2].price}$</h1>
-              <p style={{ marginTop: "15px", marginBottom: "15px" }}>
-                {packages[2].shortDescription}
-              </p>
-              <h4>⏲️ {packages[2].deliveryTime} Day Delivery</h4>
-              {/* <p>✔️ Theme Installation</p>
-              <p>✔️ 2 Plugins/Extensions</p> */}
-              <Button
-                variant="contained"
-                color="primary"
-                style={{
-                  marginTop: "15px",
-                  marginBottom: "15px",
-                  marginLeft: "180px",
-                }}
-              >
-                Mua
-              </Button>
-            </TabPanel>
-            {/* <TabPanel value={value} index={3} dir={theme.direction}>
-              <FormControl>
-                <RadioGroup
-                  aria-labelledby="demo-radio-buttons-group-label"
-                  defaultValue="false"
-                  name="radio-buttons-group"
-                  onChange={handleChangeSelect}
-                >
-                  <FormControlLabel
-                    value="false"
-                    control={<Radio />}
-                    label="Tùy chọn KHÔNG chia giai đoạn bàn giao"
+            {packages.map((item, index) => {
+              return (
+                <TabPanel value={value} index={index} dir={theme.direction}>
+                  <div style={{ display: "flex" }}>
+                    <h1>{item.price}$ </h1>
+                    <Typography
+                      variant="h6"
+                      style={{ margin: "10px", marginLeft: "100px" }}
+                    >
+                      Số lượng:
+                    </Typography>
+
+                    <TextField
+                      id="outlined-basic"
+                      variant="standard"
+                      type="number"
+                      defaultValue={amount}
+                      inputProps={{ min: 1 }}
+                      style={{ width: "50px", marginTop: "10px" }}
+                      onChange={(e) => setAmount(e.target.value)}
+                    />
+                  </div>
+                  <p style={{ marginTop: "15px", marginBottom: "15px" }}>
+                    {item.title}
+                  </p>
+                  <h4>⏲️ {item.deliveryTime} Day Delivery</h4>
+                  <p>✔️ {item.shortDescription}</p>
+                  {/* <p>✔️ Sản phẩm bàn giao 2</p> */}
+                  <h3>
+                    Phí hủy hợp đồng :{item.contractCancelFee}% Tổng chi phí
+                  </h3>
+                  <h2>Tổng giá :{item.price * amount}$</h2>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    style={{
+                      marginTop: "15px",
+                      marginBottom: "15px",
+                      marginLeft: "180px",
+                    }}
+                    onClick={(e) => {
+                      setPackageId(item.id);
+                      setOpen(true);
+                    }}
+                  >
+                    Mua
+                  </Button>
+                </TabPanel>
+              );
+            })}
+
+            <Dialog
+              fullWidth
+              maxWidth="sm"
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="max-width-dialog-title"
+            >
+              <DialogTitle id="max-width-dialog-title">
+                Thông tin chi tiết
+              </DialogTitle>
+              <DialogContent>
+                <div className="profession_row">
+                  <TextField
+                    id="outlined-basic"
+                    label="Yêu cầu"
+                    variant="outlined"
+                    multiline
+                    rows={15}
+                    style={{ width: "100%" }}
+                    onChange={(e) => setRequirement(e.target.value)}
                   />
-                  <FormControlLabel
-                    value="true"
-                    control={<Radio />}
-                    label="Tùy chọn CÓ chia giai đoạn bàn giao"
-                  />
-                </RadioGroup>
+                </div>
+              </DialogContent>
+              <DialogActions>
                 <Button
-                  variant="contained"
+                  onClick={handleOpenPayment}
                   color="primary"
-                  style={{
-                    marginTop: "15px",
-                    marginBottom: "15px",
-                    marginLeft: "180px",
-                  }}
-                  onClick={handleOpen}
+                  variant="contained"
                 >
-                  Tiếp tục
+                  Tạo đặt hàng
                 </Button>
-              </FormControl>
-              <Modal
-                keepMounted
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="keep-mounted-modal-title"
-                aria-describedby="keep-mounted-modal-description"
-              >
-                {selected === "false" ? <FalseStage /> : <TrueStage />}
-              </Modal>
-            </TabPanel> */}
+                <Button onClick={handleClose} color="primary">
+                  Đóng
+                </Button>
+              </DialogActions>
+              {error !== "" && <Alert severity="error">{error}</Alert>}
+            </Dialog>
           </SwipeableViews>
         </div>
       </div>

@@ -16,8 +16,6 @@ import Home from "./pages/guest/home/Home";
 import ServiceDetail from "./pages/guest/serviceDetail/ServiceDetail";
 import SellerCreateService from "./pages/seller/sellerCreateService/SellerCreateService";
 import SellerHome from "./pages/seller/sellerHome/SellerHome";
-import SellerListRequest from "./pages/seller/sellerListRequest/SellerListRequest";
-
 import SellerProfession from "./pages/seller/sellerProfesion/sellerProfession";
 import SellerRequestDetail from "./pages/seller/sellerRequestDetail/SellerRequestDetail";
 import SellerServiceDetail from "./pages/seller/sellerServiceDetail/SellerServiceDetail";
@@ -25,8 +23,24 @@ import SellerTerms from "./pages/seller/sellerTerms/SellerTerms";
 import SellerCreateOffer from "./pages/seller/sellerCreateOffer/SellerCreateOffer";
 import BuyerOfferDetail from "./pages/buyer/buyerOfferDetail/BuyerOfferDetail";
 import SellerOfferDetail from "./pages/seller/sellerOfferDetail/SellerOfferDetail";
+import SellerManageContract from "./pages/seller/sellerManageContract/SellerManageContract";
+import BuyerPayment from "./pages/buyer/buyerPayment/BuyerPayment";
+import BuyerManageContract from "./pages/buyer/buyerManageContract/BuyerManageContract";
+import BuyerContractDetail from "./pages/buyer/buyerContractDetail/BuyerContractDetail";
+import BuyerManageOrder from "./pages/buyer/buyerManageOrder/BuyerManageOrder";
+import BuyerOrderDetail from "./pages/buyer/buyerOrderDetail/BuyerOrderDetail";
+import BuyerManageOffer from "./pages/buyer/buyerManageOffer/BuyerManageOffer";
+import ListSeller from "./pages/guest/listSeller/ListSeller";
+import SellerDetail from "./pages/guest/sellerDetail/SellerDetail";
+import SellerManageRequest from "./pages/seller/sellerManageRequest/SellerManageRequest";
+import SellerManageOrder from "./pages/seller/sellerManageOrder/SellerManageOrder";
+import SellerOrderDetail from "./pages/seller/sellerOrderDetail/SellerOrderDetail";
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 function App() {
   return (
+    // <PayPalScriptProvider
+    //   options={{ "client-id": process.env.REACT_APP_PAYPAL_CLIENT_ID }}
+    // >
     <div>
       <BrowserRouter>
         <Routes>
@@ -36,6 +50,7 @@ function App() {
               path="serviceDetail/:serviceId"
               element={<ServiceDetail />}
             />
+            <Route path="seller/:sellerId" element={<SellerDetail />} />
           </Route>
           <Route path="/auth">
             <Route path="login" element={<Login />} />
@@ -46,32 +61,61 @@ function App() {
           </Route>
           <Route path="/buyerhome">
             <Route index element={<BuyerHome />} />
-
             <Route path="profile" element={<BuyerProfile />} />
             <Route
               path="serviceDetail/:serviceId"
               element={<BuyerServiceDetail />}
             />
+
             <Route path="createRequest" element={<BuyerCreateRequest />} />
-            <Route path="manageRequest" element={<BuyerManageRequest />} />
-            <Route
-              path="requestDetail/:requestId"
-              element={<BuyerRequestDetail />}
-            />
-            <Route
-              path="offerDetail/:requestId"
-              element={<BuyerOfferDetail />}
-            />
-            <Route path="createOrder" element={<BuyerCreateRequest />} />
+            <Route path="manageRequest">
+              <Route index element={<BuyerManageRequest />} />
+              <Route path=":requestId" element={<BuyerRequestDetail />} />
+            </Route>
+
+            <Route path="manageContract">
+              <Route index element={<BuyerManageContract />} />
+              <Route path=":contractId" element={<BuyerContractDetail />} />
+            </Route>
+
+            <Route path="manageOrder">
+              <Route index element={<BuyerManageOrder />} />
+
+              <Route path=":orderId" element={<BuyerOrderDetail />} />
+            </Route>
+            <Route path="manageOffer/:requestId">
+              <Route index element={<BuyerManageOffer />} />
+
+              <Route path=":offerId" element={<BuyerOfferDetail />} />
+            </Route>
+            <Route path="payment/:requestId" element={<BuyerPayment />} />
+            <Route path="listSeller/:requestId" element={<ListSeller />} />
           </Route>
           <Route path="/sellerhome">
             <Route index element={<SellerHome />} />
             <Route path="createService" element={<SellerCreateService />} />
-            <Route path="listRequest" element={<SellerListRequest />} />
+            <Route path="manageRequest">
+              <Route index element={<SellerManageRequest />} />
+              <Route path=":requestId" element={<SellerRequestDetail />} />
+            </Route>
+            <Route path="manageContract">
+              <Route index element={<SellerManageContract />} />
+              <Route path=":contractId" element={<BuyerContractDetail />} />
+            </Route>
+            <Route path="manageOrder">
+              <Route index element={<SellerManageOrder />} />
+
+              <Route path=":orderId" element={<SellerOrderDetail />} />
+            </Route>
             <Route
-              path="requestDetail/:requestId"
-              element={<SellerRequestDetail />}
+              path="createOffer/:requestId"
+              element={<SellerCreateOffer />}
             />
+            <Route path="manageOffer">
+              <Route index element={<BuyerManageOffer />} />
+
+              <Route path=":offerId" element={<SellerOfferDetail />} />
+            </Route>
             <Route
               path="updateService/:serviceId"
               element={<SellerCreateService />}
@@ -82,16 +126,12 @@ function App() {
             />
             <Route path="sellerTerms" element={<SellerTerms />} />{" "}
             <Route path="professionInfo" element={<SellerProfession />} />
-            <Route path="createOffer" element={<SellerCreateOffer />} />
-            <Route
-              path="offerDetail/:requestId"
-              element={<SellerOfferDetail />}
-            />
           </Route>
           <Route path="/errorPage" element={<ErrorPage />} />
         </Routes>
       </BrowserRouter>
     </div>
+    // </PayPalScriptProvider>
   );
 }
 

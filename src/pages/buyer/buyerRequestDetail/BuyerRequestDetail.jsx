@@ -1,38 +1,17 @@
 import {
-  AppBar,
   Button,
   Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  FormControlLabel,
-  IconButton,
   MenuItem,
-  Radio,
-  RadioGroup,
   Slide,
   TextField,
   makeStyles,
-  Toolbar,
-  Typography,
-  List,
-  ListItem,
   InputAdornment,
-  ListItemText,
-  ListItemAvatar,
-  Avatar,
   FormControl,
 } from "@material-ui/core";
 import {
-  Close,
   CloudUpload,
   AddSharp,
   RemoveSharp,
-  RemoveCircle,
-  DeleteForever,
-  RemoveRounded,
   DeleteOutlineSharp,
 } from "@material-ui/icons";
 import React, { useState } from "react";
@@ -53,38 +32,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-
 export default function BuyerRequestDetail() {
   const listCategory = useSelector(selectAllCategories);
   const [cateId, setCateId] = useState(listCategory[0].id);
   const [subCateId, setSubCateId] = useState(
     listCategory[0].subCategories[0].id
   );
-  // ssssssss
-  const classes = useStyles();
 
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const [fullScreenOpen, setFullScreenOpen] = React.useState(false);
-  const handleFullScreenOpen = () => {
-    setFullScreenOpen(true);
-  };
-  const handleFullScreenClose = () => {
-    setFullScreenOpen(false);
-    setOpen(false);
-  };
-
-  const [chooseStage, setChooseStage] = useState("one");
   const [description, setDescription] = useState("");
   const [stages, setStages] = useState([
     { dateFrom: "", dateTo: "", product: "", price: "" },
@@ -106,7 +60,7 @@ export default function BuyerRequestDetail() {
   };
 
   const handleStageRemove = () => {
-    if (stages.length > 2) {
+    if (stages.length > 1) {
       const list = [...stages];
       list.pop();
       setStages(list);
@@ -266,28 +220,31 @@ export default function BuyerRequestDetail() {
           </FormControl>
         </div>
         <div className="profession_row">
-          <p>Tùy chọn giai đoạn :</p>
-          <RadioGroup
-            aria-label="gender"
-            name="role"
-            value={chooseStage}
-            onChange={(e) => setChooseStage(e.target.value)}
-            className="input_radio"
-          >
-            <FormControlLabel
-              value="one"
-              control={<Radio />}
-              label="Bàn giao 1 lần "
-            />
-            <FormControlLabel
-              value="many"
-              control={<Radio />}
-              label="Bàn giao nhiều lần"
-            />
-          </RadioGroup>
+          {" "}
+          <Button style={{ height: "70px" }} onClick={handleStageRemove}>
+            <RemoveSharp />
+          </Button>
+          <TextField
+            id="outlined-basic"
+            label="Số giai đoạn"
+            variant="outlined"
+            type="number"
+            value={stages.length}
+            style={{ width: "8%", margin: "10px" }}
+            disabled
+          />
+          <Button style={{ height: "70px" }} onClick={handleStageAdd}>
+            <AddSharp />
+          </Button>
         </div>
-        {chooseStage == "one" ? (
-          <>
+        {stages.map((stage, index) => (
+          <div className="profession_itemStage">
+            {stages.length > 1 && (
+              <div className="profession_row">
+                <h3>Giai đoạn {index + 1}</h3>
+              </div>
+            )}
+
             <div className="profession_row">
               <TextField
                 id="outlined-basic"
@@ -297,21 +254,21 @@ export default function BuyerRequestDetail() {
                 InputLabelProps={{
                   shrink: true,
                 }}
-                defaultValue="2022-07-07"
                 style={{ width: "30%", margin: "10px" }}
-                // onChange={(e) => setDescriptionBio(e.target.value)}
+                name="dateFrom"
+                onChange={(e) => handleStageChange(e, index)}
               />
               <TextField
                 id="outlined-basic"
                 label="Ngày kết thúc"
                 variant="outlined"
                 type="date"
-                defaultValue="2022-08-07"
                 InputLabelProps={{
                   shrink: true,
                 }}
                 style={{ width: "30%", margin: "10px" }}
-                // onChange={(e) => setDescriptionBio(e.target.value)}
+                name="dateTo"
+                onChange={(e) => handleStageChange(e, index)}
               />
             </div>
             <div className="profession_row">
@@ -319,156 +276,19 @@ export default function BuyerRequestDetail() {
               <TextField
                 id="outlined-basic"
                 label="Sản phẩm bàn giao"
+                variant="outlined"
                 multiline
                 rows={3}
-                defaultValue="Sản phẩm bàn giao abcdef"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                variant="outlined"
                 style={{ width: "62%" }}
-                // onChange={(e) => setDescriptionBio(e.target.value)}
+                name="product"
+                onChange={(e) => handleStageChange(e, index)}
               />
             </div>
             <div className="profession_row">
               {" "}
               <TextField
                 id="outlined-basic"
-                label="Tổng chi phí"
-                variant="outlined"
-                type="number"
-                defaultValue="100"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                style={{ width: "30%", margin: "10px" }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">$</InputAdornment>
-                  ),
-                }}
-                // onChange={(e) => setDescriptionBio(e.target.value)}
-              />
-              <TextField
-                id="outlined-basic"
-                label="Phí hủy hợp đồng"
-                variant="outlined"
-                type="number"
-                defaultValue="10"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                style={{ width: "30%", margin: "10px" }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      % Tổng chi phí
-                    </InputAdornment>
-                  ),
-                }}
-                // onChange={(e) => setDescriptionBio(e.target.value)}
-              />
-            </div>
-            <div className="profession_row">
-              {" "}
-              <Button
-                variant="contained"
-                color="primary"
-                className="form_right_row_btn"
-                onClick={handleOpen}
-              >
-                Cập nhật
-              </Button>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="profession_row">
-              {" "}
-              <Button style={{ height: "70px" }} onClick={handleStageRemove}>
-                <RemoveSharp />
-              </Button>
-              <TextField
-                id="outlined-basic"
-                label="Số giai đoạn"
-                variant="outlined"
-                type="number"
-                value={stages.length}
-                style={{ width: "8%", margin: "10px" }}
-                disabled
-              />
-              <Button style={{ height: "70px" }} onClick={handleStageAdd}>
-                <AddSharp />
-              </Button>
-            </div>
-            {stages.map((stage, index) => (
-              <div className="profession_itemStage">
-                <div className="profession_row">
-                  <h3>Giai đoạn {index + 1}</h3>
-                </div>
-                <div className="profession_row">
-                  <TextField
-                    id="outlined-basic"
-                    label="Ngày bắt đầu"
-                    variant="outlined"
-                    type="date"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    style={{ width: "30%", margin: "10px" }}
-                    name="dateFrom"
-                    onChange={(e) => handleStageChange(e, index)}
-                  />
-                  <TextField
-                    id="outlined-basic"
-                    label="Ngày kết thúc"
-                    variant="outlined"
-                    type="date"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    style={{ width: "30%", margin: "10px" }}
-                    name="dateTo"
-                    onChange={(e) => handleStageChange(e, index)}
-                  />
-                </div>
-                <div className="profession_row">
-                  {" "}
-                  <TextField
-                    id="outlined-basic"
-                    label="Sản phẩm bàn giao"
-                    variant="outlined"
-                    multiline
-                    rows={3}
-                    style={{ width: "62%" }}
-                    name="product"
-                    onChange={(e) => handleStageChange(e, index)}
-                  />
-                </div>
-                <div className="profession_row">
-                  {" "}
-                  <TextField
-                    id="outlined-basic"
-                    label="Chi phí"
-                    variant="outlined"
-                    type="number"
-                    style={{ width: "30%", margin: "10px" }}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">$</InputAdornment>
-                      ),
-                    }}
-                    name="price"
-                    onChange={(e) => handleStageChange(e, index)}
-                  />
-                </div>
-              </div>
-            ))}
-            <div className="profession_row">
-              {" "}
-              <TextField
-                id="outlined-basic"
-                label="Tổng chi phí"
+                label="Chi phí"
                 variant="outlined"
                 type="number"
                 style={{ width: "30%", margin: "10px" }}
@@ -477,174 +297,74 @@ export default function BuyerRequestDetail() {
                     <InputAdornment position="end">$</InputAdornment>
                   ),
                 }}
-                // onChange={(e) => setDescriptionBio(e.target.value)}
-              />
-              <TextField
-                id="outlined-basic"
-                label="Phí hủy hợp đồng"
-                variant="outlined"
-                type="number"
-                style={{ width: "30%", margin: "10px" }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      % Tổng chi phí
-                    </InputAdornment>
-                  ),
-                }}
-                // onChange={(e) => setDescriptionBio(e.target.value)}
+                name="price"
+                onChange={(e) => handleStageChange(e, index)}
               />
             </div>
-            <div className="profession_row">
-              {" "}
-              <Button
-                variant="contained"
-                color="primary"
-                className="form_right_row_btn"
-                onClick={handleOpen}
-              >
-                Cập nhật
-              </Button>
-            </div>
-          </>
-        )}
+          </div>
+        ))}
+        <div className="profession_row">
+          {" "}
+          <TextField
+            id="outlined-basic"
+            label="Tổng chi phí"
+            variant="outlined"
+            type="number"
+            style={{ width: "30%", margin: "10px" }}
+            InputProps={{
+              endAdornment: <InputAdornment position="end">$</InputAdornment>,
+            }}
+            // onChange={(e) => setDescriptionBio(e.target.value)}
+          />
+          <TextField
+            id="outlined-basic"
+            label="Phí hủy hợp đồng"
+            variant="outlined"
+            type="number"
+            style={{ width: "30%", margin: "10px" }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">% Tổng chi phí</InputAdornment>
+              ),
+            }}
+            // onChange={(e) => setDescriptionBio(e.target.value)}
+          />
+        </div>
+        <div className="profession_row">
+          {" "}
+          <Button
+            variant="contained"
+            color="primary"
+            className="form_right_row_btn"
+          >
+            Cập nhật
+          </Button>
+        </div>
         <div
           className="profession_row"
           style={{ border: "2px solid rgb(238, 225, 225)" }}
         >
-          Có lời đề nghị cho yêu cầu này!
-          <Link to="/buyerHome/offerDetail/abc">
+          <Link to="/buyerHome/listSeller/test">
             <Button
               variant="outlined"
               color="primary"
               style={{ marginLeft: "20px" }}
               // onClick={handleOpen}.
             >
-              Xem đề nghị
+              Xem danh sách ứng tuyển
+            </Button>
+          </Link>
+          <Link to="/buyerHome/manageOffer/test">
+            <Button
+              variant="outlined"
+              color="primary"
+              style={{ marginLeft: "20px" }}
+              // onClick={handleOpen}.
+            >
+              Xem danh sách đề nghị
             </Button>
           </Link>
         </div>
-        <Dialog open={open} onClose={handleClose}>
-          <DialogTitle id="dialod-title">
-            {"Bạn có muốn gửi lời đến người bán không?"}
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Yêu cầu đã được tạo thành công!Hãy gửi lời mời đến những người bán
-              tiềm năng chúng tôi tìm được.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose}>Không</Button>
-            <Button onClick={handleFullScreenOpen} color="primary">
-              Có
-            </Button>
-            <Dialog
-              fullScreen
-              open={fullScreenOpen}
-              onClose={handleFullScreenClose}
-            >
-              <AppBar className={classes.appBar}>
-                <Toolbar>
-                  <IconButton
-                    edge="start"
-                    color="inherit"
-                    onClick={handleFullScreenClose}
-                    aria-label="close"
-                  >
-                    <Close />
-                  </IconButton>
-                  <Typography variant="h6" className={classes.title}>
-                    Người bán tiềm năng
-                  </Typography>
-                  <Button color="inherit" onClick={handleFullScreenClose}>
-                    Hoàn thành
-                  </Button>
-                </Toolbar>
-              </AppBar>
-              <List
-                style={{
-                  width: "50%",
-                  margin: "0 auto",
-                  border: " 2px solid rgb(238, 225, 225)",
-                }}
-              >
-                <ListItem button>
-                  <ListItemAvatar>
-                    <Avatar alt="buyer image" src="assets/tai.jpg" />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary="Seller 1"
-                    secondary="Java, .Net, PHP"
-                  />
-                  <Button variant="outlined" color="secondary">
-                    Mời
-                  </Button>
-                </ListItem>
-                <ListItem button>
-                  <ListItemAvatar>
-                    <Avatar alt="buyer image" src="assets/tai.jpg" />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary="Seller 2"
-                    secondary="Java, .Net, PHP"
-                  />
-                  <Button variant="outlined" color="secondary">
-                    Mời
-                  </Button>
-                </ListItem>
-                <ListItem button>
-                  <ListItemAvatar>
-                    <Avatar alt="buyer image" src="assets/tai.jpg" />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary="Seller 3"
-                    secondary="Java, .Net, PHP"
-                  />
-                  <Button variant="outlined" color="secondary">
-                    Mời
-                  </Button>
-                </ListItem>
-                <ListItem button>
-                  <ListItemAvatar>
-                    <Avatar alt="buyer image" src="assets/tai.jpg" />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary="Seller 4"
-                    secondary="Java, .Net, PHP"
-                  />
-                  <Button variant="outlined" color="secondary">
-                    Mời
-                  </Button>
-                </ListItem>
-                <ListItem button>
-                  <ListItemAvatar>
-                    <Avatar alt="buyer image" src="assets/tai.jpg" />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary="Seller 5"
-                    secondary="Java, .Net, PHP"
-                  />
-                  <Button variant="outlined" color="secondary">
-                    Mời
-                  </Button>
-                </ListItem>
-                <ListItem button>
-                  <ListItemAvatar>
-                    <Avatar alt="buyer image" src="assets/tai.jpg" />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary="Seller 6"
-                    secondary="Java, .Net, PHP"
-                  />
-                  <Button variant="outlined" color="secondary">
-                    Mời
-                  </Button>
-                </ListItem>
-              </List>
-            </Dialog>
-          </DialogActions>
-        </Dialog>
       </Container>
       <div className="sections_profile">
         <Contact />

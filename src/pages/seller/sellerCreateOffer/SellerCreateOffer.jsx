@@ -19,7 +19,6 @@ import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
 import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
 
 export default function SellerCreateOffer() {
-  const [chooseStage, setChooseStage] = useState("one");
   const [description, setDescription] = useState("");
   const [stages, setStages] = useState([
     { dateFrom: "", dateTo: "", product: "", price: "" },
@@ -41,7 +40,7 @@ export default function SellerCreateOffer() {
   };
 
   const handleStageRemove = () => {
-    if (stages.length > 2) {
+    if (stages.length > 1) {
       const list = [...stages];
       list.pop();
       setStages(list);
@@ -65,28 +64,28 @@ export default function SellerCreateOffer() {
           />
         </div>
         <div className="profession_row">
-          <p>Tùy chọn giai đoạn :</p>
-          <RadioGroup
-            aria-label="gender"
-            name="role"
-            value={chooseStage}
-            onChange={(e) => setChooseStage(e.target.value)}
-            className="input_radio"
-          >
-            <FormControlLabel
-              value="one"
-              control={<Radio />}
-              label="Bàn giao 1 lần "
-            />
-            <FormControlLabel
-              value="many"
-              control={<Radio />}
-              label="Bàn giao nhiều lần"
-            />
-          </RadioGroup>
+          {" "}
+          <Button style={{ height: "70px" }} onClick={handleStageRemove}>
+            <RemoveSharp />
+          </Button>
+          <TextField
+            id="outlined-basic"
+            label="Số giai đoạn"
+            variant="outlined"
+            type="number"
+            value={stages.length}
+            style={{ width: "8%", margin: "10px" }}
+            disabled
+          />
+          <Button style={{ height: "70px" }} onClick={handleStageAdd}>
+            <AddSharp />
+          </Button>
         </div>
-        {chooseStage == "one" ? (
-          <>
+        {stages.map((stage, index) => (
+          <div className="profession_itemStage">
+            <div className="profession_row">
+              <h3>Giai đoạn {index + 1}</h3>
+            </div>
             <div className="profession_row">
               <TextField
                 id="outlined-basic"
@@ -116,9 +115,9 @@ export default function SellerCreateOffer() {
               <TextField
                 id="outlined-basic"
                 label="Sản phẩm bàn giao"
+                variant="outlined"
                 multiline
                 rows={3}
-                variant="outlined"
                 style={{ width: "62%" }}
                 // onChange={(e) => setDescriptionBio(e.target.value)}
               />
@@ -127,7 +126,7 @@ export default function SellerCreateOffer() {
               {" "}
               <TextField
                 id="outlined-basic"
-                label="Tổng chi phí"
+                label="Chi phí"
                 variant="outlined"
                 type="number"
                 style={{ width: "30%", margin: "10px" }}
@@ -138,155 +137,46 @@ export default function SellerCreateOffer() {
                 }}
                 // onChange={(e) => setDescriptionBio(e.target.value)}
               />
-              <TextField
-                id="outlined-basic"
-                label="Phí hủy hợp đồng"
-                variant="outlined"
-                type="number"
-                style={{ width: "30%", margin: "10px" }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      % Tổng chi phí
-                    </InputAdornment>
-                  ),
-                }}
-                // onChange={(e) => setDescriptionBio(e.target.value)}
-              />
             </div>
-            <div className="profession_row">
-              {" "}
-              <Button
-                variant="contained"
-                color="primary"
-                className="form_right_row_btn"
-              >
-                Gửi đề nghị
-              </Button>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="profession_row">
-              {" "}
-              <Button style={{ height: "70px" }} onClick={handleStageRemove}>
-                <RemoveSharp />
-              </Button>
-              <TextField
-                id="outlined-basic"
-                label="Số giai đoạn"
-                variant="outlined"
-                type="number"
-                value={stages.length}
-                style={{ width: "8%", margin: "10px" }}
-                disabled
-              />
-              <Button style={{ height: "70px" }} onClick={handleStageAdd}>
-                <AddSharp />
-              </Button>
-            </div>
-            {stages.map((stage, index) => (
-              <div className="profession_itemStage">
-                <div className="profession_row">
-                  <h3>Giai đoạn {index + 1}</h3>
-                </div>
-                <div className="profession_row">
-                  <TextField
-                    id="outlined-basic"
-                    label="Ngày bắt đầu"
-                    variant="outlined"
-                    type="date"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    style={{ width: "30%", margin: "10px" }}
-                    // onChange={(e) => setDescriptionBio(e.target.value)}
-                  />
-                  <TextField
-                    id="outlined-basic"
-                    label="Ngày kết thúc"
-                    variant="outlined"
-                    type="date"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    style={{ width: "30%", margin: "10px" }}
-                    // onChange={(e) => setDescriptionBio(e.target.value)}
-                  />
-                </div>
-                <div className="profession_row">
-                  {" "}
-                  <TextField
-                    id="outlined-basic"
-                    label="Sản phẩm bàn giao"
-                    variant="outlined"
-                    multiline
-                    rows={3}
-                    style={{ width: "62%" }}
-                    // onChange={(e) => setDescriptionBio(e.target.value)}
-                  />
-                </div>
-                <div className="profession_row">
-                  {" "}
-                  <TextField
-                    id="outlined-basic"
-                    label="Chi phí"
-                    variant="outlined"
-                    type="number"
-                    style={{ width: "30%", margin: "10px" }}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">$</InputAdornment>
-                      ),
-                    }}
-                    // onChange={(e) => setDescriptionBio(e.target.value)}
-                  />
-                </div>
-              </div>
-            ))}
-            <div className="profession_row">
-              {" "}
-              <TextField
-                id="outlined-basic"
-                label="Tổng chi phí"
-                variant="outlined"
-                type="number"
-                style={{ width: "30%", margin: "10px" }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">$</InputAdornment>
-                  ),
-                }}
-                // onChange={(e) => setDescriptionBio(e.target.value)}
-              />
-              <TextField
-                id="outlined-basic"
-                label="Phí hủy hợp đồng"
-                variant="outlined"
-                type="number"
-                style={{ width: "30%", margin: "10px" }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      % Tổng chi phí
-                    </InputAdornment>
-                  ),
-                }}
-                // onChange={(e) => setDescriptionBio(e.target.value)}
-              />
-            </div>
-            <div className="profession_row">
-              {" "}
-              <Button
-                variant="contained"
-                color="primary"
-                className="form_right_row_btn"
-              >
-                Gửi đề nghị
-              </Button>
-            </div>
-          </>
-        )}
+          </div>
+        ))}
+        <div className="profession_row">
+          {" "}
+          <TextField
+            id="outlined-basic"
+            label="Tổng chi phí"
+            variant="outlined"
+            type="number"
+            style={{ width: "30%", margin: "10px" }}
+            InputProps={{
+              endAdornment: <InputAdornment position="end">$</InputAdornment>,
+            }}
+            // onChange={(e) => setDescriptionBio(e.target.value)}
+          />
+          <TextField
+            id="outlined-basic"
+            label="Phí hủy hợp đồng"
+            variant="outlined"
+            type="number"
+            style={{ width: "30%", margin: "10px" }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">% Tổng chi phí</InputAdornment>
+              ),
+            }}
+            // onChange={(e) => setDescriptionBio(e.target.value)}
+          />
+        </div>
+        <div className="profession_row">
+          {" "}
+          <Button
+            variant="contained"
+            color="primary"
+            className="form_right_row_btn"
+          >
+            Gửi đề nghị
+          </Button>
+        </div>
       </Container>
       <div className="sections_profile">
         <Contact />

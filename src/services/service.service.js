@@ -1,7 +1,7 @@
 import axios from "axios";
 import { object } from "prop-types";
 import authHeader from "./auth-header";
-const API_URL = "http://localhost:8080/api/v1";
+const API_URL = "http://localhost:8080/api/v1/box";
 const getAllServices = () => {
   return axios.get(API_URL + "/box-services").then((response) => {
     localStorage.setItem("services", JSON.stringify(response.data));
@@ -15,7 +15,7 @@ const getServiceById = (serviceId) => {
 };
 const getServiceByCateId = (cateId) => {
   return axios
-    .get(API_URL + "/list-services-by-cat/" + cateId)
+    .get(API_URL + "/list-services-by-cate/" + cateId)
     .then((response) => {
       return response.data;
     });

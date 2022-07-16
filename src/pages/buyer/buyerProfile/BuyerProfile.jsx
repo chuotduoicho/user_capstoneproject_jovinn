@@ -39,6 +39,7 @@ export default function BuyerProfile() {
   const [birthDate, setBirthDate] = useState(format(currentUser.birthDate));
   const [phone, setPhone] = useState(currentUser.phoneNumber);
   const [address, setAddress] = useState(currentUser.country);
+  const [city, setCity] = useState(currentUser.city);
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -65,6 +66,7 @@ export default function BuyerProfile() {
           birthDate,
           phone,
           address,
+          city,
         })
       )
         .unwrap()
@@ -257,11 +259,11 @@ export default function BuyerProfile() {
                 InputLabelProps={{
                   shrink: true,
                 }}
-                // defaultValue={currentUser.country}
-                // onChange={(e) => {
-                //   setAddress(e.target.value);
-                //   setIsChange(false);
-                // }}
+                defaultValue={currentUser.city}
+                onChange={(e) => {
+                  setCity(e.target.value);
+                  setIsChange(false);
+                }}
               />
             </div>
             <div className="form_right_row">

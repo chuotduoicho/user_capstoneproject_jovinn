@@ -249,33 +249,24 @@ export default function SellerServiceDetail() {
             onChangeIndex={handleChangeIndex}
             style={{ border: "2px groove #d8d0d2" }}
           >
-            <TabPanel value={value} index={0} dir={theme.direction}>
-              <h1>{packages[0].price}$</h1>
-              <p style={{ marginTop: "15px", marginBottom: "15px" }}>
-                {packages[0].shortDescription}
-              </p>
-              <h4>⏲️ {packages[0].deliveryTime} Day Delivery</h4>
-              {/* <p>✔️ Theme Installation</p>
-              <p>✔️ 2 Plugins/Extensions</p> */}
-            </TabPanel>
-            <TabPanel value={value} index={1} dir={theme.direction}>
-              <h1>{packages[1].price}$</h1>
-              <p style={{ marginTop: "15px", marginBottom: "15px" }}>
-                {packages[1].shortDescription}
-              </p>
-              <h4>⏲️ {packages[1].deliveryTime} Day Delivery</h4>
-              {/* <p>✔️ Theme Installation</p>
-              <p>✔️ 2 Plugins/Extensions</p> */}
-            </TabPanel>
-            <TabPanel value={value} index={2} dir={theme.direction}>
-              <h1>{packages[2].price}$</h1>
-              <p style={{ marginTop: "15px", marginBottom: "15px" }}>
-                {packages[2].shortDescription}
-              </p>
-              <h4>⏲️ {packages[2].deliveryTime} Day Delivery</h4>
-              {/* <p>✔️ Theme Installation</p>
-              <p>✔️ 2 Plugins/Extensions</p> */}
-            </TabPanel>
+            {packages.map((item, index) => {
+              return (
+                <TabPanel value={value} index={index} dir={theme.direction}>
+                  <div style={{ display: "flex" }}>
+                    <h1>{item.price}$ </h1>
+                  </div>
+                  <p style={{ marginTop: "15px", marginBottom: "15px" }}>
+                    {item.title}
+                  </p>
+                  <h4>⏲️ {item.deliveryTime} Day Delivery</h4>
+                  <p>✔️ {item.shortDescription}</p>
+                  {/* <p>✔️ Sản phẩm bàn giao 2</p> */}
+                  <h3>
+                    Phí hủy hợp đồng :{item.contractCancelFee}% Tổng chi phí
+                  </h3>
+                </TabPanel>
+              );
+            })}
           </SwipeableViews>
         </div>
       </div>

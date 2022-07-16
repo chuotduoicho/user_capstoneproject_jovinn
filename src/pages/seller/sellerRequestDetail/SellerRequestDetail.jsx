@@ -1,62 +1,19 @@
 import {
-  AppBar,
   Button,
   Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  FormControlLabel,
-  IconButton,
   MenuItem,
-  Radio,
-  RadioGroup,
-  Slide,
   TextField,
-  makeStyles,
-  Toolbar,
-  Typography,
-  List,
-  ListItem,
   InputAdornment,
-  ListItemText,
-  ListItemAvatar,
-  Avatar,
-  FormControl,
 } from "@material-ui/core";
-import {
-  Close,
-  CloudUpload,
-  AddSharp,
-  RemoveSharp,
-  RemoveCircle,
-  DeleteForever,
-  RemoveRounded,
-  DeleteOutlineSharp,
-} from "@material-ui/icons";
+
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
+import { useNavigate } from "react-router-dom";
+
 import Contact from "../../../components/guest/contact/Contact";
 import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
 import { selectAllCategories } from "../../../redux/categorySlice";
 import "./sellerRequestDetail.scss";
-
-const useStyles = makeStyles((theme) => ({
-  appBar: {
-    position: "relative",
-  },
-  title: {
-    marginLeft: theme.spacing(2),
-    flex: 1,
-  },
-}));
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
 export default function SellerRequestDetail() {
   const listCategory = useSelector(selectAllCategories);
@@ -64,501 +21,284 @@ export default function SellerRequestDetail() {
   const [subCateId, setSubCateId] = useState(
     listCategory[0].subCategories[0].id
   );
-  // ssssssss
-  const classes = useStyles();
 
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const [fullScreenOpen, setFullScreenOpen] = React.useState(false);
-  const handleFullScreenOpen = () => {
-    setFullScreenOpen(true);
-  };
-  const handleFullScreenClose = () => {
-    setFullScreenOpen(false);
-    setOpen(false);
-  };
-
-  const [chooseStage, setChooseStage] = useState("one");
-  const [description, setDescription] = useState("");
   const [stages, setStages] = useState([
     { dateFrom: "", dateTo: "", product: "", price: "" },
 
     { dateFrom: "", dateTo: "", product: "", price: "" },
   ]);
-  const handleStageChange = (e, index) => {
-    const { name, value } = e.target;
-    const list = [...stages];
-    list[index][name] = value;
-    setStages(list);
-  };
-
-  const handleStageAdd = () => {
-    setStages([
-      ...stages,
-      { dateFrom: "", dateTo: "", product: "", price: "" },
-    ]);
-  };
-
-  const handleStageRemove = () => {
-    if (stages.length > 2) {
-      const list = [...stages];
-      list.pop();
-      setStages(list);
-    }
-  };
 
   const [skills, setSkills] = useState([{ name: "", level: "" }]);
-  const handleSkillChange = (e, index) => {
-    const { name, value } = e.target;
-    const list = [...skills];
-    list[index][name] = value;
-    setSkills(list);
-  };
 
-  const handleSkillAdd = () => {
-    setSkills([...skills, { name: "", level: "" }]);
-  };
-
-  const handleSkillRemove = () => {
-    if (skills.length > 1) {
-      const list = [...skills];
-      list.pop();
-      setSkills(list);
-    }
-  };
+  const navigate = useNavigate();
   return (
     <div className="buyer_profile">
       <SellerHeader />
       <h1 className="buyer_profile_title">Chi tiết yêu cầu</h1>
-      <Container maxWidth="lg" className="profession_form">
-        {" "}
-        <div className="profession_row">
-          <TextField
-            id="outlined-select-currency"
-            select
-            label="Chọn danh mục"
-            value={cateId}
-            onChange={(e) => setCateId(e.target.value)}
-            style={{ width: "30%", margin: "10px" }}
-            variant="outlined"
-          >
-            {listCategory.map((category, index) => (
-              <MenuItem key={index} value={category.id}>
-                {category.name}
-              </MenuItem>
-            ))}
-          </TextField>
-          <TextField
-            id="outlined-select-currency"
-            select
-            label="Chọn danh mục con"
-            value={subCateId}
-            onChange={(e) => setSubCateId(e.target.value)}
-            style={{ width: "30%", margin: "10px" }}
-            variant="outlined"
-          >
-            {listCategory
-              .find((val) => {
-                return val.id == cateId;
-              })
-              .subCategories.map((subCategory, index) => (
-                <MenuItem key={index} value={subCategory.id}>
-                  {subCategory.name}
+      <div className="sellerHome_form">
+        <div className="sellerHome_left">
+          <div className="sellerHome_leftCard">
+            <div className="sellerHome_leftCard_lsOptionItem">
+              <h3>Thông tin của khách hàng</h3>
+            </div>
+            <img
+              src={
+                "https://cdn1.iconfinder.com/data/icons/user-pictures/100/unknown-512.png"
+              }
+              style={{ width: "230px" }}
+              alt="avatar"
+            />
+            {/* <h1 className="lsTitle">Nguyễn Thế Vinh</h1> */}
+            <div className="sellerHome_leftCard_lsItem">
+              <label>
+                {/* {currentUser.firstName} {currentUser.lastName} */}
+                Nguyễn Vinh
+              </label>
+            </div>
+            <div className="sellerHome_leftCard_lsItem">
+              {/* <label> {currentUser.firstName}</label> */}
+              <div className="sellerHome_leftCard_lsOptions">
+                {/* <div className="sellerHome_leftCard_lsOptionItem">
+                  <span className="sellerHome_leftCard_lsOptionText">
+                    🌏 Quốc gia: Việt Nam
+                  </span>
+                </div> */}
+                <div className="sellerHome_leftCard_lsOptionItem">
+                  <span className="sellerHome_leftCard_lsOptionText">
+                    🏛️ Thành phố: Ninh bình
+                  </span>
+                </div>
+                <div className="sellerHome_leftCard_lsOptionItem">
+                  <span className="sellerHome_leftCard_lsOptionText">
+                    Tham gia từ : 01/01/2020
+                  </span>
+                </div>
+                <div className="sellerHome_leftCard_lsOptionItem">
+                  <span className="sellerHome_leftCard_lsOptionText">
+                    Đã đăng : 9 yêu cầu
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <Container maxWidth="lg" className="profession_form">
+          {" "}
+          <div className="profession_row">
+            <TextField
+              id="outlined-select-currency"
+              select
+              label="Chọn danh mục"
+              value={cateId}
+              style={{ width: "30%", margin: "10px" }}
+              variant="outlined"
+              disabled
+            >
+              {listCategory.map((category, index) => (
+                <MenuItem key={index} value={category.id}>
+                  {category.name}
                 </MenuItem>
               ))}
-          </TextField>
-        </div>
-        <div
-          className="profession_row"
-          // style={{ border: "2px solid rgb(238, 225, 225)" }}
-        >
-          {skills.map((stage, index) => (
-            <div className="profession_rowLeft">
-              <TextField
-                id="outlined-basic"
-                label="Kĩ Năng"
-                variant="outlined"
-                style={{ width: "30%", margin: "10px" }}
-                name="name"
-                defaultValue="HTML"
-                onChange={(e) => handleSkillChange(e, index)}
-              />
-              <TextField
-                id="outlined-select-currency"
-                select
-                label="Trình độ"
-                defaultValue="BEGINNER"
-                name="level"
-                onChange={(e) => handleSkillChange(e, index)}
-                style={{ width: "23%", margin: "10px" }}
-                variant="outlined"
-              >
-                <MenuItem value="BEGINNER">BEGINNER</MenuItem>
-                <MenuItem value="ADVANCED">ADVANCED</MenuItem>
-                <MenuItem value="COMPETENT">COMPETENT</MenuItem>
-                <MenuItem value="PROFICIENT">PROFICIENT</MenuItem>
-                <MenuItem value="EXPERT">EXPERT</MenuItem>
-              </TextField>
-              {skills.length > 1 && (
-                <Button
+            </TextField>
+            <TextField
+              id="outlined-select-currency"
+              select
+              label="Chọn danh mục con"
+              value={subCateId}
+              style={{ width: "30%", margin: "10px" }}
+              variant="outlined"
+              disabled
+            >
+              {listCategory
+                .find((val) => {
+                  return val.id == cateId;
+                })
+                .subCategories.map((subCategory, index) => (
+                  <MenuItem key={index} value={subCategory.id}>
+                    {subCategory.name}
+                  </MenuItem>
+                ))}
+            </TextField>
+          </div>
+          <div
+            className="profession_row"
+            // style={{ border: "2px solid rgb(238, 225, 225)" }}
+          >
+            {skills.map((stage, index) => (
+              <div className="profession_rowLeft">
+                <TextField
+                  id="outlined-basic"
+                  label="Kĩ Năng"
                   variant="outlined"
-                  color="primary"
-                  style={{ height: "55px", margin: "10px" }}
-                  onClick={handleSkillRemove}
+                  style={{ width: "30%", margin: "10px" }}
+                  name="name"
+                  defaultValue="HTML"
+                  disabled
+                />
+                <TextField
+                  id="outlined-select-currency"
+                  select
+                  label="Trình độ"
+                  defaultValue="BEGINNER"
+                  name="level"
+                  style={{ width: "23%", margin: "10px" }}
+                  variant="outlined"
+                  disabled
                 >
-                  <DeleteOutlineSharp />
-                </Button>
-              )}
-            </div>
-          ))}
-          <Button
-            variant="outlined"
-            color="primary"
-            // style={{ width: "10%", margin: "10px" }}
-            onClick={handleSkillAdd}
-          >
-            <AddSharp />
-            Thêm kĩ năng
-          </Button>
-        </div>
-        <div className="profession_row">
-          <TextField
-            id="outlined-basic"
-            label="Mô tả"
-            variant="outlined"
-            multiline
-            rows={3}
-            style={{ width: "62%" }}
-            defaultValue="Tôi muốn thật nhiều tiền"
-            InputLabelProps={{
-              shrink: true,
-            }}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </div>
-        <div className="profession_row">
-          {" "}
-          <FormControl className="request_form_control">
-            <input
-              accept="image/*,.doc,.docx,.xlsx,.xls,.csv,.pdf,text/plain"
-              className="request_form_input"
-              id="request-input-file"
-              multiple
-              type="file"
-              hidden
+                  <MenuItem value="BEGINNER">BEGINNER</MenuItem>
+                  <MenuItem value="ADVANCED">ADVANCED</MenuItem>
+                  <MenuItem value="COMPETENT">COMPETENT</MenuItem>
+                  <MenuItem value="PROFICIENT">PROFICIENT</MenuItem>
+                  <MenuItem value="EXPERT">EXPERT</MenuItem>
+                </TextField>
+              </div>
+            ))}
+          </div>
+          <div className="profession_row">
+            <TextField
+              id="outlined-basic"
+              label="Mô tả"
+              variant="outlined"
+              multiline
+              rows={3}
+              style={{ width: "62%" }}
+              defaultValue="Tôi muốn thật nhiều tiền"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              disabled
             />
-            <label htmlFor="request-input-file">
-              <Button
-                variant="contained"
-                color="primary"
-                component="span"
-                startIcon={<CloudUpload />}
-              >
-                FILE ĐÍNH KÈM
-              </Button>
-            </label>{" "}
-          </FormControl>
-        </div>
-        <div className="profession_row">
-          <p>Tùy chọn giai đoạn :</p>
-          <RadioGroup
-            aria-label="gender"
-            name="role"
-            value={chooseStage}
-            onChange={(e) => setChooseStage(e.target.value)}
-            className="input_radio"
-          >
-            <FormControlLabel
-              value="one"
-              control={<Radio />}
-              label="Bàn giao 1 lần "
+          </div>
+          <div className="profession_row">
+            {" "}
+            <TextField
+              id="outlined-basic"
+              label="Số giai đoạn"
+              variant="outlined"
+              type="number"
+              value={stages.length}
+              style={{ width: "8%", margin: "10px" }}
+              disabled
             />
-            <FormControlLabel
-              value="many"
-              control={<Radio />}
-              label="Bàn giao nhiều lần"
-            />
-          </RadioGroup>
-        </div>
-        {chooseStage == "one" ? (
-          <>
-            <div className="profession_row">
-              <TextField
-                id="outlined-basic"
-                label="Ngày bắt đầu"
-                variant="outlined"
-                type="date"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                defaultValue="2022-07-07"
-                style={{ width: "30%", margin: "10px" }}
-                // onChange={(e) => setDescriptionBio(e.target.value)}
-              />
-              <TextField
-                id="outlined-basic"
-                label="Ngày kết thúc"
-                variant="outlined"
-                type="date"
-                defaultValue="2022-08-07"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                style={{ width: "30%", margin: "10px" }}
-                // onChange={(e) => setDescriptionBio(e.target.value)}
-              />
-            </div>
-            <div className="profession_row">
-              {" "}
-              <TextField
-                id="outlined-basic"
-                label="Sản phẩm bàn giao"
-                multiline
-                rows={3}
-                defaultValue="Sản phẩm bàn giao abcdef"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                variant="outlined"
-                style={{ width: "62%" }}
-                // onChange={(e) => setDescriptionBio(e.target.value)}
-              />
-            </div>
-            <div className="profession_row">
-              {" "}
-              <TextField
-                id="outlined-basic"
-                label="Tổng chi phí"
-                variant="outlined"
-                type="number"
-                defaultValue="100"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                style={{ width: "30%", margin: "10px" }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">$</InputAdornment>
-                  ),
-                }}
-                // onChange={(e) => setDescriptionBio(e.target.value)}
-              />
-              <TextField
-                id="outlined-basic"
-                label="Phí hủy hợp đồng"
-                variant="outlined"
-                type="number"
-                defaultValue="10"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                style={{ width: "30%", margin: "10px" }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      % Tổng chi phí
-                    </InputAdornment>
-                  ),
-                }}
-                // onChange={(e) => setDescriptionBio(e.target.value)}
-              />
-            </div>
-            <div className="profession_row">
-              {" "}
-              <Button
-                variant="contained"
-                color="primary"
-                className="form_right_row_btn"
-                // onClick={handleOpen}
-              >
-                Chấp nhận yêu cầu
-              </Button>
-              <Button
-                variant="contained"
-                color="secondary"
-                className="form_right_row_btn"
-                style={{ marginLeft: "20px" }}
-                // onClick={handleOpen}
-              >
-                Từ chối yêu cầu
-              </Button>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="profession_row">
-              {" "}
-              <Button style={{ height: "70px" }} onClick={handleStageRemove}>
-                <RemoveSharp />
-              </Button>
-              <TextField
-                id="outlined-basic"
-                label="Số giai đoạn"
-                variant="outlined"
-                type="number"
-                value={stages.length}
-                style={{ width: "8%", margin: "10px" }}
-                disabled
-              />
-              <Button style={{ height: "70px" }} onClick={handleStageAdd}>
-                <AddSharp />
-              </Button>
-            </div>
-            {stages.map((stage, index) => (
-              <div className="profession_itemStage">
+          </div>
+          {stages.map((stage, index) => (
+            <div className="profession_itemStage">
+              {stages.length > 1 && (
                 <div className="profession_row">
                   <h3>Giai đoạn {index + 1}</h3>
                 </div>
-                <div className="profession_row">
-                  <TextField
-                    id="outlined-basic"
-                    label="Ngày bắt đầu"
-                    variant="outlined"
-                    type="date"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    style={{ width: "30%", margin: "10px" }}
-                    name="dateFrom"
-                    onChange={(e) => handleStageChange(e, index)}
-                  />
-                  <TextField
-                    id="outlined-basic"
-                    label="Ngày kết thúc"
-                    variant="outlined"
-                    type="date"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    style={{ width: "30%", margin: "10px" }}
-                    name="dateTo"
-                    onChange={(e) => handleStageChange(e, index)}
-                  />
-                </div>
-                <div className="profession_row">
-                  {" "}
-                  <TextField
-                    id="outlined-basic"
-                    label="Sản phẩm bàn giao"
-                    variant="outlined"
-                    multiline
-                    rows={3}
-                    style={{ width: "62%" }}
-                    name="product"
-                    onChange={(e) => handleStageChange(e, index)}
-                  />
-                </div>
-                <div className="profession_row">
-                  {" "}
-                  <TextField
-                    id="outlined-basic"
-                    label="Chi phí"
-                    variant="outlined"
-                    type="number"
-                    style={{ width: "30%", margin: "10px" }}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">$</InputAdornment>
-                      ),
-                    }}
-                    name="price"
-                    onChange={(e) => handleStageChange(e, index)}
-                  />
-                </div>
-              </div>
-            ))}
-            <div className="profession_row">
-              {" "}
-              <TextField
-                id="outlined-basic"
-                label="Tổng chi phí"
-                variant="outlined"
-                type="number"
-                style={{ width: "30%", margin: "10px" }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">$</InputAdornment>
-                  ),
-                }}
-                // onChange={(e) => setDescriptionBio(e.target.value)}
-              />
-              <TextField
-                id="outlined-basic"
-                label="Phí hủy hợp đồng"
-                variant="outlined"
-                type="number"
-                style={{ width: "30%", margin: "10px" }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      % Tổng chi phí
-                    </InputAdornment>
-                  ),
-                }}
-                // onChange={(e) => setDescriptionBio(e.target.value)}
-              />
-            </div>
-            <div className="profession_row">
-              {" "}
-              <Button
-                variant="contained"
-                color="primary"
-                className="form_right_row_btn"
+              )}
 
-                // onClick={handleOpen}
-              >
-                Chấp nhận yêu cầu
-              </Button>
-              <Button
-                variant="contained"
-                color="secondary"
-                className="form_right_row_btn"
-                style={{ marginLeft: "20px" }}
-                // onClick={handleOpen}
-              >
-                Từ chối yêu cầu
-              </Button>
+              <div className="profession_row">
+                <TextField
+                  id="outlined-basic"
+                  label="Ngày bắt đầu"
+                  variant="outlined"
+                  type="date"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  style={{ width: "30%", margin: "10px" }}
+                  name="dateFrom"
+                  disabled
+                />
+                <TextField
+                  id="outlined-basic"
+                  label="Ngày kết thúc"
+                  variant="outlined"
+                  type="date"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  style={{ width: "30%", margin: "10px" }}
+                  name="dateTo"
+                  disabled
+                />
+              </div>
+              <div className="profession_row">
+                {" "}
+                <TextField
+                  id="outlined-basic"
+                  label="Sản phẩm bàn giao"
+                  variant="outlined"
+                  multiline
+                  rows={3}
+                  style={{ width: "62%" }}
+                  name="product"
+                  disabled
+                />
+              </div>
+              <div className="profession_row">
+                {" "}
+                <TextField
+                  id="outlined-basic"
+                  label="Chi phí"
+                  variant="outlined"
+                  type="number"
+                  style={{ width: "30%", margin: "10px" }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">$</InputAdornment>
+                    ),
+                  }}
+                  name="price"
+                  disabled
+                />
+              </div>
             </div>
-          </>
-        )}
-        <div
-          className="profession_row"
-          style={{ border: "2px solid rgb(238, 225, 225)" }}
-        >
-          Đưa ra đề nghị cho yêu cầu này!
-          <Link to="/sellerHome/createOffer">
-            <Button
+          ))}
+          <div className="profession_row">
+            {" "}
+            <TextField
+              id="outlined-basic"
+              label="Tổng chi phí"
               variant="outlined"
+              type="number"
+              style={{ width: "30%", margin: "10px" }}
+              InputProps={{
+                endAdornment: <InputAdornment position="end">$</InputAdornment>,
+              }}
+              disabled
+              // onChange={(e) => setDescriptionBio(e.target.value)}
+            />
+            <TextField
+              id="outlined-basic"
+              label="Phí hủy hợp đồng"
+              variant="outlined"
+              type="number"
+              style={{ width: "30%", margin: "10px" }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">% Tổng chi phí</InputAdornment>
+                ),
+              }}
+              disabled
+              // onChange={(e) => setDescriptionBio(e.target.value)}
+            />
+          </div>
+          <div className="profession_row">
+            {" "}
+            <Button
+              variant="contained"
               color="primary"
+              className="form_right_row_btn"
+
+              // onClick={handleOpen}
+            >
+              Ứng tuyển
+            </Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              className="form_right_row_btn"
               style={{ marginLeft: "20px" }}
+              onClick={() => navigate("/sellerHome/createOffer/test")}
             >
               Tạo đề nghị
-            </Button>{" "}
-          </Link>
-        </div>
-        <div
-          className="profession_row"
-          style={{ border: "2px solid rgb(238, 225, 225)" }}
-        >
-          Bạn đã đưa ra đề nghị cho yêu cầu này!
-          <Link to="/sellerHome/offerDetail/abc">
-            <Button
-              variant="outlined"
-              color="primary"
-              style={{ marginLeft: "20px" }}
-            >
-              Chỉnh sửa đề nghị
-            </Button>{" "}
-          </Link>
-        </div>
-      </Container>
+            </Button>
+          </div>
+        </Container>
+      </div>
       <div className="sections_profile">
         <Contact />
       </div>

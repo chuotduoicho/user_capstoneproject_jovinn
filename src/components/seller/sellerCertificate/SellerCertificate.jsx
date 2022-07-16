@@ -12,7 +12,7 @@ import {
 import React from "react";
 import { useState } from "react";
 import "./sellerCertificate.scss";
-export default function SellerCertificate() {
+export default function SellerCertificate({ certificates }) {
   const [editStatus, setEditStatus] = useState(false);
   const handleEdit = (e) => {
     setEditStatus(true);
@@ -33,7 +33,7 @@ export default function SellerCertificate() {
             <div className="details">
               <TableContainer component={Paper}>
                 <Table
-                  sx={{ minWidth: 650 }}
+                  sx={{ minWidth: 850 }}
                   size="small"
                   aria-label="a dense table"
                 >
@@ -41,25 +41,29 @@ export default function SellerCertificate() {
                     <TableRow>
                       <TableCell>Tiêu đề</TableCell>
                       <TableCell align="right">Tên chứng chỉ</TableCell>
-                      <TableCell align="right">Năm</TableCell>
+
                       <TableCell align="right">Link</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    <TableRow
-                      sx={{
-                        "&:last-child td, &:last-child th": { border: 0 },
-                      }}
-                    >
-                      <TableCell component="th" scope="row">
-                        Ngôn ngữ anh
-                      </TableCell>
-                      <TableCell align="right">IELTS 9.0</TableCell>
-                      <TableCell align="right">2022</TableCell>
-                      <TableCell align="right">
-                        <a href="">LINK</a>
-                      </TableCell>
-                    </TableRow>
+                    {certificates.map((item) => {
+                      return (
+                        <TableRow
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            {item.title}
+                          </TableCell>
+                          <TableCell align="right"> {item.name}</TableCell>
+
+                          <TableCell align="right">
+                            <a href={item.linkCer}>LINK</a>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                 </Table>
               </TableContainer>

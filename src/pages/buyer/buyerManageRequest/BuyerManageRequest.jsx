@@ -383,7 +383,7 @@ export default function BuyerManageRequest() {
                           {row.cancleFee} %
                         </TableCell>{" "}
                         <TableCell align="right">
-                          <Link to="/buyerHome/requestDetail/abc">
+                          <Link to="test">
                             <Button variant="outlined" color="primary">
                               Chi tiết
                             </Button>

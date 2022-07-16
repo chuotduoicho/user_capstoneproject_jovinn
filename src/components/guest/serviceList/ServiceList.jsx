@@ -32,7 +32,11 @@ export default function ServiceList({
         <CardMedia
           component="img"
           height="194"
-          image={image}
+          image={
+            image
+              ? image
+              : "https://img6.thuthuatphanmem.vn/uploads/2022/01/28/anh-ve-co-trang-nu-trung-quoc-dep-nhat_044336041.jpg"
+          }
           alt="Paella dish"
         />
         <CardContent className="service_cardContent">

@@ -3,6 +3,7 @@ import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
 import Button from "@material-ui/core/Button";
 import "./sellerTerms.scss";
 import { useNavigate } from "react-router-dom";
+import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
 
 export default function SellerTerms() {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ export default function SellerTerms() {
   };
   return (
     <div className="seller_term">
-      <SellerHeader />
+      <BuyerHeader />
       <h1 className="seller_term_title">ĐIỀU KHOẢN KHI TẠO DỊCH VỤ</h1>
       <div className="seller_term_content">
         <p className="seller_term_content_p">

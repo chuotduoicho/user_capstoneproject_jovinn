@@ -174,6 +174,7 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     marginRight: theme.spacing(1),
+    marginBottom: "10px",
   },
   instructions: {
     marginTop: theme.spacing(1),
@@ -219,35 +220,60 @@ export default function SellerCreateService() {
   const handleChangeSubcateId = (e) => {
     setSubCateId(e.target.value);
   };
-
+  const [title1, setTitle1] = useState(
+    serviceId ? serviceDetail.packages[0].title : ""
+  );
+  const [title2, setTitle2] = useState(
+    serviceId ? serviceDetail.packages[1].title : ""
+  );
+  const [title3, setTitle3] = useState(
+    serviceId ? serviceDetail.packages[2].title : ""
+  );
   const [description1, setDescription1] = useState(
-    serviceId ? serviceDetail.packages[1].shortDescription : "Không có nội dung"
+    serviceId ? serviceDetail.packages[0].shortDescription : ""
   );
   const [description2, setDescription2] = useState(
-    serviceId ? serviceDetail.packages[0].shortDescription : "Không có nội dung"
+    serviceId ? serviceDetail.packages[1].shortDescription : ""
   );
   const [description3, setDescription3] = useState(
-    serviceId ? serviceDetail.packages[2].shortDescription : "Không có nội dung"
+    serviceId ? serviceDetail.packages[2].shortDescription : ""
   );
   const [deliveryTime1, setDeliveryTime1] = useState(
-    serviceId ? serviceDetail.packages[1].deliveryTime : "0"
+    serviceId ? serviceDetail.packages[0].deliveryTime : "0"
   );
   const [deliveryTime2, setDeliveryTime2] = useState(
-    serviceId ? serviceDetail.packages[0].deliveryTime : "0"
+    serviceId ? serviceDetail.packages[1].deliveryTime : "0"
   );
   const [deliveryTime3, setDeliveryTime3] = useState(
     serviceId ? serviceDetail.packages[2].deliveryTime : "0"
   );
   const [price1, setPrice1] = useState(
-    serviceId ? serviceDetail.packages[1].price : "1"
+    serviceId ? serviceDetail.packages[0].price : "0"
   );
   const [price2, setPrice2] = useState(
-    serviceId ? serviceDetail.packages[0].price : "99999"
+    serviceId ? serviceDetail.packages[1].price : "99999"
   );
   const [price3, setPrice3] = useState(
     serviceId ? serviceDetail.packages[2].price : "99999"
   );
-
+  const [contractCancelFee1, setContractCancelFee1] = useState(
+    serviceId ? serviceDetail.packages[0].contractCancelFee : ""
+  );
+  const [contractCancelFee2, setContractCancelFee2] = useState(
+    serviceId ? serviceDetail.packages[1].contractCancelFee : ""
+  );
+  const [contractCancelFee3, setContractCancelFee3] = useState(
+    serviceId ? serviceDetail.packages[2].contractCancelFee : ""
+  );
+  const handleChangeTitle1 = (e) => {
+    setTitle1(e.target.value);
+  };
+  const handleChangeTitle2 = (e) => {
+    setTitle2(e.target.value);
+  };
+  const handleChangeTitle3 = (e) => {
+    setTitle3(e.target.value);
+  };
   const handleChangeDescription1 = (e) => {
     setDescription1(e.target.value);
   };
@@ -274,6 +300,15 @@ export default function SellerCreateService() {
   };
   const handleChangePrice3 = (e) => {
     setPrice3(e.target.value);
+  };
+  const handleContractCancelFee1 = (e) => {
+    setContractCancelFee1(e.target.value);
+  };
+  const handleContractCancelFee2 = (e) => {
+    setContractCancelFee2(e.target.value);
+  };
+  const handleContractCancelFee3 = (e) => {
+    setContractCancelFee3(e.target.value);
   };
   const [galley1, setGallery1] = useState(
     "https://i1-dulich.vnecdn.net/2021/07/16/1-1626437591.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=BWzFqMmUWVFC1OfpPSUqMA"
@@ -304,11 +339,15 @@ export default function SellerCreateService() {
             titleDf={title}
             descriptionDf={description}
             subCateIdDf={subCateId}
+            error={error}
           />
         );
       case 1:
         return (
           <Package
+            title1={handleChangeTitle1}
+            title2={handleChangeTitle2}
+            title3={handleChangeTitle3}
             description1={handleChangeDescription1}
             description2={handleChangeDescription2}
             description3={handleChangeDescription3}
@@ -318,6 +357,12 @@ export default function SellerCreateService() {
             price1={handleChangePrice1}
             price2={handleChangePrice2}
             price3={handleChangePrice3}
+            contractCancelFee1={handleContractCancelFee1}
+            contractCancelFee2={handleContractCancelFee2}
+            contractCancelFee3={handleContractCancelFee3}
+            title1V={title1}
+            title2V={title2}
+            title3V={title3}
             description1V={description1}
             description2V={description2}
             description3V={description3}
@@ -327,6 +372,9 @@ export default function SellerCreateService() {
             price1V={price1}
             price2V={price2}
             price3V={price3}
+            contractCancelFee1V={contractCancelFee1}
+            contractCancelFee2V={contractCancelFee2}
+            contractCancelFee3V={contractCancelFee3}
           />
         );
 
@@ -347,10 +395,50 @@ export default function SellerCreateService() {
   }
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
+  const [error, setError] = useState("");
   const steps = getSteps();
   const navigate = useNavigate();
   const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    setError("");
+    if (activeStep == 0) {
+      if (title == "") {
+        setError("Chưa nhập tiêu đề!");
+      } else if (description == "") {
+        setError("Chưa nhập mô tả!");
+      } else if (subCateId == "") {
+        setError("Chưa chọn danh mục!");
+      } else {
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        setError("");
+      }
+    }
+
+    if (activeStep == 1) {
+      if (title1 == "") {
+        setError("Chưa nhập tiêu đề gói cơ bản!");
+      } else if (description1 == "") {
+        setError("Chưa nhập sản phẩm bàn giao gói cơ bản!");
+      } else if (subCateId == "") {
+        setError("Chưa chọn danh mục!");
+      } else {
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        setError("");
+      }
+    }
+
+    if (activeStep == 2) {
+      if (title1 == "") {
+        setError("Chưa nhập tiêu đề!");
+      } else if (description1 == "") {
+        setError("Chưa nhập sản phẩm bàn giao!");
+      } else if (subCateId == "") {
+        setError("Chưa chọn danh mục!");
+      } else {
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        setError("");
+      }
+    }
+    // setActiveStep((prevActiveStep) => prevActiveStep + 1);
     // console.log("sellerId", sellerId);
     console.log("title", title);
     console.log("description", description);
@@ -364,6 +452,9 @@ export default function SellerCreateService() {
     console.log("price1", price1);
     console.log("price2", price2);
     console.log("price3", price3);
+    console.log("contractCancelFee1", contractCancelFee1);
+    console.log("contractCancelFee2", contractCancelFee2);
+    console.log("contractCancelFee3", contractCancelFee3);
     console.log("galley1", galley1);
     console.log("galley2", galley2);
     console.log("galley3", galley3);
@@ -395,22 +486,25 @@ export default function SellerCreateService() {
       },
       packages: [
         {
-          title: "Noi Dung 1",
+          title: title1,
           shortDescription: description1,
           deliveryTime: deliveryTime1,
           price: price1,
+          contractCancelFee: contractCancelFee1,
         },
         {
-          title: "Noi Dung 2",
+          title: title2,
           shortDescription: description2,
           deliveryTime: deliveryTime2,
           price: price2,
+          contractCancelFee: contractCancelFee2,
         },
         {
-          title: "Noi Dung 3",
+          title: title3,
           shortDescription: description3,
           deliveryTime: deliveryTime3,
           price: price3,
+          contractCancelFee: contractCancelFee3,
         },
       ],
     };
@@ -442,22 +536,25 @@ export default function SellerCreateService() {
       },
       packages: [
         {
-          title: "Noi Dung 1",
+          title: title1,
           shortDescription: description1,
           deliveryTime: deliveryTime1,
           price: price1,
+          contractCancelFee: contractCancelFee1,
         },
         {
-          title: "Noi Dung 2",
+          title: title2,
           shortDescription: description2,
           deliveryTime: deliveryTime2,
           price: price2,
+          contractCancelFee: contractCancelFee2,
         },
         {
-          title: "Noi Dung 3",
+          title: title3,
           shortDescription: description3,
           deliveryTime: deliveryTime3,
           price: price3,
+          contractCancelFee: contractCancelFee3,
         },
       ],
     };
@@ -602,6 +699,23 @@ export default function SellerCreateService() {
                 >
                   Tiếp tục
                 </Button>
+              )}
+              {error !== "" && (
+                <div
+                  style={{
+                    color: "rgb(15, 14, 14)",
+                    paddingTop: "15px",
+                    paddingBottom: "15px",
+                    backgroundColor: "#d99fb2",
+                    borderRadius: "12px",
+                    textAlign: "center",
+                    width: "30%",
+                    margin: "0 auto",
+                  }}
+                  role="alert"
+                >
+                  {error}
+                </div>
               )}
             </div>
           </div>

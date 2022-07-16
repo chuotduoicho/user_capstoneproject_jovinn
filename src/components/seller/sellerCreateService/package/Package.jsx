@@ -1,8 +1,17 @@
-import { FormControlLabel, Grow, Switch, TextField } from "@material-ui/core";
+import {
+  FormControlLabel,
+  Grow,
+  InputAdornment,
+  Switch,
+  TextField,
+} from "@material-ui/core";
 import React from "react";
 import { useState } from "react";
 
 export default function Package({
+  title1,
+  title2,
+  title3,
   description1,
   description2,
   description3,
@@ -12,6 +21,12 @@ export default function Package({
   price1,
   price2,
   price3,
+  contractCancelFee1,
+  contractCancelFee2,
+  contractCancelFee3,
+  title1V,
+  title2V,
+  title3V,
   description1V,
   description2V,
   description3V,
@@ -21,12 +36,14 @@ export default function Package({
   price1V,
   price2V,
   price3V,
+  contractCancelFee1V,
+  contractCancelFee2V,
+  contractCancelFee3V,
 }) {
   const [checked, setChecked] = useState(false);
   const handleChange = () => {
     setChecked((prev) => !prev);
   };
-  const [skills, setSkills] = useState(["HTML", "CSS", "JavaScript"]);
   return (
     <div
       style={{
@@ -60,11 +77,9 @@ export default function Package({
             marginBottom: "10px",
           }}
           variant="outlined"
-          label="Mô tả"
-          multiline
-          rows={3}
-          defaultValue={description1V}
-          onChange={description1}
+          label="Tiêu đề"
+          defaultValue={title1V}
+          onChange={title1}
           required
         />
         <TextField
@@ -75,9 +90,11 @@ export default function Package({
           label="Sản phẩm bàn giao"
           multiline
           rows={4}
-          // onChange={description1}
+          defaultValue={description1V}
+          onChange={description1}
           required
         />
+
         <div
           style={{
             display: "flex",
@@ -89,7 +106,7 @@ export default function Package({
               marginRight: "5px",
             }}
             variant="outlined"
-            label="Số ngày fast delivery"
+            label="Số ngày giao"
             type="number"
             defaultValue={deliveryTime1V}
             InputProps={{ inputProps: { min: 0 } }}
@@ -98,7 +115,7 @@ export default function Package({
           />
           <TextField
             variant="outlined"
-            label="Giá ($) fast delivery"
+            label="Chi phí ($)"
             type="number"
             defaultValue={price1V}
             InputProps={{ inputProps: { min: 0 } }}
@@ -106,6 +123,21 @@ export default function Package({
             required
           />
         </div>
+        <TextField
+          variant="outlined"
+          label="Phí hủy hợp đồng"
+          type="number"
+          // defaultValue={price1V}
+          InputProps={{
+            inputProps: { min: 0 },
+            endAdornment: (
+              <InputAdornment position="end">% Tổng chi phí</InputAdornment>
+            ),
+          }}
+          defaultValue={contractCancelFee1V}
+          onChange={contractCancelFee1}
+          required
+        />
       </form>{" "}
       <div>
         <FormControlLabel
@@ -137,17 +169,14 @@ export default function Package({
               >
                 Nâng cao
               </p>
-
               <TextField
                 style={{
                   marginBottom: "10px",
                 }}
                 variant="outlined"
-                label="Mô tả"
-                onChange={description2}
-                defaultValue={description2V}
-                multiline
-                rows={3}
+                label="Tiêu đề"
+                defaultValue={title2V}
+                onChange={title2}
                 required
               />
               <TextField
@@ -156,11 +185,13 @@ export default function Package({
                 }}
                 variant="outlined"
                 label="Sản phẩm bàn giao"
+                onChange={description2}
+                defaultValue={description2V}
                 multiline
                 rows={4}
-                // onChange={description1}
                 required
               />
+
               <div
                 style={{
                   display: "flex",
@@ -172,7 +203,7 @@ export default function Package({
                     marginRight: "5px",
                   }}
                   variant="outlined"
-                  label="Số ngày fast delivery"
+                  label="Số ngày giao"
                   type="number"
                   defaultValue={deliveryTime2V}
                   InputProps={{ inputProps: { min: 0 } }}
@@ -181,7 +212,7 @@ export default function Package({
                 />
                 <TextField
                   variant="outlined"
-                  label="Giá ($) fast delivery"
+                  label="Chi phí ($)"
                   type="number"
                   defaultValue={price2V}
                   InputProps={{ inputProps: { min: 0 } }}
@@ -189,6 +220,23 @@ export default function Package({
                   required
                 />
               </div>
+              <TextField
+                variant="outlined"
+                label="Phí hủy hợp đồng"
+                type="number"
+                // defaultValue={price1V}
+                InputProps={{
+                  inputProps: { min: 0 },
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      % Tổng chi phí
+                    </InputAdornment>
+                  ),
+                }}
+                defaultValue={contractCancelFee2V}
+                onChange={contractCancelFee2}
+                required
+              />
             </form>
             <form
               style={{
@@ -210,17 +258,14 @@ export default function Package({
               >
                 Cao Cấp
               </p>
-
               <TextField
                 style={{
                   marginBottom: "10px",
                 }}
                 variant="outlined"
-                label="Mô tả"
-                onChange={description3}
-                multiline
-                defaultValue={description3V}
-                rows={3}
+                label="Tiêu đề"
+                defaultValue={title3V}
+                onChange={title3}
                 required
               />
               <TextField
@@ -229,11 +274,13 @@ export default function Package({
                 }}
                 variant="outlined"
                 label="Sản phẩm bàn giao"
+                onChange={description3}
                 multiline
+                defaultValue={description3V}
                 rows={4}
-                // onChange={description1}
                 required
               />
+
               <div
                 style={{
                   display: "flex",
@@ -245,7 +292,7 @@ export default function Package({
                     marginRight: "5px",
                   }}
                   variant="outlined"
-                  label="Số ngày fast delivery"
+                  label="Số ngày giao"
                   type="number"
                   defaultValue={deliveryTime3V}
                   InputProps={{ inputProps: { min: 0 } }}
@@ -254,7 +301,7 @@ export default function Package({
                 />
                 <TextField
                   variant="outlined"
-                  label="Giá ($) fast delivery"
+                  label="Chi phí ($)"
                   type="number"
                   defaultValue={price3V}
                   InputProps={{ inputProps: { min: 0 } }}
@@ -262,6 +309,23 @@ export default function Package({
                   required
                 />
               </div>
+              <TextField
+                variant="outlined"
+                label="Phí hủy hợp đồng"
+                type="number"
+                // defaultValue={price1V}
+                InputProps={{
+                  inputProps: { min: 0 },
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      % Tổng chi phí
+                    </InputAdornment>
+                  ),
+                }}
+                defaultValue={contractCancelFee3V}
+                onChange={contractCancelFee3}
+                required
+              />
             </form>
           </div>
         </Grow>

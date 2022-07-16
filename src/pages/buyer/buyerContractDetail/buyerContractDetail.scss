@@ -1,0 +1,43 @@
+.buyer_profile {
+  height: 100vh;
+  overflow-x: hidden;
+  .buyer_profile_title {
+    text-align: center;
+    color: blueviolet;
+  }
+  .profession_form {
+    flex-direction: column;
+    width: 1600px;
+    text-align: center;
+    border: 2px solid #6a50ca;
+    padding-top: 15px;
+    .paymentRow {
+      display: flex;
+      margin-bottom: 20px;
+      .paymentRow_img {
+        height: 50px;
+        width: 200px;
+        margin-right: 50px;
+      }
+    }
+  }
+  .sections_profile {
+    width: 100%;
+    height: calc(100vh - 70px);
+    background-color: white;
+    position: relative;
+    top: 70px;
+    scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
+    scrollbar-width: none; //for firefox
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    > * {
+      width: 100vw;
+      height: calc(100vh - 70px);
+      scroll-snap-align: start;
+    }
+  }
+}

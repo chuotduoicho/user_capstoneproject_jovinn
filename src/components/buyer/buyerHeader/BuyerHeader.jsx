@@ -76,14 +76,6 @@ export default function BuyerHeader({ search }) {
           </div>
         </div>
         <div className="right">
-          {/* <div className="item">
-            <NotificationImportantOutlined className="icon" />
-            <div className="counter">1</div>
-          </div>
-          <div className="item">
-            <ChatBubbleOutline className="icon" />
-            <div className="counter">2</div>
-          </div> */}
           <Button
             ref={anchorRef}
             aria-controls={open ? "menu-list-grow" : undefined}
@@ -129,17 +121,14 @@ export default function BuyerHeader({ search }) {
                           Thông tin cá nhân
                         </MenuItem>
                       </Link>
-                      {/* <Link
-                        to="/sellerHome/sellerTerms"
-                        style={{ textDecoration: "none" }}
-                      > */}
+
                       <MenuItem
                         style={{ color: "black" }}
                         onClick={handleJoinSeller}
                       >
                         Trở thành người bán
                       </MenuItem>
-                      {/* </Link> */}
+
                       <Link
                         to="/buyerhome/createRequest"
                         style={{ textDecoration: "none" }}
@@ -157,13 +146,22 @@ export default function BuyerHeader({ search }) {
                         </MenuItem>
                       </Link>
                       <Link
-                        to="/buyerhome/offers"
+                        to="/buyerhome/manageOrder"
                         style={{ textDecoration: "none" }}
                       >
                         <MenuItem style={{ color: "black" }}>
-                          Quản lí offer
+                          Quản lí đặt hàng
                         </MenuItem>
                       </Link>
+                      <Link
+                        to="/buyerhome/manageContract"
+                        style={{ textDecoration: "none" }}
+                      >
+                        <MenuItem style={{ color: "black" }}>
+                          Quản lí hợp đồng
+                        </MenuItem>
+                      </Link>
+
                       <Link
                         to="/buyerhome/wallet"
                         style={{ textDecoration: "none" }}

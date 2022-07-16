@@ -17,6 +17,7 @@ export default function Overview({
   titleDf,
   descriptionDf,
   subCateIdDf,
+  error,
 }) {
   const category = useSelector(selectAllCategories);
   const [cate, setCate] = useState(category[0]);

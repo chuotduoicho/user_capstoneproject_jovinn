@@ -2,6 +2,7 @@ import "./sellerHeader.scss";
 import {
   NotificationImportantOutlined,
   ChatBubbleOutline,
+  AddSharp,
 } from "@material-ui/icons";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
@@ -71,27 +72,42 @@ export default function SellerHeader() {
             aria-label="text primary button group"
             className="btn_group"
           >
-            <Link to="/sellerHome/createService">
-              <Button>Tạo dịch vụ</Button>
-            </Link>
-            <Link to="/sellerHome/listRequest">
+            <Link to="/sellerHome/manageRequest">
               <Button>Yêu cầu</Button>
             </Link>
-            <Button>Hợp đồng</Button>
-            <Button>Ví</Button>
+            <Link to="/sellerHome/manageOrder">
+              <Button>Đơn đặt hàng</Button>
+            </Link>
+            <Link to="/sellerHome/manageOffer">
+              <Button>Đề nghị</Button>
+            </Link>
+
+            <Link to="/sellerHome/manageContract">
+              <Button>Hợp đồng</Button>
+            </Link>
+
+            {/* <Button>Ví</Button> */}
           </ButtonGroup>
           {/* </div> */}
         </div>
         <div className="right">
-          <div className="item"></div>
-          <div className="item">
+          {/* <div className="item">
+            {" "}
+            <Link to="/sellerHome/createService">
+              <Button variant="contained" color="primary">
+                <AddSharp />
+                Tạo dịch vụ{" "}
+              </Button>{" "}
+            </Link>
+          </div> */}
+          {/* <div className="item">
             <NotificationImportantOutlined className="icon" />
             <div className="counter">1</div>
           </div>
           <div className="item">
             <ChatBubbleOutline className="icon" />
             <div className="counter">2</div>
-          </div>
+          </div> */}
           <Button
             ref={anchorRef}
             aria-controls={open ? "menu-list-grow" : undefined}
@@ -141,14 +157,7 @@ export default function SellerHeader() {
                           Trở thành người mua
                         </MenuItem>
                       </Link>
-                      <Link
-                        to="/buyerhome/offers"
-                        style={{ textDecoration: "none" }}
-                      >
-                        <MenuItem style={{ color: "black" }}>
-                          Quản lí offer
-                        </MenuItem>
-                      </Link>
+
                       <Link
                         to="/buyerhome/wallet"
                         style={{ textDecoration: "none" }}

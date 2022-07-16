@@ -22,7 +22,9 @@ import {
   selectAllServices,
 } from "../../../redux/serviceSlice";
 import Pagination from "@material-ui/lab/Pagination";
+import Rating from "@material-ui/lab/Rating";
 import { fetchCurrentUser, selectCurrentUser } from "../../../redux/userSlice";
+import usePagination from "../../../Pagination";
 export default function BuyerHome() {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
@@ -34,6 +36,7 @@ export default function BuyerHome() {
   const [search, setSearch] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
+  const [rating, setRating] = useState(2);
   console.log("search", search);
   console.log("listCategory", listCategory);
   const dispatch = useDispatch();
@@ -54,6 +57,187 @@ export default function BuyerHome() {
   };
   console.log("sub id", subCateId);
   console.log(listService);
+
+  //pagination
+  let [page, setPage] = useState(1);
+  const PER_PAGE = 6;
+  const listServiceFilter = listService.filter((val) => {
+    if (
+      search === "" &&
+      subCateId === "" &&
+      minPrice === "" &&
+      maxPrice === "" &&
+      val.status === "ACTIVE"
+    ) {
+      return val;
+    } else if (
+      val.status === "ACTIVE" &&
+      search !== "" &&
+      subCateId === "" &&
+      minPrice === "" &&
+      maxPrice === "" &&
+      (val.title.toLowerCase().includes(search.toLowerCase()) ||
+        val.description.toLowerCase().includes(search.toLowerCase()))
+    ) {
+      return val;
+    } else if (
+      val.status === "ACTIVE" &&
+      search === "" &&
+      subCateId !== "" &&
+      minPrice === "" &&
+      maxPrice === "" &&
+      val.subcategory.id.toLowerCase().includes(subCateId.toLowerCase())
+    ) {
+      return val;
+    } else if (
+      val.status === "ACTIVE" &&
+      search !== "" &&
+      subCateId !== "" &&
+      minPrice === "" &&
+      maxPrice === "" &&
+      val.subcategory.id.toLowerCase().includes(subCateId.toLowerCase()) &&
+      (val.title.toLowerCase().includes(search.toLowerCase()) ||
+        val.description.toLowerCase().includes(search.toLowerCase()))
+    ) {
+      return val;
+    } else if (
+      search === "" &&
+      subCateId === "" &&
+      minPrice !== "" &&
+      maxPrice === "" &&
+      val.status === "ACTIVE" &&
+      val.packages[2].price >= minPrice
+    ) {
+      return val;
+    } else if (
+      val.status === "ACTIVE" &&
+      search !== "" &&
+      subCateId === "" &&
+      minPrice !== "" &&
+      maxPrice === "" &&
+      (val.title.toLowerCase().includes(search.toLowerCase()) ||
+        val.description.toLowerCase().includes(search.toLowerCase())) &&
+      val.packages[2].price >= minPrice
+    ) {
+      return val;
+    } else if (
+      val.status === "ACTIVE" &&
+      search === "" &&
+      subCateId !== "" &&
+      minPrice !== "" &&
+      maxPrice === "" &&
+      val.subcategory.id.toLowerCase().includes(subCateId.toLowerCase()) &&
+      val.packages[2].price >= minPrice
+    ) {
+      return val;
+    } else if (
+      val.status === "ACTIVE" &&
+      search !== "" &&
+      subCateId !== "" &&
+      minPrice !== "" &&
+      maxPrice === "" &&
+      val.subcategory.id.toLowerCase().includes(subCateId.toLowerCase()) &&
+      (val.title.toLowerCase().includes(search.toLowerCase()) ||
+        val.description.toLowerCase().includes(search.toLowerCase())) &&
+      val.packages[2].price >= minPrice
+    ) {
+      return val;
+    } else if (
+      search === "" &&
+      subCateId === "" &&
+      minPrice === "" &&
+      maxPrice !== "" &&
+      val.status === "ACTIVE" &&
+      val.packages[2].price <= maxPrice
+    ) {
+      return val;
+    } else if (
+      val.status === "ACTIVE" &&
+      search !== "" &&
+      subCateId === "" &&
+      minPrice === "" &&
+      maxPrice !== "" &&
+      (val.title.toLowerCase().includes(search.toLowerCase()) ||
+        val.description.toLowerCase().includes(search.toLowerCase())) &&
+      val.packages[2].price <= maxPrice
+    ) {
+      return val;
+    } else if (
+      val.status === "ACTIVE" &&
+      search === "" &&
+      subCateId !== "" &&
+      minPrice === "" &&
+      maxPrice !== "" &&
+      val.subcategory.id.toLowerCase().includes(subCateId.toLowerCase()) &&
+      val.packages[2].price <= maxPrice
+    ) {
+      return val;
+    } else if (
+      val.status === "ACTIVE" &&
+      search !== "" &&
+      subCateId !== "" &&
+      minPrice === "" &&
+      maxPrice !== "" &&
+      val.subcategory.id.toLowerCase().includes(subCateId.toLowerCase()) &&
+      (val.title.toLowerCase().includes(search.toLowerCase()) ||
+        val.description.toLowerCase().includes(search.toLowerCase())) &&
+      val.packages[2].price <= maxPrice
+    ) {
+      return val;
+    } else if (
+      search === "" &&
+      subCateId === "" &&
+      minPrice !== "" &&
+      maxPrice !== "" &&
+      val.status === "ACTIVE" &&
+      val.packages[2].price >= minPrice &&
+      val.packages[2].price <= maxPrice
+    ) {
+      return val;
+    } else if (
+      val.status === "ACTIVE" &&
+      search !== "" &&
+      subCateId === "" &&
+      minPrice !== "" &&
+      maxPrice !== "" &&
+      (val.title.toLowerCase().includes(search.toLowerCase()) ||
+        val.description.toLowerCase().includes(search.toLowerCase())) &&
+      val.packages[2].price >= minPrice &&
+      val.packages[2].price <= maxPrice
+    ) {
+      return val;
+    } else if (
+      val.status === "ACTIVE" &&
+      search === "" &&
+      subCateId !== "" &&
+      minPrice !== "" &&
+      maxPrice !== "" &&
+      val.subcategory.id.toLowerCase().includes(subCateId.toLowerCase()) &&
+      val.packages[2].price >= minPrice &&
+      val.packages[2].price <= maxPrice
+    ) {
+      return val;
+    } else if (
+      val.status === "ACTIVE" &&
+      search !== "" &&
+      subCateId !== "" &&
+      minPrice !== "" &&
+      maxPrice !== "" &&
+      val.subcategory.id.toLowerCase().includes(subCateId.toLowerCase()) &&
+      (val.title.toLowerCase().includes(search.toLowerCase()) ||
+        val.description.toLowerCase().includes(search.toLowerCase())) &&
+      val.packages[2].price >= minPrice &&
+      val.packages[2].price <= maxPrice
+    ) {
+      return val;
+    }
+  });
+  const count = Math.ceil(listServiceFilter.length / PER_PAGE);
+  const _DATA = usePagination(listServiceFilter, PER_PAGE);
+  const handleChange = (e, p) => {
+    setPage(p);
+    _DATA.jump(p);
+  };
   return (
     <div className="buyerHome">
       <BuyerHeader search={setSearch} />
@@ -105,10 +289,14 @@ export default function BuyerHome() {
                     className="lsOptionInput"
                   />
                 </div>
-                {/* <label>Đánh giá</label>
+                <label>Đánh giá</label>
                 <div className="lsOptionItem">
-                  <Rating name="size-small" defaultValue={2} size="small" />
-                </div> */}
+                  <Rating
+                    name="pristine"
+                    value={rating}
+                    onChange={(e) => setRating(e.target.value)}
+                  />
+                </div>
               </div>
               {/* <button onClick={handleClick}>Search</button> */}
             </div>
@@ -130,210 +318,9 @@ export default function BuyerHome() {
             <Container className="service_cardGrid" maxWidth="md">
               {/* End hero unit */}
               <Grid container spacing={4}>
-                {listService
-                  .filter((val) => {
-                    if (
-                      search === "" &&
-                      subCateId === "" &&
-                      minPrice === "" &&
-                      maxPrice === "" &&
-                      val.status === "ACTIVE"
-                    ) {
-                      return val;
-                    } else if (
-                      val.status === "ACTIVE" &&
-                      search !== "" &&
-                      subCateId === "" &&
-                      minPrice === "" &&
-                      maxPrice === "" &&
-                      (val.title.toLowerCase().includes(search.toLowerCase()) ||
-                        val.description
-                          .toLowerCase()
-                          .includes(search.toLowerCase()))
-                    ) {
-                      return val;
-                    } else if (
-                      val.status === "ACTIVE" &&
-                      search === "" &&
-                      subCateId !== "" &&
-                      minPrice === "" &&
-                      maxPrice === "" &&
-                      val.subcategory.id
-                        .toLowerCase()
-                        .includes(subCateId.toLowerCase())
-                    ) {
-                      return val;
-                    } else if (
-                      val.status === "ACTIVE" &&
-                      search !== "" &&
-                      subCateId !== "" &&
-                      minPrice === "" &&
-                      maxPrice === "" &&
-                      val.subcategory.id
-                        .toLowerCase()
-                        .includes(subCateId.toLowerCase()) &&
-                      (val.title.toLowerCase().includes(search.toLowerCase()) ||
-                        val.description
-                          .toLowerCase()
-                          .includes(search.toLowerCase()))
-                    ) {
-                      return val;
-                    } else if (
-                      search === "" &&
-                      subCateId === "" &&
-                      minPrice !== "" &&
-                      maxPrice === "" &&
-                      val.status === "ACTIVE" &&
-                      val.packages[2].price >= minPrice
-                    ) {
-                      return val;
-                    } else if (
-                      val.status === "ACTIVE" &&
-                      search !== "" &&
-                      subCateId === "" &&
-                      minPrice !== "" &&
-                      maxPrice === "" &&
-                      (val.title.toLowerCase().includes(search.toLowerCase()) ||
-                        val.description
-                          .toLowerCase()
-                          .includes(search.toLowerCase())) &&
-                      val.packages[2].price >= minPrice
-                    ) {
-                      return val;
-                    } else if (
-                      val.status === "ACTIVE" &&
-                      search === "" &&
-                      subCateId !== "" &&
-                      minPrice !== "" &&
-                      maxPrice === "" &&
-                      val.subcategory.id
-                        .toLowerCase()
-                        .includes(subCateId.toLowerCase()) &&
-                      val.packages[2].price >= minPrice
-                    ) {
-                      return val;
-                    } else if (
-                      val.status === "ACTIVE" &&
-                      search !== "" &&
-                      subCateId !== "" &&
-                      minPrice !== "" &&
-                      maxPrice === "" &&
-                      val.subcategory.id
-                        .toLowerCase()
-                        .includes(subCateId.toLowerCase()) &&
-                      (val.title.toLowerCase().includes(search.toLowerCase()) ||
-                        val.description
-                          .toLowerCase()
-                          .includes(search.toLowerCase())) &&
-                      val.packages[2].price >= minPrice
-                    ) {
-                      return val;
-                    } else if (
-                      search === "" &&
-                      subCateId === "" &&
-                      minPrice === "" &&
-                      maxPrice !== "" &&
-                      val.status === "ACTIVE" &&
-                      val.packages[2].price <= maxPrice
-                    ) {
-                      return val;
-                    } else if (
-                      val.status === "ACTIVE" &&
-                      search !== "" &&
-                      subCateId === "" &&
-                      minPrice === "" &&
-                      maxPrice !== "" &&
-                      (val.title.toLowerCase().includes(search.toLowerCase()) ||
-                        val.description
-                          .toLowerCase()
-                          .includes(search.toLowerCase())) &&
-                      val.packages[2].price <= maxPrice
-                    ) {
-                      return val;
-                    } else if (
-                      val.status === "ACTIVE" &&
-                      search === "" &&
-                      subCateId !== "" &&
-                      minPrice === "" &&
-                      maxPrice !== "" &&
-                      val.subcategory.id
-                        .toLowerCase()
-                        .includes(subCateId.toLowerCase()) &&
-                      val.packages[2].price <= maxPrice
-                    ) {
-                      return val;
-                    } else if (
-                      val.status === "ACTIVE" &&
-                      search !== "" &&
-                      subCateId !== "" &&
-                      minPrice === "" &&
-                      maxPrice !== "" &&
-                      val.subcategory.id
-                        .toLowerCase()
-                        .includes(subCateId.toLowerCase()) &&
-                      (val.title.toLowerCase().includes(search.toLowerCase()) ||
-                        val.description
-                          .toLowerCase()
-                          .includes(search.toLowerCase())) &&
-                      val.packages[2].price <= maxPrice
-                    ) {
-                      return val;
-                    } else if (
-                      search === "" &&
-                      subCateId === "" &&
-                      minPrice !== "" &&
-                      maxPrice !== "" &&
-                      val.status === "ACTIVE" &&
-                      val.packages[2].price >= minPrice &&
-                      val.packages[2].price <= maxPrice
-                    ) {
-                      return val;
-                    } else if (
-                      val.status === "ACTIVE" &&
-                      search !== "" &&
-                      subCateId === "" &&
-                      minPrice !== "" &&
-                      maxPrice !== "" &&
-                      (val.title.toLowerCase().includes(search.toLowerCase()) ||
-                        val.description
-                          .toLowerCase()
-                          .includes(search.toLowerCase())) &&
-                      val.packages[2].price >= minPrice &&
-                      val.packages[2].price <= maxPrice
-                    ) {
-                      return val;
-                    } else if (
-                      val.status === "ACTIVE" &&
-                      search === "" &&
-                      subCateId !== "" &&
-                      minPrice !== "" &&
-                      maxPrice !== "" &&
-                      val.subcategory.id
-                        .toLowerCase()
-                        .includes(subCateId.toLowerCase()) &&
-                      val.packages[2].price >= minPrice &&
-                      val.packages[2].price <= maxPrice
-                    ) {
-                      return val;
-                    } else if (
-                      val.status === "ACTIVE" &&
-                      search !== "" &&
-                      subCateId !== "" &&
-                      minPrice !== "" &&
-                      maxPrice !== "" &&
-                      val.subcategory.id
-                        .toLowerCase()
-                        .includes(subCateId.toLowerCase()) &&
-                      (val.title.toLowerCase().includes(search.toLowerCase()) ||
-                        val.description
-                          .toLowerCase()
-                          .includes(search.toLowerCase())) &&
-                      val.packages[2].price >= minPrice &&
-                      val.packages[2].price <= maxPrice
-                    ) {
-                      return val;
-                    }
-                  })
+                {_DATA
+
+                  .currentData()
                   // .slice(0, 6)
                   .map((item) => (
                     <ServiceList
@@ -344,7 +331,7 @@ export default function BuyerHome() {
                       sellerId={item.sellerId}
                       description={item.description}
                       rating={item.impression}
-                      price={item.packages[2].price}
+                      price={item.packages[0].price}
                       status={item.status}
                       firstName={item.firstName}
                       lastName={item.lastName}
@@ -353,9 +340,11 @@ export default function BuyerHome() {
                   ))}
               </Grid>
               <Pagination
-                count={10}
+                count={count}
                 color="primary"
                 className="service_pagging"
+                page={page}
+                onChange={handleChange}
               />
             </Container>
           </div>

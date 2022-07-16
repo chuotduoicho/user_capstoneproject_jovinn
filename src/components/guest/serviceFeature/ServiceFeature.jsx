@@ -31,7 +31,14 @@ export default function ServiceFeature() {
             className="item"
             onClick={() => navigate("/serviceDetail/" + d.id)}
           >
-            <img src={d.gallery.imageGallery1} alt="" />
+            <img
+              src={
+                d.gallery.imageGallery1
+                  ? d.gallery.imageGallery1
+                  : "https://img6.thuthuatphanmem.vn/uploads/2022/01/28/anh-ve-co-trang-nu-trung-quoc-dep-nhat_044336041.jpg"
+              }
+              alt=""
+            />
             <div className="absolute">
               {" "}
               <h3>{d.title}</h3>

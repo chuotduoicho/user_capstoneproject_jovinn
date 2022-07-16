@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import sellerService from "../services/seller.service";
 import UserService from "../services/user.service";
 import { setMessage } from "./message";
 const currentUser = JSON.parse(localStorage.getItem("currentUser"));
@@ -25,8 +26,26 @@ export const fetchCurrentUser = createAsyncThunk(
 );
 export const updateUserProfile = createAsyncThunk(
   "user/updateUserProfile",
-  async ({ id, firstName, lastName, gender, birthDate, phone, address }) => {
-    console.log({ id, firstName, lastName, gender, birthDate, phone, address });
+  async ({
+    id,
+    firstName,
+    lastName,
+    gender,
+    birthDate,
+    phone,
+    address,
+    city,
+  }) => {
+    console.log({
+      id,
+      firstName,
+      lastName,
+      gender,
+      birthDate,
+      phone,
+      address,
+      city,
+    });
     const data = await UserService.updateUserProfile({
       id,
       firstName,
@@ -35,6 +54,18 @@ export const updateUserProfile = createAsyncThunk(
       birthDate,
       phone,
       address,
+      city,
+    });
+    console.log("current user update", data);
+    return data;
+  }
+);
+export const updateDescriptionBio = createAsyncThunk(
+  "user/updateDescriptionBio",
+  async ({ descriptionBio }) => {
+    console.log({ descriptionBio });
+    const data = await sellerService.updateDescriptionBio({
+      descriptionBio,
     });
     console.log("current user update", data);
     return data;
@@ -105,6 +136,15 @@ const userSlice = createSlice({
     [updateUserProfile.rejected]: (state, action) => {
       state.status = "failed";
     },
+    [updateDescriptionBio.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [updateDescriptionBio.fulfilled]: (state, { payload }) => {
+      state.status = "success";
+    },
+    [updateDescriptionBio.rejected]: (state, action) => {
+      state.status = "failed";
+    },
     [changePassword.pending]: (state, action) => {
       state.status = "loading";
     },
@@ -122,3 +162,11 @@ export default reducer;
 
 export const selectTopSellers = (state) => state.user.topSellers;
 export const selectCurrentUser = (state) => state.user.currentUser;
+export const selectContractBuyerById = (state, contractId) =>
+  state.user.currentUser.buyer.contracts.find(
+    (contract) => contract.id === contractId
+  );
+export const selectContractSellerById = (state, contractId) =>
+  state.user.currentUser.seller.contracts.find(
+    (contract) => contract.id === contractId
+  );

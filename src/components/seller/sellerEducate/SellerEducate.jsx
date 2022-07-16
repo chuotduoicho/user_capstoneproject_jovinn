@@ -12,7 +12,16 @@ import {
 import React from "react";
 import { useState } from "react";
 import "./sellerEducate.scss";
-export default function SellerEducate() {
+function format(date) {
+  date = new Date(date);
+
+  var day = ("0" + date.getDate()).slice(-2);
+  var month = ("0" + (date.getMonth() + 1)).slice(-2);
+  var year = date.getFullYear();
+
+  return day + "-" + month + "-" + year;
+}
+export default function SellerEducate({ educations }) {
   const [editStatus, setEditStatus] = useState(false);
   const handleEdit = (e) => {
     setEditStatus(true);
@@ -20,6 +29,7 @@ export default function SellerEducate() {
   const handleNotEdit = (e) => {
     setEditStatus(false);
   };
+
   return (
     <div className="sellerIntro">
       {" "}
@@ -47,19 +57,29 @@ export default function SellerEducate() {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    <TableRow
-                      sx={{
-                        "&:last-child td, &:last-child th": { border: 0 },
-                      }}
-                    >
-                      <TableCell component="th" scope="row">
-                        Cử nhân CNTT
-                      </TableCell>
-                      <TableCell align="right">FPT University</TableCell>
-                      <TableCell align="right">Kỹ thuật phần mềm</TableCell>
-                      <TableCell align="right">Việt Nam</TableCell>
-                      <TableCell align="right">2022</TableCell>
-                    </TableRow>
+                    {educations.map((item, index) => {
+                      return (
+                        <TableRow
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            {item.title}
+                          </TableCell>
+                          <TableCell align="right">
+                            {" "}
+                            {item.universityName}
+                          </TableCell>
+                          <TableCell align="right"> {item.major}</TableCell>
+                          <TableCell align="right"> {item.country}</TableCell>
+                          <TableCell align="right">
+                            {" "}
+                            {format(item.yearOfGraduation)}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                 </Table>
               </TableContainer>

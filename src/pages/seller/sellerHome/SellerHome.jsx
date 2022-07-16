@@ -9,13 +9,14 @@ import SellerCertificate from "../../../components/seller/sellerCertificate/Sell
 import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
 import { Button, Container, Grid } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { selectAllCategories } from "../../../redux/categorySlice";
 import { fetchServices, selectAllServices } from "../../../redux/serviceSlice";
 import { useState } from "react";
 import Pagination from "@material-ui/lab/Pagination";
 import { useEffect } from "react";
 import { fetchCurrentUser, selectCurrentUser } from "../../../redux/userSlice";
+import { AddAlarm, AddSharp } from "@material-ui/icons";
 function ChangeFormateDate(oldDate) {
   return oldDate.toString().split("-").reverse().join("-");
 }
@@ -68,7 +69,22 @@ export default function SellerHome() {
                 </div> */}
                 <div className="sellerHome_leftCard_lsOptionItem">
                   <span className="sellerHome_leftCard_lsOptionText">
-                    🏛️ Thành phố: {currentUser.country}
+                    Tên hãng: {currentUser.seller.brandName}
+                  </span>
+                </div>
+                <div className="sellerHome_leftCard_lsOptionItem">
+                  <span className="sellerHome_leftCard_lsOptionText">
+                    Cấp độ: {currentUser.seller.rankSeller}
+                  </span>
+                </div>
+                <div className="sellerHome_leftCard_lsOptionItem">
+                  <span className="sellerHome_leftCard_lsOptionText">
+                    Tổng số order: {currentUser.seller.totalOrderFinish}
+                  </span>
+                </div>
+                <div className="sellerHome_leftCard_lsOptionItem">
+                  <span className="sellerHome_leftCard_lsOptionText">
+                    Thành phố: {currentUser.country}
                   </span>
                 </div>
                 <div className="sellerHome_leftCard_lsOptionItem">
@@ -81,6 +97,16 @@ export default function SellerHome() {
           </div>
         </div>
         <div className="sellerHome_right">
+          <Link to="/sellerHome/createService">
+            <Button
+              variant="contained"
+              color="primary"
+              className="sellerHome_right_btn"
+            >
+              <AddSharp />
+              Tạo dịch vụ{" "}
+            </Button>{" "}
+          </Link>
           <div className="serviceList" id="intro">
             <Container className="service_cardGrid" maxWidth="md">
               {/* End hero unit */}
@@ -105,7 +131,7 @@ export default function SellerHome() {
                       sellerId={item.sellerId}
                       description={item.description}
                       rating={item.impression}
-                      price={item.packages[2].price}
+                      price={item.packages[0].price}
                       status={item.status}
                       firstName={item.firstName}
                       lastName={item.lastName}
@@ -120,15 +146,15 @@ export default function SellerHome() {
               />
             </Container>
           </div>
-        </div>
+        </div>{" "}
       </div>
       <div style={{ display: "flex" }}>
-        <SellerIntro />
-        <SellerSkill />
+        <SellerIntro description={currentUser.seller.descriptionBio} />
+        <SellerSkill skills={currentUser.seller.skills} />
       </div>
       <div style={{ display: "flex" }}>
-        <SellerEducate />
-        <SellerCertificate />
+        <SellerEducate educations={currentUser.seller.educations} />
+        <SellerCertificate certificates={currentUser.seller.certificates} />
       </div>
 
       <div className="sections">
