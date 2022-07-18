@@ -17,9 +17,17 @@ const getAllContracts = () => {
       return response.data;
     });
 };
+const acceptOrder = (orderId) => {
+  return axios
+    .post(API_URL + "/seller/accept/", orderId, { headers: authHeader() })
+    .then((response) => {
+      return response.data;
+    });
+};
 const contractService = {
   addContract,
   getAllContracts,
+  acceptOrder,
 };
 
 export default contractService;

@@ -17,6 +17,7 @@ import Pagination from "@material-ui/lab/Pagination";
 import { useEffect } from "react";
 import { fetchCurrentUser, selectCurrentUser } from "../../../redux/userSlice";
 import { AddAlarm, AddSharp } from "@material-ui/icons";
+import { fetchRequestsSeller } from "../../../redux/requestSlice";
 function ChangeFormateDate(oldDate) {
   return oldDate.toString().split("-").reverse().join("-");
 }
@@ -35,6 +36,7 @@ export default function SellerHome() {
     } else {
       dispatch(fetchCurrentUser());
       dispatch(fetchServices());
+      dispatch(fetchRequestsSeller());
     }
   }, [user]);
   const dateJoin = ChangeFormateDate(currentUser.joinSellingAt);

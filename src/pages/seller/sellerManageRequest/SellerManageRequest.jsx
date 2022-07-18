@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Contact from "../../../components/guest/contact/Contact";
 import "./sellerManageRequest.scss";
-import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
 import PropTypes from "prop-types";
 import clsx from "clsx";
 import { lighten, makeStyles } from "@material-ui/core/styles";
@@ -25,6 +24,11 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import { Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectAllRequests } from "../../../redux/requestSlice";
+import { selectAllCategories } from "../../../redux/categorySlice";
+import SellerHome from "../sellerHome/SellerHome";
+import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
 function createData(description, subCate, skills, price, cancleFee) {
   return { description, subCate, skills, price, cancleFee };
 }
@@ -73,26 +77,37 @@ function stableSort(array, comparator) {
 
 const headCells = [
   {
-    id: "description",
+    id: "jobTitle",
     numeric: false,
     disablePadding: false,
-    label: "Mô tả",
+    label: "Tiêu đề",
   },
   {
-    id: "subCate",
+    id: "categoryId",
+    numeric: true,
+    disablePadding: false,
+    label: "Danh mục",
+  },
+  {
+    id: "subcategoryId",
     numeric: true,
     disablePadding: false,
     label: "Danh mục con",
   },
-  { id: "skills", numeric: true, disablePadding: false, label: "Kĩ năng" },
   {
-    id: "price",
+    id: "milestoneContracts",
+    numeric: true,
+    disablePadding: false,
+    label: "Số giai đoạn",
+  },
+  {
+    id: "budget",
     numeric: true,
     disablePadding: false,
     label: "Tổng chi phí (g)",
   },
   {
-    id: "cancleFee",
+    id: "contractCancelFee",
     numeric: true,
     disablePadding: false,
     label: "Phí hủy hợp đồng",
@@ -262,6 +277,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 export default function SellerManageRequest() {
+  const listRequest = useSelector(selectAllRequests);
+  const listCategories = useSelector(selectAllCategories);
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
@@ -278,7 +295,7 @@ export default function SellerManageRequest() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.name);
+      const newSelecteds = listRequest.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -321,11 +338,12 @@ export default function SellerManageRequest() {
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
   const emptyRows =
-    rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+    rowsPerPage -
+    Math.min(rowsPerPage, listRequest.length - page * rowsPerPage);
 
   return (
     <div className="buyer_profile">
-      <BuyerHeader />
+      <SellerHeader />
       <div className={classes.root}>
         <Paper className={classes.paper}>
           <EnhancedTableToolbar numSelected={selected.length} />
@@ -343,47 +361,50 @@ export default function SellerManageRequest() {
                 orderBy={orderBy}
                 onSelectAllClick={handleSelectAllClick}
                 onRequestSort={handleRequestSort}
-                rowCount={rows.length}
+                rowCount={listRequest.length}
               />
               <TableBody>
-                {stableSort(rows, getComparator(order, orderBy))
+                {stableSort(listRequest, getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => {
-                    const isItemSelected = isSelected(row.name);
                     const labelId = `enhanced-table-checkbox-${index}`;
 
                     return (
-                      <TableRow
-                        hover
-                        // onClick={(event) => handleClick(event, row.name)}
-                        role="checkbox"
-                        aria-checked={isItemSelected}
-                        tabIndex={-1}
-                        key={row.name}
-                        selected={isItemSelected}
-                      >
-                        {/* <TableCell padding="checkbox">
-                          <Checkbox
-                            checked={isItemSelected}
-                            inputProps={{ "aria-labelledby": labelId }}
-                          />
-                        </TableCell> */}
+                      <TableRow hover role="checkbox" tabIndex={-1} key={index}>
                         <TableCell
                           component="th"
                           id={labelId}
                           scope="row"
                           // padding="none"
                         >
-                          {row.description}
+                          {row.jobTitle}
                         </TableCell>
-                        <TableCell align="right">{row.subCate}</TableCell>
-                        <TableCell align="right">{row.skills}</TableCell>
-                        <TableCell align="right">{row.price} $</TableCell>
                         <TableCell align="right">
-                          {row.cancleFee} %
+                          {
+                            listCategories.find(
+                              (cate) => cate.id == row.categoryId
+                            ).name
+                          }
+                        </TableCell>
+                        <TableCell align="right">
+                          {" "}
+                          {
+                            listCategories
+                              .find((cate) => cate.id == row.categoryId)
+                              .subCategories.find(
+                                (subCate) => subCate.id == row.subcategoryId
+                              ).name
+                          }
+                        </TableCell>
+                        <TableCell align="right">
+                          {row.milestoneContracts.length}
+                        </TableCell>
+                        <TableCell align="right">{row.budget} $</TableCell>
+                        <TableCell align="right">
+                          {row.contractCancelFee} %
                         </TableCell>{" "}
                         <TableCell align="right">
-                          <Link to="test">
+                          <Link to={row.postRequestId}>
                             <Button variant="outlined" color="primary">
                               Chi tiết
                             </Button>
@@ -403,7 +424,7 @@ export default function SellerManageRequest() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={rows.length}
+            count={listRequest.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

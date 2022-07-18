@@ -9,7 +9,6 @@ import {
   DialogTitle,
   IconButton,
   MenuItem,
-  Slide,
   TextField,
   makeStyles,
   Toolbar,
@@ -22,18 +21,16 @@ import {
   Avatar,
   FormControl,
 } from "@material-ui/core";
-import {
-  Close,
-  CloudUpload,
-  AddSharp,
-  RemoveSharp,
-  DeleteOutlineSharp,
-} from "@material-ui/icons";
+import { Close, CloudUpload, AddSharp, RemoveSharp } from "@material-ui/icons";
+import Alert from "@material-ui/lab/Alert";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
 import Contact from "../../../components/guest/contact/Contact";
 import { selectAllCategories } from "../../../redux/categorySlice";
+import { addRequest, fetchRequestsBuyer } from "../../../redux/requestSlice";
+
+import { selectTopSellers } from "../../../redux/userSlice";
 import "./buyerCreateRequest.scss";
 
 const useStyles = makeStyles((theme) => ({
@@ -46,18 +43,36 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-
 export default function BuyerCreateRequest() {
+  const topSeller = useSelector(selectTopSellers);
   const listCategory = useSelector(selectAllCategories);
   const [cateId, setCateId] = useState(listCategory[0].id);
   const [subCateId, setSubCateId] = useState("");
+  const [recruitLevel, setRecruitLevel] = useState("BEGINNER");
+  const [jobTitle, setJobTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [skills, setSkills] = useState([]);
+  const [inviteUsers, setInviteUsers] = useState([]);
+  const [stages, setStages] = useState([
+    { startDate: "", endDate: "", description: "", milestoneFee: 0 },
+  ]);
+  const [cancleFee, setCancleFee] = useState(0);
+  const request = {
+    categoryId: cateId,
+    subCategoryId: subCateId,
+    recruitLevel: recruitLevel,
+    skillsName: skills,
+    jobTitle: jobTitle,
+    shortRequirement: description,
+    milestoneContracts: stages,
+    contractCancelFee: cancleFee,
+    invitedUsers: inviteUsers,
+  };
+  const dispatch = useDispatch();
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   // ssssssss
   const classes = useStyles();
-
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => {
@@ -66,33 +81,37 @@ export default function BuyerCreateRequest() {
     let check2 = true;
     let check3 = true;
     stages.map((item, index) => {
-      if (item.dateFrom == "") {
+      if (item.startDate == "") {
         check3 = false;
         setError("Chưa nhập ngày bắt đầu của giai đoạn " + parseInt(index + 1));
-      } else if (item.dateTo == "") {
+      } else if (item.endDate == "") {
         check3 = false;
         setError(
           "Chưa nhập ngày kết thúc của giai đoạn " + parseInt(index + 1)
         );
-      } else if (item.product == "") {
+      } else if (item.description == "") {
         check3 = false;
         setError(
           "Chưa nhập sản phẩm bàn giao của giai đoạn " + parseInt(index + 1)
         );
-      } else if (item.price == 0) {
+      } else if (item.milestoneFee == 0) {
         check3 = false;
         setError("Chưa nhập chi phí của giai đoạn " + parseInt(index + 1));
       }
     });
     if (subCateId == "") {
       setError("Chưa chọn danh mục con!");
+    } else if (jobTitle == "") {
+      setError("Chưa nhập tiêu đề!");
     } else if (description == "") {
       setError("Chưa nhập mô tả!");
+    } else if (cancleFee == 0) {
+      setError("Chưa nhập phí hủy hợp đồng!");
     } else {
       check1 = true;
 
       skills.map((item, index) => {
-        if (item.name == "") {
+        if (item == "") {
           check2 = false;
           setError("Chưa nhập kĩ năng " + parseInt(index + 1));
         }
@@ -104,7 +123,17 @@ export default function BuyerCreateRequest() {
     }
   };
 
-  const handleClose = () => {
+  const handleClose = (e) => {
+    e.preventDefault();
+    dispatch(addRequest(request))
+      .unwrap()
+      .then(() => {
+        dispatch(fetchRequestsBuyer());
+        setSuccess("Tạo yêu cầu thành công!");
+      })
+      .catch(() => {
+        setError("Tạo yêu cầu thất bại!");
+      });
     setOpen(false);
   };
 
@@ -112,14 +141,21 @@ export default function BuyerCreateRequest() {
   const handleFullScreenOpen = () => {
     setFullScreenOpen(true);
   };
-  const handleFullScreenClose = () => {
+  const handleFullScreenClose = (e) => {
+    e.preventDefault();
+    dispatch(addRequest(request))
+      .unwrap()
+      .then(() => {
+        dispatch(fetchRequestsBuyer());
+        setSuccess("Tạo yêu cầu thành công!");
+      })
+      .catch(() => {
+        setError("Tạo yêu cầu thất bại!");
+      });
     setFullScreenOpen(false);
     setOpen(false);
   };
-  const [description, setDescription] = useState("");
-  const [stages, setStages] = useState([
-    { dateFrom: "", dateTo: "", product: "", price: 0 },
-  ]);
+
   const handleStageChange = (e, index) => {
     const { name, value } = e.target;
     const list = [...stages];
@@ -128,7 +164,10 @@ export default function BuyerCreateRequest() {
   };
 
   const handleStageAdd = () => {
-    setStages([...stages, { dateFrom: "", dateTo: "", product: "", price: 0 }]);
+    setStages([
+      ...stages,
+      { startDate: "", endDate: "", description: "", milestoneFee: 0 },
+    ]);
   };
 
   const handleStageRemove = () => {
@@ -139,27 +178,20 @@ export default function BuyerCreateRequest() {
     }
   };
 
-  const [skills, setSkills] = useState([{ name: "", level: "" }]);
-  const handleSkillChange = (e, index) => {
-    const { name, value } = e.target;
-    const list = [...skills];
-    list[index][name] = value;
-    setSkills(list);
-  };
+  console.log("inviteUsers", inviteUsers);
 
-  const handleSkillAdd = () => {
-    setSkills([...skills, { name: "", level: "" }]);
-  };
+  function handleKeyDown(e) {
+    if (e.key !== "Enter") return;
+    const value = e.target.value;
+    if (!value.trim()) return;
+    setSkills([...skills, value]);
+    e.target.value = "";
+  }
 
-  const handleSkillRemove = () => {
-    if (skills.length > 1) {
-      const list = [...skills];
-      list.pop();
-      setSkills(list);
-    }
-  };
+  function removeSkill(index) {
+    setSkills(skills.filter((el, i) => i !== index));
+  }
 
-  const [cancleFee, setCancleFee] = useState(0);
   return (
     <div className="buyer_profile">
       <BuyerHeader />
@@ -202,57 +234,49 @@ export default function BuyerCreateRequest() {
               ))}
           </TextField>
         </div>
-        <div
-          className="profession_row"
-          // style={{ border: "2px solid rgb(238, 225, 225)" }}
-        >
-          {skills.map((stage, index) => (
-            <div className="profession_rowLeft">
-              <TextField
-                id="outlined-basic"
-                label="Kĩ Năng"
-                variant="outlined"
-                style={{ width: "30%", margin: "10px" }}
-                name="name"
-                onChange={(e) => handleSkillChange(e, index)}
-              />
-              <TextField
-                id="outlined-select-currency"
-                select
-                label="Trình độ"
-                defaultValue="BEGINNER"
-                name="level"
-                onChange={(e) => handleSkillChange(e, index)}
-                style={{ width: "23%", margin: "10px" }}
-                variant="outlined"
-              >
-                <MenuItem value="BEGINNER">BEGINNER</MenuItem>
-                <MenuItem value="ADVANCED">ADVANCED</MenuItem>
-                <MenuItem value="COMPETENT">COMPETENT</MenuItem>
-                <MenuItem value="PROFICIENT">PROFICIENT</MenuItem>
-                <MenuItem value="EXPERT">EXPERT</MenuItem>
-              </TextField>
-              {skills.length > 1 && (
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  style={{ height: "55px", margin: "10px" }}
-                  onClick={handleSkillRemove}
-                >
-                  <DeleteOutlineSharp />
-                </Button>
-              )}
-            </div>
-          ))}
-          <Button
+        <div className="profession_row">
+          <TextField
+            id="outlined-select-currency"
+            select
+            label="Trình độ người bán"
+            defaultValue="BEGINNER"
+            name="level"
+            onChange={(e) => setRecruitLevel(e.target.value)}
+            style={{ width: "23%", margin: "10px" }}
             variant="outlined"
-            color="primary"
-            // style={{ width: "10%", margin: "10px" }}
-            onClick={handleSkillAdd}
           >
-            <AddSharp />
-            Thêm kĩ năng
-          </Button>
+            <MenuItem value="BEGINNER">BEGINNER</MenuItem>
+            <MenuItem value="ADVANCED">ADVANCED</MenuItem>
+            <MenuItem value="COMPETENT">COMPETENT</MenuItem>
+            <MenuItem value="PROFICIENT">PROFICIENT</MenuItem>
+            <MenuItem value="EXPERT">EXPERT</MenuItem>
+          </TextField>
+          <div className="tags-input-container">
+            {skills.map((skill, index) => (
+              <div className="tag-item" key={index}>
+                <span className="text">{skill}</span>
+
+                <span className="close" onClick={() => removeSkill(index)}>
+                  &times;
+                </span>
+              </div>
+            ))}
+            <input
+              onKeyDown={handleKeyDown}
+              type="text"
+              className="tags-input"
+              placeholder="Nhập kĩ năng"
+            />
+          </div>
+        </div>
+        <div className="profession_row">
+          <TextField
+            id="outlined-basic"
+            label="Tiêu đề"
+            variant="outlined"
+            style={{ width: "62%" }}
+            onChange={(e) => setJobTitle(e.target.value)}
+          />
         </div>
         <div className="profession_row">
           <TextField
@@ -307,7 +331,7 @@ export default function BuyerCreateRequest() {
           </Button>
         </div>
         {stages.map((stage, index) => (
-          <div className="profession_itemStage">
+          <div className="profession_itemStage" key={index}>
             <div className="profession_row">
               {stages.length > 1 && <h3>Giai đoạn {index + 1}</h3>}
             </div>
@@ -321,7 +345,7 @@ export default function BuyerCreateRequest() {
                   shrink: true,
                 }}
                 style={{ width: "30%", margin: "10px" }}
-                name="dateFrom"
+                name="startDate"
                 onChange={(e) => handleStageChange(e, index)}
               />
               <TextField
@@ -333,7 +357,7 @@ export default function BuyerCreateRequest() {
                   shrink: true,
                 }}
                 style={{ width: "30%", margin: "10px" }}
-                name="dateTo"
+                name="endDate"
                 onChange={(e) => handleStageChange(e, index)}
               />
             </div>
@@ -346,7 +370,7 @@ export default function BuyerCreateRequest() {
                 multiline
                 rows={3}
                 style={{ width: "62%" }}
-                name="product"
+                name="description"
                 onChange={(e) => handleStageChange(e, index)}
               />
             </div>
@@ -364,7 +388,7 @@ export default function BuyerCreateRequest() {
                     <InputAdornment position="end">$</InputAdornment>
                   ),
                 }}
-                name="price"
+                name="milestoneFee"
                 onChange={(e) => handleStageChange(e, index)}
               />
             </div>
@@ -373,7 +397,11 @@ export default function BuyerCreateRequest() {
         <div className="profession_row">
           <Typography variant="h4">
             Tổng chi phí :{" "}
-            {stages.reduce((total, item) => total + parseInt(item.price), 0)} $
+            {stages.reduce(
+              (total, item) => total + parseInt(item.milestoneFee),
+              0
+            )}{" "}
+            $
           </Typography>
           <TextField
             id="outlined-basic"
@@ -410,23 +438,8 @@ export default function BuyerCreateRequest() {
             Gửi yêu cầu
           </Button>
         </div>
-        {error !== "" && (
-          <div
-            style={{
-              color: "rgb(15, 14, 14)",
-              paddingTop: "15px",
-              paddingBottom: "15px",
-              backgroundColor: "#d99fb2",
-              borderRadius: "12px",
-              textAlign: "center",
-              width: "30%",
-              margin: "0 auto",
-            }}
-            role="alert"
-          >
-            {error}
-          </div>
-        )}
+        {error !== "" && <Alert severity="error">{error}</Alert>}
+        {success !== "" && <Alert severity="success">{success}</Alert>}
         <Dialog open={open} onClose={handleClose}>
           <DialogTitle id="dialod-title">
             {"Bạn có muốn gửi lời đến người bán không?"}
@@ -472,78 +485,46 @@ export default function BuyerCreateRequest() {
                   border: " 2px solid rgb(238, 225, 225)",
                 }}
               >
-                <ListItem button>
-                  <ListItemAvatar>
-                    <Avatar alt="buyer image" src="assets/tai.jpg" />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary="Seller 1"
-                    secondary="Java, .Net, PHP"
-                  />
-                  <Button variant="outlined" color="secondary">
-                    Mời
-                  </Button>
-                </ListItem>
-                <ListItem button>
-                  <ListItemAvatar>
-                    <Avatar alt="buyer image" src="assets/tai.jpg" />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary="Seller 2"
-                    secondary="Java, .Net, PHP"
-                  />
-                  <Button variant="outlined" color="secondary">
-                    Mời
-                  </Button>
-                </ListItem>
-                <ListItem button>
-                  <ListItemAvatar>
-                    <Avatar alt="buyer image" src="assets/tai.jpg" />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary="Seller 3"
-                    secondary="Java, .Net, PHP"
-                  />
-                  <Button variant="outlined" color="secondary">
-                    Mời
-                  </Button>
-                </ListItem>
-                <ListItem button>
-                  <ListItemAvatar>
-                    <Avatar alt="buyer image" src="assets/tai.jpg" />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary="Seller 4"
-                    secondary="Java, .Net, PHP"
-                  />
-                  <Button variant="outlined" color="secondary">
-                    Mời
-                  </Button>
-                </ListItem>
-                <ListItem button>
-                  <ListItemAvatar>
-                    <Avatar alt="buyer image" src="assets/tai.jpg" />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary="Seller 5"
-                    secondary="Java, .Net, PHP"
-                  />
-                  <Button variant="outlined" color="secondary">
-                    Mời
-                  </Button>
-                </ListItem>
-                <ListItem button>
-                  <ListItemAvatar>
-                    <Avatar alt="buyer image" src="assets/tai.jpg" />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary="Seller 6"
-                    secondary="Java, .Net, PHP"
-                  />
-                  <Button variant="outlined" color="secondary">
-                    Mời
-                  </Button>
-                </ListItem>
+                {topSeller.map((item, index) => {
+                  return (
+                    <ListItem button key={index}>
+                      <ListItemAvatar>
+                        <Avatar alt="buyer image" src={item.user.avatar} />
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={item.user.firstName + " " + item.user.lastName}
+                        secondary={item.skills.map((skill) => skill.name)}
+                      />
+
+                      {inviteUsers.find((i) => i.id === item.user.id) ? (
+                        <Button
+                          variant="outlined"
+                          color="default"
+                          onClick={() =>
+                            setInviteUsers(
+                              inviteUsers.filter((el) => el.id !== item.user.id)
+                            )
+                          }
+                        >
+                          Hoàn tác
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="outlined"
+                          color="secondary"
+                          onClick={() =>
+                            setInviteUsers([
+                              ...inviteUsers,
+                              { id: item.user.id },
+                            ])
+                          }
+                        >
+                          Mời
+                        </Button>
+                      )}
+                    </ListItem>
+                  );
+                })}
               </List>
             </Dialog>
           </DialogActions>

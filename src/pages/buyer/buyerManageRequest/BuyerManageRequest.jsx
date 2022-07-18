@@ -16,34 +16,16 @@ import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
-import Checkbox from "@material-ui/core/Checkbox";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
-import FilterListIcon from "@material-ui/icons/FilterList";
 import { Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
-function createData(description, subCate, skills, price, cancleFee) {
-  return { description, subCate, skills, price, cancleFee };
-}
-
-const rows = [
-  createData("Mô tả ngắn abcdsssssssssss", "Kinh doanh tự do", "HTML", 67, 4.3),
-  createData("Donut", "Kinh doanh tự dosdsd", "JS", 51, 4.9),
-  createData("Eclair", "Kinh doanh tự dsdsdao", "JS", 24, 6.0),
-  createData("Frozen yoghurt", "Kinh doanh tự áddo", "HTML", 24, 4.0),
-  createData("Gingerbread", "Kinh doanh tựád do", "CSS", 49, 3.9),
-  createData("Honeycomb", "Kinh doanh tự do", "HTML", 87, 6.5),
-  createData("Ice cream ", "Kinh doanh tự do", "JS", 37, 4.3),
-  createData("Jelly Bean", "Kinh doanh tự do", "CSS", 94, 0.0),
-  createData("KitKat", "Kinh doanh tự do", "HTML", 65, 7.0),
-  createData("Lollipop", "Kinh doanh tự do", "HTML", 98, 0.0),
-  createData("Marshmallow", "Kinh doanh tự do", "CSS", 81, 2.0),
-  createData("Nougat", "Kinh doanh tự do", "CSS", 9, 37.0),
-  createData("Oreo", "Kinh doanh tự do", "CSS", 63, 4.0),
-];
+import { useSelector } from "react-redux";
+import { selectAllRequests } from "../../../redux/requestSlice";
+import { selectAllCategories } from "../../../redux/categorySlice";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -73,26 +55,37 @@ function stableSort(array, comparator) {
 
 const headCells = [
   {
-    id: "description",
+    id: "jobTitle",
     numeric: false,
     disablePadding: false,
-    label: "Mô tả",
+    label: "Tiêu đề",
   },
   {
-    id: "subCate",
+    id: "categoryId",
+    numeric: true,
+    disablePadding: false,
+    label: "Danh mục",
+  },
+  {
+    id: "subcategoryId",
     numeric: true,
     disablePadding: false,
     label: "Danh mục con",
   },
-  { id: "skills", numeric: true, disablePadding: false, label: "Kĩ năng" },
   {
-    id: "price",
+    id: "milestoneContracts",
     numeric: true,
     disablePadding: false,
-    label: "Tổng chi phí (g)",
+    label: "Số giai đoạn",
   },
   {
-    id: "cancleFee",
+    id: "budget",
+    numeric: true,
+    disablePadding: false,
+    label: "Tổng chi phí ($)",
+  },
+  {
+    id: "contractCancelFee",
     numeric: true,
     disablePadding: false,
     label: "Phí hủy hợp đồng",
@@ -106,15 +99,7 @@ const headCells = [
 ];
 
 function EnhancedTableHead(props) {
-  const {
-    classes,
-    onSelectAllClick,
-    order,
-    orderBy,
-    numSelected,
-    rowCount,
-    onRequestSort,
-  } = props;
+  const { classes, order, orderBy, onRequestSort } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -122,14 +107,6 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow>
-        {/* <TableCell padding="checkbox">
-          <Checkbox
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{ "aria-label": "select all desserts" }}
-          />
-        </TableCell> */}
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
@@ -262,6 +239,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 export default function BuyerManageRequest() {
+  const listRequest = useSelector(selectAllRequests);
+  const listCategories = useSelector(selectAllCategories);
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
@@ -278,31 +257,11 @@ export default function BuyerManageRequest() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.name);
+      const newSelecteds = listRequest.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
-  };
-
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-
-    setSelected(newSelected);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -318,10 +277,9 @@ export default function BuyerManageRequest() {
     setDense(event.target.checked);
   };
 
-  const isSelected = (name) => selected.indexOf(name) !== -1;
-
   const emptyRows =
-    rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+    rowsPerPage -
+    Math.min(rowsPerPage, listRequest.length - page * rowsPerPage);
 
   return (
     <div className="buyer_profile">
@@ -343,47 +301,55 @@ export default function BuyerManageRequest() {
                 orderBy={orderBy}
                 onSelectAllClick={handleSelectAllClick}
                 onRequestSort={handleRequestSort}
-                rowCount={rows.length}
+                rowCount={listRequest.length}
               />
               <TableBody>
-                {stableSort(rows, getComparator(order, orderBy))
+                {stableSort(listRequest, getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => {
-                    const isItemSelected = isSelected(row.name);
                     const labelId = `enhanced-table-checkbox-${index}`;
 
                     return (
                       <TableRow
                         hover
-                        // onClick={(event) => handleClick(event, row.name)}
                         role="checkbox"
-                        aria-checked={isItemSelected}
                         tabIndex={-1}
-                        key={row.name}
-                        selected={isItemSelected}
+                        key={row.postRequestId}
                       >
-                        {/* <TableCell padding="checkbox">
-                          <Checkbox
-                            checked={isItemSelected}
-                            inputProps={{ "aria-labelledby": labelId }}
-                          />
-                        </TableCell> */}
                         <TableCell
                           component="th"
                           id={labelId}
                           scope="row"
                           // padding="none"
                         >
-                          {row.description}
+                          {row.jobTitle}
                         </TableCell>
-                        <TableCell align="right">{row.subCate}</TableCell>
-                        <TableCell align="right">{row.skills}</TableCell>
-                        <TableCell align="right">{row.price} $</TableCell>
                         <TableCell align="right">
-                          {row.cancleFee} %
+                          {
+                            listCategories.find(
+                              (cate) => cate.id == row.categoryId
+                            ).name
+                          }
+                        </TableCell>
+                        <TableCell align="right">
+                          {" "}
+                          {
+                            listCategories
+                              .find((cate) => cate.id == row.categoryId)
+                              .subCategories.find(
+                                (subCate) => subCate.id == row.subcategoryId
+                              ).name
+                          }
+                        </TableCell>
+                        <TableCell align="right">
+                          {row.milestoneContracts.length}
+                        </TableCell>
+                        <TableCell align="right">{row.budget} $</TableCell>
+                        <TableCell align="right">
+                          {row.contractCancelFee} %
                         </TableCell>{" "}
                         <TableCell align="right">
-                          <Link to="test">
+                          <Link to={row.postRequestId}>
                             <Button variant="outlined" color="primary">
                               Chi tiết
                             </Button>
@@ -403,7 +369,7 @@ export default function BuyerManageRequest() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={rows.length}
+            count={listRequest.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

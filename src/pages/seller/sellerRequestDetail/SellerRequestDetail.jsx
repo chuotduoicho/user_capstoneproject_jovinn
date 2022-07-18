@@ -4,33 +4,46 @@ import {
   MenuItem,
   TextField,
   InputAdornment,
+  Typography,
 } from "@material-ui/core";
+import Alert from "@material-ui/lab/Alert";
 
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 
 import Contact from "../../../components/guest/contact/Contact";
 import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
 import { selectAllCategories } from "../../../redux/categorySlice";
+import {
+  applyRequest,
+  fetchRequestsSeller,
+  selectRequestById,
+} from "../../../redux/requestSlice";
 import "./sellerRequestDetail.scss";
 
 export default function SellerRequestDetail() {
-  const listCategory = useSelector(selectAllCategories);
-  const [cateId, setCateId] = useState(listCategory[0].id);
-  const [subCateId, setSubCateId] = useState(
-    listCategory[0].subCategories[0].id
+  const { requestId } = useParams();
+  const requestDetail = useSelector((state) =>
+    selectRequestById(state, requestId)
   );
-
-  const [stages, setStages] = useState([
-    { dateFrom: "", dateTo: "", product: "", price: "" },
-
-    { dateFrom: "", dateTo: "", product: "", price: "" },
-  ]);
-
-  const [skills, setSkills] = useState([{ name: "", level: "" }]);
-
+  const listCategory = useSelector(selectAllCategories);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const handleAccept = (e) => {
+    e.preventDefault();
+    dispatch(applyRequest(requestId))
+      .unwrap()
+      .then(() => {
+        dispatch(fetchRequestsSeller());
+        setSuccess("Ứng tuyển thành công!");
+      })
+      .catch(() => {
+        setError("Ứng tuyển thất bại!");
+      });
+  };
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   return (
     <div className="buyer_profile">
       <SellerHeader />
@@ -52,7 +65,9 @@ export default function SellerRequestDetail() {
             <div className="sellerHome_leftCard_lsItem">
               <label>
                 {/* {currentUser.firstName} {currentUser.lastName} */}
-                Nguyễn Vinh
+                {requestDetail.buyerFirstName +
+                  " " +
+                  requestDetail.buyerLastname}
               </label>
             </div>
             <div className="sellerHome_leftCard_lsItem">
@@ -65,17 +80,21 @@ export default function SellerRequestDetail() {
                 </div> */}
                 <div className="sellerHome_leftCard_lsOptionItem">
                   <span className="sellerHome_leftCard_lsOptionText">
-                    🏛️ Thành phố: Ninh bình
+                    Địa chỉ: {requestDetail.city}
                   </span>
                 </div>
-                <div className="sellerHome_leftCard_lsOptionItem">
+                {/* <div className="sellerHome_leftCard_lsOptionItem">
                   <span className="sellerHome_leftCard_lsOptionText">
                     Tham gia từ : 01/01/2020
                   </span>
-                </div>
+                </div> */}
                 <div className="sellerHome_leftCard_lsOptionItem">
                   <span className="sellerHome_leftCard_lsOptionText">
-                    Đã đăng : 9 yêu cầu
+                    Đã đăng :{" "}
+                    {requestDetail.numberPostRequestCreated
+                      ? requestDetail.numberPostRequestCreated
+                      : 0}{" "}
+                    yêu cầu
                   </span>
                 </div>
               </div>
@@ -89,7 +108,7 @@ export default function SellerRequestDetail() {
               id="outlined-select-currency"
               select
               label="Chọn danh mục"
-              value={cateId}
+              value={requestDetail.categoryId}
               style={{ width: "30%", margin: "10px" }}
               variant="outlined"
               disabled
@@ -104,14 +123,14 @@ export default function SellerRequestDetail() {
               id="outlined-select-currency"
               select
               label="Chọn danh mục con"
-              value={subCateId}
+              value={requestDetail.subcategoryId}
               style={{ width: "30%", margin: "10px" }}
               variant="outlined"
               disabled
             >
               {listCategory
                 .find((val) => {
-                  return val.id == cateId;
+                  return val.id == requestDetail.categoryId;
                 })
                 .subCategories.map((subCategory, index) => (
                   <MenuItem key={index} value={subCategory.id}>
@@ -120,39 +139,40 @@ export default function SellerRequestDetail() {
                 ))}
             </TextField>
           </div>
-          <div
-            className="profession_row"
-            // style={{ border: "2px solid rgb(238, 225, 225)" }}
-          >
-            {skills.map((stage, index) => (
-              <div className="profession_rowLeft">
-                <TextField
-                  id="outlined-basic"
-                  label="Kĩ Năng"
-                  variant="outlined"
-                  style={{ width: "30%", margin: "10px" }}
-                  name="name"
-                  defaultValue="HTML"
-                  disabled
-                />
-                <TextField
-                  id="outlined-select-currency"
-                  select
-                  label="Trình độ"
-                  defaultValue="BEGINNER"
-                  name="level"
-                  style={{ width: "23%", margin: "10px" }}
-                  variant="outlined"
-                  disabled
-                >
-                  <MenuItem value="BEGINNER">BEGINNER</MenuItem>
-                  <MenuItem value="ADVANCED">ADVANCED</MenuItem>
-                  <MenuItem value="COMPETENT">COMPETENT</MenuItem>
-                  <MenuItem value="PROFICIENT">PROFICIENT</MenuItem>
-                  <MenuItem value="EXPERT">EXPERT</MenuItem>
-                </TextField>
-              </div>
-            ))}
+          <div className="profession_row">
+            <TextField
+              id="outlined-select-currency"
+              select
+              label="Trình độ người bán"
+              defaultValue={requestDetail.recruitLevel}
+              name="level"
+              style={{ width: "23%", margin: "10px" }}
+              variant="outlined"
+              disabled
+            >
+              <MenuItem value="BEGINNER">BEGINNER</MenuItem>
+              <MenuItem value="ADVANCED">ADVANCED</MenuItem>
+              <MenuItem value="COMPETENT">COMPETENT</MenuItem>
+              <MenuItem value="PROFICIENT">PROFICIENT</MenuItem>
+              <MenuItem value="EXPERT">EXPERT</MenuItem>
+            </TextField>
+            <div className="tags-input-container">
+              {requestDetail.skillsName.map((skill, index) => (
+                <div className="tag-item" key={index}>
+                  <span className="text">{skill.name}</span>
+                  {/* 
+                  <span className="close" onClick={() => removeSkill(index)}>
+                    &times;
+                  </span> */}
+                </div>
+              ))}
+              {/* <input
+                onKeyDown={handleKeyDown}
+                type="text"
+                className="tags-input"
+                placeholder="Nhập kĩ năng"
+              /> */}
+            </div>
           </div>
           <div className="profession_row">
             <TextField
@@ -162,7 +182,7 @@ export default function SellerRequestDetail() {
               multiline
               rows={3}
               style={{ width: "62%" }}
-              defaultValue="Tôi muốn thật nhiều tiền"
+              defaultValue={requestDetail.shortRequirement}
               InputLabelProps={{
                 shrink: true,
               }}
@@ -176,14 +196,14 @@ export default function SellerRequestDetail() {
               label="Số giai đoạn"
               variant="outlined"
               type="number"
-              value={stages.length}
+              value={requestDetail.milestoneContracts.length}
               style={{ width: "8%", margin: "10px" }}
               disabled
             />
           </div>
-          {stages.map((stage, index) => (
+          {requestDetail.milestoneContracts.map((stage, index) => (
             <div className="profession_itemStage">
-              {stages.length > 1 && (
+              {requestDetail.milestoneContracts.length > 1 && (
                 <div className="profession_row">
                   <h3>Giai đoạn {index + 1}</h3>
                 </div>
@@ -200,6 +220,7 @@ export default function SellerRequestDetail() {
                   }}
                   style={{ width: "30%", margin: "10px" }}
                   name="dateFrom"
+                  value={stage.startDate}
                   disabled
                 />
                 <TextField
@@ -212,6 +233,7 @@ export default function SellerRequestDetail() {
                   }}
                   style={{ width: "30%", margin: "10px" }}
                   name="dateTo"
+                  value={stage.endDate}
                   disabled
                 />
               </div>
@@ -225,6 +247,7 @@ export default function SellerRequestDetail() {
                   rows={3}
                   style={{ width: "62%" }}
                   name="product"
+                  value={stage.description}
                   disabled
                 />
               </div>
@@ -242,25 +265,21 @@ export default function SellerRequestDetail() {
                     ),
                   }}
                   name="price"
+                  value={stage.milestoneFee}
                   disabled
                 />
               </div>
             </div>
           ))}
           <div className="profession_row">
-            {" "}
-            <TextField
-              id="outlined-basic"
-              label="Tổng chi phí"
-              variant="outlined"
-              type="number"
-              style={{ width: "30%", margin: "10px" }}
-              InputProps={{
-                endAdornment: <InputAdornment position="end">$</InputAdornment>,
-              }}
-              disabled
-              // onChange={(e) => setDescriptionBio(e.target.value)}
-            />
+            <Typography variant="h4">
+              Tổng chi phí :{" "}
+              {requestDetail.milestoneContracts.reduce(
+                (total, item) => total + parseInt(item.milestoneFee),
+                0
+              )}{" "}
+              $
+            </Typography>
             <TextField
               id="outlined-basic"
               label="Phí hủy hợp đồng"
@@ -272,6 +291,7 @@ export default function SellerRequestDetail() {
                   <InputAdornment position="end">% Tổng chi phí</InputAdornment>
                 ),
               }}
+              value={requestDetail.contractCancelFee}
               disabled
               // onChange={(e) => setDescriptionBio(e.target.value)}
             />
@@ -282,8 +302,7 @@ export default function SellerRequestDetail() {
               variant="contained"
               color="primary"
               className="form_right_row_btn"
-
-              // onClick={handleOpen}
+              onClick={handleAccept}
             >
               Ứng tuyển
             </Button>
@@ -292,11 +311,13 @@ export default function SellerRequestDetail() {
               color="secondary"
               className="form_right_row_btn"
               style={{ marginLeft: "20px" }}
-              onClick={() => navigate("/sellerHome/createOffer/test")}
+              onClick={() => navigate("/sellerHome/createOffer/" + requestId)}
             >
               Tạo đề nghị
             </Button>
           </div>
+          {error !== "" && <Alert severity="error">{error}</Alert>}
+          {success !== "" && <Alert severity="success">{success}</Alert>}
         </Container>
       </div>
       <div className="sections_profile">

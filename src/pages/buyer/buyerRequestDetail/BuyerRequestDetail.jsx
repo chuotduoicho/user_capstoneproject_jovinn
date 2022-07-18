@@ -1,25 +1,42 @@
 import {
+  AppBar,
   Button,
   Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  IconButton,
   MenuItem,
-  Slide,
   TextField,
   makeStyles,
+  Toolbar,
+  Typography,
+  List,
+  ListItem,
   InputAdornment,
+  ListItemText,
+  ListItemAvatar,
+  Avatar,
   FormControl,
 } from "@material-ui/core";
-import {
-  CloudUpload,
-  AddSharp,
-  RemoveSharp,
-  DeleteOutlineSharp,
-} from "@material-ui/icons";
+import { Close, CloudUpload, AddSharp, RemoveSharp } from "@material-ui/icons";
+import Alert from "@material-ui/lab/Alert";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useParams } from "react-router-dom";
 import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
 import Contact from "../../../components/guest/contact/Contact";
 import { selectAllCategories } from "../../../redux/categorySlice";
+import {
+  addRequest,
+  fetchRequestsBuyer,
+  selectRequestById,
+  updateRequest,
+} from "../../../redux/requestSlice";
+
+import { selectTopSellers } from "../../../redux/userSlice";
 import "./buyerRequestDetail.scss";
 
 const useStyles = makeStyles((theme) => ({
@@ -32,22 +49,150 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function BuyerRequestDetail() {
-  const listCategory = useSelector(selectAllCategories);
-  const [cateId, setCateId] = useState(listCategory[0].id);
-  const [subCateId, setSubCateId] = useState(
-    listCategory[0].subCategories[0].id
+export default function BuyerCreateRequest() {
+  const { requestId } = useParams();
+  const requestDetail = useSelector((state) =>
+    selectRequestById(state, requestId)
   );
+  console.log("requestDetail", requestDetail);
+  const topSeller = useSelector(selectTopSellers);
+  const listCategory = useSelector(selectAllCategories);
+  const [cateId, setCateId] = useState(requestDetail.categoryId);
+  const [subCateId, setSubCateId] = useState(requestDetail.subcategoryId);
+  const [recruitLevel, setRecruitLevel] = useState(requestDetail.recruitLevel);
+  const [jobTitle, setJobTitle] = useState(requestDetail.jobTitle);
+  const [description, setDescription] = useState(
+    requestDetail.shortRequirement
+  );
+  const skillsName = [];
+  const addskill = requestDetail.skillsName.map((s) => skillsName.push(s.name));
+  const [skills, setSkills] = useState(skillsName);
+  console.log("skills", skills);
+  const [inviteUsers, setInviteUsers] = useState([]);
+  const [stages, setStages] = useState(requestDetail.milestoneContracts);
 
-  const [description, setDescription] = useState("");
-  const [stages, setStages] = useState([
-    { dateFrom: "", dateTo: "", product: "", price: "" },
+  const [cancleFee, setCancleFee] = useState(requestDetail.contractCancelFee);
+  const request = {
+    categoryId: cateId,
+    subCategoryId: subCateId,
+    recruitLevel: recruitLevel,
+    skillsName: skills,
+    jobTitle: jobTitle,
+    shortRequirement: description,
+    milestoneContracts: stages,
+    contractCancelFee: cancleFee,
+    invitedUsers: inviteUsers,
+  };
+  const dispatch = useDispatch();
+  console.log("request", request);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  // ssssssss
+  const classes = useStyles();
+  const [open, setOpen] = useState(false);
 
-    { dateFrom: "", dateTo: "", product: "", price: "" },
-  ]);
+  const handleUpdate = () => {
+    setError("");
+    let check1 = false;
+    let check2 = true;
+    let check3 = true;
+    stages.map((item, index) => {
+      if (item.startDate == "") {
+        check3 = false;
+        setError("Chưa nhập ngày bắt đầu của giai đoạn " + parseInt(index + 1));
+      } else if (item.endDate == "") {
+        check3 = false;
+        setError(
+          "Chưa nhập ngày kết thúc của giai đoạn " + parseInt(index + 1)
+        );
+      } else if (item.description == "") {
+        check3 = false;
+        setError(
+          "Chưa nhập sản phẩm bàn giao của giai đoạn " + parseInt(index + 1)
+        );
+      } else if (item.milestoneFee == 0) {
+        check3 = false;
+        setError("Chưa nhập chi phí của giai đoạn " + parseInt(index + 1));
+      }
+    });
+    if (subCateId == "") {
+      setError("Chưa chọn danh mục con!");
+    } else if (jobTitle == "") {
+      setError("Chưa nhập tiêu đề!");
+    } else if (description == "") {
+      setError("Chưa nhập mô tả!");
+    } else if (cancleFee == 0) {
+      setError("Chưa nhập phí hủy hợp đồng!");
+    } else {
+      check1 = true;
+
+      skills.map((item, index) => {
+        if (item == "") {
+          check2 = false;
+          setError("Chưa nhập kĩ năng " + parseInt(index + 1));
+        }
+      });
+    }
+
+    if (check2 && check1 && check3) {
+      console.log(request);
+      dispatch(updateRequest({ request, requestId }))
+        .unwrap()
+        .then(() => {
+          dispatch(fetchRequestsBuyer());
+          setSuccess("Cập nhật yêu cầu thành công!");
+        })
+        .catch(() => {
+          setError("Cập nhật yêu cầu thất bại!");
+        });
+    }
+  };
+
+  const handleClose = (e) => {
+    e.preventDefault();
+    dispatch(updateRequest(request, requestId))
+      .unwrap()
+      .then(() => {
+        dispatch(fetchRequestsBuyer());
+        setSuccess("Tạo yêu cầu thành công!");
+      })
+      .catch(() => {
+        setError("Tạo yêu cầu thất bại!");
+      });
+    setOpen(false);
+  };
+
+  const [fullScreenOpen, setFullScreenOpen] = useState(false);
+  const handleFullScreenOpen = () => {
+    setFullScreenOpen(true);
+  };
+  const handleFullScreenClose = (e) => {
+    e.preventDefault();
+    dispatch(addRequest(request))
+      .unwrap()
+      .then(() => {
+        setSuccess("Tạo yêu cầu thành công!");
+      })
+      .catch(() => {
+        setError("Tạo yêu cầu thất bại!");
+      });
+    setFullScreenOpen(false);
+    setOpen(false);
+  };
+
   const handleStageChange = (e, index) => {
     const { name, value } = e.target;
-    const list = [...stages];
+    console.log(name, value);
+    const list = [];
+    stages.map((stage) =>
+      list.push({
+        startDate: stage.startDate,
+        endDate: stage.endDate,
+        description: stage.description,
+        milestoneFee: stage.milestoneFee,
+      })
+    );
+    console.log(list[index][name]);
     list[index][name] = value;
     setStages(list);
   };
@@ -55,7 +200,7 @@ export default function BuyerRequestDetail() {
   const handleStageAdd = () => {
     setStages([
       ...stages,
-      { dateFrom: "", dateTo: "", product: "", price: "" },
+      { startDate: "", endDate: "", description: "", milestoneFee: 0 },
     ]);
   };
 
@@ -67,25 +212,20 @@ export default function BuyerRequestDetail() {
     }
   };
 
-  const [skills, setSkills] = useState([{ name: "", level: "" }]);
-  const handleSkillChange = (e, index) => {
-    const { name, value } = e.target;
-    const list = [...skills];
-    list[index][name] = value;
-    setSkills(list);
-  };
+  console.log("inviteUsers", inviteUsers);
 
-  const handleSkillAdd = () => {
-    setSkills([...skills, { name: "", level: "" }]);
-  };
+  function handleKeyDown(e) {
+    if (e.key !== "Enter") return;
+    const value = e.target.value;
+    if (!value.trim()) return;
+    setSkills([...skills, value]);
+    e.target.value = "";
+  }
 
-  const handleSkillRemove = () => {
-    if (skills.length > 1) {
-      const list = [...skills];
-      list.pop();
-      setSkills(list);
-    }
-  };
+  function removeSkill(index) {
+    setSkills(skills.filter((el, i) => i !== index));
+  }
+
   return (
     <div className="buyer_profile">
       <BuyerHeader />
@@ -128,58 +268,50 @@ export default function BuyerRequestDetail() {
               ))}
           </TextField>
         </div>
-        <div
-          className="profession_row"
-          // style={{ border: "2px solid rgb(238, 225, 225)" }}
-        >
-          {skills.map((stage, index) => (
-            <div className="profession_rowLeft">
-              <TextField
-                id="outlined-basic"
-                label="Kĩ Năng"
-                variant="outlined"
-                style={{ width: "30%", margin: "10px" }}
-                name="name"
-                defaultValue="HTML"
-                onChange={(e) => handleSkillChange(e, index)}
-              />
-              <TextField
-                id="outlined-select-currency"
-                select
-                label="Trình độ"
-                defaultValue="BEGINNER"
-                name="level"
-                onChange={(e) => handleSkillChange(e, index)}
-                style={{ width: "23%", margin: "10px" }}
-                variant="outlined"
-              >
-                <MenuItem value="BEGINNER">BEGINNER</MenuItem>
-                <MenuItem value="ADVANCED">ADVANCED</MenuItem>
-                <MenuItem value="COMPETENT">COMPETENT</MenuItem>
-                <MenuItem value="PROFICIENT">PROFICIENT</MenuItem>
-                <MenuItem value="EXPERT">EXPERT</MenuItem>
-              </TextField>
-              {skills.length > 1 && (
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  style={{ height: "55px", margin: "10px" }}
-                  onClick={handleSkillRemove}
-                >
-                  <DeleteOutlineSharp />
-                </Button>
-              )}
-            </div>
-          ))}
-          <Button
+        <div className="profession_row">
+          <TextField
+            id="outlined-select-currency"
+            select
+            label="Trình độ người bán"
+            defaultValue={recruitLevel}
+            name="level"
+            onChange={(e) => setRecruitLevel(e.target.value)}
+            style={{ width: "23%", margin: "10px" }}
             variant="outlined"
-            color="primary"
-            // style={{ width: "10%", margin: "10px" }}
-            onClick={handleSkillAdd}
           >
-            <AddSharp />
-            Thêm kĩ năng
-          </Button>
+            <MenuItem value="BEGINNER">BEGINNER</MenuItem>
+            <MenuItem value="ADVANCED">ADVANCED</MenuItem>
+            <MenuItem value="COMPETENT">COMPETENT</MenuItem>
+            <MenuItem value="PROFICIENT">PROFICIENT</MenuItem>
+            <MenuItem value="EXPERT">EXPERT</MenuItem>
+          </TextField>
+          <div className="tags-input-container">
+            {skills.map((skill, index) => (
+              <div className="tag-item" key={index}>
+                <span className="text">{skill.name}</span>
+
+                <span className="close" onClick={() => removeSkill(index)}>
+                  &times;
+                </span>
+              </div>
+            ))}
+            <input
+              onKeyDown={handleKeyDown}
+              type="text"
+              className="tags-input"
+              placeholder="Nhập kĩ năng"
+            />
+          </div>
+        </div>
+        <div className="profession_row">
+          <TextField
+            id="outlined-basic"
+            label="Tiêu đề"
+            variant="outlined"
+            defaultValue={jobTitle}
+            style={{ width: "62%" }}
+            onChange={(e) => setJobTitle(e.target.value)}
+          />
         </div>
         <div className="profession_row">
           <TextField
@@ -187,12 +319,9 @@ export default function BuyerRequestDetail() {
             label="Mô tả"
             variant="outlined"
             multiline
-            rows={3}
+            rows={6}
             style={{ width: "62%" }}
-            defaultValue="Tôi muốn thật nhiều tiền"
-            InputLabelProps={{
-              shrink: true,
-            }}
+            defaultValue={description}
             onChange={(e) => setDescription(e.target.value)}
           />
         </div>
@@ -238,13 +367,10 @@ export default function BuyerRequestDetail() {
           </Button>
         </div>
         {stages.map((stage, index) => (
-          <div className="profession_itemStage">
-            {stages.length > 1 && (
-              <div className="profession_row">
-                <h3>Giai đoạn {index + 1}</h3>
-              </div>
-            )}
-
+          <div className="profession_itemStage" key={index}>
+            <div className="profession_row">
+              {stages.length > 1 && <h3>Giai đoạn {index + 1}</h3>}
+            </div>
             <div className="profession_row">
               <TextField
                 id="outlined-basic"
@@ -255,7 +381,8 @@ export default function BuyerRequestDetail() {
                   shrink: true,
                 }}
                 style={{ width: "30%", margin: "10px" }}
-                name="dateFrom"
+                name="startDate"
+                defaultValue={stage.startDate}
                 onChange={(e) => handleStageChange(e, index)}
               />
               <TextField
@@ -267,7 +394,8 @@ export default function BuyerRequestDetail() {
                   shrink: true,
                 }}
                 style={{ width: "30%", margin: "10px" }}
-                name="dateTo"
+                name="endDate"
+                defaultValue={stage.endDate}
                 onChange={(e) => handleStageChange(e, index)}
               />
             </div>
@@ -280,7 +408,8 @@ export default function BuyerRequestDetail() {
                 multiline
                 rows={3}
                 style={{ width: "62%" }}
-                name="product"
+                name="description"
+                defaultValue={stage.description}
                 onChange={(e) => handleStageChange(e, index)}
               />
             </div>
@@ -292,42 +421,51 @@ export default function BuyerRequestDetail() {
                 variant="outlined"
                 type="number"
                 style={{ width: "30%", margin: "10px" }}
+                inputProps={{ min: 0 }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">$</InputAdornment>
                   ),
                 }}
-                name="price"
+                name="milestoneFee"
+                defaultValue={stage.milestoneFee}
                 onChange={(e) => handleStageChange(e, index)}
               />
             </div>
           </div>
         ))}
         <div className="profession_row">
-          {" "}
-          <TextField
-            id="outlined-basic"
-            label="Tổng chi phí"
-            variant="outlined"
-            type="number"
-            style={{ width: "30%", margin: "10px" }}
-            InputProps={{
-              endAdornment: <InputAdornment position="end">$</InputAdornment>,
-            }}
-            // onChange={(e) => setDescriptionBio(e.target.value)}
-          />
+          <Typography variant="h4">
+            Tổng chi phí :{" "}
+            {stages.reduce(
+              (total, item) => total + parseInt(item.milestoneFee),
+              0
+            )}{" "}
+            $
+          </Typography>
           <TextField
             id="outlined-basic"
             label="Phí hủy hợp đồng"
             variant="outlined"
             type="number"
             style={{ width: "30%", margin: "10px" }}
+            inputProps={{ min: 0 }}
             InputProps={{
               endAdornment: (
-                <InputAdornment position="end">% Tổng chi phí</InputAdornment>
+                <InputAdornment position="end">
+                  % Tổng chi phí (={" "}
+                  {(stages.reduce(
+                    (total, item) => total + parseInt(item.milestoneFee),
+                    0
+                  ) *
+                    cancleFee) /
+                    100}
+                  $)
+                </InputAdornment>
               ),
             }}
-            // onChange={(e) => setDescriptionBio(e.target.value)}
+            defaultValue={requestDetail.contractCancelFee}
+            onChange={(e) => setCancleFee(e.target.value)}
           />
         </div>
         <div className="profession_row">
@@ -336,6 +474,7 @@ export default function BuyerRequestDetail() {
             variant="contained"
             color="primary"
             className="form_right_row_btn"
+            onClick={handleUpdate}
           >
             Cập nhật
           </Button>
@@ -365,6 +504,97 @@ export default function BuyerRequestDetail() {
             </Button>
           </Link>
         </div>
+        {error !== "" && <Alert severity="error">{error}</Alert>}
+        {success !== "" && <Alert severity="success">{success}</Alert>}
+        {/* <Dialog open={open} onClose={handleClose}>
+          <DialogTitle id="dialod-title">
+            {"Bạn có muốn gửi lời đến người bán không?"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Yêu cầu đã được tạo thành công!Hãy gửi lời mời đến những người bán
+              tiềm năng chúng tôi tìm được.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>Không</Button>
+            <Button onClick={handleFullScreenOpen} color="primary">
+              Có
+            </Button>
+            <Dialog
+              fullScreen
+              open={fullScreenOpen}
+              onClose={handleFullScreenClose}
+            >
+              <AppBar className={classes.appBar}>
+                <Toolbar>
+                  <IconButton
+                    edge="start"
+                    color="inherit"
+                    onClick={handleFullScreenClose}
+                    aria-label="close"
+                  >
+                    <Close />
+                  </IconButton>
+                  <Typography variant="h6" className={classes.title}>
+                    Người bán tiềm năng
+                  </Typography>
+                  <Button color="inherit" onClick={handleFullScreenClose}>
+                    Hoàn thành
+                  </Button>
+                </Toolbar>
+              </AppBar>
+              <List
+                style={{
+                  width: "50%",
+                  margin: "0 auto",
+                  border: " 2px solid rgb(238, 225, 225)",
+                }}
+              >
+                {topSeller.map((item, index) => {
+                  return (
+                    <ListItem button key={index}>
+                      <ListItemAvatar>
+                        <Avatar alt="buyer image" src={item.user.avatar} />
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={item.user.firstName + " " + item.user.lastName}
+                        secondary={item.skills.map((skill) => skill.name)}
+                      />
+
+                      {inviteUsers.find((i) => i.id === item.user.id) ? (
+                        <Button
+                          variant="outlined"
+                          color="default"
+                          onClick={() =>
+                            setInviteUsers(
+                              inviteUsers.filter((el) => el.id !== item.user.id)
+                            )
+                          }
+                        >
+                          Hoàn tác
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="outlined"
+                          color="secondary"
+                          onClick={() =>
+                            setInviteUsers([
+                              ...inviteUsers,
+                              { id: item.user.id },
+                            ])
+                          }
+                        >
+                          Mời
+                        </Button>
+                      )}
+                    </ListItem>
+                  );
+                })}
+              </List>
+            </Dialog>
+          </DialogActions>
+        </Dialog> */}
       </Container>
       <div className="sections_profile">
         <Contact />
