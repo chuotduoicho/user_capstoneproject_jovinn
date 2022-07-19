@@ -32,6 +32,7 @@ import {
 } from "../../../redux/serviceSlice";
 import { useEffect } from "react";
 import { selectCurrentUser } from "../../../redux/userSlice";
+import Alert from "@material-ui/lab/Alert";
 const QontoConnector = withStyles({
   alternativeLabel: {
     top: 10,
@@ -220,6 +221,56 @@ export default function SellerCreateService() {
   const handleChangeSubcateId = (e) => {
     setSubCateId(e.target.value);
   };
+  const [packages, setPackages] = useState(
+    serviceId
+      ? serviceDetail.packages
+      : [
+          {
+            title: "",
+            shortDescription: "",
+            deliveryTime: 0,
+            price: 0,
+            contractCancelFee: 0,
+          },
+        ]
+  );
+  const [checked, setChecked] = useState(false);
+  const handleChange = () => {
+    if (!checked) {
+      setPackages([
+        ...packages,
+        {
+          title: "",
+          shortDescription: "",
+          deliveryTime: 0,
+          price: 0,
+          contractCancelFee: 0,
+        },
+        {
+          title: "",
+          shortDescription: "",
+          deliveryTime: 0,
+          price: 0,
+          contractCancelFee: 0,
+        },
+      ]);
+      setChecked((prev) => !prev);
+    } else if (checked && packages.length > 1) {
+      const list = [...packages];
+      list.pop();
+      list.pop();
+      setPackages(list);
+      setChecked((prev) => !prev);
+    }
+  };
+  function handlePackageChange(e, index) {
+    const { name, value } = e.target;
+    const list = [...packages];
+    list[index][name] = value;
+    setPackages(list);
+  }
+  console.log("packages", packages);
+  const [status, setStatus] = useState("ACTIVE");
   const [title1, setTitle1] = useState(
     serviceId ? serviceDetail.packages[0].title : ""
   );
@@ -339,42 +390,45 @@ export default function SellerCreateService() {
             titleDf={title}
             descriptionDf={description}
             subCateIdDf={subCateId}
-            error={error}
           />
         );
       case 1:
         return (
           <Package
-            title1={handleChangeTitle1}
-            title2={handleChangeTitle2}
-            title3={handleChangeTitle3}
-            description1={handleChangeDescription1}
-            description2={handleChangeDescription2}
-            description3={handleChangeDescription3}
-            deliveryTime1={handleChangeDeliveryTime1}
-            deliveryTime2={handleChangeDeliveryTime2}
-            deliveryTime3={handleChangeDeliveryTime3}
-            price1={handleChangePrice1}
-            price2={handleChangePrice2}
-            price3={handleChangePrice3}
-            contractCancelFee1={handleContractCancelFee1}
-            contractCancelFee2={handleContractCancelFee2}
-            contractCancelFee3={handleContractCancelFee3}
-            title1V={title1}
-            title2V={title2}
-            title3V={title3}
-            description1V={description1}
-            description2V={description2}
-            description3V={description3}
-            deliveryTime1V={deliveryTime1}
-            deliveryTime2V={deliveryTime2}
-            deliveryTime3V={deliveryTime3}
-            price1V={price1}
-            price2V={price2}
-            price3V={price3}
-            contractCancelFee1V={contractCancelFee1}
-            contractCancelFee2V={contractCancelFee2}
-            contractCancelFee3V={contractCancelFee3}
+            // title1={handleChangeTitle1}
+            // title2={handleChangeTitle2}
+            // title3={handleChangeTitle3}
+            // description1={handleChangeDescription1}
+            // description2={handleChangeDescription2}
+            // description3={handleChangeDescription3}
+            // deliveryTime1={handleChangeDeliveryTime1}
+            // deliveryTime2={handleChangeDeliveryTime2}
+            // deliveryTime3={handleChangeDeliveryTime3}
+            // price1={handleChangePrice1}
+            // price2={handleChangePrice2}
+            // price3={handleChangePrice3}
+            // contractCancelFee1={handleContractCancelFee1}
+            // contractCancelFee2={handleContractCancelFee2}
+            // contractCancelFee3={handleContractCancelFee3}
+            // title1V={title1}
+            // title2V={title2}
+            // title3V={title3}
+            // description1V={description1}
+            // description2V={description2}
+            // description3V={description3}
+            // deliveryTime1V={deliveryTime1}
+            // deliveryTime2V={deliveryTime2}
+            // deliveryTime3V={deliveryTime3}
+            // price1V={price1}
+            // price2V={price2}
+            // price3V={price3}
+            // contractCancelFee1V={contractCancelFee1}
+            // contractCancelFee2V={contractCancelFee2}
+            // contractCancelFee3V={contractCancelFee3}
+            packages={packages}
+            checked={checked}
+            handleChange={handleChange}
+            handlePackageChange={handlePackageChange}
           />
         );
 
@@ -396,6 +450,7 @@ export default function SellerCreateService() {
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const steps = getSteps();
   const navigate = useNavigate();
   const handleNext = () => {
@@ -413,48 +468,48 @@ export default function SellerCreateService() {
       }
     }
 
-    if (activeStep == 1) {
-      if (title1 == "") {
-        setError("Chưa nhập tiêu đề gói cơ bản!");
-      } else if (description1 == "") {
-        setError("Chưa nhập sản phẩm bàn giao gói cơ bản!");
-      } else if (subCateId == "") {
-        setError("Chưa chọn danh mục!");
-      } else {
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        setError("");
-      }
-    }
+    // if (activeStep == 1) {
+    //   if (title1 == "") {
+    //     setError("Chưa nhập tiêu đề gói cơ bản!");
+    //   } else if (description1 == "") {
+    //     setError("Chưa nhập sản phẩm bàn giao gói cơ bản!");
+    //   } else if (subCateId == "") {
+    //     setError("Chưa chọn danh mục!");
+    //   } else {
+    //     setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    //     setError("");
+    //   }
+    // }
 
-    if (activeStep == 2) {
-      if (title1 == "") {
-        setError("Chưa nhập tiêu đề!");
-      } else if (description1 == "") {
-        setError("Chưa nhập sản phẩm bàn giao!");
-      } else if (subCateId == "") {
-        setError("Chưa chọn danh mục!");
-      } else {
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        setError("");
-      }
-    }
+    // if (activeStep == 2) {
+    //   if (title1 == "") {
+    //     setError("Chưa nhập tiêu đề!");
+    //   } else if (description1 == "") {
+    //     setError("Chưa nhập sản phẩm bàn giao!");
+    //   } else if (subCateId == "") {
+    //     setError("Chưa chọn danh mục!");
+    //   } else {
+    //     setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    //     setError("");
+    //   }
+    // }
     // setActiveStep((prevActiveStep) => prevActiveStep + 1);
     // console.log("sellerId", sellerId);
     console.log("title", title);
     console.log("description", description);
     console.log("subCateId", subCateId);
-    console.log("description1", description1);
-    console.log("description2", description2);
-    console.log("description3", description3);
-    console.log("deliveryTime1", deliveryTime1);
-    console.log("deliveryTime2", deliveryTime2);
-    console.log("deliveryTime3", deliveryTime3);
-    console.log("price1", price1);
-    console.log("price2", price2);
-    console.log("price3", price3);
-    console.log("contractCancelFee1", contractCancelFee1);
-    console.log("contractCancelFee2", contractCancelFee2);
-    console.log("contractCancelFee3", contractCancelFee3);
+    // console.log("description1", description1);
+    // console.log("description2", description2);
+    // console.log("description3", description3);
+    // console.log("deliveryTime1", deliveryTime1);
+    // console.log("deliveryTime2", deliveryTime2);
+    // console.log("deliveryTime3", deliveryTime3);
+    // console.log("price1", price1);
+    // console.log("price2", price2);
+    // console.log("price3", price3);
+    // console.log("contractCancelFee1", contractCancelFee1);
+    // console.log("contractCancelFee2", contractCancelFee2);
+    // console.log("contractCancelFee3", contractCancelFee3);
     console.log("galley1", galley1);
     console.log("galley2", galley2);
     console.log("galley3", galley3);
@@ -484,38 +539,18 @@ export default function SellerCreateService() {
       gallery: {
         imageGallery1: galley1,
       },
-      packages: [
-        {
-          title: title1,
-          shortDescription: description1,
-          deliveryTime: deliveryTime1,
-          price: price1,
-          contractCancelFee: contractCancelFee1,
-        },
-        {
-          title: title2,
-          shortDescription: description2,
-          deliveryTime: deliveryTime2,
-          price: price2,
-          contractCancelFee: contractCancelFee2,
-        },
-        {
-          title: title3,
-          shortDescription: description3,
-          deliveryTime: deliveryTime3,
-          price: price3,
-          contractCancelFee: contractCancelFee3,
-        },
-      ],
+      packages: packages,
     };
     console.log("new service ", newService);
     dispath(addService(newService))
       .unwrap()
       .then(() => {
+        setSuccess("add service successfull");
         console.log("add service successfull");
         dispath(fetchServices());
       })
       .catch(() => {
+        setError("add service fail");
         console.log("add service fail");
       });
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -534,29 +569,7 @@ export default function SellerCreateService() {
       gallery: {
         imageGallery1: galley1,
       },
-      packages: [
-        {
-          title: title1,
-          shortDescription: description1,
-          deliveryTime: deliveryTime1,
-          price: price1,
-          contractCancelFee: contractCancelFee1,
-        },
-        {
-          title: title2,
-          shortDescription: description2,
-          deliveryTime: deliveryTime2,
-          price: price2,
-          contractCancelFee: contractCancelFee2,
-        },
-        {
-          title: title3,
-          shortDescription: description3,
-          deliveryTime: deliveryTime3,
-          price: price3,
-          contractCancelFee: contractCancelFee3,
-        },
-      ],
+      packages: packages,
     };
     console.log("new service ", newService);
     dispath(addService(newService))
@@ -643,6 +656,8 @@ export default function SellerCreateService() {
             <Button onClick={handleView} className={classes.button}>
               Xem chi tiết dịch vụ
             </Button>
+            {error !== "" && <Alert severity="error">{error}</Alert>}
+            {success !== "" && <Alert severity="success">{success}</Alert>}
           </div>
         ) : (
           <div>
@@ -700,23 +715,8 @@ export default function SellerCreateService() {
                   Tiếp tục
                 </Button>
               )}
-              {error !== "" && (
-                <div
-                  style={{
-                    color: "rgb(15, 14, 14)",
-                    paddingTop: "15px",
-                    paddingBottom: "15px",
-                    backgroundColor: "#d99fb2",
-                    borderRadius: "12px",
-                    textAlign: "center",
-                    width: "30%",
-                    margin: "0 auto",
-                  }}
-                  role="alert"
-                >
-                  {error}
-                </div>
-              )}
+              {error !== "" && <Alert severity="error">{error}</Alert>}
+              {success !== "" && <Alert severity="success">{success}</Alert>}
             </div>
           </div>
         )}
