@@ -23,9 +23,19 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
-import { Button, ButtonGroup } from "@material-ui/core";
+import {
+  Button,
+  ButtonGroup,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  InputAdornment,
+  TextField,
+} from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { AccountBalanceWallet } from "@material-ui/icons";
+import Checkout from "../../../components/payment/Checkout";
 function createData(description, subCate, skills, price, cancleFee) {
   return { description, subCate, skills, price, cancleFee };
 }
@@ -190,7 +200,8 @@ const useToolbarStyles = makeStyles((theme) => ({
 const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
   const { numSelected } = props;
-
+  const { handleOpenPayment } = props;
+  const { price } = props;
   return (
     <Toolbar
       className={clsx(classes.root, {
@@ -223,7 +234,7 @@ const EnhancedTableToolbar = (props) => {
             component="div"
           >
             <AccountBalanceWallet />
-            &nbsp; 0 $
+            &nbsp; {price} $
           </Typography>
         </>
       )}
@@ -238,7 +249,7 @@ const EnhancedTableToolbar = (props) => {
         <Tooltip title="với paypal">
           <IconButton aria-label="filter list">
             <ButtonGroup variant="outlined" aria-label="outlined button group">
-              <Button>Nạp tiền</Button>
+              <Button onClick={handleOpenPayment}>Nạp tiền</Button>
               <Button>Rút tiền</Button>
             </ButtonGroup>
           </IconButton>
@@ -284,6 +295,28 @@ export default function BuyerManageWallet() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+  const [openPayment, setOpenPayment] = useState(false);
+
+  const [openPayment2, setOpenPayment2] = useState(false);
+  const [error, setError] = useState("");
+  const [successfull, setSuccessfull] = useState("");
+  const [price, setPrice] = useState("");
+  const handleOpenPayment = () => {
+    setOpenPayment(true);
+  };
+
+  const handleClosePayment = () => {
+    setOpenPayment(false);
+  };
+  const handleOpenPayment2 = () => {
+    setOpenPayment2(true);
+    setOpenPayment(false);
+  };
+
+  const handleClosePayment2 = () => {
+    setOpenPayment2(false);
+  };
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -343,7 +376,11 @@ export default function BuyerManageWallet() {
       <BuyerHeader />
       <div className={classes.root}>
         <Paper className={classes.paper}>
-          <EnhancedTableToolbar numSelected={selected.length} />
+          <EnhancedTableToolbar
+            numSelected={selected.length}
+            handleOpenPayment={handleOpenPayment}
+            price={price}
+          />
           <TableContainer>
             <Table
               className={classes.table}
@@ -430,6 +467,57 @@ export default function BuyerManageWallet() {
           label="Dày đặc"
         />
       </div>
+      <Dialog
+        fullWidth="true"
+        maxWidth="sm"
+        open={openPayment2}
+        onClose={handleClosePayment2}
+        aria-labelledby="max-width-dialog-title"
+      >
+        {" "}
+        <DialogTitle id="max-width-dialog-title">
+          Hình thức nạp tiền
+        </DialogTitle>
+        <DialogContent>
+          <Checkout description={"Nạp tiền vào ví"} price={price} />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClosePayment2} color="primary">
+            Đóng
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        fullWidth="true"
+        maxWidth="sm"
+        open={openPayment}
+        onClose={handleClosePayment}
+        aria-labelledby="max-width-dialog-title"
+      >
+        {" "}
+        <DialogTitle id="max-width-dialog-title">Nhập số tiền</DialogTitle>
+        <DialogContent>
+          <TextField
+            id="outlined-basic"
+            variant="outlined"
+            type="number"
+            label="Số tiền"
+            InputProps={{
+              inputProps: { min: 0 },
+              endAdornment: <InputAdornment position="end">$</InputAdornment>,
+            }}
+            onChange={(e) => setPrice(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleOpenPayment2} color="primary">
+            Xác nhận
+          </Button>
+          <Button onClick={handleClosePayment} color="primary">
+            Đóng
+          </Button>
+        </DialogActions>
+      </Dialog>
       <div className="sections_profile">
         <Contact />
       </div>
