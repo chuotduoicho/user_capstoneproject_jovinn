@@ -8,16 +8,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
 import { Add, Delete } from "@material-ui/icons";
-import {
-  fetchCurrentUser,
-  joinSeller,
-  selectCurrentUser,
-} from "../../../redux/userSlice";
+import { fetchCurrentUser, joinSeller } from "../../../redux/userSlice";
+import Alert from "@material-ui/lab/Alert";
 
 export default function SellerProfession() {
   // const currentUser = useSelector(selectCurrentUser);
   const [descriptionBio, setDescriptionBio] = useState("");
-  const [skills, setSkills] = useState([{ name: "HTML" }]);
+  const [brandName, setBrandName] = useState("");
+  const [skills, setSkills] = useState([]);
   const [edus, setEdus] = useState([
     { title: "", universityName: "", fromDate: "", major: "", toDate: "" },
   ]);
@@ -25,6 +23,8 @@ export default function SellerProfession() {
   const [certificates, setCertificates] = useState([
     { title: "", name: "", linkCer: "" },
   ]);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   function handleKeyDown(e) {
     if (e.key !== "Enter") return;
     const value = e.target.value;
@@ -78,33 +78,87 @@ export default function SellerProfession() {
   const navigate = useNavigate();
   const info = {
     descriptionBio: descriptionBio,
+    brandName: brandName,
     skills: skills,
     educations: edus,
     certificates: certificates,
   };
   const handleSaveInfo = () => {
-    // const userId = currentUser.id;
-    // console.log("currentUser", currentUser.id);
+    setError("");
+    setSuccess("");
+    console.log("brandName", brandName);
     console.log("descriptionBio", descriptionBio);
     console.log("skills", skills);
     console.log("edus", edus);
     console.log("certificates", certificates);
-
-    // console.log("info", info, userId);
-    // const obj = { userId, info };
-    // console.log("obj", obj);
-
-    dispatch(joinSeller(info))
-      .unwrap()
-      .then(() => {
-        // setSuccessful(true);
-        dispatch(fetchCurrentUser());
-        navigate("/sellerHome/createService");
-      })
-
-      .catch(() => {
-        // setSuccessful(false);
+    let check = true;
+    if (descriptionBio == "") {
+      setError("Chưa nhập lời giới thiệu !");
+      check = false;
+      return;
+    } else if (brandName == "") {
+      setError("Chưa nhập tên thương hiệu !");
+      check = false;
+      return;
+    } else if (skills.length == 0) {
+      setError("Chưa nhập kĩ năng !");
+      check = false;
+      return;
+    } else {
+      edus.map((item, index) => {
+        if (item.title == "") {
+          setError("Chưa nhập tiêu đề của học vấn " + parseInt(index + 1));
+          check = false;
+          return;
+        } else if (item.universityName == "") {
+          setError("Chưa nhập tên trường của học vấn " + parseInt(index + 1));
+          check = false;
+          return;
+        } else if (item.major == "") {
+          setError("Chưa nhập tên ngành của học vấn " + parseInt(index + 1));
+          check = false;
+          return;
+        } else if (item.fromDate == "") {
+          setError("Chưa nhập ngày bắt đầu của học vấn " + parseInt(index + 1));
+          check = false;
+          return;
+        } else if (item.toDate == "") {
+          setError(
+            "Chưa nhập ngày kết thúc của học vấn " + parseInt(index + 1)
+          );
+          check = false;
+          return;
+        }
       });
+      certificates.map((item, index) => {
+        if (item.title == "") {
+          setError("Chưa nhập tiêu đề của chứng chỉ " + parseInt(index + 1));
+          check = false;
+          return;
+        } else if (item.name == "") {
+          setError("Chưa nhập tên của chứng chỉ " + parseInt(index + 1));
+          check = false;
+          return;
+        } else if (item.linkCer == "") {
+          setError("Chưa nhập link của chứng chỉ " + parseInt(index + 1));
+          check = false;
+          return;
+        }
+      });
+    }
+    if (check) {
+      dispatch(joinSeller(info))
+        .unwrap()
+        .then(() => {
+          // setSuccessful(true);
+          dispatch(fetchCurrentUser());
+          navigate("/sellerHome/createService");
+        })
+
+        .catch(() => {
+          setError("Lưu thông tin thất bại");
+        });
+    }
   };
   return (
     <div className="buyer_profile">
@@ -113,13 +167,21 @@ export default function SellerProfession() {
       <Container maxWidth="lg" className="profession_form">
         {" "}
         <div className="profession_row">
-          {/* <h2>Giới thiệu</h2> */}
           <TextField
             id="outlined-basic"
             label="Giới thiệu"
             variant="outlined"
             style={{ width: "100%" }}
             onChange={(e) => setDescriptionBio(e.target.value)}
+          />
+        </div>
+        <div className="profession_row">
+          <TextField
+            id="outlined-basic"
+            label="Tên thương hiệu"
+            variant="outlined"
+            style={{ width: "100%" }}
+            onChange={(e) => setBrandName(e.target.value)}
           />
         </div>
         <div className="profession_row">
@@ -183,12 +245,6 @@ export default function SellerProfession() {
                 style={{ width: "20%" }}
                 onChange={(e) => handleEduChange(e, index)}
               />
-              {/* <TextField
-                id="outlined-basic"
-                label="Quốc gia"
-                variant="outlined"
-                style={{ width: "10%" }}
-              /> */}
               <TextField
                 id="outlined-basic"
                 label="Năm bắt đầu "
@@ -289,6 +345,8 @@ export default function SellerProfession() {
             Lưu thông tin
           </Button>
         </div>
+        {error !== "" && <Alert severity="error">{error}</Alert>}
+        {success !== "" && <Alert severity="success">{success}</Alert>}
       </Container>
       <div className="sections_profile">
         <Contact />
