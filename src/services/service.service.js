@@ -15,7 +15,7 @@ const getServiceById = (serviceId) => {
 };
 const getServiceByCateId = (cateId) => {
   return axios
-    .get(API_URL + "/list-services-by-cate/" + cateId)
+    .get(API_URL + "/list-services-by-cat/" + cateId)
     .then((response) => {
       return response.data;
     });
