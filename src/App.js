@@ -36,6 +36,7 @@ import SellerManageRequest from "./pages/seller/sellerManageRequest/SellerManage
 import SellerManageOrder from "./pages/seller/sellerManageOrder/SellerManageOrder";
 import SellerOrderDetail from "./pages/seller/sellerOrderDetail/SellerOrderDetail";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+import BuyerManageWallet from "./pages/buyer/buyerManageWallet/BuyerManageWallet";
 function App() {
   return (
     // <PayPalScriptProvider
@@ -87,6 +88,9 @@ function App() {
               <Route index element={<BuyerManageOffer />} />
 
               <Route path=":offerId" element={<BuyerOfferDetail />} />
+            </Route>
+            <Route path="manageWallet">
+              <Route index element={<BuyerManageWallet />} />
             </Route>
             <Route path="payment/:requestId" element={<BuyerPayment />} />
             <Route path="listSeller/:requestId" element={<ListSeller />} />

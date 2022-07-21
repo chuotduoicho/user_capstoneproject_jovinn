@@ -180,7 +180,7 @@ export default function BuyerHeader({ search }) {
                       </Link>
 
                       <Link
-                        to="/buyerhome/wallet"
+                        to="/buyerhome/manageWallet"
                         style={{ textDecoration: "none" }}
                       >
                         <MenuItem style={{ color: "black" }}>
