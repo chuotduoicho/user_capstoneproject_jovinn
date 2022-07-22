@@ -35,6 +35,7 @@ import {
   addOffer,
   addRequest,
   fetchRequestsBuyer,
+  fetchRequestsSeller,
 } from "../../../redux/requestSlice";
 
 import { selectTopSellers } from "../../../redux/userSlice";
@@ -130,7 +131,7 @@ export default function SellerCreateOffer() {
       dispatch(addOffer({ request, requestId }))
         .unwrap()
         .then(() => {
-          dispatch(fetchRequestsBuyer());
+          dispatch(fetchRequestsSeller());
           setSuccess("Tạo đề nghị thành công!");
         })
         .catch(() => {

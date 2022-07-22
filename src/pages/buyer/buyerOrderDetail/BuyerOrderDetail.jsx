@@ -13,7 +13,7 @@ import Contact from "../../../components/guest/contact/Contact";
 import "react-credit-cards/es/styles-compiled.css";
 import "./buyerOrderDetail.scss";
 import { useSelector } from "react-redux";
-import { selectContractBuyerById } from "../../../redux/userSlice";
+import { selectContractBuyerById } from "../../../redux/contractSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import Rating from "@material-ui/lab/Rating";
 import { StarBorder } from "@material-ui/icons";

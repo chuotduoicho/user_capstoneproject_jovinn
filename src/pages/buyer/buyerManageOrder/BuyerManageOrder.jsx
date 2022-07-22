@@ -28,6 +28,7 @@ import { selectCurrentUser } from "../../../redux/userSlice";
 import {
   fetchContracts,
   selectAllContracts,
+  selectOrders,
 } from "../../../redux/contractSlice";
 
 function descendingComparator(a, b, orderBy) {
@@ -240,7 +241,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 export default function BuyerManageOrder() {
-  const listContract = useSelector(selectAllContracts);
+  const listContract = useSelector(selectOrders);
   const currentUser = useSelector(selectCurrentUser);
   // const listContract = currentUser.buyer.contracts;
   // console.log("listContract", listContract);

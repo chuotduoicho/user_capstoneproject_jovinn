@@ -17,11 +17,12 @@ import { selectContractSellerById } from "../../../redux/userSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import Rating from "@material-ui/lab/Rating";
 import { StarBorder } from "@material-ui/icons";
+import { selectContractBuyerById } from "../../../redux/contractSlice";
 
 export default function SellerContractDetail() {
   const { contractId } = useParams();
   const contractDetail = useSelector((state) =>
-    selectContractSellerById(state, contractId)
+    selectContractBuyerById(state, contractId)
   );
   console.log("contractDetail", contractDetail);
   const [open, setOpen] = useState(false);

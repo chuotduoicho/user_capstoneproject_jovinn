@@ -77,8 +77,14 @@ function stableSort(array, comparator) {
 
 const headCells = [
   {
-    id: "jobTitle",
+    id: "buyerLastname",
     numeric: false,
+    disablePadding: false,
+    label: "Tên người dùng",
+  },
+  {
+    id: "jobTitle",
+    numeric: true,
     disablePadding: false,
     label: "Tiêu đề",
   },
@@ -377,8 +383,9 @@ export default function SellerManageRequest() {
                           scope="row"
                           // padding="none"
                         >
-                          {row.jobTitle}
+                          {row.buyerFirstName + " " + row.buyerLastname}
                         </TableCell>
+                        <TableCell align="right">{row.jobTitle}</TableCell>
                         <TableCell align="right">
                           {
                             listCategories.find(

@@ -1,14 +1,17 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { setMessage } from "./message";
 import requestService from "../services/request.service";
+import sellerService from "../services/seller.service";
 const requests = JSON.parse(localStorage.getItem("requests"));
 const initialState = requests
   ? {
       listRequests: requests,
+      listOffers: [],
       status: "idle",
     }
   : {
       listRequests: [],
+      listOffers: [],
       status: "idle",
     };
 export const fetchRequestsBuyer = createAsyncThunk(
@@ -41,6 +44,15 @@ export const fetchSellerInvite = createAsyncThunk(
   async (requestId) => {
     console.log(requestId);
     const data = await requestService.getAllSellerInvite(requestId);
+    console.log(data);
+    return data;
+  }
+);
+export const fetchOffersSeller = createAsyncThunk(
+  "request/fetchOffersSeller",
+  async (requestId) => {
+    console.log(requestId);
+    const data = await sellerService.getOffersSeller(requestId);
     console.log(data);
     return data;
   }
@@ -158,6 +170,16 @@ const requestSlice = createSlice({
       state.status = "success";
     },
     [fetchSellerInvite.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [fetchOffersSeller.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [fetchOffersSeller.fulfilled]: (state, { payload }) => {
+      state.listOffers = payload;
+      state.status = "success";
+    },
+    [fetchOffersSeller.rejected]: (state, action) => {
       state.status = "failed";
     },
   },

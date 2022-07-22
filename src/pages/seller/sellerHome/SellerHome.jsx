@@ -15,9 +15,14 @@ import { fetchServices, selectAllServices } from "../../../redux/serviceSlice";
 import { useState } from "react";
 import Pagination from "@material-ui/lab/Pagination";
 import { useEffect } from "react";
-import { fetchCurrentUser, selectCurrentUser } from "../../../redux/userSlice";
+import {
+  fetchCurrentUser,
+  fetchTopSellers,
+  selectCurrentUser,
+} from "../../../redux/userSlice";
 import { AddAlarm, AddSharp } from "@material-ui/icons";
 import { fetchRequestsSeller } from "../../../redux/requestSlice";
+import { fetchContracts } from "../../../redux/contractSlice";
 function ChangeFormateDate(oldDate) {
   return oldDate.toString().split("-").reverse().join("-");
 }
@@ -35,8 +40,10 @@ export default function SellerHome() {
       navigate("/errorPage");
     } else {
       dispatch(fetchCurrentUser());
+      dispatch(fetchTopSellers());
       dispatch(fetchServices());
       dispatch(fetchRequestsSeller());
+      dispatch(fetchContracts());
     }
   }, [user]);
   const dateJoin = ChangeFormateDate(currentUser.joinSellingAt);

@@ -26,6 +26,7 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../../../redux/userSlice";
 import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
+import { selectAllContracts, selectOrders } from "../../../redux/contractSlice";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -238,7 +239,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 export default function SellerManageOrder() {
   const currentUser = useSelector(selectCurrentUser);
-  const listContract = currentUser.seller.contracts;
+  const listContract = useSelector(selectOrders);
   console.log("listContract", listContract);
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");

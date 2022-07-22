@@ -12,11 +12,16 @@ import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
 import Contact from "../../../components/guest/contact/Contact";
 import "react-credit-cards/es/styles-compiled.css";
 import "./sellerOrderDetail.scss";
-import { useSelector } from "react-redux";
-import { selectContractSellerById } from "../../../redux/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  acceptOrder,
+  fetchContracts,
+  selectContractSellerById,
+} from "../../../redux/contractSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import Rating from "@material-ui/lab/Rating";
 import { StarBorder } from "@material-ui/icons";
+import Alert from "@material-ui/lab/Alert";
 
 export default function SellerOrderDetail() {
   const { orderId } = useParams();
@@ -24,6 +29,21 @@ export default function SellerOrderDetail() {
     selectContractSellerById(state, orderId)
   );
   console.log("contractDetail", contractDetail);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const dispatch = useDispatch();
+  const handleAcceptOrder = (e) => {
+    e.preventDefault();
+    dispatch(acceptOrder(orderId))
+      .unwrap()
+      .then(() => {
+        dispatch(fetchContracts());
+        setSuccess("Duyệt đơn thành công!");
+      })
+      .catch(() => {
+        setError("Duyệt đơn thất bại!");
+      });
+  };
 
   return (
     <div className="buyer_profile">
@@ -65,7 +85,11 @@ export default function SellerOrderDetail() {
           <h2>Bình luận: {contractDetail.comments}</h2>
         </div>{" "}
         <div className="paymentRow">
-          <Button variant="contained" color="primary">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleAcceptOrder}
+          >
             Duyệt đơn
           </Button>
           <Button variant="contained" color="default">
@@ -73,6 +97,8 @@ export default function SellerOrderDetail() {
           </Button>
         </div>{" "}
       </Container>
+      {error !== "" && <Alert severity="error">{error}</Alert>}
+      {success !== "" && <Alert severity="success">{success}</Alert>}
       <div className="sections_profile">
         <Contact />
       </div>

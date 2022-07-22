@@ -12,7 +12,14 @@ const updateDescriptionBio = ({ descriptionBio }) => {
     { headers: authHeader() }
   );
 };
-
-const sellerService = { updateDescriptionBio };
+const getOffersSeller = (id) => {
+  return axios
+    .get(API_URL + "/list-offer/" + id, null, { headers: authHeader() })
+    .then((response) => {
+      localStorage.setItem("requests", JSON.stringify(response.data));
+      return response.data;
+    });
+};
+const sellerService = { updateDescriptionBio, getOffersSeller };
 
 export default sellerService;

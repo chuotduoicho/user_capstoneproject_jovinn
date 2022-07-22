@@ -13,6 +13,13 @@ export const fetchContracts = createAsyncThunk(
     return data;
   }
 );
+export const fetchListContracts = createAsyncThunk(
+  "contract/fetchListContracts",
+  async () => {
+    const data = await contractService.getContracts();
+    return data;
+  }
+);
 export const addContract = createAsyncThunk(
   "contract/addContract",
   async (order) => {
@@ -72,6 +79,16 @@ const contractSlice = createSlice({
     [fetchContracts.rejected]: (state, action) => {
       state.status = "failed";
     },
+    [fetchListContracts.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [fetchListContracts.fulfilled]: (state, { payload }) => {
+      state.listContracts = payload;
+      state.status = "success";
+    },
+    [fetchListContracts.rejected]: (state, action) => {
+      state.status = "failed";
+    },
     [addContract.pending]: (state, action) => {
       state.status = "loading";
     },
@@ -124,4 +141,16 @@ const contractSlice = createSlice({
 const { reducer } = contractSlice;
 export default reducer;
 export const selectAllContracts = (state) => state.contract.listContracts;
+export const selectOrders = (state) =>
+  state.contract.listContracts.filter((val) => {
+    if (val.contractStatus == null) return val;
+  });
+export const selectContracts = (state) =>
+  state.contract.listContracts.filter((val) => {
+    if (val.orderStatus == "TO_CONTRACT") return val;
+  });
 export const selectContractStatus = (state) => state.contract.status;
+export const selectContractBuyerById = (state, contractId) =>
+  state.contract.listContracts.find((contract) => contract.id === contractId);
+export const selectContractSellerById = (state, contractId) =>
+  state.contract.listContracts.find((contract) => contract.id === contractId);

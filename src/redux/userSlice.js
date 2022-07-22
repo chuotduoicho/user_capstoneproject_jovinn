@@ -5,10 +5,9 @@ import { setMessage } from "./message";
 const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
 const topSeller = JSON.parse(localStorage.getItem("topSeller"));
-const initialState =
-  currentUser && topSeller
-    ? { topSellers: topSeller, currentUser: currentUser, status: "idle" }
-    : { topSellers: [], currentUser: null, status: "idle" };
+const initialState = currentUser
+  ? { topSellers: [], currentUser: currentUser, status: "idle" }
+  : { topSellers: [], currentUser: null, status: "idle" };
 export const fetchTopSellers = createAsyncThunk(
   "user/fetchTopSellers",
   async () => {
@@ -162,11 +161,3 @@ export default reducer;
 
 export const selectTopSellers = (state) => state.user.topSellers;
 export const selectCurrentUser = (state) => state.user.currentUser;
-export const selectContractBuyerById = (state, contractId) =>
-  state.user.currentUser.buyer.contracts.find(
-    (contract) => contract.id === contractId
-  );
-export const selectContractSellerById = (state, contractId) =>
-  state.user.currentUser.seller.contracts.find(
-    (contract) => contract.id === contractId
-  );

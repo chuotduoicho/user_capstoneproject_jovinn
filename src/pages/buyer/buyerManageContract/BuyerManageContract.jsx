@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Contact from "../../../components/guest/contact/Contact";
 import "./buyerManageContract.scss";
 import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
@@ -23,8 +23,14 @@ import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentUser } from "../../../redux/userSlice";
+import {
+  fetchContracts,
+  fetchListContracts,
+  selectAllContracts,
+  selectContracts,
+} from "../../../redux/contractSlice";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -237,8 +243,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 export default function BuyerManageContract() {
   const currentUser = useSelector(selectCurrentUser);
-  const listContract = currentUser.buyer.contracts;
-  console.log("listContract", listContract);
+  const listContract = useSelector(selectAllContracts);
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
@@ -246,7 +251,10 @@ export default function BuyerManageContract() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchListContracts());
+  }, []);
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");

@@ -25,6 +25,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import { Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
+import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
 function createData(description, subCate, skills, price, cancleFee) {
   return { description, subCate, skills, price, cancleFee };
 }
@@ -325,7 +326,7 @@ export default function SellerManageOffer() {
 
   return (
     <div className="buyer_profile">
-      <BuyerHeader />
+      <SellerHeader />
       <div className={classes.root}>
         <Paper className={classes.paper}>
           <EnhancedTableToolbar numSelected={selected.length} />
