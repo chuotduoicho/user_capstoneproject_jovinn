@@ -10,6 +10,7 @@ import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
 import { Add, Delete } from "@material-ui/icons";
 import { fetchCurrentUser, joinSeller } from "../../../redux/userSlice";
 import Alert from "@material-ui/lab/Alert";
+import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
 
 export default function SellerProfession() {
   // const currentUser = useSelector(selectCurrentUser);
@@ -162,7 +163,7 @@ export default function SellerProfession() {
   };
   return (
     <div className="buyer_profile">
-      <SellerHeader />
+      <BuyerHeader />
       <h1 className="buyer_profile_title">Thông tin nâng cao</h1>
       <Container maxWidth="lg" className="profession_form">
         {" "}

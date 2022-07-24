@@ -1,12 +1,4 @@
-import {
-  Button,
-  Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
-} from "@material-ui/core";
+import { Button, Container } from "@material-ui/core";
 import React, { useState } from "react";
 import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
 import Contact from "../../../components/guest/contact/Contact";
@@ -22,6 +14,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Rating from "@material-ui/lab/Rating";
 import { StarBorder } from "@material-ui/icons";
 import Alert from "@material-ui/lab/Alert";
+import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
 
 export default function SellerOrderDetail() {
   const { orderId } = useParams();
@@ -47,7 +40,7 @@ export default function SellerOrderDetail() {
 
   return (
     <div className="buyer_profile">
-      <BuyerHeader />
+      <SellerHeader />
       <h1 className="buyer_profile_title">Chi tiết đơn hàng</h1>
       <Container maxWidth="lg" className="profession_form">
         <div className="paymentRow">
