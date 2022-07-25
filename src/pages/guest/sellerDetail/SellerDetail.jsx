@@ -4,8 +4,14 @@ import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
 import Contact from "../../../components/guest/contact/Contact";
 import "react-credit-cards/es/styles-compiled.css";
 import "./sellerDetail.scss";
+import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectSeller } from "../../../redux/userSlice";
 
 export default function SellerDetail() {
+  const { sellerId } = useParams();
+  const sellerDetail = useSelector((state) => selectSeller(state, sellerId));
+  console.log("sellerDetail", sellerDetail);
   //dialog
   const [openPayment, setOpenPayment] = useState(false);
 
@@ -32,7 +38,9 @@ export default function SellerDetail() {
           />
 
           <div className="paymentRow_title">
-            <h2>Tiêu đề</h2>
+            <h2>
+              {sellerDetail.user.firstName + " " + sellerDetail.user.lastName}
+            </h2>
             <h4>Gói nâng cao</h4>
           </div>
         </div>
