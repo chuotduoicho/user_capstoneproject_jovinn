@@ -75,7 +75,7 @@ const getRequestsOfBuyer = () => {
 
 const getOffersOfBuyer = (requestId) => {
   return axios
-    .get("localhost:8080/api/v1/users/list-offer/" + requestId, {
+    .get("http://localhost:8080/api/v1/users/list-offer/" + requestId, {
       headers: authHeader(),
     })
     .then((response) => {
@@ -85,7 +85,9 @@ const getOffersOfBuyer = (requestId) => {
 
 const getOffersOfSeller = () => {
   return axios
-    .get("localhost:8080/api/v1/seller/list-offer", { headers: authHeader() })
+    .get("http://localhost:8080/api/v1/seller/list-offer", {
+      headers: authHeader(),
+    })
     .then((response) => {
       return response.data;
     });
