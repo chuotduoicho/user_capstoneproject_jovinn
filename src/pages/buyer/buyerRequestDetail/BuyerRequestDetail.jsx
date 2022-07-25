@@ -25,7 +25,7 @@ import { Close, CloudUpload, AddSharp, RemoveSharp } from "@material-ui/icons";
 import Alert from "@material-ui/lab/Alert";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
 import Contact from "../../../components/guest/contact/Contact";
 import { selectAllCategories } from "../../../redux/categorySlice";
@@ -84,6 +84,7 @@ export default function BuyerCreateRequest() {
     invitedUsers: inviteUsers,
   };
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   console.log("request", request);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -483,26 +484,23 @@ export default function BuyerCreateRequest() {
           className="profession_row"
           style={{ border: "2px solid rgb(238, 225, 225)" }}
         >
-          <Link to="/buyerHome/listSeller/test">
-            <Button
-              variant="outlined"
-              color="primary"
-              style={{ marginLeft: "20px" }}
-              // onClick={handleOpen}.
-            >
-              Xem danh sách ứng tuyển
-            </Button>
-          </Link>
-          <Link to="/buyerHome/manageOffer/test">
-            <Button
-              variant="outlined"
-              color="primary"
-              style={{ marginLeft: "20px" }}
-              // onClick={handleOpen}.
-            >
-              Xem danh sách đề nghị
-            </Button>
-          </Link>
+          <Button
+            variant="outlined"
+            color="primary"
+            style={{ marginLeft: "20px" }}
+            onClick={() => navigate("/buyerHome/listSeller/" + requestId)}
+          >
+            Xem danh sách ứng tuyển
+          </Button>
+
+          <Button
+            variant="outlined"
+            color="primary"
+            style={{ marginLeft: "20px" }}
+            onClick={() => navigate("/buyerHome/manageOffer/" + requestId)}
+          >
+            Xem danh sách đề nghị
+          </Button>
         </div>
         {error !== "" && <Alert severity="error">{error}</Alert>}
         {success !== "" && <Alert severity="success">{success}</Alert>}

@@ -24,7 +24,9 @@ import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import { Button } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { fetchOffersBuyer, selectAllOffer } from "../../../redux/requestSlice";
+import { useDispatch, useSelector } from "react-redux";
 function createData(description, subCate, skills, price, cancleFee) {
   return { description, subCate, skills, price, cancleFee };
 }
@@ -73,23 +75,23 @@ function stableSort(array, comparator) {
 
 const headCells = [
   {
-    id: "description",
+    id: "descriptionBio",
     numeric: false,
     disablePadding: false,
     label: "Mô tả",
   },
   {
-    id: "subCate",
+    id: "totalDeliveryTime",
     numeric: true,
     disablePadding: false,
-    label: "Danh mục con",
+    label: "Số ngày bàn giao",
   },
-  { id: "skills", numeric: true, disablePadding: false, label: "Kĩ năng" },
+  // { id: "skills", numeric: true, disablePadding: false, label: "Kĩ năng" },
   {
-    id: "price",
+    id: "offerPrice",
     numeric: true,
     disablePadding: false,
-    label: "Tổng chi phí (g)",
+    label: "Chi phí",
   },
   {
     id: "cancleFee",
@@ -98,11 +100,17 @@ const headCells = [
     label: "Phí hủy hợp đồng",
   },
   {
-    id: "action",
+    id: "offerRequestStatus",
     numeric: true,
     disablePadding: false,
-    label: "",
+    label: "Trạng thái",
   },
+  // {
+  //   id: "action",
+  //   numeric: true,
+  //   disablePadding: false,
+  //   label: "",
+  // },
 ];
 
 function EnhancedTableHead(props) {
@@ -262,6 +270,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 export default function BuyerManageOffer() {
+  const rows = useSelector(selectAllOffer);
+  console.log("list Offer", rows);
+  const { requestId } = useParams();
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
@@ -269,7 +280,10 @@ export default function BuyerManageOffer() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchOffersBuyer(requestId));
+  }, []);
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -374,13 +388,15 @@ export default function BuyerManageOffer() {
                           scope="row"
                           // padding="none"
                         >
-                          {row.description}
+                          {row.descriptionBio}
                         </TableCell>
-                        <TableCell align="right">{row.subCate}</TableCell>
-                        <TableCell align="right">{row.skills}</TableCell>
-                        <TableCell align="right">{row.price} $</TableCell>
                         <TableCell align="right">
-                          {row.cancleFee} %
+                          {row.totalDeliveryTime}
+                        </TableCell>
+                        <TableCell align="right">{row.offerPrice} $</TableCell>
+                        <TableCell align="right">{row.cancelFee} %</TableCell>
+                        <TableCell align="right">
+                          {row.offerRequestStatus}
                         </TableCell>{" "}
                         <TableCell align="right">
                           <Link to="test">

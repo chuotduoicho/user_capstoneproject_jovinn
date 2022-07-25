@@ -256,8 +256,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 export default function SellerManageOffer() {
   const rows = useSelector(selectAllOffer);
-  const classes = useStyles();
+
   console.log("list Offer", rows);
+  const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
   const [selected, setSelected] = React.useState([]);
