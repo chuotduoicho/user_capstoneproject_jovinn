@@ -11,9 +11,9 @@ const addRequest = (request) => {
 };
 const addOffer = (request) => {
   const requestId = request.requestId;
-  const requestobj = request.request;
+  const offerObj = request.offer;
   return axios
-    .post(API_URL + "/send-offer/" + requestId, requestobj, {
+    .post(API_URL + "/send-offer/" + requestId, offerObj, {
       headers: authHeader(),
     })
     .then((response) => {
@@ -72,6 +72,7 @@ const getRequestsOfBuyer = () => {
       return response.data;
     });
 };
+
 const requestService = {
   addRequest,
   addOffer,
