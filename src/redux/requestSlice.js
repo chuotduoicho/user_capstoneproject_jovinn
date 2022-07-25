@@ -48,11 +48,20 @@ export const fetchSellerInvite = createAsyncThunk(
     return data;
   }
 );
-export const fetchOffersSeller = createAsyncThunk(
-  "request/fetchOffersSeller",
+export const fetchOffersBuyer = createAsyncThunk(
+  "request/fetchOffersBuyer",
   async (requestId) => {
     console.log(requestId);
-    const data = await sellerService.getOffersSeller(requestId);
+    const data = await requestService.getOffersOfBuyer(requestId);
+    console.log(data);
+    return data;
+  }
+);
+export const fetchOffersSeller = createAsyncThunk(
+  "request/fetchOffersSeller",
+  async () => {
+    console.log();
+    const data = await requestService.getOffersOfSeller();
     console.log(data);
     return data;
   }
@@ -182,6 +191,16 @@ const requestSlice = createSlice({
     [fetchOffersSeller.rejected]: (state, action) => {
       state.status = "failed";
     },
+    [fetchOffersBuyer.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [fetchOffersBuyer.fulfilled]: (state, { payload }) => {
+      state.listOffers = payload;
+      state.status = "success";
+    },
+    [fetchOffersBuyer.rejected]: (state, action) => {
+      state.status = "failed";
+    },
   },
 });
 
@@ -195,3 +214,6 @@ export const selectRequestById = (state, requestId) =>
   state.request.listRequests.find(
     (request) => request.postRequestId === requestId
   );
+export const selectAllOffer = (state) => state.request.listOffers;
+export const selectOfferById = (state, offerId) =>
+  state.request.listOffers.find((offer) => offer.id === offerId);

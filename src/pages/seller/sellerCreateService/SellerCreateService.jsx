@@ -424,13 +424,11 @@ export default function SellerCreateService() {
     dispath(addService(newService))
       .unwrap()
       .then(() => {
-        setSuccess("add service successfull");
-        console.log("add service successfull");
+        setSuccess("Tạo dịch vụ thành công!");
         dispath(fetchServices());
       })
       .catch(() => {
-        setError("add service fail");
-        console.log("add service fail");
+        setError("Tạo dịch vụ thất bại !");
       });
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
@@ -454,11 +452,11 @@ export default function SellerCreateService() {
     dispath(addService(newService))
       .unwrap()
       .then(() => {
-        console.log("add service successfull");
+        setSuccess("Tạo dịch vụ thành công!");
         dispath(fetchServices());
       })
       .catch(() => {
-        console.log("add service fail");
+        setError("Tạo dịch vụ thất bại !");
       });
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };

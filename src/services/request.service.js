@@ -73,6 +73,24 @@ const getRequestsOfBuyer = () => {
     });
 };
 
+const getOffersOfBuyer = (requestId) => {
+  return axios
+    .get("localhost:8080/api/v1/users/list-offer/" + requestId, {
+      headers: authHeader(),
+    })
+    .then((response) => {
+      return response.data;
+    });
+};
+
+const getOffersOfSeller = () => {
+  return axios
+    .get("localhost:8080/api/v1/seller/list-offer", { headers: authHeader() })
+    .then((response) => {
+      return response.data;
+    });
+};
+
 const requestService = {
   addRequest,
   addOffer,
@@ -82,6 +100,8 @@ const requestService = {
   getAllRequestsByCate,
   getRequestsOfBuyer,
   getAllSellerInvite,
+  getOffersOfBuyer,
+  getOffersOfSeller,
 };
 
 export default requestService;

@@ -45,17 +45,9 @@ const updateEducation = ({ descriptionBio }) => {
     { headers: authHeader() }
   );
 };
-const getOffersSeller = (id) => {
-  return axios
-    .get(API_URL + "/list-offer/" + id, null, { headers: authHeader() })
-    .then((response) => {
-      localStorage.setItem("requests", JSON.stringify(response.data));
-      return response.data;
-    });
-};
+
 const sellerService = {
   updateDescriptionBio,
-  getOffersSeller,
   updateSkill,
   updateCertificate,
   updateEducation,
