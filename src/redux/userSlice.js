@@ -7,7 +7,7 @@ const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 const topSeller = JSON.parse(localStorage.getItem("topSeller"));
 const initialState = currentUser
   ? { topSellers: [], currentUser: currentUser, status: "idle" }
-  : { topSellers: [], currentUser: null, status: "idle" };
+  : { topSellers: [], currentUser: {}, status: "idle" };
 export const fetchTopSellers = createAsyncThunk(
   "user/fetchTopSellers",
   async () => {
@@ -161,3 +161,5 @@ export default reducer;
 
 export const selectTopSellers = (state) => state.user.topSellers;
 export const selectCurrentUser = (state) => state.user.currentUser;
+export const selectSellersById = (state, sellerId) =>
+  state.user.topSellers.find((seller) => (seller.id = sellerId));

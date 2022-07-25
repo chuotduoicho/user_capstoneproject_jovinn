@@ -7,11 +7,13 @@ const initialState = requests
   ? {
       listRequests: requests,
       listOffers: [],
+      listSellersInvite: [],
       status: "idle",
     }
   : {
       listRequests: [],
       listOffers: [],
+      listSellersInvite: [],
       status: "idle",
     };
 export const fetchRequestsBuyer = createAsyncThunk(
@@ -176,6 +178,7 @@ const requestSlice = createSlice({
       state.status = "loading";
     },
     [fetchSellerInvite.fulfilled]: (state, { payload }) => {
+      state.listSellersInvite = payload.sellersApply;
       state.status = "success";
     },
     [fetchSellerInvite.rejected]: (state, action) => {
@@ -217,3 +220,7 @@ export const selectRequestById = (state, requestId) =>
 export const selectAllOffer = (state) => state.request.listOffers;
 export const selectOfferById = (state, offerId) =>
   state.request.listOffers.find((offer) => offer.id === offerId);
+export const selectAllSellersInvite = (state) =>
+  state.request.listSellersInvite;
+export const selectSellersById = (state, sellerId) =>
+  state.listSellersInvite.find((seller) => (seller.id = sellerId));

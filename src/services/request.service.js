@@ -50,7 +50,9 @@ const getAllRequests = () => {
 };
 const getAllSellerInvite = (requestId) => {
   return axios
-    .get(API_URL + "/getSellerInvite", requestId, { headers: authHeader() })
+    .get(API_URL + "/getListSellerApply/" + requestId, {
+      headers: authHeader(),
+    })
     .then((response) => {
       return response.data;
     });

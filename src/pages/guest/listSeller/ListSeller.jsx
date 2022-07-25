@@ -24,7 +24,14 @@ import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import { Button } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import {
+  fetchOffersBuyer,
+  fetchSellerInvite,
+  selectAllOffer,
+  selectAllSellersInvite,
+} from "../../../redux/requestSlice";
+import { useDispatch, useSelector } from "react-redux";
 function createData(description, subCate, skills, price, cancleFee) {
   return { description, subCate, skills, price, cancleFee };
 }
@@ -73,36 +80,18 @@ function stableSort(array, comparator) {
 
 const headCells = [
   {
-    id: "description",
+    id: "lastName",
     numeric: false,
     disablePadding: false,
-    label: "Mô tả",
+    label: "Tên",
   },
   {
-    id: "subCate",
+    id: "email",
     numeric: true,
     disablePadding: false,
-    label: "Danh mục con",
+    label: "Email",
   },
   { id: "skills", numeric: true, disablePadding: false, label: "Kĩ năng" },
-  {
-    id: "price",
-    numeric: true,
-    disablePadding: false,
-    label: "Tổng chi phí (g)",
-  },
-  {
-    id: "cancleFee",
-    numeric: true,
-    disablePadding: false,
-    label: "Phí hủy hợp đồng",
-  },
-  {
-    id: "action",
-    numeric: true,
-    disablePadding: false,
-    label: "",
-  },
 ];
 
 function EnhancedTableHead(props) {
@@ -262,6 +251,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 export default function ListSeller() {
+  const rows = useSelector(selectAllSellersInvite);
+  console.log("list Offer", rows);
+  const { requestId } = useParams();
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
@@ -269,7 +261,11 @@ export default function ListSeller() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  useEffect(() => {
+    dispatch(fetchSellerInvite(requestId));
+  }, []);
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -374,20 +370,21 @@ export default function ListSeller() {
                           scope="row"
                           // padding="none"
                         >
-                          {row.description}
+                          {row.user.firstName + " " + row.user.lastName}
                         </TableCell>
-                        <TableCell align="right">{row.subCate}</TableCell>
-                        <TableCell align="right">{row.skills}</TableCell>
-                        <TableCell align="right">{row.price} $</TableCell>
+                        <TableCell align="right">{row.user.email}</TableCell>
                         <TableCell align="right">
-                          {row.cancleFee} %
-                        </TableCell>{" "}
+                          {row.skills.map((skill) => skill.name + " ")}{" "}
+                        </TableCell>
+
                         <TableCell align="right">
-                          <Link to="/seller/test">
-                            <Button variant="outlined" color="primary">
-                              Chi tiết
-                            </Button>
-                          </Link>
+                          <Button
+                            variant="outlined"
+                            color="primary"
+                            onClick={() => navigate("/seller/" + row.id)}
+                          >
+                            Chi tiết
+                          </Button>
                         </TableCell>
                       </TableRow>
                     );
