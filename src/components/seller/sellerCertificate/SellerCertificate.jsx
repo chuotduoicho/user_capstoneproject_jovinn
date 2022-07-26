@@ -14,7 +14,7 @@ import {
   DialogTitle,
   TextField,
 } from "@material-ui/core";
-import { Delete, DeleteOutline, EditOutlined } from "@material-ui/icons";
+import { DeleteOutline, EditOutlined } from "@material-ui/icons";
 import React from "react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -57,7 +57,6 @@ export default function SellerCertificate({ certificates, id }) {
       .then(() => {
         dispatch(fetchCurrentUser());
       })
-
       .catch(() => {});
   };
   return (
@@ -107,7 +106,7 @@ export default function SellerCertificate({ certificates, id }) {
                               <DeleteOutline
                                 color="secondary"
                                 style={{ cursor: "pointer" }}
-                                onclick={() => handleCerRemove(item.id)}
+                                onClick={() => handleCerRemove(item.id)}
                               />
                             </TableCell>
                           )}
