@@ -3,41 +3,33 @@ import {
   Container,
   MenuItem,
   TextField,
-  makeStyles,
   InputAdornment,
 } from "@material-ui/core";
+import Alert from "@material-ui/lab/Alert";
 
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 
 import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
 import Contact from "../../../components/guest/contact/Contact";
 import { selectAllCategories } from "../../../redux/categorySlice";
+import { selectOfferById } from "../../../redux/requestSlice";
 import "./buyerOfferDetail.scss";
 
 export default function BuyerOfferDetail() {
-  const listCategory = useSelector(selectAllCategories);
-  const [cateId, setCateId] = useState(listCategory[0].id);
-  const [subCateId, setSubCateId] = useState(
-    listCategory[0].subCategories[0].id
-  );
+  const { offerId } = useParams();
+  const offerDetail = useSelector((state) => selectOfferById(state, offerId));
+  console.log("offerDetail", offerDetail);
 
-  const [stages, setStages] = useState([
-    { dateFrom: "", dateTo: "", product: "", price: "" },
-
-    { dateFrom: "", dateTo: "", product: "", price: "" },
-  ]);
-  const handleStageChange = (e, index) => {
-    const { name, value } = e.target;
-    const list = [...stages];
-    list[index][name] = value;
-    setStages(list);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const acceptOffer = () => {
+    setError("");
   };
 
-  const [skills, setSkills] = useState([{ name: "", level: "" }]);
-
-  const navigate = useNavigate();
   return (
     <div className="buyer_profile">
       <BuyerHeader />
@@ -46,204 +38,61 @@ export default function BuyerOfferDetail() {
         {" "}
         <div className="profession_row">
           <TextField
-            id="outlined-select-currency"
-            select
-            label="Chọn danh mục"
-            value={cateId}
-            onChange={(e) => setCateId(e.target.value)}
-            style={{ width: "30%", margin: "10px" }}
-            variant="outlined"
-            disabled
-          >
-            {listCategory.map((category, index) => (
-              <MenuItem key={index} value={category.id}>
-                {category.name}
-              </MenuItem>
-            ))}
-          </TextField>
-          <TextField
-            id="outlined-select-currency"
-            select
-            label="Chọn danh mục con"
-            value={subCateId}
-            onChange={(e) => setSubCateId(e.target.value)}
-            style={{ width: "30%", margin: "10px" }}
-            variant="outlined"
-            disabled
-          >
-            {listCategory
-              .find((val) => {
-                return val.id == cateId;
-              })
-              .subCategories.map((subCategory, index) => (
-                <MenuItem key={index} value={subCategory.id}>
-                  {subCategory.name}
-                </MenuItem>
-              ))}
-          </TextField>
-        </div>
-        <div
-          className="profession_row"
-          // style={{ border: "2px solid rgb(238, 225, 225)" }}
-        >
-          {skills.map((stage, index) => (
-            <div className="profession_rowLeft">
-              <TextField
-                id="outlined-basic"
-                label="Kĩ Năng"
-                variant="outlined"
-                style={{ width: "30%", margin: "10px" }}
-                name="name"
-                defaultValue="HTML"
-                disabled
-              />
-              <TextField
-                id="outlined-select-currency"
-                select
-                label="Trình độ"
-                defaultValue="BEGINNER"
-                name="level"
-                style={{ width: "23%", margin: "10px" }}
-                variant="outlined"
-                disabled
-              >
-                <MenuItem value="BEGINNER">BEGINNER</MenuItem>
-                <MenuItem value="ADVANCED">ADVANCED</MenuItem>
-                <MenuItem value="COMPETENT">COMPETENT</MenuItem>
-                <MenuItem value="PROFICIENT">PROFICIENT</MenuItem>
-                <MenuItem value="EXPERT">EXPERT</MenuItem>
-              </TextField>
-            </div>
-          ))}
-        </div>
-        <div className="profession_row">
-          <TextField
             id="outlined-basic"
             label="Mô tả"
             variant="outlined"
             multiline
-            rows={3}
+            rows={6}
             style={{ width: "62%" }}
-            defaultValue="Tôi muốn thật nhiều tiền"
-            InputLabelProps={{
-              shrink: true,
-            }}
-            disabled
+            defaultValue={offerDetail.descriptionBio}
           />
         </div>
         <div className="profession_row">
-          {" "}
           <TextField
-            id="outlined-basic"
-            label="Số giai đoạn"
+            style={{
+              marginRight: "5px",
+            }}
             variant="outlined"
+            label="Số ngày giao"
             type="number"
-            value={stages.length}
-            style={{ width: "8%", margin: "10px" }}
-            disabled
+            InputProps={{ inputProps: { min: 0 } }}
+            defaultValue={offerDetail.totalDeliveryTime}
+            required
+          />
+          <TextField
+            variant="outlined"
+            label="Chi phí ($)"
+            type="number"
+            InputProps={{ inputProps: { min: 0 } }}
+            defaultValue={offerDetail.offerPrice}
+            required
           />
         </div>
-        {stages.map((stage, index) => (
-          <div className="profession_itemStage">
-            {stages.length > 1 && (
-              <div className="profession_row">
-                <h3>Giai đoạn {index + 1}</h3>
-              </div>
-            )}
-
-            <div className="profession_row">
-              <TextField
-                id="outlined-basic"
-                label="Ngày bắt đầu"
-                variant="outlined"
-                type="date"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                style={{ width: "30%", margin: "10px" }}
-                name="dateFrom"
-                disabled
-              />
-              <TextField
-                id="outlined-basic"
-                label="Ngày kết thúc"
-                variant="outlined"
-                type="date"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                style={{ width: "30%", margin: "10px" }}
-                name="dateTo"
-                disabled
-              />
-            </div>
-            <div className="profession_row">
-              {" "}
-              <TextField
-                id="outlined-basic"
-                label="Sản phẩm bàn giao"
-                variant="outlined"
-                multiline
-                rows={3}
-                style={{ width: "62%" }}
-                name="product"
-                disabled
-              />
-            </div>
-            <div className="profession_row">
-              {" "}
-              <TextField
-                id="outlined-basic"
-                label="Chi phí"
-                variant="outlined"
-                type="number"
-                style={{ width: "30%", margin: "10px" }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">$</InputAdornment>
-                  ),
-                }}
-                name="price"
-                disabled
-              />
-            </div>
-          </div>
-        ))}
         <div className="profession_row">
-          {" "}
-          <TextField
-            id="outlined-basic"
-            label="Tổng chi phí"
-            variant="outlined"
-            type="number"
-            style={{ width: "30%", margin: "10px" }}
-            InputProps={{
-              endAdornment: <InputAdornment position="end">$</InputAdornment>,
-            }}
-            disabled
-            // onChange={(e) => setDescriptionBio(e.target.value)}
-          />
           <TextField
             id="outlined-basic"
             label="Phí hủy hợp đồng"
             variant="outlined"
             type="number"
             style={{ width: "30%", margin: "10px" }}
+            inputProps={{ min: 0 }}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">% Tổng chi phí</InputAdornment>
               ),
             }}
-            disabled
-            // onChange={(e) => setDescriptionBio(e.target.value)}
+            defaultValue={offerDetail.cancelFee}
           />
         </div>
         <div className="profession_row">
-          {" "}
+          <h3>Trạng thái: {offerDetail.offerRequestStatus}</h3>
+        </div>
+        <div className="profession_row">
           <Button
             variant="contained"
             color="primary"
             className="form_right_row_btn"
+            onClick={acceptOffer}
           >
             Chấp nhận đề nghị
           </Button>
@@ -256,6 +105,8 @@ export default function BuyerOfferDetail() {
           >
             Quay lại
           </Button>
+          {error !== "" && <Alert severity="error">{error}</Alert>}
+          {success !== "" && <Alert severity="success">{success}</Alert>}
         </div>
       </Container>
       <div className="sections_profile">

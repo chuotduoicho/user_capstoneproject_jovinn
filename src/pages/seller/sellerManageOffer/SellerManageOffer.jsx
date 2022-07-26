@@ -384,7 +384,7 @@ export default function SellerManageOffer() {
                           {row.offerRequestStatus}
                         </TableCell>{" "}
                         <TableCell align="right">
-                          <Link to="test">
+                          <Link to={row.id}>
                             <Button variant="outlined" color="primary">
                               Chi tiết
                             </Button>

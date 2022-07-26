@@ -1,7 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { setMessage } from "./message";
 import requestService from "../services/request.service";
-import sellerService from "../services/seller.service";
 const requests = JSON.parse(localStorage.getItem("requests"));
 const initialState = requests
   ? {
@@ -223,4 +221,4 @@ export const selectOfferById = (state, offerId) =>
 export const selectAllSellersInvite = (state) =>
   state.request.listSellersInvite;
 export const selectSellersById = (state, sellerId) =>
-  state.listSellersInvite.find((seller) => (seller.id = sellerId));
+  state.request.listSellersInvite.find((seller) => (seller.id = sellerId));

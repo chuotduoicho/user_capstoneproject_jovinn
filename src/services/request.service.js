@@ -20,6 +20,17 @@ const addOffer = (request) => {
       return response.data;
     });
 };
+const updateOffer = (obj) => {
+  const offerId = obj.offerId;
+  const offerObj = obj.offer;
+  return axios
+    .put(API_URL + "/updatePostRequest/" + offerId, offerObj, {
+      headers: authHeader(),
+    })
+    .then((response) => {
+      return response.data;
+    });
+};
 const updateRequest = (obj) => {
   const requestId = obj.requestId;
   const request = obj.request;
@@ -32,6 +43,15 @@ const updateRequest = (obj) => {
     });
 };
 const applyRequest = (requestId) => {
+  return axios
+    .put(API_URL + "/sellerApplyRequest/" + requestId, null, {
+      headers: authHeader(),
+    })
+    .then((response) => {
+      return response.data;
+    });
+};
+const applyOffer = (requestId) => {
   return axios
     .put(API_URL + "/sellerApplyRequest/" + requestId, null, {
       headers: authHeader(),
