@@ -71,6 +71,69 @@ export const updateDescriptionBio = createAsyncThunk(
     return data;
   }
 );
+export const updateSkill = createAsyncThunk("user/updateSkill", async (obj) => {
+  console.log(obj);
+  const data = await sellerService.updateSkill(obj);
+  console.log("current user update", data);
+  return data;
+});
+export const updateCertificate = createAsyncThunk(
+  "user/updateCertificate",
+  async (obj) => {
+    console.log(obj);
+    const data = await sellerService.updateCertificate(obj);
+    console.log("current user update", data);
+    return data;
+  }
+);
+export const updateEducation = createAsyncThunk(
+  "user/updateEducation",
+  async (obj) => {
+    console.log(obj);
+    const data = await sellerService.updateEducation(obj);
+    console.log("current user update", data);
+    return data;
+  }
+);
+export const addSkills = createAsyncThunk("user/addSkills", async (skill) => {
+  console.log(skill);
+  const data = await sellerService.addSkills(skill);
+  console.log("current user update", data);
+  return data;
+});
+export const addCertificates = createAsyncThunk(
+  "user/addCertificates",
+  async (cers) => {
+    console.log(cers);
+    const data = await sellerService.addCertificates(cers);
+    console.log("current user update", data);
+    return data;
+  }
+);
+export const addEdus = createAsyncThunk("user/addEdus", async (edus) => {
+  console.log(edus);
+  const data = await sellerService.updateDescriptionBio(edus);
+  console.log("current user update", data);
+  return data;
+});
+export const deleteSkill = createAsyncThunk("user/deleteSkill", async (id) => {
+  console.log(id);
+  const data = await sellerService.deleteSkill(id);
+  console.log("current user update", data);
+  return data;
+});
+export const deleteCer = createAsyncThunk("user/deleteCer", async (id) => {
+  console.log(id);
+  const data = await sellerService.deleteCer(id);
+  console.log("current user update", data);
+  return data;
+});
+export const deleteEdu = createAsyncThunk("user/deleteEdu", async (id) => {
+  console.log(id);
+  const data = await sellerService.deleteEdu(id);
+  console.log("current user update", data);
+  return data;
+});
 export const joinSeller = createAsyncThunk("user/joinSeller", async (obj) => {
   console.log(obj);
   const data = await UserService.joinSeller(obj);
@@ -143,6 +206,87 @@ const userSlice = createSlice({
       state.status = "success";
     },
     [updateDescriptionBio.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [updateSkill.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [updateSkill.fulfilled]: (state, { payload }) => {
+      state.status = "success";
+    },
+    [updateSkill.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [updateEducation.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [updateEducation.fulfilled]: (state, { payload }) => {
+      state.status = "success";
+    },
+    [updateEducation.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [updateCertificate.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [updateCertificate.fulfilled]: (state, { payload }) => {
+      state.status = "success";
+    },
+    [updateCertificate.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [addSkills.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [addSkills.fulfilled]: (state, { payload }) => {
+      state.status = "success";
+    },
+    [addSkills.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [addEdus.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [addEdus.fulfilled]: (state, { payload }) => {
+      state.status = "success";
+    },
+    [addEdus.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [addCertificates.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [addCertificates.fulfilled]: (state, { payload }) => {
+      state.status = "success";
+    },
+    [addCertificates.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [deleteSkill.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [deleteSkill.fulfilled]: (state, { payload }) => {
+      state.status = "success";
+    },
+    [deleteSkill.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [deleteEdu.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [deleteEdu.fulfilled]: (state, { payload }) => {
+      state.status = "success";
+    },
+    [deleteEdu.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [deleteCer.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [deleteCer.fulfilled]: (state, { payload }) => {
+      state.status = "success";
+    },
+    [deleteCer.rejected]: (state, action) => {
       state.status = "failed";
     },
     [changePassword.pending]: (state, action) => {

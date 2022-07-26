@@ -16,8 +16,6 @@ export default function SellerSkill({ skills }) {
   const handleNotEdit = (e) => {
     setEditStatus(false);
   };
-  console.log("skills", skills);
-  console.log("skill 1", skills[0].name);
   return (
     <div className="sellerIntro">
       {" "}
@@ -36,11 +34,29 @@ export default function SellerSkill({ skills }) {
                       label={item.name}
                       variant="outlined"
                       color="primary"
-                      // onDelete={handleDelete}
+                      onDelete={handleNotEdit}
+                      className="details_paper_chip"
                     />
                   );
                 })}
+                <input
+                  // onKeyDown={handleKeyDown}
+                  type="text"
+                  className="tags-input"
+                  placeholder="Nhập kĩ năng"
+                />
               </Paper>
+              {editStatus && (
+                <ButtonGroup
+                  disableElevation
+                  variant="contained"
+                  className="sellerIntro_btnGroup"
+                  style={{ justifyContent: "center" }}
+                >
+                  <Button color="primary">Cập nhật</Button>
+                  <Button onClick={handleNotEdit}>Hủy</Button>
+                </ButtonGroup>
+              )}
             </div>
           </div>
         </div>

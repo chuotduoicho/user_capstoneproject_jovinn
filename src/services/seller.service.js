@@ -12,45 +12,100 @@ const updateDescriptionBio = ({ descriptionBio }) => {
     { headers: authHeader() }
   );
 };
-const updateSkill = ({ descriptionBio }) => {
-  console.log({ descriptionBio });
+const updateSkill = (obj) => {
+  console.log(obj);
+  const id = obj.id;
+  const skills = obj.skills;
   return axios.put(
-    API_URL + "/profile",
-
+    API_URL + "/skill/" + id,
     {
-      descriptionBio,
+      skills,
     },
     { headers: authHeader() }
   );
 };
-const updateCertificate = ({ descriptionBio }) => {
-  console.log({ descriptionBio });
+const updateEducation = (obj) => {
+  console.log(obj);
+  const id = obj.id;
+  const edus = obj.edus;
   return axios.put(
-    API_URL + "/profile",
-
+    API_URL + "/education/" + id,
     {
-      descriptionBio,
+      edus,
     },
     { headers: authHeader() }
   );
 };
-const updateEducation = ({ descriptionBio }) => {
-  console.log({ descriptionBio });
+const updateCertificate = (obj) => {
+  console.log(obj);
+  const id = obj.id;
+  const cers = obj.certificates;
   return axios.put(
-    API_URL + "/profile",
-
+    API_URL + "/certificate/" + id,
     {
-      descriptionBio,
+      cers,
     },
     { headers: authHeader() }
   );
 };
+const addSkills = (skills) => {
+  console.log(skills);
+  return axios.post(
+    API_URL + "/skill",
 
+    {
+      skills,
+    },
+    { headers: authHeader() }
+  );
+};
+const addCertificates = (cers) => {
+  console.log(cers);
+  return axios.post(
+    API_URL + "/certificate",
+
+    {
+      cers,
+    },
+    { headers: authHeader() }
+  );
+};
+const addEdus = (edus) => {
+  console.log(edus);
+  return axios.post(
+    API_URL + "/education",
+
+    {
+      edus,
+    },
+    { headers: authHeader() }
+  );
+};
+const deleteSkill = (id) => {
+  console.log(id);
+  return axios.delete(API_URL + "/skill/" + id, { headers: authHeader() });
+};
+const deleteCer = (id) => {
+  console.log(id);
+  return axios.delete(API_URL + "/certificate/" + id, {
+    headers: authHeader(),
+  });
+};
+const deleteEdu = (id) => {
+  console.log(id);
+  return axios.delete(API_URL + "/education/" + id, { headers: authHeader() });
+};
 const sellerService = {
   updateDescriptionBio,
   updateSkill,
   updateCertificate,
   updateEducation,
+  addSkills,
+  addCertificates,
+  addEdus,
+  deleteSkill,
+  deleteCer,
+  deleteEdu,
 };
 
 export default sellerService;
