@@ -1,10 +1,10 @@
 import axios from "axios";
 import authHeader from "./auth-header";
-const API_URL = "http://localhost:8080/api/v1/seller";
+const API_URL = "http://localhost:8080/api/v1";
 const updateDescriptionBio = ({ descriptionBio }) => {
   console.log({ descriptionBio });
   return axios.put(
-    API_URL + "/profile",
+    API_URL + "/seller/profile",
 
     {
       descriptionBio,
@@ -17,7 +17,7 @@ const updateSkill = (obj) => {
   const id = obj.id;
   const skills = obj.skills;
   return axios.put(
-    API_URL + "/skill/" + id,
+    API_URL + "/seller-details/skill/" + id,
     {
       skills,
     },
@@ -29,7 +29,7 @@ const updateEducation = (obj) => {
   const id = obj.id;
   const edus = obj.edus;
   return axios.put(
-    API_URL + "/education/" + id,
+    API_URL + "/seller-details/education/" + id,
     {
       edus,
     },
@@ -41,7 +41,7 @@ const updateCertificate = (obj) => {
   const id = obj.id;
   const cers = obj.certificates;
   return axios.put(
-    API_URL + "/certificate/" + id,
+    API_URL + "/seller-details/certificate/" + id,
     {
       cers,
     },
@@ -51,7 +51,7 @@ const updateCertificate = (obj) => {
 const addSkills = (skills) => {
   console.log(skills);
   return axios.post(
-    API_URL + "/skill",
+    API_URL + "/seller-details/skill",
 
     {
       skills,
@@ -62,7 +62,7 @@ const addSkills = (skills) => {
 const addCertificates = (cers) => {
   console.log(cers);
   return axios.post(
-    API_URL + "/certificate",
+    API_URL + "/seller-details/certificate",
 
     {
       cers,
@@ -73,7 +73,7 @@ const addCertificates = (cers) => {
 const addEdus = (edus) => {
   console.log(edus);
   return axios.post(
-    API_URL + "/education",
+    API_URL + "/seller-details/education",
 
     {
       edus,
@@ -83,17 +83,21 @@ const addEdus = (edus) => {
 };
 const deleteSkill = (id) => {
   console.log(id);
-  return axios.delete(API_URL + "/skill/" + id, { headers: authHeader() });
+  return axios.delete(API_URL + "/seller-details/skill/" + id, {
+    headers: authHeader(),
+  });
 };
 const deleteCer = (id) => {
   console.log(id);
-  return axios.delete(API_URL + "/certificate/" + id, {
+  return axios.delete(API_URL + "/seller-details/certificate/" + id, {
     headers: authHeader(),
   });
 };
 const deleteEdu = (id) => {
   console.log(id);
-  return axios.delete(API_URL + "/education/" + id, { headers: authHeader() });
+  return axios.delete(API_URL + "/seller-details/education/" + id, {
+    headers: authHeader(),
+  });
 };
 const sellerService = {
   updateDescriptionBio,

@@ -1,6 +1,10 @@
 import {
   Button,
   ButtonGroup,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Paper,
   Table,
   TableBody,
@@ -8,9 +12,13 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
 } from "@material-ui/core";
+import { Delete, Edit, EditOutlined, Remove } from "@material-ui/icons";
 import React from "react";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addEdus, deleteEdu, fetchCurrentUser } from "../../../redux/userSlice";
 import "./sellerEducate.scss";
 function format(date) {
   date = new Date(date);
@@ -23,13 +31,44 @@ function format(date) {
 }
 export default function SellerEducate({ educations }) {
   const [editStatus, setEditStatus] = useState(false);
+  const dispatch = useDispatch();
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [title, setTitle] = useState("");
+  const [universityName, setUniversityName] = useState("");
+  const [major, setMajor] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const handleEdit = (e) => {
     setEditStatus(true);
   };
   const handleNotEdit = (e) => {
     setEditStatus(false);
   };
+  const handleEduRemove = (id) => {
+    dispatch(deleteEdu(id))
+      .unwrap()
+      .then(() => {
+        dispatch(fetchCurrentUser());
+      })
 
+      .catch(() => {});
+  };
+  const [open, setOpen] = useState(false);
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleAddEdu = () => {
+    const edus = { title, universityName, major, fromDate, toDate };
+    dispatch(addEdus(edus))
+      .unwrap()
+      .then(() => {
+        dispatch(fetchCurrentUser());
+        setOpen(false);
+      })
+
+      .catch(() => {});
+  };
   return (
     <div className="sellerIntro">
       {" "}
@@ -52,7 +91,7 @@ export default function SellerEducate({ educations }) {
                       <TableCell>Tiêu đề</TableCell>
                       <TableCell align="right">Trường</TableCell>
                       <TableCell align="right">Ngành</TableCell>
-                      <TableCell align="right">Quốc gia</TableCell>
+                      {/* <TableCell align="right">Quốc gia</TableCell> */}
                       <TableCell align="right">Năm</TableCell>
                     </TableRow>
                   </TableHead>
@@ -72,11 +111,21 @@ export default function SellerEducate({ educations }) {
                             {item.universityName}
                           </TableCell>
                           <TableCell align="right"> {item.major}</TableCell>
-                          <TableCell align="right"> {item.country}</TableCell>
+                          {/* <TableCell align="right"> {item.country}</TableCell> */}
                           <TableCell align="right">
                             {" "}
                             {format(item.yearOfGraduation)}
                           </TableCell>
+                          {editStatus && (
+                            <TableCell align="right">
+                              <EditOutlined color="primary" />
+                              <Delete
+                                color="secondary"
+                                style={{ cursor: "pointer" }}
+                                onclick={() => handleEduRemove(item.id)}
+                              />
+                            </TableCell>
+                          )}
                         </TableRow>
                       );
                     })}
@@ -90,10 +139,74 @@ export default function SellerEducate({ educations }) {
                   className="btnGroup"
                   style={{ justifyContent: "center" }}
                 >
-                  <Button>Cập nhật</Button>
+                  <Button onClick={() => setOpen(true)}>Thêm</Button>
                   <Button onClick={handleNotEdit}>Hủy</Button>
                 </ButtonGroup>
               )}
+              <Dialog
+                fullWidth
+                maxWidth="sm"
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="max-width-dialog-title"
+              >
+                <DialogTitle id="max-width-dialog-title">
+                  Thêm học vấn
+                </DialogTitle>
+                <DialogContent>
+                  {" "}
+                  <TextField
+                    id="outlined-basic"
+                    label="Tiêu đề"
+                    variant="outlined"
+                    onChange={(e) => setTitle(e.target.value)}
+                  />
+                  <TextField
+                    id="outlined-basic"
+                    label="Trường"
+                    variant="outlined"
+                    onChange={(e) => setUniversityName(e.target.value)}
+                  />
+                  <TextField
+                    id="outlined-basic"
+                    label="Ngành"
+                    variant="outlined"
+                    onChange={(e) => setMajor(e.target.value)}
+                  />
+                  <TextField
+                    id="outlined-basic"
+                    label="Năm bắt đầu "
+                    variant="outlined"
+                    type="date"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    onChange={(e) => setToDate(e.target.value)}
+                  />
+                  <TextField
+                    id="outlined-basic"
+                    label="Năm tốt nghiệp "
+                    variant="outlined"
+                    type="date"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    onChange={(e) => setFromDate(e.target.value)}
+                  />
+                </DialogContent>
+                <DialogActions>
+                  <Button
+                    onClick={handleAddEdu}
+                    color="primary"
+                    variant="contained"
+                  >
+                    Thêm
+                  </Button>
+                  <Button onClick={handleClose} color="primary">
+                    Đóng
+                  </Button>
+                </DialogActions>
+              </Dialog>
             </div>
           </div>
         </div>

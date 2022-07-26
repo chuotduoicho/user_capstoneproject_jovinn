@@ -112,7 +112,7 @@ export const addCertificates = createAsyncThunk(
 );
 export const addEdus = createAsyncThunk("user/addEdus", async (edus) => {
   console.log(edus);
-  const data = await sellerService.updateDescriptionBio(edus);
+  const data = await sellerService.addEdus(edus);
   console.log("current user update", data);
   return data;
 });
