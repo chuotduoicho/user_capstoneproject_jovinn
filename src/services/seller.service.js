@@ -72,13 +72,9 @@ const addCertificates = (cers) => {
 };
 const addEdus = (edus) => {
   console.log(edus);
-  return axios.post(
-    API_URL + "/seller-details/education",
-
-    edus,
-
-    { headers: authHeader() }
-  );
+  return axios.post(API_URL + "/seller-details/education", edus, {
+    headers: authHeader(),
+  });
 };
 const deleteSkill = (id) => {
   console.log(id);

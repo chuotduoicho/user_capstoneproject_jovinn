@@ -29,7 +29,7 @@ function format(date) {
 
   return day + "-" + month + "-" + year;
 }
-export default function SellerEducate({ educations }) {
+export default function SellerEducate({ educations, id }) {
   const [editStatus, setEditStatus] = useState(false);
   const dispatch = useDispatch();
   const [error, setError] = useState("");
@@ -59,7 +59,15 @@ export default function SellerEducate({ educations }) {
     setOpen(false);
   };
   const handleAddEdu = () => {
-    const edus = { title, universityName, major, fromDate, toDate };
+    const edus = {
+      title,
+      universityName,
+      major,
+      fromDate,
+      toDate,
+      userId: id,
+      country: "Vietnam",
+    };
     dispatch(addEdus(edus))
       .unwrap()
       .then(() => {
@@ -122,7 +130,7 @@ export default function SellerEducate({ educations }) {
                               <Delete
                                 color="secondary"
                                 style={{ cursor: "pointer" }}
-                                onclick={() => handleEduRemove(item.id)}
+                                onClick={() => handleEduRemove(item.id)}
                               />
                             </TableCell>
                           )}
