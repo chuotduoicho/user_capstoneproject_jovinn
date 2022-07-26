@@ -46,6 +46,7 @@ export default function SellerHome() {
       navigate("/errorPage");
     } else {
       // dispatch(fetchServices());
+
       dispatch(fetchServicesByCategory(selected));
     }
   }, [user, selected]);
@@ -172,11 +173,17 @@ export default function SellerHome() {
       </div>
       <div style={{ display: "flex" }}>
         <SellerIntro description={currentUser.seller.descriptionBio} />
-        <SellerSkill skills={currentUser.seller.skills} />
+        <SellerSkill skills={currentUser.seller.skills} id={currentUser.id} />
       </div>
       <div style={{ display: "flex" }}>
-        <SellerEducate educations={currentUser.seller.educations} />
-        <SellerCertificate certificates={currentUser.seller.certificates} />
+        <SellerEducate
+          educations={currentUser.seller.educations}
+          userId={currentUser.id}
+        />
+        <SellerCertificate
+          certificates={currentUser.seller.certificates}
+          userId={currentUser.id}
+        />
       </div>
 
       <div className="sections">

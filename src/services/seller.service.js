@@ -50,23 +50,23 @@ const updateCertificate = (obj) => {
 };
 const addSkills = (skills) => {
   console.log(skills);
-  return axios.post(
-    API_URL + "/seller-details/skill",
+  return axios
+    .post(
+      API_URL + "/seller-details/skill",
 
-    {
       skills,
-    },
-    { headers: authHeader() }
-  );
+      { headers: authHeader() }
+    )
+    .then((response) => {
+      return response.data;
+    });
 };
 const addCertificates = (cers) => {
   console.log(cers);
   return axios.post(
     API_URL + "/seller-details/certificate",
 
-    {
-      cers,
-    },
+    cers,
     { headers: authHeader() }
   );
 };
@@ -75,9 +75,8 @@ const addEdus = (edus) => {
   return axios.post(
     API_URL + "/seller-details/education",
 
-    {
-      edus,
-    },
+    edus,
+
     { headers: authHeader() }
   );
 };

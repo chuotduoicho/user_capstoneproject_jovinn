@@ -14,20 +14,25 @@ import {
   fetchCurrentUser,
 } from "../../../redux/userSlice";
 import "./sellerSkill.scss";
-export default function SellerSkill({ skills }) {
+export default function SellerSkill({ skills, id }) {
   const dispatch = useDispatch();
   const [editStatus, setEditStatus] = useState(false);
-  // const [skills, setSkills] = useState(skill);
-  // console.log("skill", skill);
+  console.log("userId", id);
   function handleKeyDown(e) {
     if (e.key !== "Enter") return;
     const value = e.target.value;
     if (!value.trim()) return;
-    const skill = { name: value };
+    const skill = {
+      name: value,
+      level: "COMPETENT",
+      shortDescribe: "coding",
+      userId: id,
+    };
     dispatch(addSkills(skill))
       .unwrap()
       .then(() => {
         dispatch(fetchCurrentUser());
+        e.target.value = "";
       })
       .catch(() => {
         console.log("update error");
