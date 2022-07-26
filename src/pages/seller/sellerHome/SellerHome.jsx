@@ -178,11 +178,11 @@ export default function SellerHome() {
       <div style={{ display: "flex" }}>
         <SellerEducate
           educations={currentUser.seller.educations}
-          userId={currentUser.id}
+          id={currentUser.id}
         />
         <SellerCertificate
           certificates={currentUser.seller.certificates}
-          userId={currentUser.id}
+          id={currentUser.id}
         />
       </div>
 

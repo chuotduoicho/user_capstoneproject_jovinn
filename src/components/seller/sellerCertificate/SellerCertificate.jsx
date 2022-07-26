@@ -24,7 +24,7 @@ import {
   fetchCurrentUser,
 } from "../../../redux/userSlice";
 import "./sellerCertificate.scss";
-export default function SellerCertificate({ certificates }) {
+export default function SellerCertificate({ certificates, id }) {
   const [editStatus, setEditStatus] = useState(false);
   const [title, setTitle] = useState("");
   const [name, setName] = useState("");
@@ -41,7 +41,7 @@ export default function SellerCertificate({ certificates }) {
     setOpen(false);
   };
   const handleAddCer = () => {
-    const cers = { title, name, linkCer };
+    const cers = { title, name, linkCer, userId: id };
     dispatch(addCertificates(cers))
       .unwrap()
       .then(() => {
