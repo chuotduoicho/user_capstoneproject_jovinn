@@ -373,7 +373,7 @@ export default function BuyerManageWallet() {
 
   return (
     <div className="buyer_profile">
-      <BuyerHeader />
+      <BuyerHeader /> <h1 className="wallet_title">Quản lý ví</h1>
       <div className={classes.root}>
         <Paper className={classes.paper}>
           <EnhancedTableToolbar

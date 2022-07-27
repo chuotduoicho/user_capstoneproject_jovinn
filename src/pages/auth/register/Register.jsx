@@ -94,20 +94,24 @@ const Register = () => {
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
         />
-        <TextField
-          className="input"
-          variant="outlined"
-          label="Họ"
-          onChange={(e) => setFirstName(e.target.value)}
-          required
-        />
-        <TextField
-          className="input"
-          variant="outlined"
-          label="Tên"
-          onChange={(e) => setLastName(e.target.value)}
-          required
-        />
+        <div style={{ display: "flex" }}>
+          <TextField
+            className="input"
+            variant="outlined"
+            label="Họ"
+            onChange={(e) => setFirstName(e.target.value)}
+            style={{ marginRight: "50px" }}
+            required
+          />
+          <TextField
+            className="input"
+            variant="outlined"
+            label="Tên"
+            onChange={(e) => setLastName(e.target.value)}
+            required
+          />
+        </div>
+
         <TextField
           className="input"
           variant="outlined"
@@ -115,27 +119,7 @@ const Register = () => {
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-        <FormControl className="input_role">
-          <FormLabel component="legend">*Chọn vai trò :</FormLabel>
-          <RadioGroup
-            aria-label="gender"
-            name="role"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className="input_radio"
-          >
-            <FormControlLabel
-              value="BUYER"
-              control={<Radio />}
-              label="Người mua dịch vụ"
-            />
-            <FormControlLabel
-              value="SELLER"
-              control={<Radio />}
-              label="Người bán dịch vụ"
-            />
-          </RadioGroup>
-        </FormControl>
+
         <Button variant="outlined" className="btn" type="submit">
           Đăng kí
         </Button>

@@ -5,6 +5,10 @@ import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
 import {
   Avatar,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Container,
   FormControl,
   FormControlLabel,
@@ -92,6 +96,7 @@ export default function BuyerProfile() {
       dispatch(changePassword({ oldPassword, newPassword, confirmPassword }))
         .unwrap()
         .then(() => {
+          setOpen(false);
           setSuccessful(true);
         })
         .catch(() => {
@@ -285,7 +290,7 @@ export default function BuyerProfile() {
                 Đổi mật khẩu
               </Button>
             </div>
-
+            {/* 
             {open ? (
               <div className="form_right_row">
                 {" "}
@@ -325,7 +330,7 @@ export default function BuyerProfile() {
               </div>
             ) : (
               ""
-            )}
+            )} */}
             <div className="form_right_row">
               {message && (
                 <div
@@ -345,6 +350,54 @@ export default function BuyerProfile() {
               )}
             </div>
           </div>
+          <Dialog
+            fullWidth
+            maxWidth="sm"
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="max-width-dialog-title"
+          >
+            <DialogTitle id="max-width-dialog-title">Đổi mật khẩu</DialogTitle>
+            <DialogContent style={{ display: "flex", flexDirection: "column" }}>
+              {" "}
+              <TextField
+                className="input"
+                variant="outlined"
+                type="password"
+                label="Mật khẩu cũ"
+                onChange={(e) => setOldPassword(e.target.value)}
+                required
+              />
+              <TextField
+                className="input"
+                variant="outlined"
+                type="password"
+                label="Mật khẩu mới"
+                onChange={(e) => setNewPassword(e.target.value)}
+                required
+              />
+              <TextField
+                className="input"
+                variant="outlined"
+                type="password"
+                label="Xác nhận mật khẩu"
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={handleChangePassword}
+              >
+                Xác nhận
+              </Button>
+              <Button onClick={() => setOpen(false)} color="primary">
+                Hủy
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Container>
 
         <Contact />

@@ -293,7 +293,7 @@ export default function ServiceDetail() {
                   Tạo đặt hàng
                 </Button>
                 <Button onClick={handleClose} color="primary">
-                  Đóng
+                  Hủy
                 </Button>
               </DialogActions>
               {error !== "" && <Alert severity="error">{error}</Alert>}

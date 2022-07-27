@@ -108,7 +108,7 @@ export default function BuyerHome() {
       minPrice !== "" &&
       maxPrice === "" &&
       val.status === "ACTIVE" &&
-      val.packages[2].price >= minPrice
+      val.packages[0].price >= minPrice
     ) {
       return val;
     } else if (
@@ -119,7 +119,7 @@ export default function BuyerHome() {
       maxPrice === "" &&
       (val.title.toLowerCase().includes(search.toLowerCase()) ||
         val.description.toLowerCase().includes(search.toLowerCase())) &&
-      val.packages[2].price >= minPrice
+      val.packages[0].price >= minPrice
     ) {
       return val;
     } else if (
@@ -129,7 +129,7 @@ export default function BuyerHome() {
       minPrice !== "" &&
       maxPrice === "" &&
       val.subcategory.id.toLowerCase().includes(subCateId.toLowerCase()) &&
-      val.packages[2].price >= minPrice
+      val.packages[0].price >= minPrice
     ) {
       return val;
     } else if (
@@ -141,7 +141,7 @@ export default function BuyerHome() {
       val.subcategory.id.toLowerCase().includes(subCateId.toLowerCase()) &&
       (val.title.toLowerCase().includes(search.toLowerCase()) ||
         val.description.toLowerCase().includes(search.toLowerCase())) &&
-      val.packages[2].price >= minPrice
+      val.packages[0].price >= minPrice
     ) {
       return val;
     } else if (
@@ -150,7 +150,7 @@ export default function BuyerHome() {
       minPrice === "" &&
       maxPrice !== "" &&
       val.status === "ACTIVE" &&
-      val.packages[2].price <= maxPrice
+      val.packages[0].price <= maxPrice
     ) {
       return val;
     } else if (
@@ -161,7 +161,7 @@ export default function BuyerHome() {
       maxPrice !== "" &&
       (val.title.toLowerCase().includes(search.toLowerCase()) ||
         val.description.toLowerCase().includes(search.toLowerCase())) &&
-      val.packages[2].price <= maxPrice
+      val.packages[0].price <= maxPrice
     ) {
       return val;
     } else if (
@@ -171,7 +171,7 @@ export default function BuyerHome() {
       minPrice === "" &&
       maxPrice !== "" &&
       val.subcategory.id.toLowerCase().includes(subCateId.toLowerCase()) &&
-      val.packages[2].price <= maxPrice
+      val.packages[0].price <= maxPrice
     ) {
       return val;
     } else if (
@@ -183,7 +183,7 @@ export default function BuyerHome() {
       val.subcategory.id.toLowerCase().includes(subCateId.toLowerCase()) &&
       (val.title.toLowerCase().includes(search.toLowerCase()) ||
         val.description.toLowerCase().includes(search.toLowerCase())) &&
-      val.packages[2].price <= maxPrice
+      val.packages[0].price <= maxPrice
     ) {
       return val;
     } else if (
@@ -192,8 +192,8 @@ export default function BuyerHome() {
       minPrice !== "" &&
       maxPrice !== "" &&
       val.status === "ACTIVE" &&
-      val.packages[2].price >= minPrice &&
-      val.packages[2].price <= maxPrice
+      val.packages[0].price >= minPrice &&
+      val.packages[0].price <= maxPrice
     ) {
       return val;
     } else if (
@@ -204,8 +204,8 @@ export default function BuyerHome() {
       maxPrice !== "" &&
       (val.title.toLowerCase().includes(search.toLowerCase()) ||
         val.description.toLowerCase().includes(search.toLowerCase())) &&
-      val.packages[2].price >= minPrice &&
-      val.packages[2].price <= maxPrice
+      val.packages[0].price >= minPrice &&
+      val.packages[0].price <= maxPrice
     ) {
       return val;
     } else if (
@@ -215,8 +215,8 @@ export default function BuyerHome() {
       minPrice !== "" &&
       maxPrice !== "" &&
       val.subcategory.id.toLowerCase().includes(subCateId.toLowerCase()) &&
-      val.packages[2].price >= minPrice &&
-      val.packages[2].price <= maxPrice
+      val.packages[0].price >= minPrice &&
+      val.packages[0].price <= maxPrice
     ) {
       return val;
     } else if (
@@ -228,8 +228,8 @@ export default function BuyerHome() {
       val.subcategory.id.toLowerCase().includes(subCateId.toLowerCase()) &&
       (val.title.toLowerCase().includes(search.toLowerCase()) ||
         val.description.toLowerCase().includes(search.toLowerCase())) &&
-      val.packages[2].price >= minPrice &&
-      val.packages[2].price <= maxPrice
+      val.packages[0].price >= minPrice &&
+      val.packages[0].price <= maxPrice
     ) {
       return val;
     }

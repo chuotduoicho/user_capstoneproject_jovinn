@@ -14,7 +14,7 @@ import Card from "react-credit-cards";
 import "react-credit-cards/es/styles-compiled.css";
 import "./buyerPayment.scss";
 import Checkout from "../../../components/payment/Checkout";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addContract } from "../../../redux/contractSlice";
 import { fetchCurrentUser } from "../../../redux/userSlice";
@@ -28,11 +28,12 @@ export default function BuyerPayment() {
   const [error, setError] = useState("");
   const [successfull, setSuccessfull] = useState("");
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handlePayment = () => {
     dispatch(addContract(order))
       .unwrap()
       .then(() => {
-        console.log("add order success");
+        navigate("/buyerHome/manageOrder");
         setSuccessfull("Thanh toán thành công!");
         setError("");
       })

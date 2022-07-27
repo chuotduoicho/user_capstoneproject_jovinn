@@ -119,7 +119,7 @@ export default function SellerSkill({ skills, id }) {
                   className="sellerIntro_btnGroup"
                   style={{ justifyContent: "center" }}
                 >
-                  <Button onClick={handleNotEdit}>Hủy</Button>
+                  <Button onClick={handleNotEdit}>Xong</Button>
                 </ButtonGroup>
               )}
             </div>

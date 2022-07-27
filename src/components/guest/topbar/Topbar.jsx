@@ -2,7 +2,7 @@ import "./topbar.scss";
 import { SearchOutlined } from "@material-ui/icons";
 import Button from "@material-ui/core/Button";
 import { Link, useNavigate } from "react-router-dom";
-export default function Topbar({ menuOpen, setMenuOpen }) {
+export default function Topbar({ menuOpen, setMenuOpen, search }) {
   const navigate = useNavigate();
   return (
     <div className={"topbarHome " + (menuOpen && "active")}>
@@ -16,8 +16,13 @@ export default function Topbar({ menuOpen, setMenuOpen }) {
               type="text"
               placeholder="Tìm kiếm theo dịch vụ ..."
               className="search_text"
+              onChange={(e) => {
+                search(e.target.value);
+                setMenuOpen(false);
+                navigate("#service");
+              }}
             />
-            <Link to="#" style={{ textDecoration: "none" }}>
+            <Link to="#service" style={{ textDecoration: "none" }}>
               <SearchOutlined className="search_icon" />
             </Link>
           </div>

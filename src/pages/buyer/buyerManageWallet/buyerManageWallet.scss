@@ -1,7 +1,9 @@
 .buyer_profile {
   height: 100vh;
   overflow-x: hidden;
-
+  .wallet_title {
+    text-align: center;
+  }
   .sections_profile {
     width: 100%;
     height: calc(100vh - 70px);

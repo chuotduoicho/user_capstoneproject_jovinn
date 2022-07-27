@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { selectTopSellers } from "../../../redux/userSlice";
 import "./topseller.scss";
 
@@ -16,6 +17,7 @@ export default function Topseller() {
         );
   };
 
+  const navigate = useNavigate();
   return (
     <div className="topseller" id="works">
       <h1>NGƯỜI BÁN UY TÍN</h1>
@@ -28,7 +30,10 @@ export default function Topseller() {
             <div className="topseller_item">
               <div className="topseller_left">
                 <div className="topseller_leftContainer">
-                  <div className="topseller_imgContainer">
+                  <div
+                    className="topseller_imgContainer"
+                    onClick={() => navigate("/seller/" + d.id)}
+                  >
                     <img
                       src={
                         d.user.avatar

@@ -18,6 +18,7 @@ import { DeleteOutline, EditOutlined } from "@material-ui/icons";
 import React from "react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 import {
   addCertificates,
   deleteCer,
@@ -96,10 +97,11 @@ export default function SellerCertificate({ certificates, id }) {
                             {item.title}
                           </TableCell>
                           <TableCell align="right"> {item.name}</TableCell>
-
-                          <TableCell align="right">
-                            <a href={item.linkCer}>LINK</a>
-                          </TableCell>
+                          <Link to="{item.linkCer}">
+                            <TableCell align="right">
+                              <p>LINK</p>
+                            </TableCell>
+                          </Link>
                           {editStatus && (
                             <TableCell align="right">
                               <EditOutlined color="primary" />

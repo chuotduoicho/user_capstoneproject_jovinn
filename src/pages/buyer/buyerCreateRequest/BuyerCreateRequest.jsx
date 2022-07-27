@@ -25,6 +25,7 @@ import { Close, CloudUpload, AddSharp, RemoveSharp } from "@material-ui/icons";
 import Alert from "@material-ui/lab/Alert";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
 import Contact from "../../../components/guest/contact/Contact";
 import { selectAllCategories } from "../../../redux/categorySlice";
@@ -130,6 +131,7 @@ export default function BuyerCreateRequest() {
       .then(() => {
         dispatch(fetchRequestsBuyer());
         setSuccess("Tạo yêu cầu thành công!");
+        navigate("/buyerHome/manageRequest");
       })
       .catch(() => {
         setError("Tạo yêu cầu thất bại!");
@@ -141,6 +143,7 @@ export default function BuyerCreateRequest() {
   const handleFullScreenOpen = () => {
     setFullScreenOpen(true);
   };
+  const navigate = useNavigate();
   const handleFullScreenClose = (e) => {
     e.preventDefault();
     dispatch(addRequest(request))
@@ -148,6 +151,7 @@ export default function BuyerCreateRequest() {
       .then(() => {
         dispatch(fetchRequestsBuyer());
         setSuccess("Tạo yêu cầu thành công!");
+        navigate("/buyerHome/manageRequest");
       })
       .catch(() => {
         setError("Tạo yêu cầu thất bại!");
@@ -415,7 +419,7 @@ export default function BuyerCreateRequest() {
                 <InputAdornment position="end">
                   % Tổng chi phí (={" "}
                   {(stages.reduce(
-                    (total, item) => total + parseInt(item.price),
+                    (total, item) => total + parseInt(item.milestoneFee),
                     0
                   ) *
                     cancleFee) /

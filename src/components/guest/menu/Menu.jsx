@@ -8,13 +8,13 @@ export default function Menu({ menuOpen, setMenuOpen }) {
           <a href="#intro">Giới thiệu</a>
         </li>
         <li onClick={() => setMenuOpen(false)}>
-          <a href="#portfolio">Dịch vụ</a>
+          <a href="#service">Dịch vụ</a>
         </li>
         <li onClick={() => setMenuOpen(false)}>
-          <a href="#works">Top seller</a>
+          <a href="#topseller">Top seller</a>
         </li>
         <li onClick={() => setMenuOpen(false)}>
-          <a href="#testimonials">Về chúng tôi</a>
+          <a href="#about">Về chúng tôi</a>
         </li>
         <li onClick={() => setMenuOpen(false)}>
           <a href="#contact">Liên hệ</a>

@@ -71,17 +71,18 @@ const headCells = [
     label: "Số lượng",
   },
   {
-    id: "contractCancelFee",
-    numeric: true,
-    disablePadding: false,
-    label: "Phí hủy hợp đồng(%)",
-  },
-  {
     id: "totalPrice",
     numeric: true,
     disablePadding: false,
     label: "Tổng chi phí ($)",
   },
+  {
+    id: "contractCancelFee",
+    numeric: true,
+    disablePadding: false,
+    label: "Phí hủy hợp đồng(%)",
+  },
+
   {
     id: "expectCompleteDate",
     numeric: true,
@@ -335,9 +336,11 @@ export default function BuyerManageOrder() {
                         </TableCell>
                         <TableCell align="right">{row.quantity}</TableCell>
                         <TableCell align="right">
+                          {row.totalPrice} $
+                        </TableCell>{" "}
+                        <TableCell align="right">
                           {row.contractCancelFee} %
                         </TableCell>
-                        <TableCell align="right">{row.totalPrice} $</TableCell>
                         <TableCell align="right">
                           {row.expectCompleteDate}
                         </TableCell>{" "}

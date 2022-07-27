@@ -40,7 +40,7 @@ import {
 
 import { selectTopSellers } from "../../../redux/userSlice";
 import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function SellerCreateOffer() {
   const { requestId } = useParams();
@@ -57,7 +57,7 @@ export default function SellerCreateOffer() {
   const dispatch = useDispatch();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
+  const navigate = useNavigate();
   const sendOffer = () => {
     setError("");
 
@@ -75,6 +75,7 @@ export default function SellerCreateOffer() {
         .then(() => {
           dispatch(fetchRequestsSeller());
           setSuccess("Tạo đề nghị thành công!");
+          navigate("/sellerHome/manageOffer");
         })
         .catch(() => {
           setError("Tạo đề nghị thất bại!");

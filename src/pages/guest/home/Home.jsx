@@ -12,21 +12,27 @@ import { useDispatch } from "react-redux";
 import { fetchCategories } from "../../../redux/categorySlice";
 import { fetchServices } from "../../../redux/serviceSlice";
 import { fetchTopSellers } from "../../../redux/userSlice";
+import { useNavigate } from "react-router-dom";
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchCategories());
-    dispatch(fetchServices());
     dispatch(fetchTopSellers());
   }, []);
   return (
     <div className="app">
-      <Topbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-      <Menu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <Topbar
+        menuOpen={menuOpen}
+        setMenuOpen={setMenuOpen}
+        search={setSearch}
+      />
+      <Menu menuOpen={menuOpen} setMenuOpen={setMenuOpen} search={search} />
       <div className="sections">
         <Intro />
-        <ServiceFeature />
+        <ServiceFeature search={search} />
         <Topseller />
         <Aboutus />
         <Contact />

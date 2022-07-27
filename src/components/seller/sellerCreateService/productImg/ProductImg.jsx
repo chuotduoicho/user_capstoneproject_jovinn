@@ -11,6 +11,7 @@ export default function ProductImg({
   documentV,
 }) {
   const [file, setFile] = useState("");
+  console.log(file);
   return (
     <div>
       <form
