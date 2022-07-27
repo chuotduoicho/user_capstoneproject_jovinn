@@ -1,5 +1,6 @@
 import {
   Button,
+  CircularProgress,
   Container,
   Dialog,
   DialogActions,
@@ -15,8 +16,11 @@ import "react-credit-cards/es/styles-compiled.css";
 import "./buyerPayment.scss";
 import Checkout from "../../../components/payment/Checkout";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { addContract } from "../../../redux/contractSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addContract,
+  selectContractStatus,
+} from "../../../redux/contractSlice";
 import { fetchCurrentUser } from "../../../redux/userSlice";
 
 export default function BuyerPayment() {
@@ -29,6 +33,7 @@ export default function BuyerPayment() {
   const [successfull, setSuccessfull] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const status = useSelector(selectContractStatus);
   const handlePayment = () => {
     dispatch(addContract(order))
       .unwrap()
@@ -101,6 +106,9 @@ export default function BuyerPayment() {
           {error !== "" && <Alert severity="error">{error}</Alert>}
           {successfull !== "" && (
             <Alert severity="success">{successfull}</Alert>
+          )}
+          {status == "loading" && (
+            <CircularProgress style={{ margin: "0 auto" }} />
           )}
         </div>
         <Dialog

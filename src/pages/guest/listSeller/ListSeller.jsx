@@ -201,7 +201,7 @@ const EnhancedTableToolbar = (props) => {
           id="tableTitle"
           component="div"
         >
-          Danh sách người bán được mời
+          Danh sách ứng tuyển
         </Typography>
       )}
 

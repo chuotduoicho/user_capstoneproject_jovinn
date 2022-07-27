@@ -1,15 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {};
 
-const messageSlice = createSlice({
-  name: "url",
+const fileSlice = createSlice({
+  name: "file",
   initialState,
   reducers: {
-    setMessage: (state, action) => {
-      return { message: action.payload };
+    setUrl: (state, action) => {
+      return { file: action.payload };
     },
-    clearMessage: () => {
-      return { message: "" };
+    clearUrl: () => {
+      return { file: "" };
     },
   },
 });

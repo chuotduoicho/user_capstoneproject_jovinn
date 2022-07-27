@@ -1,4 +1,4 @@
-import { Button, Container } from "@material-ui/core";
+import { Button, CircularProgress, Container } from "@material-ui/core";
 import React, { useState } from "react";
 import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
 import Contact from "../../../components/guest/contact/Contact";
@@ -8,11 +8,11 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   acceptOrder,
   fetchContracts,
+  rejectOrder,
   selectContractSellerById,
+  selectContractStatus,
 } from "../../../redux/contractSlice";
 import { useNavigate, useParams } from "react-router-dom";
-import Rating from "@material-ui/lab/Rating";
-import { StarBorder } from "@material-ui/icons";
 import Alert from "@material-ui/lab/Alert";
 import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
 
@@ -21,10 +21,11 @@ export default function SellerOrderDetail() {
   const contractDetail = useSelector((state) =>
     selectContractSellerById(state, orderId)
   );
-  console.log("contractDetail", contractDetail);
+  const status = useSelector(selectContractStatus);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleAcceptOrder = (e) => {
     e.preventDefault();
     dispatch(acceptOrder(orderId))
@@ -32,9 +33,23 @@ export default function SellerOrderDetail() {
       .then(() => {
         dispatch(fetchContracts());
         setSuccess("Duyệt đơn thành công!");
+        navigate("/sellerHome/manageContract");
       })
       .catch(() => {
         setError("Duyệt đơn thất bại!");
+      });
+  };
+  const handleRejectOrder = (e) => {
+    e.preventDefault();
+    dispatch(rejectOrder(orderId))
+      .unwrap()
+      .then(() => {
+        dispatch(fetchContracts());
+        navigate("/sellerHome/manageOrder");
+        setSuccess("Từ chối đơn thành công!");
+      })
+      .catch(() => {
+        setError("Từ chối đơn thất bại!");
       });
   };
 
@@ -85,11 +100,19 @@ export default function SellerOrderDetail() {
           >
             Duyệt đơn
           </Button>
-          <Button variant="contained" color="default">
-            Quay lại
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleRejectOrder}
+          >
+            Từ chối
           </Button>
         </div>{" "}
+        {status == "loading" && (
+          <CircularProgress style={{ margin: "0 auto" }} />
+        )}
       </Container>
+
       {error !== "" && <Alert severity="error">{error}</Alert>}
       {success !== "" && <Alert severity="success">{success}</Alert>}
       <div className="sections_profile">

@@ -12,11 +12,17 @@ import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
 import Contact from "../../../components/guest/contact/Contact";
 import "react-credit-cards/es/styles-compiled.css";
 import "./buyerContractDetail.scss";
-import { useSelector } from "react-redux";
-import { selectContractBuyerById } from "../../../redux/contractSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  acceptDeleveryContract,
+  addComment,
+  addRating,
+  selectContractBuyerById,
+} from "../../../redux/contractSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import Rating from "@material-ui/lab/Rating";
 import { StarBorder } from "@material-ui/icons";
+import Alert from "@material-ui/lab/Alert";
 
 export default function BuyerContractDetail() {
   const { contractId } = useParams();
@@ -27,9 +33,35 @@ export default function BuyerContractDetail() {
   const [open, setOpen] = useState(false);
   const [fullWidth, setFullWidth] = useState(true);
   const [maxWidth, setMaxWidth] = useState("sm");
-  const handleRating = () => {};
+  const [text, setText] = useState("");
+  const [ratingPoint, setRatingPoint] = useState(0);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const handleComment = () => {
+    const obj = { ratingPoint: ratingPoint, comment: text };
+    dispatch(addRating({ contractId, obj }))
+      .unwrap()
+      .then(() => {
+        setSuccess("Xác nhận bàn giao thành công!");
+        navigate("/buyerHome/manageContract");
+        setOpen(false);
+      })
+      .catch(() => {
+        setError("Xác nhận bàn giao thất bại!");
+      });
+  };
   const handleOpen = () => {
-    setOpen(true);
+    dispatch(acceptDeleveryContract(contractId))
+      .unwrap()
+      .then(() => {
+        setSuccess("Xác nhận bàn giao thành công!");
+        setOpen(true);
+      })
+      .catch(() => {
+        setError("Xác nhận bàn giao thất bại!");
+      });
   };
   const handleClose = () => {
     setOpen(false);
@@ -70,9 +102,9 @@ export default function BuyerContractDetail() {
         <div className="paymentRow">
           <h2>Các đề nghị phát sinh: {contractDetail.extraOffers}</h2>
         </div>{" "}
-        <div className="paymentRow">
+        {/* <div className="paymentRow">
           <h2>Bình luận: {contractDetail.comments}</h2>
-        </div>{" "}
+        </div>{" "} */}
         <div className="paymentRow">
           <Button variant="contained" color="primary" onClick={handleOpen}>
             Xác nhận bàn giao
@@ -92,8 +124,9 @@ export default function BuyerContractDetail() {
             <div className="profession_row">
               <Rating
                 name="customized-empty"
-                defaultValue={2}
-                precision={0.5}
+                onChange={(e) => setRatingPoint(e.target.value)}
+                defaultValue={ratingPoint}
+                precision={1}
                 emptyIcon={<StarBorder fontSize="inherit" />}
               />
               <TextField
@@ -103,11 +136,12 @@ export default function BuyerContractDetail() {
                 multiline
                 rows={4}
                 style={{ width: "100%" }}
+                onChange={(e) => setText(e.target.value)}
               />
             </div>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleRating} color="primary" variant="contained">
+            <Button onClick={handleComment} color="primary" variant="contained">
               Xác nhận
             </Button>
             <Button onClick={handleClose} color="primary">
@@ -116,6 +150,8 @@ export default function BuyerContractDetail() {
           </DialogActions>
         </Dialog>
       </Container>
+      {error !== "" && <Alert severity="error">{error}</Alert>}
+      {success !== "" && <Alert severity="success">{success}</Alert>}
       <div className="sections_profile">
         <Contact />
       </div>

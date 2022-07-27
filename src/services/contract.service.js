@@ -34,11 +34,48 @@ const acceptOrder = (orderId) => {
       return response.data;
     });
 };
+const acceptDeleveryContract = (orderId) => {
+  return axios
+    .put(API_URL + "/contract/delivery-accept/" + orderId, null, {
+      headers: authHeader(),
+    })
+    .then((response) => {
+      return response.data;
+    });
+};
+const uploadDeleveryContract = (orderId) => {
+  return axios
+    .post(
+      API_URL + "/contract/delivery/" + orderId,
+      {
+        file: "dsfsdfsdf",
+        description: "sadsafsdfdds",
+      },
+      {
+        headers: authHeader(),
+      }
+    )
+    .then((response) => {
+      return response.data;
+    });
+};
+const rejectOrder = (orderId) => {
+  return axios
+    .put(API_URL + "/contract/seller/reject/" + orderId, null, {
+      headers: authHeader(),
+    })
+    .then((response) => {
+      return response.data;
+    });
+};
 const contractService = {
   addContract,
   getAllContracts,
   acceptOrder,
   getContracts,
+  rejectOrder,
+  acceptDeleveryContract,
+  uploadDeleveryContract,
 };
 
 export default contractService;

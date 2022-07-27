@@ -38,11 +38,44 @@ export const acceptOrder = createAsyncThunk(
     return data;
   }
 );
+export const acceptDeleveryContract = createAsyncThunk(
+  "contract/acceptDeleveryContract",
+  async (orderId) => {
+    console.log(orderId);
+    const data = await contractService.acceptDeleveryContract(orderId);
+    console.log(data);
+    return data;
+  }
+);
+export const uploadDeleveryContract = createAsyncThunk(
+  "contract/uploadDeleveryContract",
+  async (orderId) => {
+    console.log(orderId);
+    const data = await contractService.uploadDeleveryContract(orderId);
+    console.log(data);
+    return data;
+  }
+);
+export const rejectOrder = createAsyncThunk(
+  "contract/rejectOrder",
+  async (orderId) => {
+    console.log(orderId);
+    const data = await contractService.rejectOrder(orderId);
+    console.log(data);
+    return data;
+  }
+);
+export const addRating = createAsyncThunk("contract/addRating", async (obj) => {
+  console.log(obj);
+  const data = await commentService.addRating(obj);
+  console.log(data);
+  return data;
+});
 export const addComment = createAsyncThunk(
   "contract/addComment",
-  async (id, text) => {
-    console.log(id, text);
-    const data = await commentService.addComment(id, text);
+  async (obj) => {
+    console.log(obj);
+    const data = await commentService.addComment(obj);
     console.log(data);
     return data;
   }
@@ -99,6 +132,15 @@ const contractSlice = createSlice({
     [addContract.rejected]: (state, action) => {
       state.status = "failed";
     },
+    [rejectOrder.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [rejectOrder.fulfilled]: (state, { payload }) => {
+      state.status = "success";
+    },
+    [rejectOrder.rejected]: (state, action) => {
+      state.status = "failed";
+    },
     [acceptOrder.pending]: (state, action) => {
       state.status = "loading";
     },
@@ -106,6 +148,33 @@ const contractSlice = createSlice({
       state.status = "success";
     },
     [acceptOrder.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [acceptDeleveryContract.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [acceptDeleveryContract.fulfilled]: (state, { payload }) => {
+      state.status = "success";
+    },
+    [acceptDeleveryContract.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [uploadDeleveryContract.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [uploadDeleveryContract.fulfilled]: (state, { payload }) => {
+      state.status = "success";
+    },
+    [uploadDeleveryContract.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [addRating.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [addRating.fulfilled]: (state, { payload }) => {
+      state.status = "success";
+    },
+    [addRating.rejected]: (state, action) => {
       state.status = "failed";
     },
     [addComment.pending]: (state, action) => {
