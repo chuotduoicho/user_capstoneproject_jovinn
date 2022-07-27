@@ -17,9 +17,10 @@ export default function Overview({
   titleDf,
   descriptionDf,
   subCateIdDf,
+  listCategory,
+  category,
+  setCategory,
 }) {
-  const category = useSelector(selectAllCategories);
-  const [cate, setCate] = useState(category[0]);
   console.log("title", titleDf);
   console.log("description", descriptionDf);
   console.log("subCateId", subCateIdDf);
@@ -76,11 +77,11 @@ export default function Overview({
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            value={cate}
             label="Danh mục"
-            onChange={(e) => setCate(e.target.value)}
+            defaultValue={category}
+            onChange={setCategory}
           >
-            {category.map((item) => (
+            {listCategory.map((item) => (
               <MenuItem value={item}>{item.name}</MenuItem>
             ))}
           </Select>
@@ -99,7 +100,7 @@ export default function Overview({
             label="Danh mục con"
             onChange={subCateId}
           >
-            {cate.subCategories.map((item) => (
+            {category.subCategories.map((item) => (
               <MenuItem value={item.id}>{item.name}</MenuItem>
             ))}
           </Select>

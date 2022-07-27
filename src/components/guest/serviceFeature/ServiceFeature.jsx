@@ -12,11 +12,11 @@ import { useEffect } from "react";
 export default function ServiceFeature({ search }) {
   const listCategory = useSelector(selectAllCategories);
   const listService = useSelector(selectAllServices);
-  const [selected, setSelected] = useState(listCategory[0].id);
+  const [selected, setSelected] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(fetchServicesByCategory(selected));
+    if (selected != "") dispatch(fetchServicesByCategory(selected));
   }, [selected]);
   return (
     <div className="portfolio" id="service">

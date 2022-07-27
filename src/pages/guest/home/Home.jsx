@@ -21,6 +21,7 @@ export default function Home() {
   useEffect(() => {
     dispatch(fetchCategories());
     dispatch(fetchTopSellers());
+    dispatch(fetchServices());
   }, []);
   return (
     <div className="app">

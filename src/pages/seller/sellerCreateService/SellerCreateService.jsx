@@ -32,6 +32,7 @@ import {
 } from "../../../redux/serviceSlice";
 import { selectCurrentUser } from "../../../redux/userSlice";
 import Alert from "@material-ui/lab/Alert";
+import { selectAllCategories } from "../../../redux/categorySlice";
 const QontoConnector = withStyles({
   alternativeLabel: {
     top: 10,
@@ -211,6 +212,11 @@ export default function SellerCreateService() {
   const [subCateId, setSubCateId] = useState(
     serviceId ? serviceDetail.subcategory.id : ""
   );
+  const listCategory = useSelector(selectAllCategories);
+  const [category, setCategory] = useState(listCategory[0]);
+  const handleChangeCategory = (e) => {
+    setCategory(e.target.value);
+  };
   const handleChangeTitle = (e) => {
     setTitle(e.target.value);
   };
@@ -298,6 +304,9 @@ export default function SellerCreateService() {
             titleDf={title}
             descriptionDf={description}
             subCateIdDf={subCateId}
+            listCategory={listCategory}
+            category={category}
+            setCategory={handleChangeCategory}
           />
         );
       case 1:
