@@ -18,7 +18,7 @@ import { DeleteOutline, EditOutlined } from "@material-ui/icons";
 import React from "react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useHref, useNavigate } from "react-router-dom";
 import {
   addCertificates,
   deleteCer,
@@ -30,6 +30,7 @@ export default function SellerCertificate({ certificates, id }) {
   const [title, setTitle] = useState("");
   const [name, setName] = useState("");
   const [linkCer, setLinkCer] = useState("");
+  const navigate = useNavigate();
   const handleEdit = (e) => {
     setEditStatus(true);
   };
@@ -97,11 +98,11 @@ export default function SellerCertificate({ certificates, id }) {
                             {item.title}
                           </TableCell>
                           <TableCell align="right"> {item.name}</TableCell>
-                          <Link to="{item.linkCer}">
-                            <TableCell align="right">
-                              <p>LINK</p>
-                            </TableCell>
-                          </Link>
+
+                          <TableCell align="right">
+                            <a href={`//${item.linkCer}`}>LINK</a>
+                          </TableCell>
+
                           {editStatus && (
                             <TableCell align="right">
                               <EditOutlined color="primary" />
