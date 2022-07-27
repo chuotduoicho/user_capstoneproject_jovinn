@@ -58,8 +58,10 @@ export default function BuyerProfile() {
     const id = currentUser.id;
     setSuccessful(false);
     setError("");
-    if (!/^[0-9]\d{9}$/.test(phone)) {
-      setError("Số điện thoại phải có độ dài 10 số!");
+    if (!/((09|03|07|08|05)+([0-9]{8})\b)/.test(phone)) {
+      setError(
+        "Số điện thoại phải có độ dài 10 số và bắt đầu bằng 09,03,07,08,05!"
+      );
     } else {
       dispatch(
         updateUserProfile({
