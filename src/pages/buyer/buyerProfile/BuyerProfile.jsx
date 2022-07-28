@@ -50,9 +50,8 @@ export default function BuyerProfile() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [file, setFile] = useState(null);
-  const UPLOAD_ENDPOINT = "localhost:8080/api/v1/files/";
-
   const { message } = useSelector((state) => state.message);
+  const { url } = useSelector((state) => state.url);
   const [error, setError] = useState("");
   const [isChange, setIsChange] = useState(true);
   const dispatch = useDispatch();
@@ -60,7 +59,7 @@ export default function BuyerProfile() {
     dispatch(clearMessage());
   }, [dispatch]);
   const handleUploadFile = async (e) => {
-    setFile(e.target.files[0]);
+    setFile(e.target.value);
     // let res = await uploadFile(file);
     // const obj = { file: file, id: currentUser.id, type: "AVATAR" };
     const formData = new FormData();
@@ -78,16 +77,6 @@ export default function BuyerProfile() {
         setSuccessful(false);
       });
   };
-  // const uploadFile = async (file) => {
-  //   const formData = new FormData();
-  //   formData.append("avatar", file);
-  //   console.log(formData);
-  //   return await axios.post(UPLOAD_ENDPOINT, formData, {
-  //     headers: {
-  //       "content-type": "multipart/form-data",
-  //     },
-  //   });
-  // };
   const handleUpdate = () => {
     const id = currentUser.id;
     setSuccessful(false);
@@ -116,7 +105,6 @@ export default function BuyerProfile() {
         })
         .catch(() => {
           setSuccessful(false);
-          <Alert severity="error">Cập nhật thất bại!</Alert>;
         });
     }
   };
@@ -148,7 +136,6 @@ export default function BuyerProfile() {
   const handleClose = () => {
     setOpen(false);
   };
-  console.log(format(currentUser.birthDate));
   return (
     <div className="buyer_profile">
       <BuyerHeader />
@@ -159,7 +146,11 @@ export default function BuyerProfile() {
             <Avatar
               className="image"
               alt="Remy Sharp"
-              src="https://images.pexels.com/photos/941693/pexels-photo-941693.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
+              src={
+                url
+                  ? url
+                  : "https://images.pexels.com/photos/941693/pexels-photo-941693.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
+              }
             />
             <TextField
               required
