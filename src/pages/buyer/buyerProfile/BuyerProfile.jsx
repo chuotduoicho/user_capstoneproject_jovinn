@@ -26,7 +26,6 @@ import {
   uploadFile,
 } from "../../../redux/userSlice";
 import { clearMessage } from "../../../redux/message";
-import axios from "axios";
 function format(date) {
   date = new Date(date);
 
@@ -46,6 +45,7 @@ export default function BuyerProfile() {
   const [phone, setPhone] = useState(currentUser.phoneNumber);
   const [address, setAddress] = useState(currentUser.country);
   const [city, setCity] = useState(currentUser.city);
+  const [avatar, setAvatar] = useState(currentUser.avatar);
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -57,11 +57,10 @@ export default function BuyerProfile() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(clearMessage());
-  }, [dispatch]);
+    if (url) setAvatar(url);
+  }, [dispatch, url]);
   const handleUploadFile = async (e) => {
-    setFile(e.target.value);
-    // let res = await uploadFile(file);
-    // const obj = { file: file, id: currentUser.id, type: "AVATAR" };
+    setFile(e.target.files[0]);
     const formData = new FormData();
     console.log(file);
     formData.append("file", e.target.files[0]);
@@ -71,6 +70,7 @@ export default function BuyerProfile() {
       .unwrap()
       .then(() => {
         setSuccessful(true);
+        setIsChange(false);
         setError("Cập nhật thông tin thành công!");
       })
       .catch(() => {
@@ -80,6 +80,7 @@ export default function BuyerProfile() {
   const handleUpdate = () => {
     const id = currentUser.id;
     setSuccessful(false);
+    console.log(avatar);
     setError("");
     if (!/((09|03|07|08|05)+([0-9]{8})\b)/.test(phone)) {
       setError(
@@ -96,6 +97,7 @@ export default function BuyerProfile() {
           phone,
           address,
           city,
+          avatar,
         })
       )
         .unwrap()
@@ -146,11 +148,7 @@ export default function BuyerProfile() {
             <Avatar
               className="image"
               alt="Remy Sharp"
-              src={
-                url
-                  ? url
-                  : "https://images.pexels.com/photos/941693/pexels-photo-941693.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
-              }
+              src={file ? URL.createObjectURL(file) : avatar}
             />
             <TextField
               required
@@ -318,47 +316,6 @@ export default function BuyerProfile() {
                 Đổi mật khẩu
               </Button>
             </div>
-            {/* 
-            {open ? (
-              <div className="form_right_row">
-                {" "}
-                <TextField
-                  className="input"
-                  variant="outlined"
-                  type="password"
-                  label="Mật khẩu cũ"
-                  onChange={(e) => setOldPassword(e.target.value)}
-                  required
-                />
-                <TextField
-                  className="input"
-                  variant="outlined"
-                  type="password"
-                  label="Mật khẩu mới"
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  required
-                />
-                <TextField
-                  className="input"
-                  variant="outlined"
-                  type="password"
-                  label="Xác nhận mật khẩu"
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                />
-                <Button
-                  variant="contained"
-                  className="btn"
-                  color="primary"
-                  style={{ height: "55px" }}
-                  onClick={handleChangePassword}
-                >
-                  Xác nhận
-                </Button>
-              </div>
-            ) : (
-              ""
-            )} */}
             <div className="form_right_row">
               {message && (
                 <div

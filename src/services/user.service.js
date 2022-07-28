@@ -36,6 +36,7 @@ const updateUserProfile = ({
   phone,
   address,
   city,
+  avatar,
 }) => {
   console.log({
     id,
@@ -46,6 +47,7 @@ const updateUserProfile = ({
     phone,
     address,
     city,
+    avatar,
   });
   return axios
     .put(
@@ -59,6 +61,7 @@ const updateUserProfile = ({
         phoneNumber: phone,
         country: address,
         city: city,
+        avatar: avatar,
       },
       { headers: authHeader() }
     )

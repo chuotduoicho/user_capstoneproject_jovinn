@@ -100,9 +100,13 @@ export default function BuyerHeader({ search }) {
             onClick={handleToggle}
             className="item"
           >
-            {/* Xin chào, {currentUser.username} */}
+            Xin chào, {currentUser.username}
             <img
-              src="https://images.pexels.com/photos/941693/pexels-photo-941693.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
+              src={
+                currentUser.avatar
+                  ? currentUser.avatar
+                  : "https://images.pexels.com/photos/941693/pexels-photo-941693.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
+              }
               alt=""
               className="avatar"
             />

@@ -55,6 +55,7 @@ export const updateUserProfile = createAsyncThunk(
     phone,
     address,
     city,
+    avatar,
   }) => {
     console.log({
       id,
@@ -65,6 +66,7 @@ export const updateUserProfile = createAsyncThunk(
       phone,
       address,
       city,
+      avatar,
     });
     const data = await UserService.updateUserProfile({
       id,
@@ -75,6 +77,7 @@ export const updateUserProfile = createAsyncThunk(
       phone,
       address,
       city,
+      avatar,
     });
     console.log("current user update", data);
     return data;

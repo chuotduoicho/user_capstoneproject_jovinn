@@ -248,11 +248,13 @@ export default function BuyerHome() {
   return (
     <div className="buyerHome">
       <BuyerHeader search={setSearch} />
+
       <div className="buyerHome_form">
         <div className="buyerHome_left">
           <div className="listSearch">
             <h1 className="lsTitle">
-              Lọc dịch vụ <FilterListOutlined />
+              Lọc dịch vụ
+              <FilterListOutlined />
             </h1>
             <div className="lsItem">
               <FormControl fullWidth>
