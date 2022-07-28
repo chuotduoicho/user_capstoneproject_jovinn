@@ -23,7 +23,11 @@ import {
 } from "../../../redux/serviceSlice";
 import Pagination from "@material-ui/lab/Pagination";
 import Rating from "@material-ui/lab/Rating";
-import { fetchCurrentUser, selectCurrentUser } from "../../../redux/userSlice";
+import {
+  fetchCurrentUser,
+  fetchWallet,
+  selectCurrentUser,
+} from "../../../redux/userSlice";
 import usePagination from "../../../Pagination";
 import { fetchRequestsBuyer } from "../../../redux/requestSlice";
 export default function BuyerHome() {
@@ -49,6 +53,7 @@ export default function BuyerHome() {
       dispatch(fetchCurrentUser());
       dispatch(fetchServicesByCategory(selected));
       dispatch(fetchRequestsBuyer());
+      dispatch(fetchWallet());
     }
   }, [user, selected]);
 

@@ -33,9 +33,24 @@ import {
   InputAdornment,
   TextField,
 } from "@material-ui/core";
-import { Link } from "react-router-dom";
-import { AccountBalanceWallet } from "@material-ui/icons";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
+import { AccountBalanceWallet, ArrowUpward } from "@material-ui/icons";
 import Checkout from "../../../components/payment/Checkout";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchWallet,
+  selectWallet,
+  selectWalletTransactions,
+  topup,
+  topupSuccess,
+} from "../../../redux/userSlice";
+import { clearMessage } from "../../../redux/message";
 function createData(description, subCate, skills, price, cancleFee) {
   return { description, subCate, skills, price, cancleFee };
 }
@@ -87,32 +102,25 @@ const headCells = [
     id: "description",
     numeric: false,
     disablePadding: false,
-    label: "Mô tả",
+    label: "Id",
   },
   {
     id: "subCate",
     numeric: true,
     disablePadding: false,
-    label: "Danh mục con",
+    label: "Mã chuyển tiền",
   },
-  { id: "skills", numeric: true, disablePadding: false, label: "Kĩ năng" },
   {
     id: "price",
     numeric: true,
     disablePadding: false,
-    label: "Tổng chi phí (g)",
+    label: "Nội dung",
   },
   {
     id: "cancleFee",
     numeric: true,
     disablePadding: false,
-    label: "Phí hủy hợp đồng",
-  },
-  {
-    id: "action",
-    numeric: true,
-    disablePadding: false,
-    label: "",
+    label: "Số tiền giao dịch",
   },
 ];
 
@@ -133,14 +141,6 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow>
-        {/* <TableCell padding="checkbox">
-          <Checkbox
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{ "aria-label": "select all desserts" }}
-          />
-        </TableCell> */}
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
@@ -202,6 +202,7 @@ const EnhancedTableToolbar = (props) => {
   const { numSelected } = props;
   const { handleOpenPayment } = props;
   const { price } = props;
+  const { income } = props;
   return (
     <Toolbar
       className={clsx(classes.root, {
@@ -234,7 +235,7 @@ const EnhancedTableToolbar = (props) => {
             component="div"
           >
             <AccountBalanceWallet />
-            &nbsp; {price} $
+            &nbsp; {price} $ <ArrowUpward /> {income} $
           </Typography>
         </>
       )}
@@ -288,6 +289,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 export default function BuyerManageWallet() {
+  const wallet = useSelector(selectWallet);
+  const rows = useSelector(selectWalletTransactions);
+
+  const param = useLocation().search;
+  console.log(wallet);
+  const { message } = useSelector((state) => state.message);
+
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
@@ -300,8 +308,10 @@ export default function BuyerManageWallet() {
 
   const [openPayment2, setOpenPayment2] = useState(false);
   const [error, setError] = useState("");
-  const [successfull, setSuccessfull] = useState("");
-  const [price, setPrice] = useState("");
+  const [success, setSuccess] = useState("");
+  const [price, setPrice] = useState(wallet.withdraw);
+
+  console.log(rows);
   const handleOpenPayment = () => {
     setOpenPayment(true);
   };
@@ -309,11 +319,20 @@ export default function BuyerManageWallet() {
   const handleClosePayment = () => {
     setOpenPayment(false);
   };
-  const handleOpenPayment2 = () => {
-    setOpenPayment2(true);
-    setOpenPayment(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const handleOpenPayment2 = (e) => {
+    // e.preventDefault();
+    const obj = { charge: price, currency: "USD" };
+    dispatch(topup(obj))
+      .unwrap()
+      .then(() => {
+        setOpenPayment(false);
+      })
+      .catch(() => {
+        setError("thất bại!");
+      });
   };
-
   const handleClosePayment2 = () => {
     setOpenPayment2(false);
   };
@@ -371,6 +390,20 @@ export default function BuyerManageWallet() {
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
+  useEffect(() => {
+    dispatch(clearMessage());
+    if (message) navigate(`//${message.slice(8)}`);
+    if (param) {
+      dispatch(topupSuccess(param))
+        .unwrap()
+        .then(() => {
+          setSuccess("thafnh ocng bại!");
+        })
+        .catch(() => {
+          setError("thất bại!");
+        });
+    }
+  }, [dispatch, message, param]);
   return (
     <div className="buyer_profile">
       <BuyerHeader /> <h1 className="wallet_title">Quản lý ví</h1>
@@ -379,7 +412,8 @@ export default function BuyerManageWallet() {
           <EnhancedTableToolbar
             numSelected={selected.length}
             handleOpenPayment={handleOpenPayment}
-            price={price}
+            price={wallet.withdraw}
+            income={wallet.income}
           />
           <TableContainer>
             <Table

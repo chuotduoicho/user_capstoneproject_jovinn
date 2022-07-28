@@ -18,6 +18,15 @@ const getUser = () => {
       return response.data;
     });
 };
+const getWallet = () => {
+  return axios
+    .get(API_URL + "/wallet", { headers: authHeader() })
+    .then((response) => {
+      console.log(response.data);
+      localStorage.setItem("wallet", JSON.stringify(response.data));
+      return response.data;
+    });
+};
 const updateUserProfile = ({
   id,
   firstName,
@@ -97,6 +106,7 @@ const userService = {
   updateUserProfile,
   joinSeller,
   changePassword,
+  getWallet,
 };
 
 export default userService;

@@ -1,18 +1,32 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import sellerService from "../services/seller.service";
+import urlService from "../services/url.service";
 import UserService from "../services/user.service";
+import walletService from "../services/wallet.service";
 import { setMessage } from "./message";
 const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-
+const wallet = JSON.parse(localStorage.getItem("wallet"));
 const topSeller = JSON.parse(localStorage.getItem("topSeller"));
 const initialState =
-  currentUser && topSeller
-    ? { topSellers: topSeller, currentUser: currentUser, status: "idle" }
-    : { topSellers: [], currentUser: {}, status: "idle" };
+  currentUser && topSeller && wallet
+    ? {
+        topSellers: topSeller,
+        currentUser: currentUser,
+        wallet: wallet,
+        status: "idle",
+      }
+    : { topSellers: [], currentUser: {}, wallet: {}, status: "idle" };
 export const fetchTopSellers = createAsyncThunk(
   "user/fetchTopSellers",
   async () => {
     const data = await UserService.getTopSellers();
+    return data;
+  }
+);
+export const topupSuccess = createAsyncThunk(
+  "user/topupSuccess",
+  async (id) => {
+    const data = await walletService.topupSuccess(id);
     return data;
   }
 );
@@ -24,6 +38,11 @@ export const fetchCurrentUser = createAsyncThunk(
     return data;
   }
 );
+export const fetchWallet = createAsyncThunk("user/fetchWallet", async () => {
+  const data = await UserService.getWallet();
+  console.log("wallet", data);
+  return data;
+});
 export const updateUserProfile = createAsyncThunk(
   "user/updateUserProfile",
   async ({
@@ -95,6 +114,7 @@ export const updateEducation = createAsyncThunk(
     return data;
   }
 );
+
 export const addSkills = createAsyncThunk("user/addSkills", async (skill) => {
   console.log(skill);
   const data = await sellerService.addSkills(skill);
@@ -165,6 +185,43 @@ export const changePassword = createAsyncThunk(
     }
   }
 );
+export const topup = createAsyncThunk("user/topup", async (obj, thunkAPI) => {
+  try {
+    console.log(obj);
+    const response = await walletService.topup(obj);
+    console.log(response);
+    thunkAPI.dispatch(setMessage(response));
+    return response.data;
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) ||
+      error.message ||
+      error.toString();
+    thunkAPI.dispatch(setMessage(message));
+    return thunkAPI.rejectWithValue();
+  }
+});
+export const uploadFile = createAsyncThunk(
+  "user/uploadFile",
+  async (obj, thunkAPI) => {
+    try {
+      console.log(obj);
+      const response = await urlService.uploadFile(obj);
+      console.log(response);
+      thunkAPI.dispatch(setMessage(response.data.url));
+      return response.data;
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      thunkAPI.dispatch(setMessage(message));
+      return thunkAPI.rejectWithValue();
+    }
+  }
+);
 const userSlice = createSlice({
   name: "user",
   initialState,
@@ -177,6 +234,16 @@ const userSlice = createSlice({
       state.status = "success";
     },
     [fetchTopSellers.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [fetchWallet.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [fetchWallet.fulfilled]: (state, { payload }) => {
+      state.wallet = payload;
+      state.status = "success";
+    },
+    [fetchWallet.rejected]: (state, action) => {
       state.status = "failed";
     },
     [fetchCurrentUser.pending]: (state, action) => {
@@ -233,6 +300,24 @@ const userSlice = createSlice({
       state.status = "success";
     },
     [updateCertificate.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [topup.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [topup.fulfilled]: (state, { payload }) => {
+      state.status = "success";
+    },
+    [topup.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [topupSuccess.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [topupSuccess.fulfilled]: (state, { payload }) => {
+      state.status = "success";
+    },
+    [topupSuccess.rejected]: (state, action) => {
       state.status = "failed";
     },
     [addSkills.pending]: (state, action) => {
@@ -298,6 +383,15 @@ const userSlice = createSlice({
     [changePassword.rejected]: (state, action) => {
       state.status = "failed";
     },
+    [uploadFile.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [uploadFile.fulfilled]: (state, action) => {
+      state.status = "success";
+    },
+    [uploadFile.rejected]: (state, action) => {
+      state.status = "failed";
+    },
   },
 });
 
@@ -306,5 +400,9 @@ export default reducer;
 
 export const selectTopSellers = (state) => state.user.topSellers;
 export const selectCurrentUser = (state) => state.user.currentUser;
+
+export const selectWallet = (state) => state.user.wallet;
+export const selectWalletTransactions = (state) =>
+  state.user.wallet.transactions;
 export const selectSeller = (state, sellerId) =>
   state.user.topSellers.find((seller) => seller.id === sellerId);

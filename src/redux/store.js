@@ -4,11 +4,13 @@ import serviceReducer from "./serviceSlice";
 import authReducer from "./authSlice";
 import userReducer from "./userSlice";
 import messageReducer from "./message";
+import urlReducer from "./url";
 import contractReducer from "./contractSlice";
 import requestReducer from "./requestSlice";
 const reducer = {
   auth: authReducer,
   message: messageReducer,
+  url: urlReducer,
   category: categoryReducer,
   service: serviceReducer,
   user: userReducer,
