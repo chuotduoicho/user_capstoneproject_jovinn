@@ -4,6 +4,7 @@ import urlService from "../services/url.service";
 import UserService from "../services/user.service";
 import walletService from "../services/wallet.service";
 import { setMessage } from "./message";
+import { setUrl } from "./url";
 const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 const wallet = JSON.parse(localStorage.getItem("wallet"));
 const topSeller = JSON.parse(localStorage.getItem("topSeller"));
@@ -208,7 +209,7 @@ export const uploadFile = createAsyncThunk(
       console.log(obj);
       const response = await urlService.uploadFile(obj);
       console.log(response);
-      thunkAPI.dispatch(setMessage(response.data.url));
+      thunkAPI.dispatch(setUrl(response.url));
       return response.data;
     } catch (error) {
       const message =

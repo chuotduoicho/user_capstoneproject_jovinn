@@ -23,8 +23,10 @@ import {
   changePassword,
   selectCurrentUser,
   updateUserProfile,
+  uploadFile,
 } from "../../../redux/userSlice";
 import { clearMessage } from "../../../redux/message";
+import axios from "axios";
 function format(date) {
   date = new Date(date);
 
@@ -47,6 +49,9 @@ export default function BuyerProfile() {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [file, setFile] = useState(null);
+  const UPLOAD_ENDPOINT = "localhost:8080/api/v1/files/";
+
   const { message } = useSelector((state) => state.message);
   const [error, setError] = useState("");
   const [isChange, setIsChange] = useState(true);
@@ -54,6 +59,35 @@ export default function BuyerProfile() {
   useEffect(() => {
     dispatch(clearMessage());
   }, [dispatch]);
+  const handleUploadFile = async (e) => {
+    setFile(e.target.files[0]);
+    // let res = await uploadFile(file);
+    // const obj = { file: file, id: currentUser.id, type: "AVATAR" };
+    const formData = new FormData();
+    console.log(file);
+    formData.append("file", e.target.files[0]);
+    formData.append("id", currentUser.id);
+    formData.append("type", "AVATAR");
+    dispatch(uploadFile(formData))
+      .unwrap()
+      .then(() => {
+        setSuccessful(true);
+        setError("Cập nhật thông tin thành công!");
+      })
+      .catch(() => {
+        setSuccessful(false);
+      });
+  };
+  // const uploadFile = async (file) => {
+  //   const formData = new FormData();
+  //   formData.append("avatar", file);
+  //   console.log(formData);
+  //   return await axios.post(UPLOAD_ENDPOINT, formData, {
+  //     headers: {
+  //       "content-type": "multipart/form-data",
+  //     },
+  //   });
+  // };
   const handleUpdate = () => {
     const id = currentUser.id;
     setSuccessful(false);
@@ -132,6 +166,7 @@ export default function BuyerProfile() {
               id="standard-required"
               className="text_field"
               type="file"
+              onChange={handleUploadFile}
             />
           </div>
           <div className="form_right">

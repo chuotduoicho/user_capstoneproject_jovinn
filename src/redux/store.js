@@ -4,7 +4,7 @@ import serviceReducer from "./serviceSlice";
 import authReducer from "./authSlice";
 import userReducer from "./userSlice";
 import messageReducer from "./message";
-import urlReducer from "./url";
+import urlReducer from "./url.js";
 import contractReducer from "./contractSlice";
 import requestReducer from "./requestSlice";
 const reducer = {
