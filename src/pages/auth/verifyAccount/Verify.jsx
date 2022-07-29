@@ -1,14 +1,17 @@
 import { Link } from "@material-ui/core";
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 import { verifyAccount } from "../../../redux/authSlice";
 
 const Verify = () => {
+  const { user } = useSelector((state) => state.auth);
   const { userId } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   useEffect(() => {
     console.log("verify", userId);
+    if (user) navigate("/buyerHome");
     dispatch(verifyAccount(userId));
   }, []);
   return (

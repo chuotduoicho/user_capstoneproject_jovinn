@@ -14,8 +14,10 @@ import React, { useState, useEffect } from "react";
 import Link from "@material-ui/core/Link";
 import { register } from "../../../redux/authSlice";
 import { clearMessage } from "../../../redux/message";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
+  const { user } = useSelector((state) => state.auth);
   const [successful, setSuccessful] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const { message } = useSelector((state) => state.message);
@@ -29,9 +31,10 @@ const Register = () => {
   const [lastName, setLastName] = useState("");
   const [role, setRole] = useState("BUYER");
   const [error, setError] = useState("");
-
+  const navigate = useNavigate();
   useEffect(() => {
     dispatch(clearMessage());
+    if (user) navigate("/buyerHome");
   }, [dispatch]);
 
   const handleRegister = (e) => {

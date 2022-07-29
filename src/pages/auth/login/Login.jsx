@@ -8,6 +8,7 @@ import { login } from "../../../redux/authSlice";
 import Link from "@material-ui/core/Link";
 import { fetchCurrentUser } from "../../../redux/userSlice";
 const Login = () => {
+  const { user } = useSelector((state) => state.auth);
   const [successful, setSuccessful] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -16,6 +17,7 @@ const Login = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(clearMessage());
+    if (user) navigate("/buyerHome");
   }, [dispatch]);
 
   const handleLogin = (e) => {

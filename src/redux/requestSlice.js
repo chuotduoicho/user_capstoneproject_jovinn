@@ -102,6 +102,15 @@ export const applyRequest = createAsyncThunk(
     return data;
   }
 );
+export const applyOffer = createAsyncThunk(
+  "request/applyOffer",
+  async (obj) => {
+    console.log(obj);
+    const data = await requestService.applyOffer(obj);
+    console.log(data);
+    return data;
+  }
+);
 const requestSlice = createSlice({
   name: "request",
   initialState,
@@ -170,6 +179,15 @@ const requestSlice = createSlice({
       state.status = "success";
     },
     [applyRequest.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [applyOffer.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [applyOffer.fulfilled]: (state, { payload }) => {
+      state.status = "success";
+    },
+    [applyOffer.rejected]: (state, action) => {
       state.status = "failed";
     },
     [fetchSellerInvite.pending]: (state, action) => {

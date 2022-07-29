@@ -51,9 +51,11 @@ const applyRequest = (requestId) => {
       return response.data;
     });
 };
-const applyOffer = (requestId) => {
+const applyOffer = (obj) => {
+  const requestId = obj.requestId;
+  const offer = obj.offer;
   return axios
-    .put(API_URL + "/sellerApplyRequest/" + requestId, null, {
+    .put(API_URL + "/apply-post-request/" + requestId, offer, {
       headers: authHeader(),
     })
     .then((response) => {
@@ -126,6 +128,7 @@ const requestService = {
   getAllSellerInvite,
   getOffersOfBuyer,
   getOffersOfSeller,
+  applyOffer,
 };
 
 export default requestService;

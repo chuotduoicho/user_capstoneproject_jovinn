@@ -63,6 +63,7 @@ export default function ServiceDetail() {
   const [amount, setAmount] = useState(1);
   const [requirement, setRequirement] = useState("");
   const [packageId, setPackageId] = useState("");
+  const [pack, setPack] = useState();
   const [error, setError] = useState("");
   const serviceDetail = useSelector((state) =>
     selectServiceById(state, serviceId)
@@ -91,7 +92,7 @@ export default function ServiceDetail() {
     };
     console.log("order", order);
     if (requirement.length >= 30 && requirement.length <= 500) {
-      navigate("/buyerHome/payment/test", { state: { order } });
+      navigate("/buyerHome/payment", { state: { order, pack } });
     } else {
       setError("Mô tả yêu cầu phải từ 30 đến 500 kí tự");
     }
@@ -253,6 +254,7 @@ export default function ServiceDetail() {
                     onClick={(e) => {
                       setPackageId(item.id);
                       setOpen(true);
+                      setPack(item);
                     }}
                   >
                     Mua

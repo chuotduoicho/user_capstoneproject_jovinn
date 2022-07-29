@@ -93,7 +93,7 @@ function App() {
               <Route index element={<BuyerManageWallet />} />
             </Route>
 
-            <Route path="payment/:requestId" element={<BuyerPayment />} />
+            <Route path="payment" element={<BuyerPayment />} />
             <Route path="listSeller/:requestId" element={<ListSeller />} />
           </Route>
           <Route path="/sellerhome">

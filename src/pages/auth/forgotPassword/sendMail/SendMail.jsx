@@ -5,15 +5,19 @@ import React, { useState, useEffect } from "react";
 import { clearMessage } from "../../../../redux/message";
 import Link from "@material-ui/core/Link";
 import { sendMail } from "../../../../redux/authSlice";
+import { useNavigate } from "react-router-dom";
 const SendMail = () => {
+  const { user } = useSelector((state) => state.auth);
   const [successful, setSuccessful] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const { message } = useSelector((state) => state.message);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(clearMessage());
+    if (user) navigate("/buyerHome");
   }, [dispatch]);
 
   const handleSendMail = (e) => {

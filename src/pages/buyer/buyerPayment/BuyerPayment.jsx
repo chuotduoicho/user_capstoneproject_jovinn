@@ -26,7 +26,9 @@ import { fetchCurrentUser } from "../../../redux/userSlice";
 export default function BuyerPayment() {
   const { state } = useLocation();
   const { order } = state || {};
+  const { pack } = state || {};
   console.log("order", order);
+  console.log("pack", pack);
   //dialog
   const [openPayment, setOpenPayment] = useState(false);
   const [error, setError] = useState("");
@@ -62,7 +64,7 @@ export default function BuyerPayment() {
       <BuyerHeader />
       <h1 className="buyer_profile_title">Hóa đơn thanh toán</h1>
       <Container maxWidth="lg" className="profession_form">
-        <div className="paymentRow">
+        {/* <div className="paymentRow">
           <img
             src="https://i1-dulich.vnecdn.net/2021/07/16/1-1626437591.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=BWzFqMmUWVFC1OfpPSUqMA"
             className="paymentRow_img"
@@ -72,27 +74,37 @@ export default function BuyerPayment() {
             <h2>Tiêu đề</h2>
             <h4>Gói nâng cao</h4>
           </div>
-        </div>
+        </div> */}
         <div className="paymentRow">
-          <h3>Tổng giá : 1000$ - Phí hủy hợp đồng : 10% (100$)</h3>
+          <h3>Mã gói hàng :{order.packageId}</h3>
           <h3></h3>
         </div>
         <div className="paymentRow">
-          <h4>Sản phẩm bàn giao:</h4>
-          <div>
+          <h4>Tiêu đề: {pack.title}</h4>
+          {/* <div>
             <p>✔️ Sản phẩm bàn giao 1</p>
-          </div>
+          </div> */}
         </div>
         <div className="paymentRow">
-          <h4>Thanh toán : 1 lần </h4>
+          <h4>Mô tả gói dịch vụ : {pack.shortDescription} </h4>
         </div>
         <div className="paymentRow">
-          <h4>Thời gian bàn giao: 3 ngày</h4>
+          <h4>Yêu cầu : {order.requirement} </h4>
         </div>
         <div className="paymentRow">
-          <h2>Số tiền thanh toán : 1000$</h2>
+          <h4>Thời gian bàn giao: {pack.deliveryTime}</h4>
+        </div>
+        <div className="paymentRow">
+          <h4>Giá : {pack.price}$</h4>
         </div>{" "}
-        <div className="paymentRow"></div>
+        <div className="paymentRow">
+          {" "}
+          <h4>Số lượng:{order.quantity}</h4>
+        </div>
+        <div className="paymentRow">
+          {" "}
+          <h2>Tổng giá:{order.quantity * pack.price} $</h2>
+        </div>
         <div className="paymentRow" style={{ justifyContent: "center" }}>
           <Button
             variant="contained"

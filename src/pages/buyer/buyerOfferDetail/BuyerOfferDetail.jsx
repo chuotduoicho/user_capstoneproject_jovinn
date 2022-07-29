@@ -27,7 +27,13 @@ export default function BuyerOfferDetail() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const acceptOffer = () => {
-    setError("");
+    const offer = {
+      descriptionBio: offerDetail.descriptionBio,
+      totalDeliveryTime: offerDetail.totalDeliveryTime,
+      offerPrice: offerDetail.offerPrice,
+      cancelFee: offerDetail.cancelFee,
+    };
+    navigate("/buyerHome/payment", { state: { offer } });
   };
 
   return (

@@ -1,5 +1,5 @@
 import "./setNewPassword.scss";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button, TextField } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useState, useEffect } from "react";
@@ -7,6 +7,7 @@ import { clearMessage } from "../../../../redux/message";
 import Link from "@material-ui/core/Link";
 import { resetPassword } from "../../../../redux/authSlice";
 const SetNewPassword = () => {
+  const { user } = useSelector((state) => state.auth);
   const [successful, setSuccessful] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -14,8 +15,10 @@ const SetNewPassword = () => {
   const { message } = useSelector((state) => state.message);
   const { capcha } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   useEffect(() => {
     dispatch(clearMessage());
+    if (user) navigate("/buyerHome");
   }, [dispatch]);
 
   const handleSetNewPassword = (e) => {

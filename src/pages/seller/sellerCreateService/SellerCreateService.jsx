@@ -29,6 +29,7 @@ import {
   selectServiceById,
   selectServiceId,
   updateService,
+  updateServicePackage,
 } from "../../../redux/serviceSlice";
 import { selectCurrentUser } from "../../../redux/userSlice";
 import Alert from "@material-ui/lab/Alert";
@@ -271,7 +272,9 @@ export default function SellerCreateService() {
   function handlePackageChange(e, index) {
     const { name, value } = e.target;
     const list = [...packages];
+    console.log(list);
     list[index][name] = value;
+    console.log(list);
     setPackages(list);
   }
   console.log("packages", packages);
@@ -461,12 +464,15 @@ export default function SellerCreateService() {
       description: description,
       impression: 2,
       interesting: 2,
-      status: "DEACTIVE",
+      status: "ACTIVE",
       subCategory: {
         id: subCateId,
       },
       gallery: {
         imageGallery1: galley1,
+        imageGallery2: galley2,
+        imageGallery3: galley3,
+        documentGallery: document,
       },
       packages: packages,
     };
@@ -492,20 +498,29 @@ export default function SellerCreateService() {
       subCategory: {
         id: subCateId,
       },
-      gallery: {
-        imageGallery1: galley1,
-      },
     };
     const obj = { service: newService, serviceId };
     dispath(updateService(obj))
       .unwrap()
       .then(() => {
-        console.log("add service successfull");
+        console.log("update service successfull");
         dispath(fetchServices());
       })
       .catch(() => {
         console.log("add service fail");
       });
+
+    packages.map((p) => {
+      dispath(updateServicePackage(p))
+        .unwrap()
+        .then(() => {
+          console.log("update service package successfull");
+          dispath(fetchServices());
+        })
+        .catch(() => {
+          console.log("add service fail");
+        });
+    });
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
   const handleView = () => {
