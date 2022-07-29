@@ -393,6 +393,8 @@ export default function BuyerManageWallet() {
   useEffect(() => {
     dispatch(clearMessage());
     if (message) navigate(`//${message.slice(8)}`);
+  }, [dispatch, message]);
+  useEffect(() => {
     if (param) {
       dispatch(topupSuccess(param))
         .unwrap()
@@ -403,7 +405,7 @@ export default function BuyerManageWallet() {
           setError("thất bại!");
         });
     }
-  }, [dispatch, message, param]);
+  }, []);
   return (
     <div className="buyer_profile">
       <BuyerHeader /> <h1 className="wallet_title">Quản lý ví</h1>
@@ -441,25 +443,13 @@ export default function BuyerManageWallet() {
                     return (
                       <TableRow
                         hover
-                        // onClick={(event) => handleClick(event, row.name)}
                         role="checkbox"
                         aria-checked={isItemSelected}
                         tabIndex={-1}
                         key={row.name}
                         selected={isItemSelected}
                       >
-                        {/* <TableCell padding="checkbox">
-                          <Checkbox
-                            checked={isItemSelected}
-                            inputProps={{ "aria-labelledby": labelId }}
-                          />
-                        </TableCell> */}
-                        <TableCell
-                          component="th"
-                          id={labelId}
-                          scope="row"
-                          // padding="none"
-                        >
+                        <TableCell component="th" id={labelId} scope="row">
                           {row.description}
                         </TableCell>
                         <TableCell align="right">{row.subCate}</TableCell>
