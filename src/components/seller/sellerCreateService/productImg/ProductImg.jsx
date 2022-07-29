@@ -2,6 +2,7 @@ import { TextField } from "@material-ui/core";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { clearUrl } from "../../../../redux/url";
 import { selectCurrentUser, uploadFile } from "../../../../redux/userSlice";
 
 export default function ProductImg({
@@ -18,6 +19,9 @@ export default function ProductImg({
   const currentUser = useSelector(selectCurrentUser);
   const dispatch = useDispatch();
 
+  console.log(galley1V);
+  console.log(galley2V);
+  console.log(galley3V);
   const handleUploadFile1 = async (e) => {
     setFile1(e.target.files[0]);
     const formData = new FormData();
@@ -26,7 +30,12 @@ export default function ProductImg({
     formData.append("type", "AVATAR");
     dispatch(uploadFile(formData))
       .unwrap()
-      .then(() => {})
+      .then(() => {
+        setCheck1(true);
+        setCheck2(false);
+        setCheck3(false);
+        setCheck4(false);
+      })
       .catch(() => {});
   };
   const handleUploadFile2 = async (e) => {
@@ -34,10 +43,15 @@ export default function ProductImg({
     const formData = new FormData();
     formData.append("file", e.target.files[0]);
     formData.append("id", currentUser.id);
-    formData.append("type", "AVATAR");
+    formData.append("type", "BOX");
     dispatch(uploadFile(formData))
       .unwrap()
-      .then(() => {})
+      .then(() => {
+        setCheck1(false);
+        setCheck2(true);
+        setCheck3(false);
+        setCheck4(false);
+      })
       .catch(() => {});
   };
   const handleUploadFile3 = async (e) => {
@@ -45,10 +59,15 @@ export default function ProductImg({
     const formData = new FormData();
     formData.append("file", e.target.files[0]);
     formData.append("id", currentUser.id);
-    formData.append("type", "AVATAR");
+    formData.append("type", "BOX");
     dispatch(uploadFile(formData))
       .unwrap()
-      .then(() => {})
+      .then(() => {
+        setCheck1(false);
+        setCheck2(false);
+        setCheck3(true);
+        setCheck4(false);
+      })
       .catch(() => {});
   };
   const handleUploadFile4 = async (e) => {
@@ -56,29 +75,49 @@ export default function ProductImg({
     const formData = new FormData();
     formData.append("file", e.target.files[0]);
     formData.append("id", currentUser.id);
-    formData.append("type", "AVATAR");
+    formData.append("type", "BOX");
     dispatch(uploadFile(formData))
       .unwrap()
-      .then(() => {})
+      .then(() => {
+        setCheck1(false);
+        setCheck2(false);
+        setCheck3(false);
+        setCheck4(true);
+      })
       .catch(() => {});
   };
 
   useEffect(() => {
-    if (url && file1) galley1(url);
+    if (url && check1) {
+      galley1(url);
+      console.log(url);
+      dispatch(clearUrl());
+    }
   }, [handleUploadFile1]);
   useEffect(() => {
-    if (url && file2) galley2(url);
+    if (url && check2) {
+      galley2(url);
+      console.log(url);
+      dispatch(clearUrl());
+    }
   }, [handleUploadFile2]);
   useEffect(() => {
-    if (url && file3) galley3(url);
+    if (url && check3) {
+      galley3(url);
+      console.log(url);
+    }
   }, [handleUploadFile3]);
   useEffect(() => {
-    if (url && file4) document(url);
+    if (url && check4) document(url);
   }, [handleUploadFile4]);
   const [file1, setFile1] = useState(null);
   const [file2, setFile2] = useState(null);
   const [file3, setFile3] = useState(null);
   const [file4, setFile4] = useState(null);
+  const [check1, setCheck1] = useState(false);
+  const [check2, setCheck2] = useState(false);
+  const [check3, setCheck3] = useState(false);
+  const [check4, setCheck4] = useState(false);
   return (
     <div>
       <form
@@ -163,13 +202,17 @@ export default function ProductImg({
         <div className="duoi">
           <h4>Tải lên tài liệu của bạn</h4>
           <div className="formInput">
+            <img
+              src={file4 ? URL.createObjectURL(file4) : documentV}
+              alt=""
+              style={{ width: "100px" }}
+            />
             <TextField
               required
               id="standard-required"
               className="text_field"
               type="file"
               label="Chọn tài liệu"
-              defaultValue={documentV}
               onChange={handleUploadFile4}
             />
           </div>
