@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Contact from "../../../components/guest/contact/Contact";
 import "./sellerCreateService.scss";
 import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
@@ -215,6 +215,9 @@ export default function SellerCreateService() {
   );
   const listCategory = useSelector(selectAllCategories);
   const [category, setCategory] = useState(listCategory[0]);
+  const [errorTitle, setErrorTitle] = React.useState("");
+  const [errorDescription, setErrorDescription] = React.useState("");
+  const [errorSubcate, setErrorSubcate] = React.useState("");
   const handleChangeCategory = (e) => {
     setCategory(e.target.value);
   };
@@ -227,6 +230,26 @@ export default function SellerCreateService() {
   const handleChangeSubcateId = (e) => {
     setSubCateId(e.target.value);
   };
+  // useEffect(() => {
+  //   if (title.length == 0) {
+  //     setErrorTitle("Chưa nhập tiêu đề!");
+  //   }
+  // }, [title]);
+  useEffect(() => {
+    if (title.length > 0 && errorTitle) {
+      setErrorTitle("");
+    }
+  }, [title, errorTitle]);
+  useEffect(() => {
+    if (description.length > 0 && errorDescription) {
+      setErrorDescription("");
+    }
+  }, [description, errorDescription]);
+  useEffect(() => {
+    if (subCateId.length > 0 && errorSubcate) {
+      setErrorSubcate("");
+    }
+  }, [subCateId, errorSubcate]);
   const [packages, setPackages] = useState(
     serviceId
       ? serviceDetail.packages
@@ -272,9 +295,9 @@ export default function SellerCreateService() {
   function handlePackageChange(e, index) {
     const { name, value } = e.target;
     const list = [...packages];
-    console.log(list);
+    // console.log(list);
     list[index][name] = value;
-    console.log(list);
+    // console.log(list);
     setPackages(list);
   }
   console.log("packages", packages);
@@ -316,6 +339,9 @@ export default function SellerCreateService() {
             listCategory={listCategory}
             category={category}
             setCategory={handleChangeCategory}
+            errorTitle={errorTitle}
+            errorDescription={errorDescription}
+            errorSubcate={errorSubcate}
           />
         );
       case 1:
@@ -357,12 +383,15 @@ export default function SellerCreateService() {
     setError("");
     if (activeStep == 0) {
       if (title == "") {
-        setError("Chưa nhập tiêu đề!");
-      } else if (description == "") {
-        setError("Chưa nhập mô tả!");
-      } else if (subCateId == "") {
-        setError("Chưa chọn danh mục!");
-      } else {
+        setErrorTitle("Chưa nhập tiêu đề!");
+      }
+      if (description == "") {
+        setErrorDescription("Chưa nhập mô tả!");
+      }
+      if (subCateId == "") {
+        setErrorSubcate("Chưa chọn danh mục!");
+      }
+      if (title != "" && description != "" && subCateId != "") {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
         setError("");
       }

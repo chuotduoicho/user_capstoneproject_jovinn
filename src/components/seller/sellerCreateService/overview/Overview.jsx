@@ -6,9 +6,6 @@ import {
   TextField,
 } from "@material-ui/core";
 import React from "react";
-import { useState } from "react";
-import { useSelector } from "react-redux";
-import { selectAllCategories } from "../../../../redux/categorySlice";
 
 export default function Overview({
   title,
@@ -20,6 +17,9 @@ export default function Overview({
   listCategory,
   category,
   setCategory,
+  errorTitle,
+  errorDescription,
+  errorSubcate,
 }) {
   console.log("title", titleDf);
   console.log("description", descriptionDf);
@@ -53,6 +53,8 @@ export default function Overview({
           label="Tiêu đề"
           defaultValue={titleDf}
           onChange={title}
+          error={errorTitle.length > 0}
+          helperText={errorTitle}
           required
         />
         <TextField
@@ -66,6 +68,8 @@ export default function Overview({
           multiline
           rows={5}
           onChange={description}
+          error={errorDescription.length > 0}
+          helperText={errorDescription}
         />
         <FormControl
           fullWidth
@@ -99,6 +103,8 @@ export default function Overview({
             defaultValue={subCateIdDf}
             label="Danh mục con"
             onChange={subCateId}
+            error={errorSubcate.length > 0}
+            helperText={errorSubcate}
           >
             {category.subCategories.map((item) => (
               <MenuItem value={item.id}>{item.name}</MenuItem>
