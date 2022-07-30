@@ -265,32 +265,36 @@ export default function SellerCreateService() {
   );
   const [checked, setChecked] = useState(false);
   const handleChange = () => {
-    if (!checked) {
-      setPackages([
-        ...packages,
-        {
-          title: "",
-          shortDescription: "",
-          deliveryTime: "",
-          price: "",
-          contractCancelFee: "",
-        },
-        {
-          title: "",
-          shortDescription: "",
-          deliveryTime: "",
-          price: "",
-          contractCancelFee: "",
-        },
-      ]);
-      setChecked((prev) => !prev);
-    } else if (checked && packages.length > 1) {
-      const list = [...packages];
-      list.pop();
-      list.pop();
-      setPackages(list);
-      setChecked((prev) => !prev);
-    }
+    setPackages([
+      ...packages,
+      {
+        title: "",
+        shortDescription: "",
+        deliveryTime: "",
+        price: "",
+        contractCancelFee: "",
+      },
+      // {
+      //   title: "",
+      //   shortDescription: "",
+      //   deliveryTime: "",
+      //   price: "",
+      //   contractCancelFee: "",
+      // },
+    ]);
+    //   setChecked((prev) => !prev);
+    // } else if (checked && packages.length > 1) {
+    //   const list = [...packages];
+    //   list.pop();
+    //   list.pop();
+    //   setPackages(list);
+    //   setChecked((prev) => !prev);
+    // }
+  };
+  const handleChange2 = () => {
+    const list = [...packages];
+    list.pop();
+    setPackages(list);
   };
   function handlePackageChange(e, index) {
     const { name, value } = e.target;
@@ -350,6 +354,7 @@ export default function SellerCreateService() {
             packages={packages}
             checked={checked}
             handleChange={handleChange}
+            handleChange2={handleChange2}
             handlePackageChange={handlePackageChange}
           />
         );
