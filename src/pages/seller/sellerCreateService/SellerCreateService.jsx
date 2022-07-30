@@ -423,7 +423,9 @@ export default function SellerCreateService() {
 
     if (activeStep == 1) {
       const list2 = [...packagesError];
+      let temp = packages[0].price;
       packages.map((p, index) => {
+        console.log(index);
         if (p.title == "") {
           list2[index].title = "Không được để trống";
         }
@@ -442,6 +444,11 @@ export default function SellerCreateService() {
         }
         if (p.contractCancelFee == "") {
           list2[index].contractCancelFee = "Không được để trống";
+        }
+        if (index > 0 && p.price <= temp) {
+          list2[index].price = "Giá phải cao hơn giá gói trước";
+        } else {
+          temp = p.price;
         }
       });
       setPackagesError(list2);
@@ -462,13 +469,13 @@ export default function SellerCreateService() {
     }
 
     if (activeStep == 2) {
-      if (galley1 == "") {
+      if (galley1 == null) {
         setError("Chưa chọn đủ ảnh!");
-      } else if (galley2 == "") {
+      } else if (galley2 == null) {
         setError("Chưa chọn đủ ảnh!");
-      } else if (galley3 == "") {
+      } else if (galley3 == null) {
         setError("Chưa chọn đủ ảnh!");
-      } else if (document == "") {
+      } else if (document == null) {
         setError("Chưa chọn tài liệu!");
       } else {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -670,8 +677,16 @@ export default function SellerCreateService() {
                   Tiếp tục
                 </Button>
               )}
-              {error !== "" && <Alert severity="error">{error}</Alert>}
-              {success !== "" && <Alert severity="success">{success}</Alert>}
+              {error !== "" && (
+                <Alert severity="error" style={{ justifyContent: "center" }}>
+                  {error}
+                </Alert>
+              )}
+              {success !== "" && (
+                <Alert severity="success" style={{ justifyContent: "center" }}>
+                  {success}
+                </Alert>
+              )}
             </div>
           </div>
         )}

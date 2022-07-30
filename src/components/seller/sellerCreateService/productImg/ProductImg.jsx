@@ -145,7 +145,7 @@ export default function ProductImg({
             <img
               src={file1 ? URL.createObjectURL(file1) : galley1V}
               alt=""
-              style={{ width: "100px" }}
+              style={{ width: "100px", height: "80px" }}
             />
             <label
               htmlFor="file1"
@@ -164,7 +164,7 @@ export default function ProductImg({
             <img
               src={file2 ? URL.createObjectURL(file2) : galley2V}
               alt=""
-              style={{ width: "100px" }}
+              style={{ width: "100px", height: "80px" }}
             />
             <label
               htmlFor="file2"
@@ -183,7 +183,7 @@ export default function ProductImg({
             <img
               src={file3 ? URL.createObjectURL(file3) : galley3V}
               alt=""
-              style={{ width: "100px" }}
+              style={{ width: "100px", height: "80px" }}
             />
             <label
               htmlFor="file3"
