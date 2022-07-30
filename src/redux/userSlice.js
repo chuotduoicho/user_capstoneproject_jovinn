@@ -85,10 +85,11 @@ export const updateUserProfile = createAsyncThunk(
 );
 export const updateDescriptionBio = createAsyncThunk(
   "user/updateDescriptionBio",
-  async ({ descriptionBio }) => {
-    console.log({ descriptionBio });
+  async ({ descriptionBio, brandName }) => {
+    console.log({ descriptionBio, brandName });
     const data = await sellerService.updateDescriptionBio({
       descriptionBio,
+      brandName,
     });
     console.log("current user update", data);
     return data;

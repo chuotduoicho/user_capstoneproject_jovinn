@@ -7,7 +7,7 @@ import {
   updateDescriptionBio,
 } from "../../../redux/userSlice";
 import "./sellerIntro.scss";
-export default function SellerIntro({ description }) {
+export default function SellerIntro({ description, brandName }) {
   const [editStatus, setEditStatus] = useState(false);
   const [descriptionBio, setDescriptionBio] = useState(description);
   const dispatch = useDispatch();
@@ -18,7 +18,7 @@ export default function SellerIntro({ description }) {
     setEditStatus(false);
   };
   const handleUpdate = (e) => {
-    dispatch(updateDescriptionBio({ descriptionBio }))
+    dispatch(updateDescriptionBio({ descriptionBio, brandName }))
       .unwrap()
       .then(() => {
         dispatch(fetchCurrentUser());

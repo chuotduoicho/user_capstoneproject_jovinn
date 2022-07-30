@@ -1,13 +1,14 @@
 import axios from "axios";
 import authHeader from "./auth-header";
 const API_URL = "http://localhost:8080/api/v1";
-const updateDescriptionBio = ({ descriptionBio }) => {
+const updateDescriptionBio = ({ descriptionBio, brandName }) => {
   console.log({ descriptionBio });
   return axios.put(
     API_URL + "/seller/profile",
 
     {
       descriptionBio,
+      brandName,
     },
     { headers: authHeader() }
   );
