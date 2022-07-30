@@ -1,14 +1,5 @@
 import "./register.scss";
-import {
-  Radio,
-  Button,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  RadioGroup,
-  TextField,
-  CircularProgress,
-} from "@material-ui/core";
+import { Button, TextField, CircularProgress } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useState, useEffect } from "react";
 import Link from "@material-ui/core/Link";
@@ -19,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 const Register = () => {
   const { user } = useSelector((state) => state.auth);
   const [successful, setSuccessful] = useState(false);
-  const [isFetching, setIsFetching] = useState(false);
+  const { isFetching } = useSelector((state) => state.auth);
   const { message } = useSelector((state) => state.message);
   const dispatch = useDispatch();
 
@@ -29,7 +20,6 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [role, setRole] = useState("BUYER");
   const [error, setError] = useState("");
   const navigate = useNavigate();
   useEffect(() => {
@@ -39,11 +29,10 @@ const Register = () => {
 
   const handleRegister = (e) => {
     setError("");
-    setIsFetching(true);
     dispatch(clearMessage());
     e.preventDefault();
     setSuccessful(false);
-    console.log({ username, password, email, firstName, lastName, role });
+    console.log({ username, password, email, firstName, lastName });
     if (!/^[a-z]*$/.test(username)) {
       setError("Tên đăng nhập không hợp lệ!");
     } else if (password.length < 6) {
@@ -53,17 +42,13 @@ const Register = () => {
     } else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
       setError("Email không hợp lệ!");
     } else {
-      dispatch(
-        register({ username, password, email, firstName, lastName, role })
-      )
+      dispatch(register({ username, password, email, firstName, lastName }))
         .unwrap()
         .then(() => {
           setSuccessful(true);
-          setIsFetching(false);
         })
         .catch(() => {
           setSuccessful(false);
-          setIsFetching(false);
         });
     }
   };
@@ -103,7 +88,7 @@ const Register = () => {
             variant="outlined"
             label="Họ"
             onChange={(e) => setFirstName(e.target.value)}
-            style={{ marginRight: "50px" }}
+            style={{ width: "50%" }}
             required
           />
           <TextField
@@ -111,6 +96,7 @@ const Register = () => {
             variant="outlined"
             label="Tên"
             onChange={(e) => setLastName(e.target.value)}
+            style={{ width: "50%" }}
             required
           />
         </div>

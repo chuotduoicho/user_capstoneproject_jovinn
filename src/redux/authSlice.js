@@ -9,18 +9,14 @@ const initialState = user
   : { isLoggedIn: false, user: null, isFetching: false };
 export const register = createAsyncThunk(
   "auth/register",
-  async (
-    { username, password, email, firstName, lastName, role },
-    thunkAPI
-  ) => {
+  async ({ username, password, email, firstName, lastName }, thunkAPI) => {
     try {
       const response = await AuthService.register(
         username,
         password,
         email,
         firstName,
-        lastName,
-        role
+        lastName
       );
       thunkAPI.dispatch(setMessage(response.data.message));
       return response.data;
