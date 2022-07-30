@@ -263,6 +263,16 @@ export default function SellerCreateService() {
           },
         ]
   );
+  const [packagesError, setPackagesError] = useState([
+    {
+      title: "",
+      shortDescription: "",
+      deliveryTime: "",
+      price: "",
+      contractCancelFee: "",
+    },
+  ]);
+
   const [checked, setChecked] = useState(false);
   const handleChange = () => {
     setPackages([
@@ -274,35 +284,43 @@ export default function SellerCreateService() {
         price: "",
         contractCancelFee: "",
       },
-      // {
-      //   title: "",
-      //   shortDescription: "",
-      //   deliveryTime: "",
-      //   price: "",
-      //   contractCancelFee: "",
-      // },
     ]);
-    //   setChecked((prev) => !prev);
-    // } else if (checked && packages.length > 1) {
-    //   const list = [...packages];
-    //   list.pop();
-    //   list.pop();
-    //   setPackages(list);
-    //   setChecked((prev) => !prev);
-    // }
+    setPackagesError([
+      ...packagesError,
+      {
+        title: "",
+        shortDescription: "",
+        deliveryTime: "",
+        price: "",
+        contractCancelFee: "",
+      },
+    ]);
   };
   const handleChange2 = () => {
     const list = [...packages];
     list.pop();
     setPackages(list);
+    const list2 = [...packagesError];
+    list2.pop();
+    setPackagesError(list2);
   };
   function handlePackageChange(e, index) {
     const { name, value } = e.target;
     const list = [...packages];
+    const list2 = [...packagesError];
     // console.log(list);
     list[index][name] = value;
+    if (value != "") {
+      if (
+        name != "shortDescription" ||
+        (name == "shortDescription" && value.length > 20)
+      ) {
+        list2[index][name] = "";
+      }
+    }
     // console.log(list);
     setPackages(list);
+    setPackagesError(list2);
   }
   console.log("packages", packages);
   const [galley1, setGallery1] = useState(
@@ -356,6 +374,7 @@ export default function SellerCreateService() {
             handleChange={handleChange}
             handleChange2={handleChange2}
             handlePackageChange={handlePackageChange}
+            packagesError={packagesError}
           />
         );
 
@@ -388,13 +407,13 @@ export default function SellerCreateService() {
     setError("");
     if (activeStep == 0) {
       if (title == "") {
-        setErrorTitle("Chưa nhập tiêu đề!");
+        setErrorTitle("Tiêu đề không được trống!");
       }
       if (description == "") {
-        setErrorDescription("Chưa nhập mô tả!");
+        setErrorDescription("Mô tả không được trống!");
       }
       if (subCateId == "") {
-        setErrorSubcate("Chưa chọn danh mục!");
+        setErrorSubcate("Danh mục không được trống!");
       }
       if (title != "" && description != "" && subCateId != "") {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -403,36 +422,43 @@ export default function SellerCreateService() {
     }
 
     if (activeStep == 1) {
-      const check = packages.map((p, index) => {
+      const list2 = [...packagesError];
+      packages.map((p, index) => {
         if (p.title == "") {
-          setError("Chưa nhập tiêu đề gói " + (index + 1));
-          return false;
-        } else if (p.shortDescription == "") {
-          setError("Chưa nhập sản phẩm bàn giao gói " + (index + 1));
-          return false;
-        } else if (
+          list2[index].title = "Không được để trống";
+        }
+        if (
+          p.shortDescription == "" ||
           p.shortDescription.length < 20 ||
           p.shortDescription.length > 500
         ) {
-          setError(
-            "Sản phẩm bàn giao phải từ 20 đến 500 kí tự gói " + (index + 1)
-          );
-          return false;
-        } else if (p.deliveryTime == "") {
-          setError("Chưa nhập số ngày bàn giao gói " + (index + 1));
-          return false;
-        } else if (p.price == "") {
-          setError("Chưa nhập chi phí bàn giao gói " + (index + 1));
-          return false;
-        } else if (p.contractCancelFee == "") {
-          setError("Chưa nhập phí hủy bàn giao gói " + (index + 1));
-          return false;
-        } else if (index == packages.length - 1) {
-          setActiveStep((prevActiveStep) => prevActiveStep + 1);
+          list2[index].shortDescription = "Không được để trống và hơn 20 kí tự";
+        }
+        if (p.deliveryTime == "") {
+          list2[index].deliveryTime = "Không được để trống";
+        }
+        if (p.price == "") {
+          list2[index].price = "Không được để trống";
+        }
+        if (p.contractCancelFee == "") {
+          list2[index].contractCancelFee = "Không được để trống";
         }
       });
+      setPackagesError(list2);
 
-      console.log("check", check);
+      const check = packagesError.map((item, index) => {
+        if (
+          item.title == "" &&
+          item.shortDescription == "" &&
+          item.deliveryTime == "" &&
+          item.price == "" &&
+          item.contractCancelFee == "" &&
+          packagesError.length - 1 == index
+        ) {
+          setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        }
+        console.log("abc");
+      });
     }
 
     if (activeStep == 2) {
