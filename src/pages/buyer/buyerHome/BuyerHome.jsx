@@ -16,7 +16,10 @@ import {
 } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { selectAllCategories } from "../../../redux/categorySlice";
+import {
+  fetchCategories,
+  selectAllCategories,
+} from "../../../redux/categorySlice";
 import {
   fetchServicesByCategory,
   selectAllServices,
@@ -25,6 +28,7 @@ import Pagination from "@material-ui/lab/Pagination";
 import Rating from "@material-ui/lab/Rating";
 import {
   fetchCurrentUser,
+  fetchTopSellers,
   fetchWallet,
   selectCurrentUser,
 } from "../../../redux/userSlice";
@@ -50,6 +54,8 @@ export default function BuyerHome() {
     if (!user) {
       navigate("/auth/login");
     } else {
+      dispatch(fetchCategories());
+      dispatch(fetchTopSellers());
       dispatch(fetchCurrentUser());
       dispatch(fetchServicesByCategory(selected));
       dispatch(fetchRequestsBuyer());
@@ -328,7 +334,6 @@ export default function BuyerHome() {
               {/* End hero unit */}
               <Grid container spacing={4}>
                 {_DATA
-
                   .currentData()
                   // .slice(0, 6)
                   .map((item) => (

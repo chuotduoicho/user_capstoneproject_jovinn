@@ -28,6 +28,7 @@ import { AddAlarm, AddSharp } from "@material-ui/icons";
 import { fetchRequestsSeller } from "../../../redux/requestSlice";
 import { fetchContracts } from "../../../redux/contractSlice";
 import CategoryList from "../../../components/guest/categoryList/CategoryList";
+import usePagination from "../../../Pagination";
 function ChangeFormateDate(oldDate) {
   return oldDate.toString().split("-").reverse().join("-");
 }
@@ -50,6 +51,20 @@ export default function SellerHome() {
       dispatch(fetchServicesByCategory(selected));
     }
   }, [user, selected]);
+  let [page, setPage] = useState(1);
+  const PER_PAGE = 6;
+  const listServiceFilter = listService.filter((val) => {
+    if (val.userId.toLowerCase().includes(currentUser.id.toLowerCase())) {
+      return val;
+    }
+  });
+  const count = Math.ceil(listServiceFilter.length / PER_PAGE);
+  const _DATA = usePagination(listServiceFilter, PER_PAGE);
+
+  const handleChange = (e, p) => {
+    setPage(p);
+    _DATA.jump(p);
+  };
   const dateJoin = ChangeFormateDate(currentUser.joinSellingAt);
   return (
     <div className="sellerHome">
@@ -134,16 +149,8 @@ export default function SellerHome() {
             <Container className="service_cardGrid" maxWidth="md">
               {/* End hero unit */}
               <Grid container spacing={4}>
-                {listService
-                  .filter((val) => {
-                    if (
-                      val.userId
-                        .toLowerCase()
-                        .includes(currentUser.id.toLowerCase())
-                    ) {
-                      return val;
-                    }
-                  })
+                {_DATA
+                  .currentData()
                   // .slice(0, 6)
                   .map((item) => (
                     <ServiceList
@@ -163,9 +170,11 @@ export default function SellerHome() {
                   ))}
               </Grid>
               <Pagination
-                count={10}
+                count={count}
                 color="primary"
                 className="service_pagging"
+                page={page}
+                onChange={handleChange}
               />
             </Container>
           </div>

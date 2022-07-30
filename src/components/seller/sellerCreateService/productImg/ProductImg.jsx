@@ -143,7 +143,7 @@ export default function ProductImg({
         <div className="tren" style={{ display: "flex", marginBottom: "50px" }}>
           <div className="formInput" style={{ marginRight: "50px" }}>
             <img
-              src={file1 ? URL.createObjectURL(file1) : galley1V}
+              src={file1 ? URL.createObjectURL(file1) : galley1}
               alt=""
               style={{ width: "100px", height: "80px" }}
             />
