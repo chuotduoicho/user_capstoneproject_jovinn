@@ -52,10 +52,8 @@ const applyRequest = (requestId) => {
     });
 };
 const applyOffer = (obj) => {
-  const requestId = obj.requestId;
-  const offer = obj.offer;
   return axios
-    .put(API_URL + "/apply-post-request/" + requestId, offer, {
+    .post("http://localhost:8080/api/v1/contract/" + obj, null, {
       headers: authHeader(),
     })
     .then((response) => {

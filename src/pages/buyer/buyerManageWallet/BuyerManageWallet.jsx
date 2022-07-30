@@ -399,6 +399,7 @@ export default function BuyerManageWallet() {
       dispatch(topupSuccess(param))
         .unwrap()
         .then(() => {
+          dispatch(fetchWallet());
           setSuccess("thafnh ocng bại!");
         })
         .catch(() => {

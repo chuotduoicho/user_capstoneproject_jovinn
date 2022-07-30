@@ -209,17 +209,22 @@ const contractSlice = createSlice({
 
 const { reducer } = contractSlice;
 export default reducer;
-export const selectAllContracts = (state) => state.contract.listContracts;
+export const selectAllContracts = (state) =>
+  state.contract.listContracts.content;
 export const selectOrders = (state) =>
-  state.contract.listContracts.filter((val) => {
+  state.contract.listContracts.content.filter((val) => {
     if (val.contractStatus == null) return val;
   });
 export const selectContracts = (state) =>
-  state.contract.listContracts.filter((val) => {
+  state.contract.listContracts.content.filter((val) => {
     if (val.orderStatus == "TO_CONTRACT") return val;
   });
 export const selectContractStatus = (state) => state.contract.status;
 export const selectContractBuyerById = (state, contractId) =>
-  state.contract.listContracts.find((contract) => contract.id === contractId);
+  state.contract.listContracts.content.find(
+    (contract) => contract.id === contractId
+  );
 export const selectContractSellerById = (state, contractId) =>
-  state.contract.listContracts.find((contract) => contract.id === contractId);
+  state.contract.listContracts.content.find(
+    (contract) => contract.id === contractId
+  );

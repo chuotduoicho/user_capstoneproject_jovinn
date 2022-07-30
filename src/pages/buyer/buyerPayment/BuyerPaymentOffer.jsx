@@ -22,13 +22,12 @@ import {
   selectContractStatus,
 } from "../../../redux/contractSlice";
 import { fetchCurrentUser } from "../../../redux/userSlice";
+import { applyOffer } from "../../../redux/requestSlice";
 
-export default function BuyerPayment() {
+export default function BuyerPaymentOffer() {
   const { state } = useLocation();
-  const { order } = state || {};
-  const { pack } = state || {};
-  console.log("order", order);
-  console.log("pack", pack);
+  const { offerDetail } = state || {};
+  console.log("offerDetail", offerDetail);
   //dialog
   const [openPayment, setOpenPayment] = useState(false);
   const [error, setError] = useState("");
@@ -37,10 +36,11 @@ export default function BuyerPayment() {
   const navigate = useNavigate();
   const status = useSelector(selectContractStatus);
   const handlePayment = () => {
-    dispatch(addContract(order))
+    const id = offerDetail.id;
+    dispatch(applyOffer(id))
       .unwrap()
       .then(() => {
-        navigate("/buyerHome/manageOrder");
+        navigate("/buyerHome/manageContract");
         setSuccessfull("Thanh toán thành công!");
         setError("");
       })
@@ -65,34 +65,17 @@ export default function BuyerPayment() {
       <h1 className="buyer_profile_title">Hóa đơn thanh toán</h1>
       <Container maxWidth="lg" className="profession_form">
         <div className="paymentRow">
-          <h3>Mã gói hàng :{order.packageId}</h3>
-          <h3></h3>
+          <h4>Mô tả yêu cầu : {offerDetail.descriptionBio} </h4>
         </div>
         <div className="paymentRow">
-          <h4>Tiêu đề: {pack.title}</h4>
-          {/* <div>
-            <p>✔️ Sản phẩm bàn giao 1</p>
-          </div> */}
+          <h4>Thời gian bàn giao: {offerDetail.totalDeliveryTime}</h4>
         </div>
         <div className="paymentRow">
-          <h4>Mô tả gói dịch vụ : {pack.shortDescription} </h4>
-        </div>
-        <div className="paymentRow">
-          <h4>Yêu cầu : {order.requirement} </h4>
-        </div>
-        <div className="paymentRow">
-          <h4>Thời gian bàn giao: {pack.deliveryTime}</h4>
-        </div>
-        <div className="paymentRow">
-          <h4>Giá : {pack.price}$</h4>
+          <h4>Giá : {offerDetail.offerPrice}$</h4>
         </div>{" "}
         <div className="paymentRow">
           {" "}
-          <h4>Số lượng:{order.quantity}</h4>
-        </div>
-        <div className="paymentRow">
-          {" "}
-          <h2>Tổng giá:{order.quantity * pack.price} $</h2>
+          <h4>Trạng thái: {offerDetail.offerRequestStatus}</h4>
         </div>
         <div className="paymentRow" style={{ justifyContent: "center" }}>
           <Button

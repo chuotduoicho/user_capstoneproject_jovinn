@@ -27,13 +27,7 @@ export default function BuyerOfferDetail() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const acceptOffer = () => {
-    const offer = {
-      descriptionBio: offerDetail.descriptionBio,
-      totalDeliveryTime: offerDetail.totalDeliveryTime,
-      offerPrice: offerDetail.offerPrice,
-      cancelFee: offerDetail.cancelFee,
-    };
-    navigate("/buyerHome/payment", { state: { offer } });
+    navigate("/buyerHome/paymentOffer", { state: { offerDetail } });
   };
 
   return (
@@ -94,14 +88,17 @@ export default function BuyerOfferDetail() {
           <h3>Trạng thái: {offerDetail.offerRequestStatus}</h3>
         </div>
         <div className="profession_row">
-          <Button
-            variant="contained"
-            color="primary"
-            className="form_right_row_btn"
-            onClick={acceptOffer}
-          >
-            Chấp nhận đề nghị
-          </Button>
+          {offerDetail.offerRequestStatus !== "ACCEPTED" && (
+            <Button
+              variant="contained"
+              color="primary"
+              className="form_right_row_btn"
+              onClick={acceptOffer}
+            >
+              Chấp nhận đề nghị
+            </Button>
+          )}
+
           <Button
             variant="contained"
             color="default"

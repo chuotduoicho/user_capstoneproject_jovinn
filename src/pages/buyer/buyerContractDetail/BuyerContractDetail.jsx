@@ -106,9 +106,11 @@ export default function BuyerContractDetail() {
           <h2>Bình luận: {contractDetail.comments}</h2>
         </div>{" "} */}
         <div className="paymentRow">
-          <Button variant="contained" color="primary" onClick={handleOpen}>
-            Xác nhận bàn giao
-          </Button>
+          {contractDetail.deliveryStatus !== "SENDING" && (
+            <Button variant="contained" color="primary" onClick={handleOpen}>
+              Xác nhận bàn giao
+            </Button>
+          )}
         </div>
         <Dialog
           fullWidth={fullWidth}

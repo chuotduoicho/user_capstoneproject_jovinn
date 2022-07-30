@@ -13,6 +13,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import MenuList from "@material-ui/core/MenuList";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef, useCallback } from "react";
+import { logout } from "../../../redux/authSlice";
 import { Button } from "@material-ui/core";
 import { useDispatch } from "react-redux";
 export default function SellerHeader() {
@@ -21,7 +22,7 @@ export default function SellerHeader() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const logOut = useCallback(() => {
-    dispatch(logOut());
+    dispatch(logout());
   }, [dispatch]);
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);

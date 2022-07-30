@@ -4,7 +4,7 @@ import ServiceService from "../services/service.service";
 const services = JSON.parse(localStorage.getItem("services"));
 const initialState = services
   ? {
-      listServices: services,
+      listServices: services.content,
       newServiceId: null,
       status: "idle",
     }
@@ -75,7 +75,7 @@ const serviceSlice = createSlice({
       state.status = "loading";
     },
     [fetchServices.fulfilled]: (state, { payload }) => {
-      state.listServices = payload;
+      state.listServices = payload.content;
       state.status = "success";
     },
     [fetchServices.rejected]: (state, action) => {
@@ -85,7 +85,7 @@ const serviceSlice = createSlice({
       state.status = "loading";
     },
     [fetchServicesByCategory.fulfilled]: (state, { payload }) => {
-      state.listServices = payload;
+      state.listServices = payload.content;
       state.status = "success";
     },
     [fetchServicesByCategory.rejected]: (state, action) => {
