@@ -1,6 +1,3 @@
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { getCategories } from "../../../redux/categorySlice";
 import "./categoryList.scss";
 
 export default function CategoryList({ id, title, active, setSelected }) {

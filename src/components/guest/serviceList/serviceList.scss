@@ -21,7 +21,9 @@
   .service_cardGrid {
     .service_card {
       cursor: pointer;
+      border-radius: 1rem;
       .service_cardContent {
+        height: 200px;
         .service_intro {
           display: flex;
           flex-direction: row;
@@ -39,6 +41,7 @@
       }
       .service_cardAction {
         background-color: rgb(69, 146, 14);
+
         .service_rating {
           float: right;
           margin-left: 35px;

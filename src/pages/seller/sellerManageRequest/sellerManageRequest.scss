@@ -1,7 +1,12 @@
 .buyer_profile {
   height: 100vh;
   overflow-x: hidden;
-
+  .list {
+    display: flex;
+    background-color: white;
+    justify-content: center;
+    list-style: none;
+  }
   .sections_profile {
     width: 100%;
     height: calc(100vh - 70px);

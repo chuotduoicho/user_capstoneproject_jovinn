@@ -23,34 +23,18 @@ import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import { Button } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchRequestsSeller,
+  fetchRequestsSellerByCate,
   selectAllRequests,
 } from "../../../redux/requestSlice";
 import { selectAllCategories } from "../../../redux/categorySlice";
 import SellerHome from "../sellerHome/SellerHome";
 import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
-function createData(description, subCate, skills, price, cancleFee) {
-  return { description, subCate, skills, price, cancleFee };
-}
-
-const rows = [
-  createData("Mô tả ngắn abcdsssssssssss", "Kinh doanh tự do", "HTML", 67, 4.3),
-  createData("Donut", "Kinh doanh tự dosdsd", "JS", 51, 4.9),
-  createData("Eclair", "Kinh doanh tự dsdsdao", "JS", 24, 6.0),
-  createData("Frozen yoghurt", "Kinh doanh tự áddo", "HTML", 24, 4.0),
-  createData("Gingerbread", "Kinh doanh tựád do", "CSS", 49, 3.9),
-  createData("Honeycomb", "Kinh doanh tự do", "HTML", 87, 6.5),
-  createData("Ice cream ", "Kinh doanh tự do", "JS", 37, 4.3),
-  createData("Jelly Bean", "Kinh doanh tự do", "CSS", 94, 0.0),
-  createData("KitKat", "Kinh doanh tự do", "HTML", 65, 7.0),
-  createData("Lollipop", "Kinh doanh tự do", "HTML", 98, 0.0),
-  createData("Marshmallow", "Kinh doanh tự do", "CSS", 81, 2.0),
-  createData("Nougat", "Kinh doanh tự do", "CSS", 9, 37.0),
-  createData("Oreo", "Kinh doanh tự do", "CSS", 63, 4.0),
-];
+import CategoryList from "../../../components/guest/categoryList/CategoryList";
+import { selectCurrentUser } from "../../../redux/userSlice";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -215,44 +199,21 @@ const EnhancedTableToolbar = (props) => {
   const { numSelected } = props;
 
   return (
-    <Toolbar
-      className={clsx(classes.root, {
-        [classes.highlight]: numSelected > 0,
-      })}
-    >
-      {numSelected > 0 ? (
-        <Typography
-          className={classes.title}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          {numSelected} selected
-        </Typography>
-      ) : (
-        <Typography
-          className={classes.title}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        >
-          Danh sách yêu cầu
-        </Typography>
-      )}
+    <Toolbar className={clsx(classes.root)}>
+      <Typography
+        className={classes.title}
+        variant="h6"
+        id="tableTitle"
+        component="div"
+      >
+        Danh sách yêu cầu
+      </Typography>
 
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton aria-label="delete">
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton aria-label="filter list">
-            {/* <FilterListIcon /> */}
-          </IconButton>
-        </Tooltip>
-      )}
+      <Tooltip title="Filter list">
+        <IconButton aria-label="filter list">
+          {/* <FilterListIcon /> */}
+        </IconButton>
+      </Tooltip>
     </Toolbar>
   );
 };
@@ -288,52 +249,37 @@ const useStyles = makeStyles((theme) => ({
 export default function SellerManageRequest() {
   const listRequest = useSelector(selectAllRequests);
   const listCategories = useSelector(selectAllCategories);
+  const { user } = useSelector((state) => state.auth);
+  const currentUser = useSelector(selectCurrentUser);
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
-  const [selected, setSelected] = React.useState([]);
+  const [selected, setSelected] = useState(listCategories[0].id);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!user) {
+      navigate("/auth/login");
+    } else if (currentUser.joinSellingAt == null) {
+      navigate("/errorPage");
+    } else {
+      // dispatch(fetchServices());
 
+      dispatch(fetchRequestsSellerByCate(selected));
+    }
+  }, [user, selected]);
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
   };
 
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelecteds = listRequest.map((n) => n.name);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-
-    setSelected(newSelected);
-  };
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(fetchRequestsSeller());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(fetchRequestsSeller());
+  // }, []);
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -347,8 +293,6 @@ export default function SellerManageRequest() {
     setDense(event.target.checked);
   };
 
-  const isSelected = (name) => selected.indexOf(name) !== -1;
-
   const emptyRows =
     rowsPerPage -
     Math.min(rowsPerPage, listRequest.length - page * rowsPerPage);
@@ -356,6 +300,16 @@ export default function SellerManageRequest() {
   return (
     <div className="buyer_profile">
       <SellerHeader />
+      <ul className="list">
+        {listCategories.map((item) => (
+          <CategoryList
+            title={item.name}
+            active={selected === item.id}
+            setSelected={setSelected}
+            id={item.id}
+          />
+        ))}
+      </ul>
       <div className={classes.root}>
         <Paper className={classes.paper}>
           <EnhancedTableToolbar numSelected={selected.length} />
@@ -371,7 +325,6 @@ export default function SellerManageRequest() {
                 numSelected={selected.length}
                 order={order}
                 orderBy={orderBy}
-                onSelectAllClick={handleSelectAllClick}
                 onRequestSort={handleRequestSort}
                 rowCount={listRequest.length}
               />
