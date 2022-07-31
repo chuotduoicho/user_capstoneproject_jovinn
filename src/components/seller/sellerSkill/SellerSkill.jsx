@@ -3,7 +3,10 @@ import {
   ButtonGroup,
   Chip,
   Paper,
-  TextareaAutosize,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
 } from "@material-ui/core";
 import React from "react";
 import { useState } from "react";
@@ -41,6 +44,7 @@ export default function SellerSkill({ skills, id }) {
 
   function removeSkill(id) {
     if (skills.length > 1) {
+      setOpenDelete(false);
       dispatch(deleteSkill(id))
         .unwrap()
         .then(() => {
@@ -58,7 +62,14 @@ export default function SellerSkill({ skills, id }) {
   const handleNotEdit = (e) => {
     setEditStatus(false);
   };
+  const [openDelete, setOpenDelete] = React.useState(false);
+  const handleClickOpenDelete = () => {
+    setOpenDelete(true);
+  };
 
+  const handleCloseDelete = () => {
+    setOpenDelete(false);
+  };
   return (
     <div className="sellerIntro">
       {" "}
@@ -76,16 +87,44 @@ export default function SellerSkill({ skills, id }) {
                     {" "}
                     {skills.map((item, index) => {
                       return (
-                        <Chip
-                          key={index}
-                          label={item.name}
-                          variant="outlined"
-                          color="primary"
-                          onDelete={() => {
-                            removeSkill(item.id);
-                          }}
-                          className="details_paper_chip"
-                        />
+                        <>
+                          {" "}
+                          <Chip
+                            key={index}
+                            label={item.name}
+                            variant="outlined"
+                            color="primary"
+                            onDelete={handleClickOpenDelete}
+                            className="details_paper_chip"
+                          />
+                          <Dialog
+                            open={openDelete}
+                            onClose={handleCloseDelete}
+                            aria-labelledby="responsive-dialog-title"
+                          >
+                            <DialogTitle id="responsive-dialog-title">
+                              {"Bạn có muốn xóa kĩ năng này?"}
+                            </DialogTitle>
+                            <DialogActions>
+                              <Button
+                                onClick={() => {
+                                  removeSkill(item.id);
+                                }}
+                                color="secondary"
+                                variant="outlined"
+                              >
+                                Xóa
+                              </Button>
+                              <Button
+                                onClick={handleCloseDelete}
+                                color="default"
+                                variant="outlined"
+                              >
+                                Hủy
+                              </Button>
+                            </DialogActions>
+                          </Dialog>
+                        </>
                       );
                     })}{" "}
                     <input
