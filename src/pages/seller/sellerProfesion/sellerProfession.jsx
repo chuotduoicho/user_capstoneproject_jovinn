@@ -74,29 +74,6 @@ export default function SellerProfession() {
         list2[index][name] = "";
         list2[index].fromDate = "";
       }
-      // if (name != "fromDate" || name != "toDate") {
-      //   list2[index][name] = "";
-      // } else if (name == "fromDate") {
-      //   const selected = new Date(e.target.value);
-      //   const minDate = new Date();
-      //   minDate.setHours(0, 0, 0, 0);
-      //   minDate.setDate(minDate.getDate() + 1);
-      //   if (selected < minDate) {
-      //     list2[index][name] = "Ngày bắt đầu phải từ ngày hiện tại";
-      //   } else {
-      //     list2[index][name] = "";
-      //   }
-      // } else if (name == "toDate") {
-      //   const selected = new Date(e.target.value);
-      //   const minDate = new Date();
-      //   minDate.setHours(0, 0, 0, 0);
-      //   minDate.setDate(minDate.getDate() + 1);
-      //   if (selected < minDate) {
-      //     list2[index][name] = "Ngày kết thúc phải lớn hơn ngày hiện tại";
-      //   } else {
-      //     list2[index][name] = "";
-      //   }
-      // }
     }
     setEdus(list);
   };
