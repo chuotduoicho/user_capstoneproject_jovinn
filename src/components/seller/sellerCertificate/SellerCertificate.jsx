@@ -54,12 +54,21 @@ export default function SellerCertificate({ certificates, id }) {
       .catch(() => {});
   };
   const handleCerRemove = (id) => {
+    setOpenDelete(false);
     dispatch(deleteCer(id))
       .unwrap()
       .then(() => {
         dispatch(fetchCurrentUser());
       })
       .catch(() => {});
+  };
+  const [openDelete, setOpenDelete] = React.useState(false);
+  const handleClickOpenDelete = () => {
+    setOpenDelete(true);
+  };
+
+  const handleCloseDelete = () => {
+    setOpenDelete(false);
   };
   return (
     <div className="sellerIntro">
@@ -98,21 +107,45 @@ export default function SellerCertificate({ certificates, id }) {
                             {item.title}
                           </TableCell>
                           <TableCell align="right"> {item.name}</TableCell>
-
                           <TableCell align="right">
                             <a href={`//${item.linkCer}`}>LINK</a>
                           </TableCell>
-
                           {editStatus && (
                             <TableCell align="right">
                               <EditOutlined color="primary" />
                               <DeleteOutline
                                 color="secondary"
                                 style={{ cursor: "pointer" }}
-                                onClick={() => handleCerRemove(item.id)}
+                                onClick={handleClickOpenDelete}
                               />
                             </TableCell>
                           )}
+                          <Dialog
+                            open={openDelete}
+                            onClose={handleCloseDelete}
+                            aria-labelledby="responsive-dialog-title"
+                          >
+                            <DialogTitle id="responsive-dialog-title">
+                              {"Bạn có muốn xóa chứng chỉ này?"}
+                            </DialogTitle>
+                            <DialogActions>
+                              <Button
+                                onClick={() => handleCerRemove(item.id)}
+                                color="secondary"
+                                variant="outlined"
+                              >
+                                Xóa
+                              </Button>
+                              <Button
+                                onClick={handleCloseDelete}
+                                color="default"
+                                variant="outlined"
+                              >
+                                Hủy
+                              </Button>
+                            </DialogActions>
+                          </Dialog>
+                          ;
                         </TableRow>
                       );
                     })}
