@@ -183,7 +183,11 @@ export default function SellerHome() {
       <div style={{ display: "flex" }}>
         <SellerIntro
           description={currentUser.seller.descriptionBio}
-          brandName={currentUser.seller.brandName}
+          brandName={
+            currentUser.seller.brandName
+              ? currentUser.seller.brandName
+              : "JOVINN"
+          }
         />
         <SellerSkill skills={currentUser.seller.skills} id={currentUser.id} />
       </div>

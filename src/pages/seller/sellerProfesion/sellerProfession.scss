@@ -11,7 +11,17 @@
     margin: 0 auto;
     .profession_row {
       margin-bottom: 15px;
-
+      .editButton {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 5px;
+        font-size: 12px;
+        color: #7451f8;
+        background-color: #7551f818;
+        cursor: pointer;
+        border-radius: 0px 0px 0px 5px;
+      }
       .tags-input-container {
         border: 2px solid rgb(238, 225, 225);
         padding: 0.5em;

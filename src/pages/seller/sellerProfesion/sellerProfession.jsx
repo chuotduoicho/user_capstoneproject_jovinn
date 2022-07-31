@@ -15,12 +15,15 @@ import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
 export default function SellerProfession() {
   // const currentUser = useSelector(selectCurrentUser);
   const [descriptionBio, setDescriptionBio] = useState("");
+  const [checkError, setCheckError] = useState(false);
   const [brandName, setBrandName] = useState("");
   const [skills, setSkills] = useState([]);
   const [edus, setEdus] = useState([
     { title: "", universityName: "", fromDate: "", major: "", toDate: "" },
   ]);
-
+  const [edusError, setEdusError] = useState([
+    { title: "", universityName: "", fromDate: "", major: "", toDate: "" },
+  ]);
   const [certificates, setCertificates] = useState([
     { title: "", name: "", linkCer: "" },
   ]);
@@ -41,7 +44,60 @@ export default function SellerProfession() {
   const handleEduChange = (e, index) => {
     const { name, value } = e.target;
     const list = [...edus];
+    const list2 = [...edusError];
     list[index][name] = value;
+    if (value != "") {
+      const selected = new Date(e.target.value);
+      const maxDate = new Date();
+      maxDate.setHours(0, 0, 0, 0);
+      maxDate.setDate(maxDate.getDate() + 1);
+      if (name == "fromDate" && selected > maxDate) {
+        list2[index][name] = "Ngày bắt đầu phải trước ngày hiện tại";
+      } else if (
+        name == "fromDate" &&
+        selected > new Date(edus[index].toDate)
+      ) {
+        list2[index][name] = "Ngày bắt đầu phải trước ngày kết thúc";
+      } else if (name == "fromDate") {
+        list2[index][name] = "";
+        list2[index].toDate = "";
+      }
+
+      if (name == "toDate" && selected > maxDate) {
+        list2[index][name] = "Ngày kết thúc phải trước ngày hiện tại";
+      } else if (
+        name == "toDate" &&
+        selected < new Date(edus[index].fromDate)
+      ) {
+        list2[index][name] = "Ngày kết thúc phải sau ngày bắt đầu";
+      } else if (name == "toDate") {
+        list2[index][name] = "";
+        list2[index].fromDate = "";
+      }
+      // if (name != "fromDate" || name != "toDate") {
+      //   list2[index][name] = "";
+      // } else if (name == "fromDate") {
+      //   const selected = new Date(e.target.value);
+      //   const minDate = new Date();
+      //   minDate.setHours(0, 0, 0, 0);
+      //   minDate.setDate(minDate.getDate() + 1);
+      //   if (selected < minDate) {
+      //     list2[index][name] = "Ngày bắt đầu phải từ ngày hiện tại";
+      //   } else {
+      //     list2[index][name] = "";
+      //   }
+      // } else if (name == "toDate") {
+      //   const selected = new Date(e.target.value);
+      //   const minDate = new Date();
+      //   minDate.setHours(0, 0, 0, 0);
+      //   minDate.setDate(minDate.getDate() + 1);
+      //   if (selected < minDate) {
+      //     list2[index][name] = "Ngày kết thúc phải lớn hơn ngày hiện tại";
+      //   } else {
+      //     list2[index][name] = "";
+      //   }
+      // }
+    }
     setEdus(list);
   };
 
@@ -50,12 +106,19 @@ export default function SellerProfession() {
       ...edus,
       { title: "", universityName: "", major: "", fromDate: "", toDate: "" },
     ]);
+    setEdusError([
+      ...edusError,
+      { title: "", universityName: "", major: "", fromDate: "", toDate: "" },
+    ]);
   };
 
   const handleEduRemove = (index) => {
     const list = [...edus];
     list.splice(index, 1);
     setEdus(list);
+    const list2 = [...edusError];
+    list2.splice(index, 1);
+    setEdusError(list2);
   };
   const handleCerChange = (e, index) => {
     const { name, value } = e.target;
@@ -87,78 +150,81 @@ export default function SellerProfession() {
   const handleSaveInfo = () => {
     setError("");
     setSuccess("");
+    setCheckError(true);
     console.log("brandName", brandName);
     console.log("descriptionBio", descriptionBio);
     console.log("skills", skills);
     console.log("edus", edus);
     console.log("certificates", certificates);
+    const list2 = [...edusError];
     let check = true;
     if (descriptionBio == "") {
-      setError("Chưa nhập lời giới thiệu !");
+      // setError("Chưa nhập lời giới thiệu !");
       check = false;
-      return;
     } else if (brandName == "") {
-      setError("Chưa nhập tên thương hiệu !");
+      // setError("Chưa nhập tên thương hiệu !");
       check = false;
-      return;
     } else if (skills.length == 0) {
       setError("Chưa nhập kĩ năng !");
       check = false;
-      return;
     } else {
       edus.map((item, index) => {
         if (item.title == "") {
-          setError("Chưa nhập tiêu đề của học vấn " + parseInt(index + 1));
+          // setError("Chưa nhập tiêu đề của học vấn " + parseInt(index + 1));
           check = false;
-          return;
         } else if (item.universityName == "") {
-          setError("Chưa nhập tên trường của học vấn " + parseInt(index + 1));
+          // setError("Chưa nhập tên trường của học vấn " + parseInt(index + 1));
           check = false;
-          return;
         } else if (item.major == "") {
-          setError("Chưa nhập tên ngành của học vấn " + parseInt(index + 1));
+          // setError("Chưa nhập tên ngành của học vấn " + parseInt(index + 1));
           check = false;
-          return;
         } else if (item.fromDate == "") {
-          setError("Chưa nhập ngày bắt đầu của học vấn " + parseInt(index + 1));
+          // setError("Chưa nhập ngày bắt đầu của học vấn " + parseInt(index + 1));
           check = false;
-          return;
+          list2[index].fromDate = "Không được để trống";
         } else if (item.toDate == "") {
-          setError(
-            "Chưa nhập ngày kết thúc của học vấn " + parseInt(index + 1)
-          );
+          // setError(
+          //   "Chưa nhập ngày kết thúc của học vấn " + parseInt(index + 1)
+          // );
           check = false;
-          return;
+          list2[index].toDate = "Không được để trống";
         }
       });
       certificates.map((item, index) => {
         if (item.title == "") {
-          setError("Chưa nhập tiêu đề của chứng chỉ " + parseInt(index + 1));
+          // setError("Chưa nhập tiêu đề của chứng chỉ " + parseInt(index + 1));
           check = false;
-          return;
         } else if (item.name == "") {
-          setError("Chưa nhập tên của chứng chỉ " + parseInt(index + 1));
+          // setError("Chưa nhập tên của chứng chỉ " + parseInt(index + 1));
           check = false;
-          return;
         } else if (item.linkCer == "") {
-          setError("Chưa nhập link của chứng chỉ " + parseInt(index + 1));
+          // setError("Chưa nhập link của chứng chỉ " + parseInt(index + 1));
           check = false;
-          return;
         }
       });
     }
+    setEdusError(list2);
     if (check) {
-      dispatch(joinSeller(info))
-        .unwrap()
-        .then(() => {
-          // setSuccessful(true);
-          dispatch(fetchCurrentUser());
-          navigate("/sellerHome/createService");
-        })
+      edusError.map((item, index) => {
+        if (
+          item.toDate == "" &&
+          item.fromDate == "" &&
+          edusError.length - 1 == index
+        ) {
+          dispatch(joinSeller(info))
+            .unwrap()
+            .then(() => {
+              // setSuccessful(true);
+              dispatch(fetchCurrentUser());
+              navigate("/sellerHome/createService");
+            })
 
-        .catch(() => {
-          setError("Lưu thông tin thất bại");
-        });
+            .catch(() => {
+              setError("Đã đăng kí thông tin nâng cao rồi !");
+            });
+        }
+        console.log("abc");
+      });
     }
   };
   return (
@@ -170,21 +236,30 @@ export default function SellerProfession() {
         <div className="profession_row">
           <TextField
             id="outlined-basic"
-            label="Giới thiệu"
+            label="Lời giới thiệu"
             variant="outlined"
-            style={{ width: "100%" }}
+            style={{ width: "75%", marginRight: "20px" }}
             onChange={(e) => setDescriptionBio(e.target.value)}
+            error={descriptionBio.length == 0 && checkError}
+            helperText={
+              descriptionBio.length == 0 &&
+              checkError &&
+              "Chưa nhập lời giới thiệu!"
+            }
           />
-        </div>
-        <div className="profession_row">
           <TextField
             id="outlined-basic"
             label="Tên thương hiệu"
             variant="outlined"
-            style={{ width: "100%" }}
+            style={{ width: "23%" }}
             onChange={(e) => setBrandName(e.target.value)}
+            error={brandName.length == 0 && checkError}
+            helperText={
+              brandName.length == 0 && checkError && "Chưa nhập lời giới thiệu!"
+            }
           />
         </div>
+        {/* <div className="profession_row"></div> */}
         <div className="profession_row">
           {" "}
           {/* <h2>Kĩ năng</h2> */}
@@ -228,6 +303,12 @@ export default function SellerProfession() {
                 style={{ width: "29%" }}
                 name="title"
                 onChange={(e) => handleEduChange(e, index)}
+                error={edu.title.length == 0 && checkError}
+                helperText={
+                  edu.title.length == 0 &&
+                  checkError &&
+                  "Chưa nhập tiêu đề học vấn!"
+                }
               />
 
               <TextField
@@ -237,6 +318,12 @@ export default function SellerProfession() {
                 name="universityName"
                 style={{ width: "25%" }}
                 onChange={(e) => handleEduChange(e, index)}
+                error={edu.universityName.length == 0 && checkError}
+                helperText={
+                  edu.universityName.length == 0 &&
+                  checkError &&
+                  "Chưa nhập tên trường học!"
+                }
               />
               <TextField
                 id="outlined-basic"
@@ -245,10 +332,16 @@ export default function SellerProfession() {
                 name="major"
                 style={{ width: "20%" }}
                 onChange={(e) => handleEduChange(e, index)}
+                error={edu.major.length == 0 && checkError}
+                helperText={
+                  edu.major.length == 0 &&
+                  checkError &&
+                  "Chưa nhập tên ngành học!"
+                }
               />
               <TextField
                 id="outlined-basic"
-                label="Năm bắt đầu "
+                label="Ngày bắt đầu "
                 variant="outlined"
                 type="date"
                 style={{ width: "10%" }}
@@ -257,10 +350,20 @@ export default function SellerProfession() {
                 }}
                 name="fromDate"
                 onChange={(e) => handleEduChange(e, index)}
+                error={
+                  (edusError[index].fromDate.length > 0 && checkError) ||
+                  (edu.fromDate.length == 0 && checkError)
+                }
+                helperText={
+                  (checkError && edusError[index].fromDate) ||
+                  (edu.fromDate.length == 0 &&
+                    checkError &&
+                    "Ngày kết thúc không hợp lệ!")
+                }
               />
               <TextField
                 id="outlined-basic"
-                label="Năm tốt nghiệp "
+                label="Ngày tốt nghiệp "
                 variant="outlined"
                 type="date"
                 InputLabelProps={{
@@ -269,6 +372,16 @@ export default function SellerProfession() {
                 style={{ width: "10%" }}
                 name="toDate"
                 onChange={(e) => handleEduChange(e, index)}
+                error={
+                  (edusError[index].toDate.length > 0 && checkError) ||
+                  (edu.toDate.length == 0 && checkError)
+                }
+                helperText={
+                  (checkError && edusError[index].toDate) ||
+                  (edu.toDate.length == 0 &&
+                    checkError &&
+                    "Ngày kết thúc không hợp lệ!")
+                }
               />
               {edus.length !== 1 && (
                 <Button
@@ -304,31 +417,49 @@ export default function SellerProfession() {
                 id="outlined-basic"
                 label="Nội dung"
                 variant="outlined"
-                style={{ width: "20%" }}
+                style={{ width: "30%" }}
                 name="title"
                 onChange={(e) => handleCerChange(e, index)}
+                error={cer.title.length == 0 && checkError}
+                helperText={
+                  cer.title.length == 0 &&
+                  checkError &&
+                  "Chưa nhập nội dung chứng chỉ!"
+                }
               />
               <TextField
                 id="outlined-basic"
                 label="Tên chứng chỉ"
                 variant="outlined"
-                style={{ width: "20%" }}
+                style={{ width: "30%" }}
                 name="name"
                 onChange={(e) => handleCerChange(e, index)}
+                error={cer.name.length == 0 && checkError}
+                helperText={
+                  cer.name.length == 0 &&
+                  checkError &&
+                  "Chưa nhập tên chứng chỉ!"
+                }
               />
-              <TextField
+              {/* <TextField
                 id="outlined-basic"
                 label="Năm"
                 variant="outlined"
                 style={{ width: "10%" }}
-              />
+              /> */}
               <TextField
                 id="outlined-basic"
                 label="Liên kết"
                 variant="outlined"
-                style={{ width: "40%" }}
+                style={{ width: "30%" }}
                 name="linkCer"
                 onChange={(e) => handleCerChange(e, index)}
+                error={cer.linkCer.length == 0 && checkError}
+                helperText={
+                  cer.linkCer.length == 0 &&
+                  checkError &&
+                  "Chưa nhập liên kết chứng chỉ!"
+                }
               />
               <Button
                 variant="contained"

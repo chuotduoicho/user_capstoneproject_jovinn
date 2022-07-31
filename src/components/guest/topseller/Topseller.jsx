@@ -19,7 +19,7 @@ export default function Topseller() {
 
   const navigate = useNavigate();
   return (
-    <div className="topseller" id="works">
+    <div className="topseller" id="topseller">
       <h1>NGƯỜI BÁN UY TÍN</h1>
       <div
         className="topseller_slider"
