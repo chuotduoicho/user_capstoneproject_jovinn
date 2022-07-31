@@ -160,7 +160,7 @@ export default function SellerCertificate({ certificates, id }) {
                   style={{ justifyContent: "center" }}
                 >
                   <Button onClick={() => setOpen(true)}>Thêm</Button>
-                  <Button onClick={handleNotEdit}>Hủy</Button>
+                  <Button onClick={handleNotEdit}>Xong</Button>
                 </ButtonGroup>
               )}
               <Dialog

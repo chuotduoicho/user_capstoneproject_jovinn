@@ -46,6 +46,7 @@ export default function SellerEducate({ educations, id }) {
     setEditStatus(false);
   };
   const handleEduRemove = (id) => {
+    setOpenDelete(false);
     dispatch(deleteEdu(id))
       .unwrap()
       .then(() => {
@@ -76,6 +77,14 @@ export default function SellerEducate({ educations, id }) {
       })
 
       .catch(() => {});
+  };
+  const [openDelete, setOpenDelete] = React.useState(false);
+  const handleClickOpenDelete = () => {
+    setOpenDelete(true);
+  };
+
+  const handleCloseDelete = () => {
+    setOpenDelete(false);
   };
   return (
     <div className="sellerIntro">
@@ -130,10 +139,35 @@ export default function SellerEducate({ educations, id }) {
                               <Delete
                                 color="secondary"
                                 style={{ cursor: "pointer" }}
-                                onClick={() => handleEduRemove(item.id)}
+                                onClick={handleClickOpenDelete}
                               />
                             </TableCell>
                           )}
+                          <Dialog
+                            open={openDelete}
+                            onClose={handleCloseDelete}
+                            aria-labelledby="responsive-dialog-title"
+                          >
+                            <DialogTitle id="responsive-dialog-title">
+                              {"Bạn có muốn xóa học vấn này?"}
+                            </DialogTitle>
+                            <DialogActions>
+                              <Button
+                                onClick={() => handleEduRemove(item.id)}
+                                color="secondary"
+                                variant="outlined"
+                              >
+                                Xóa
+                              </Button>
+                              <Button
+                                onClick={handleCloseDelete}
+                                color="default"
+                                variant="outlined"
+                              >
+                                Hủy
+                              </Button>
+                            </DialogActions>
+                          </Dialog>
                         </TableRow>
                       );
                     })}
@@ -148,7 +182,7 @@ export default function SellerEducate({ educations, id }) {
                   style={{ justifyContent: "center" }}
                 >
                   <Button onClick={() => setOpen(true)}>Thêm</Button>
-                  <Button onClick={handleNotEdit}>Hủy</Button>
+                  <Button onClick={handleNotEdit}>Xong</Button>
                 </ButtonGroup>
               )}
               <Dialog
