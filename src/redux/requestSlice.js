@@ -204,7 +204,7 @@ const requestSlice = createSlice({
       state.status = "loading";
     },
     [fetchOffersSeller.fulfilled]: (state, { payload }) => {
-      state.listOffers = payload;
+      state.listOffers = payload.content;
       state.status = "success";
     },
     [fetchOffersSeller.rejected]: (state, action) => {
@@ -214,7 +214,7 @@ const requestSlice = createSlice({
       state.status = "loading";
     },
     [fetchOffersBuyer.fulfilled]: (state, { payload }) => {
-      state.listOffers = payload;
+      state.listOffers = payload.content;
       state.status = "success";
     },
     [fetchOffersBuyer.rejected]: (state, action) => {

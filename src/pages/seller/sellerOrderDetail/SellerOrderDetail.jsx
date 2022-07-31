@@ -1,6 +1,12 @@
-import { Button, CircularProgress, Container } from "@material-ui/core";
+import {
+  Button,
+  CircularProgress,
+  Container,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+} from "@material-ui/core";
 import React, { useState } from "react";
-import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
 import Contact from "../../../components/guest/contact/Contact";
 import "react-credit-cards/es/styles-compiled.css";
 import "./sellerOrderDetail.scss";
@@ -41,6 +47,7 @@ export default function SellerOrderDetail() {
   };
   const handleRejectOrder = (e) => {
     e.preventDefault();
+    setOpenDelete(false);
     dispatch(rejectOrder(orderId))
       .unwrap()
       .then(() => {
@@ -52,7 +59,14 @@ export default function SellerOrderDetail() {
         setError("Từ chối đơn thất bại!");
       });
   };
+  const [openDelete, setOpenDelete] = React.useState(false);
+  const handleClickOpenDelete = () => {
+    setOpenDelete(true);
+  };
 
+  const handleCloseDelete = () => {
+    setOpenDelete(false);
+  };
   return (
     <div className="buyer_profile">
       <SellerHeader />
@@ -103,7 +117,7 @@ export default function SellerOrderDetail() {
           <Button
             variant="contained"
             color="secondary"
-            onClick={handleRejectOrder}
+            onClick={handleClickOpenDelete}
           >
             Từ chối
           </Button>
@@ -112,7 +126,31 @@ export default function SellerOrderDetail() {
           <CircularProgress style={{ margin: "0 auto" }} />
         )}
       </Container>
-
+      <Dialog
+        open={openDelete}
+        onClose={handleCloseDelete}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <DialogTitle id="responsive-dialog-title">
+          {"Bạn có muốn từ chối yêu cầu này?"}
+        </DialogTitle>
+        <DialogActions>
+          <Button
+            onClick={() => handleRejectOrder}
+            color="secondary"
+            variant="outlined"
+          >
+            Xóa
+          </Button>
+          <Button
+            onClick={handleCloseDelete}
+            color="default"
+            variant="outlined"
+          >
+            Hủy
+          </Button>
+        </DialogActions>
+      </Dialog>
       {error !== "" && <Alert severity="error">{error}</Alert>}
       {success !== "" && <Alert severity="success">{success}</Alert>}
       <div className="sections_profile">
