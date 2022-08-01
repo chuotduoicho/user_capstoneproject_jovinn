@@ -42,7 +42,7 @@ export default function Package({
             marginBottom: "10px",
           }}
         >
-          Thêm 1 gói
+          Thêm gói {packages.length == 1 ? "nâng cao" : "cao cấp"}
         </Button>
       )}
       {packages.length > 1 && (
@@ -54,7 +54,7 @@ export default function Package({
             marginBottom: "10px",
           }}
         >
-          Xóa 1 gói
+          Xóa gói {packages.length == 2 ? "nâng cao" : "cao cấp"}
         </Button>
       )}
       <div

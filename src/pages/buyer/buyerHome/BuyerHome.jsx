@@ -61,8 +61,12 @@ export default function BuyerHome() {
       dispatch(fetchRequestsBuyer());
       dispatch(fetchWallet());
     }
-  }, [user, selected]);
+  }, [user]);
 
+  useEffect(() => {
+    setSubCateId("");
+    dispatch(fetchServicesByCategory(selected));
+  }, [selected]);
   const [subCateId, setSubCateId] = useState("");
 
   const handleChangeSubcate = (event) => {

@@ -24,7 +24,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { selectServiceById } from "../../../redux/serviceSlice";
 import { addContract } from "../../../redux/contractSlice";
-import { fetchCurrentUser } from "../../../redux/userSlice";
+import { fetchCurrentUser, selectWallet } from "../../../redux/userSlice";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -68,6 +68,7 @@ export default function ServiceDetail() {
   const serviceDetail = useSelector((state) =>
     selectServiceById(state, serviceId)
   );
+  const wallet = useSelector(selectWallet);
   console.log("service", serviceDetail);
   const theme = useTheme();
   const [value, setValue] = useState(0);
@@ -91,6 +92,7 @@ export default function ServiceDetail() {
       quantity: amount,
     };
     console.log("order", order);
+
     if (requirement.length >= 30 && requirement.length <= 500) {
       navigate("/buyerHome/payment", { state: { order, pack } });
     } else {
@@ -255,8 +257,12 @@ export default function ServiceDetail() {
                     }}
                     onClick={(e) => {
                       setPackageId(item.id);
-                      setOpen(true);
                       setPack(item);
+                      if (item.price * amount > wallet.withdraw) {
+                        alert("Không đủ tiền mua gói này!");
+                      } else {
+                        setOpen(true);
+                      }
                     }}
                   >
                     Mua

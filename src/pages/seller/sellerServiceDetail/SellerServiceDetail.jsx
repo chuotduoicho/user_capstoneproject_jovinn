@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useEffect, useState } from "react";
 import Contact from "../../../components/guest/contact/Contact";
 import "./serviceDetail.scss";
 import AppBar from "@material-ui/core/AppBar";
@@ -9,7 +9,14 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
-import { Button, ButtonGroup } from "@material-ui/core";
+import {
+  Button,
+  ButtonGroup,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "@material-ui/core";
 import { Divider, Avatar, Grid, Paper } from "@material-ui/core";
 import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
 import { useNavigate, useParams } from "react-router-dom";
@@ -19,7 +26,12 @@ import {
   selectServiceById,
   updateService,
 } from "../../../redux/serviceSlice";
-
+import Overview from "../../../components/seller/sellerCreateService/overview/Overview";
+import Package from "../../../components/seller/sellerCreateService/package/Package";
+import ProductImg from "../../../components/seller/sellerCreateService/productImg/ProductImg";
+import { selectAllCategories } from "../../../redux/categorySlice";
+import Alert from "@material-ui/lab/Alert";
+import { Add } from "@material-ui/icons";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -111,6 +123,99 @@ export default function SellerServiceDetail() {
   const packages = [...serviceDetail.packages].sort(
     (a, b) => a.price - b.price
   );
+  //dialog update overview
+  const [openUpdateOverView, setOpenUpdateOverView] = useState(false);
+  const handleCloseUpdateOverView = () => {
+    setOpenUpdateOverView(false);
+  };
+  //update overview
+  const [title, setTitle] = useState(serviceId ? serviceDetail.title : "");
+  const [description, setDescription] = useState(
+    serviceId ? serviceDetail.description : ""
+  );
+  const [subCateId, setSubCateId] = useState(
+    serviceId ? serviceDetail.subcategory.id : ""
+  );
+  const listCategory = useSelector(selectAllCategories);
+  const [category, setCategory] = useState(listCategory[0]);
+  const [errorTitle, setErrorTitle] = useState("");
+  const [errorDescription, setErrorDescription] = useState("");
+  const [errorSubcate, setErrorSubcate] = useState("");
+  const handleChangeCategory = (e) => {
+    setCategory(e.target.value);
+    setSubCateId("");
+  };
+  const handleChangeTitle = (e) => {
+    setTitle(e.target.value);
+  };
+  const handleChangeDes = (e) => {
+    setDescription(e.target.value);
+  };
+  const handleChangeSubcateId = (e) => {
+    setSubCateId(e.target.value);
+  };
+  useEffect(() => {
+    if (title.length > 0 && errorTitle) {
+      setErrorTitle("");
+    }
+  }, [title, errorTitle]);
+  useEffect(() => {
+    if (description.length > 0 && errorDescription) {
+      setErrorDescription("");
+    }
+  }, [description, errorDescription]);
+  useEffect(() => {
+    if (subCateId.length > 0 && errorSubcate) {
+      setErrorSubcate("");
+    }
+  }, [subCateId, errorSubcate]);
+  useEffect(() => {
+    if (title.length == 0) {
+      setErrorTitle("Không được để trống");
+    }
+  }, [title]);
+  useEffect(() => {
+    if (description.length == 0) {
+      setErrorDescription("Không được để trống");
+    }
+  }, [description]);
+  useEffect(() => {
+    if (subCateId.length == 0) {
+      setErrorSubcate("Không được để trống");
+    }
+  }, [subCateId]);
+  const [alert, setAlert] = useState("");
+  const [alertError, setAlertError] = useState("");
+  const handleUpdateOverView = (e) => {
+    e.preventDefault();
+    const newService = {
+      title: title,
+      description: description,
+      subCategory: {
+        id: subCateId,
+      },
+    };
+    const obj = { service: newService, serviceId };
+    if (!(errorTitle != "" || (errorDescription != "" && subCateId != "")))
+      dispatch(updateService(obj))
+        .unwrap()
+        .then(() => {
+          setAlert("Cập nhật thành công"); // Update count to be 5 after timeout is scheduled
+          dispatch(fetchServices());
+          setOpenUpdateOverView(false);
+          setTimeout(() => {
+            setAlert(""); // count is 0 here
+          }, 3000);
+          setAlert("Cập nhật thành công");
+        })
+        .catch(() => {
+          setTimeout(() => {
+            setAlertError(""); // count is 0 here
+          }, 3000);
+          setAlertError("Cập nhật thất bại");
+          setOpenUpdateOverView(false);
+        });
+  };
   return (
     <div className="service_detail">
       <SellerHeader />
@@ -208,11 +313,7 @@ export default function SellerServiceDetail() {
             aria-label="outlined primary button group"
             style={{ float: "right", marginBottom: "20px" }}
           >
-            <Button
-              onClick={() => navigate("/sellerHome/updateService/" + serviceId)}
-            >
-              Sửa
-            </Button>
+            <Button onClick={() => setOpenUpdateOverView(true)}>Sửa</Button>
             {serviceDetail.status === "ACTIVE" ? (
               <Button
                 onClick={handlePauseService}
@@ -229,6 +330,8 @@ export default function SellerServiceDetail() {
               </Button>
             )}
           </ButtonGroup>
+          {alert && <Alert severity="success">{alert}</Alert>}
+          {alertError && <Alert severity="error">{alertError}</Alert>}
           <AppBar position="static" color="default">
             <Tabs
               value={value}
@@ -267,6 +370,58 @@ export default function SellerServiceDetail() {
                 </TabPanel>
               );
             })}
+            {(packages.length == 1 || packages.length == 2) &&
+              Array(3 - packages.length)
+                .fill("Không có gói này")
+                .map((val, idx) => (
+                  <>
+                    <h1>{val}</h1>
+                    <Button variant="outlined" color="primary">
+                      <Add />
+                      {packages.length == 1 && " Tạo gói nâng cao"}
+                      {packages.length == 2 && " Tạo gói cao cấp"}
+                    </Button>
+                  </>
+                ))}
+            <Dialog
+              fullWidth
+              maxWidth="sm"
+              open={openUpdateOverView}
+              onClose={handleCloseUpdateOverView}
+              aria-labelledby="max-width-dialog-title"
+            >
+              <DialogTitle id="max-width-dialog-title">
+                Cập nhật dịch vụ
+              </DialogTitle>
+              <DialogContent>
+                <Overview
+                  title={handleChangeTitle}
+                  description={handleChangeDes}
+                  subCateId={handleChangeSubcateId}
+                  titleDf={title}
+                  descriptionDf={description}
+                  subCateIdDf={subCateId}
+                  listCategory={listCategory}
+                  category={category}
+                  setCategory={handleChangeCategory}
+                  errorTitle={errorTitle}
+                  errorDescription={errorDescription}
+                  errorSubcate={errorSubcate}
+                />
+              </DialogContent>
+              <DialogActions>
+                <Button
+                  onClick={handleUpdateOverView}
+                  color="primary"
+                  variant="contained"
+                >
+                  Cập nhật
+                </Button>
+                <Button onClick={handleCloseUpdateOverView} color="primary">
+                  Hủy
+                </Button>
+              </DialogActions>
+            </Dialog>
           </SwipeableViews>
         </div>
       </div>

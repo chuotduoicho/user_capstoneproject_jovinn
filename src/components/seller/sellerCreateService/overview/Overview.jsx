@@ -41,6 +41,8 @@ export default function Overview({
             fontSize: "25px",
             fontWeight: "bold",
             color: "GrayText",
+            marginBottom: "10px",
+            textAlign: "center",
           }}
         >
           Tổng quan

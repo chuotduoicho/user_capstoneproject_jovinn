@@ -140,7 +140,7 @@ export default function SellerOrderDetail() {
             color="secondary"
             variant="outlined"
           >
-            Xóa
+            Từ chối
           </Button>
           <Button
             onClick={handleCloseDelete}

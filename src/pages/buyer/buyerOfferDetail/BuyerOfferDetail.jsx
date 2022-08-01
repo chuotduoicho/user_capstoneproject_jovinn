@@ -15,19 +15,24 @@ import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
 import Contact from "../../../components/guest/contact/Contact";
 import { selectAllCategories } from "../../../redux/categorySlice";
 import { selectOfferById } from "../../../redux/requestSlice";
+import { selectWallet } from "../../../redux/userSlice";
 import "./buyerOfferDetail.scss";
 
 export default function BuyerOfferDetail() {
   const { offerId } = useParams();
   const offerDetail = useSelector((state) => selectOfferById(state, offerId));
   console.log("offerDetail", offerDetail);
-
+  const wallet = useSelector(selectWallet);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const acceptOffer = () => {
-    navigate("/buyerHome/paymentOffer", { state: { offerDetail } });
+    if (offerDetail.offerPrice > wallet.withdraw) {
+      alert("Không đủ tiền để chấp nhận đề nghị này!");
+    } else {
+      navigate("/buyerHome/paymentOffer", { state: { offerDetail } });
+    }
   };
 
   return (
