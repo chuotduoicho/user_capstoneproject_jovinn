@@ -58,7 +58,25 @@ const updateServicePackage = (obj) => {
       return response.data;
     });
 };
-
+const addServicePackage = (obj) => {
+  console.log("package", obj);
+  const boxId = obj.id;
+  const pack = obj.pack;
+  return axios
+    .post(API_URL + "/package/" + boxId, pack, {
+      headers: authHeader(),
+    })
+    .then((response) => {
+      return response.data;
+    });
+};
+const deleteServicePackage = (obj) => {
+  return axios
+    .delete(API_URL + "/package/" + obj, { headers: authHeader() })
+    .then((response) => {
+      return response.data;
+    });
+};
 const serviceService = {
   getAllServices,
   getServiceById,
@@ -66,6 +84,8 @@ const serviceService = {
   getServiceByCateId,
   updateService,
   updateServicePackage,
+  addServicePackage,
+  deleteServicePackage,
 };
 
 export default serviceService;

@@ -66,7 +66,24 @@ export const updateServicePackage = createAsyncThunk(
     return data;
   }
 );
-
+export const addServicePackage = createAsyncThunk(
+  "service/addServicePackage",
+  async (obj) => {
+    console.log(obj);
+    const data = await ServiceService.addServicePackage(obj);
+    console.log(data);
+    return data;
+  }
+);
+export const deleteServicePackage = createAsyncThunk(
+  "service/deleteServicePackage",
+  async (obj) => {
+    console.log(obj);
+    const data = await ServiceService.deleteServicePackage(obj);
+    console.log(data);
+    return data;
+  }
+);
 const serviceSlice = createSlice({
   name: "service",
   initialState,
@@ -115,10 +132,27 @@ const serviceSlice = createSlice({
       state.status = "loading";
     },
     [updateServicePackage.fulfilled]: (state, { payload }) => {
-      state.newServiceId = payload.id;
       state.status = "success";
     },
     [updateServicePackage.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [addServicePackage.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [addServicePackage.fulfilled]: (state, { payload }) => {
+      state.status = "success";
+    },
+    [addServicePackage.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [deleteServicePackage.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [deleteServicePackage.fulfilled]: (state, { payload }) => {
+      state.status = "success";
+    },
+    [deleteServicePackage.rejected]: (state, action) => {
       state.status = "failed";
     },
   },

@@ -350,7 +350,7 @@ export default function SellerServiceDetail() {
             axis={theme.direction === "rtl" ? "x-reverse" : "x"}
             index={value}
             onChangeIndex={handleChangeIndex}
-            style={{ border: "2px groove #d8d0d2" }}
+            style={{ border: "2px groove #d8d0d2", width: "595px" }}
           >
             {packages.map((item, index) => {
               return (
