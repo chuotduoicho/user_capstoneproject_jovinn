@@ -22,16 +22,18 @@ import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  addServicePackage,
+  deleteServicePackage,
   fetchServices,
   selectServiceById,
   updateService,
+  updateServicePackage,
 } from "../../../redux/serviceSlice";
 import Overview from "../../../components/seller/sellerCreateService/overview/Overview";
-import Package from "../../../components/seller/sellerCreateService/package/Package";
-import ProductImg from "../../../components/seller/sellerCreateService/productImg/ProductImg";
 import { selectAllCategories } from "../../../redux/categorySlice";
 import Alert from "@material-ui/lab/Alert";
-import { Add } from "@material-ui/icons";
+import { Add, Delete, Edit } from "@material-ui/icons";
+import PackageEdit from "../../../components/seller/sellerCreateService/package/PackageEdit";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -206,7 +208,6 @@ export default function SellerServiceDetail() {
           setTimeout(() => {
             setAlert(""); // count is 0 here
           }, 3000);
-          setAlert("Cập nhật thành công");
         })
         .catch(() => {
           setTimeout(() => {
@@ -215,6 +216,191 @@ export default function SellerServiceDetail() {
           setAlertError("Cập nhật thất bại");
           setOpenUpdateOverView(false);
         });
+  };
+
+  //add Package
+  //dialog add Package
+  const [openPack, setOpenPack] = useState(false);
+  const handleClosePack = () => {
+    setPackId("");
+    setTitlePackage("");
+    setShortDescription("");
+    setDeliveryTime("");
+    setPrice("");
+    setContractCancelFee("");
+    setOpenPack(false);
+  };
+  const [packId, setPackId] = useState("");
+  const [titlePackage, setTitlePackage] = useState("");
+  const [shortDescription, setShortDescription] = useState("");
+  const [deliveryTime, setDeliveryTime] = useState("");
+  const [price, setPrice] = useState("");
+  const [contractCancelFee, setContractCancelFee] = useState("");
+  const [titlePackageE, setTitlePackageE] = useState("");
+  const [shortDescriptionE, setShortDescriptionE] = useState("");
+  const [deliveryTimeE, setDeliveryTimeE] = useState();
+  const [priceE, setPriceE] = useState();
+  const [contractCancelFeeE, setContractCancelFeeE] = useState();
+  const handleChangeTitlePackage = (e) => {
+    setTitlePackage(e.target.value);
+  };
+  const handleChangeShortDescription = (e) => {
+    setShortDescription(e.target.value);
+  };
+  const handleChangeDeliveryTime = (e) => {
+    setDeliveryTime(e.target.value);
+  };
+  const handleChangePrice = (e) => {
+    setPrice(e.target.value);
+  };
+  const handleChangeContractCancelFee = (e) => {
+    setContractCancelFee(e.target.value);
+  };
+  useEffect(() => {
+    if (titlePackage.length > 0 && titlePackageE) {
+      setTitlePackageE("");
+    }
+  }, [titlePackage, titlePackageE]);
+  useEffect(() => {
+    if (shortDescription.length > 30 && shortDescriptionE) {
+      setShortDescriptionE("");
+    }
+  }, [shortDescription, shortDescriptionE]);
+  useEffect(() => {
+    if (deliveryTime && deliveryTimeE) {
+      setDeliveryTimeE("");
+    }
+  }, [deliveryTime, deliveryTimeE]);
+  useEffect(() => {
+    if (price && priceE) {
+      setPriceE("");
+    }
+  }, [price, priceE]);
+  useEffect(() => {
+    if (contractCancelFee && contractCancelFeeE) {
+      setContractCancelFeeE("");
+    }
+  }, [contractCancelFee, contractCancelFeeE]);
+  useEffect(() => {
+    if (titlePackage.length == 0) {
+      setTitlePackageE("Không được để trống");
+    }
+  }, [titlePackage]);
+  useEffect(() => {
+    if (shortDescription.length == 0) {
+      setShortDescriptionE("Không được để trống");
+    } else if (shortDescription.length < 30) {
+      setShortDescriptionE("Mô tả phải lớn hơn 30 kí tự");
+    }
+  }, [shortDescription]);
+  useEffect(() => {
+    if (!deliveryTime) {
+      setDeliveryTimeE("Không được để trống");
+    }
+  }, [deliveryTime]);
+  useEffect(() => {
+    if (!price) {
+      setPriceE("Không được để trống");
+    }
+  }, [price]);
+  useEffect(() => {
+    if (!contractCancelFee) {
+      setContractCancelFeeE("Không được để trống");
+    }
+  }, [contractCancelFee]);
+
+  const handleAddPackage = () => {
+    const pack = {
+      title: titlePackage,
+      shortDescription,
+      deliveryTime,
+      price,
+      contractCancelFee,
+    };
+    if (
+      titlePackageE.length == 0 &&
+      shortDescriptionE.length == 0 &&
+      deliveryTimeE.length == 0 &&
+      priceE.length == 0 &&
+      contractCancelFeeE.length == 0
+    )
+      dispatch(addServicePackage({ serviceId, pack }))
+        .unwrap()
+        .then(() => {
+          setAlert("Thêm gói thành công"); // Update count to be 5 after timeout is scheduled
+          dispatch(fetchServices());
+          setTimeout(() => {
+            setAlert(""); // count is 0 here
+          }, 3000);
+          setOpenPack(false);
+        })
+        .catch(() => {
+          setTimeout(() => {
+            setAlertError(""); // count is 0 here
+          }, 3000);
+          setAlertError("Thêm gói thất bại");
+          setOpenPack(false);
+        });
+  };
+  const handleUpdaytePackage = () => {
+    const pack = {
+      title: titlePackage,
+      shortDescription,
+      deliveryTime,
+      price,
+      contractCancelFee,
+    };
+    if (
+      titlePackageE.length == 0 &&
+      shortDescriptionE.length == 0 &&
+      deliveryTimeE.length == 0 &&
+      priceE.length == 0 &&
+      contractCancelFeeE.length == 0
+    )
+      dispatch(updateServicePackage({ packId, pack }))
+        .unwrap()
+        .then(() => {
+          setAlert("Cập nhật gói thành công"); // Update count to be 5 after timeout is scheduled
+          dispatch(fetchServices());
+          setTimeout(() => {
+            setAlert(""); // count is 0 here
+          }, 3000);
+          setOpenPack(false);
+        })
+        .catch(() => {
+          setTimeout(() => {
+            setAlertError(""); // count is 0 here
+          }, 3000);
+          setAlertError("Cập nhật gói thất bại");
+          setOpenPack(false);
+        });
+  };
+  //delete Package
+  const [openDelete, setOpenDelete] = useState(false);
+  const handleClickOpenDelete = () => {
+    setOpenDelete(true);
+  };
+
+  const handleCloseDelete = () => {
+    setOpenDelete(false);
+  };
+  const handleDeletePackage = (id) => {
+    setOpenDelete(false);
+    dispatch(deleteServicePackage(id))
+      .unwrap()
+      .then(() => {
+        setAlert("Xoá gói thành công"); // Update count to be 5 after timeout is scheduled
+        dispatch(fetchServices());
+        setTimeout(() => {
+          setAlert(""); // count is 0 here
+        }, 3000);
+      })
+      .catch(() => {
+        setTimeout(() => {
+          setAlertError(""); // count is 0 here
+        }, 3000);
+        setAlertError("Xoá gói thất bại");
+      });
   };
   return (
     <div className="service_detail">
@@ -367,6 +553,58 @@ export default function SellerServiceDetail() {
                   <h3>
                     Phí hủy hợp đồng :{item.contractCancelFee}% Tổng chi phí
                   </h3>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => {
+                      setOpenPack(true);
+                      setPackId(item.id);
+                      setTitlePackage(item.title);
+                      setShortDescription(item.shortDescription);
+                      setDeliveryTime(item.deliveryTime);
+                      setPrice(item.price);
+                      setContractCancelFee(item.contractCancelFee);
+                    }}
+                  >
+                    <Edit />
+                    Chỉnh sửa
+                  </Button>
+                  {packages.length == index + 1 && packages.length > 1 && (
+                    <Button
+                      variant="outlined"
+                      color="secondary"
+                      onClick={handleClickOpenDelete}
+                    >
+                      <Delete />
+                      Xóa gói
+                      {packages.length == 2 ? " nâng cao" : " cao cấp"}
+                    </Button>
+                  )}
+                  <Dialog
+                    open={openDelete}
+                    onClose={handleCloseDelete}
+                    aria-labelledby="responsive-dialog-title"
+                  >
+                    <DialogTitle id="responsive-dialog-title">
+                      {"Bạn có muốn xóa gói này?"}
+                    </DialogTitle>
+                    <DialogActions>
+                      <Button
+                        onClick={() => handleDeletePackage(item.id)}
+                        color="secondary"
+                        variant="outlined"
+                      >
+                        Xóa
+                      </Button>
+                      <Button
+                        onClick={handleCloseDelete}
+                        color="default"
+                        variant="outlined"
+                      >
+                        Hủy
+                      </Button>
+                    </DialogActions>
+                  </Dialog>
                 </TabPanel>
               );
             })}
@@ -376,7 +614,13 @@ export default function SellerServiceDetail() {
                 .map((val, idx) => (
                   <>
                     <h1>{val}</h1>
-                    <Button variant="outlined" color="primary">
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      onClick={() => {
+                        setOpenPack(true);
+                      }}
+                    >
                       <Add />
                       {packages.length == 1 && " Tạo gói nâng cao"}
                       {packages.length == 2 && " Tạo gói cao cấp"}
@@ -418,6 +662,59 @@ export default function SellerServiceDetail() {
                   Cập nhật
                 </Button>
                 <Button onClick={handleCloseUpdateOverView} color="primary">
+                  Hủy
+                </Button>
+              </DialogActions>
+            </Dialog>{" "}
+            <Dialog
+              fullWidth
+              maxWidth="sm"
+              open={openPack}
+              onClose={handleClosePack}
+              aria-labelledby="max-width-dialog-title"
+            >
+              <DialogTitle id="max-width-dialog-title">
+                {packId ? "Cập nhật" : "Tạo"} gói dịch vụ
+              </DialogTitle>
+              <DialogContent>
+                <PackageEdit
+                  titlePack={handleChangeTitlePackage}
+                  shortDescription={handleChangeShortDescription}
+                  deliveryTime={handleChangeDeliveryTime}
+                  price={handleChangePrice}
+                  contractCancelFee={handleChangeContractCancelFee}
+                  titlePackV={titlePackage}
+                  shortDescriptionV={shortDescription}
+                  deliveryTimeV={deliveryTime}
+                  priceV={price}
+                  contractCancelFeeV={contractCancelFee}
+                  titlePackE={titlePackageE}
+                  shortDescriptionE={shortDescriptionE}
+                  deliveryTimeE={deliveryTimeE}
+                  priceE={priceE}
+                  contractCancelFeeE={contractCancelFeeE}
+                />
+              </DialogContent>
+              <DialogActions>
+                {packId ? (
+                  <Button
+                    onClick={handleUpdaytePackage}
+                    color="primary"
+                    variant="contained"
+                  >
+                    Cập nhật{" "}
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={handleAddPackage}
+                    color="primary"
+                    variant="contained"
+                  >
+                    Tạo
+                  </Button>
+                )}
+
+                <Button onClick={handleClosePack} color="primary">
                   Hủy
                 </Button>
               </DialogActions>

@@ -1,28 +1,30 @@
 import axios from "axios";
 import { object } from "prop-types";
 import authHeader from "./auth-header";
-const API_URL = "http://localhost:8080/api/v1/box";
+const API_URL = "http://localhost:8080/api/v1";
 const getAllServices = () => {
-  return axios.get(API_URL + "/box-services").then((response) => {
+  return axios.get(API_URL + "/box/box-services").then((response) => {
     localStorage.setItem("services", JSON.stringify(response.data));
     return response.data;
   });
 };
 const getServiceById = (serviceId) => {
-  return axios.get(API_URL + "/serviceDetail/" + serviceId).then((response) => {
-    return response.data;
-  });
+  return axios
+    .get(API_URL + "/box/serviceDetail/" + serviceId)
+    .then((response) => {
+      return response.data;
+    });
 };
 const getServiceByCateId = (cateId) => {
   return axios
-    .get(API_URL + "/list-services-by-cat/" + cateId)
+    .get(API_URL + "/box/list-services-by-cat/" + cateId)
     .then((response) => {
       return response.data;
     });
 };
 const addService = (service) => {
   return axios
-    .post(API_URL + "/add-box-service", service, { headers: authHeader() })
+    .post(API_URL + "/box/add-box-service", service, { headers: authHeader() })
     .then((response) => {
       return response.data;
     });
@@ -32,7 +34,7 @@ const updateService = (obj) => {
   const serviceId = obj.serviceId;
   console.log(service, serviceId);
   return axios
-    .put(API_URL + "/update-service?id=" + serviceId, service, {
+    .put(API_URL + "/box/update-service?id=" + serviceId, service, {
       headers: authHeader(),
     })
     .then((response) => {
@@ -41,17 +43,10 @@ const updateService = (obj) => {
 };
 const updateServicePackage = (obj) => {
   console.log("package", obj);
-  const service = {
-    title: obj.title,
-    shortDescription: obj.shortDescription,
-    deliveryTime: obj.deliveryTime,
-    price: obj.price,
-    contractCancelFee: obj.contractCancelFee,
-  };
-  const packageId = obj.id;
-  console.log(service, packageId);
+  const packageId = obj.packId;
+  const pack = obj.pack;
   return axios
-    .put(API_URL + "/package/" + packageId, service, {
+    .put(API_URL + "/package/" + packageId, pack, {
       headers: authHeader(),
     })
     .then((response) => {
@@ -60,7 +55,7 @@ const updateServicePackage = (obj) => {
 };
 const addServicePackage = (obj) => {
   console.log("package", obj);
-  const boxId = obj.id;
+  const boxId = obj.serviceId;
   const pack = obj.pack;
   return axios
     .post(API_URL + "/package/" + boxId, pack, {

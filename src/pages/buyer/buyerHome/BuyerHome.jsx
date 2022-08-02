@@ -63,10 +63,13 @@ export default function BuyerHome() {
     }
   }, [user]);
 
-  useEffect(() => {
-    setSubCateId("");
-    dispatch(fetchServicesByCategory(selected));
-  }, [selected]);
+  useEffect(
+    (e) => {
+      setSubCateId("");
+      dispatch(fetchServicesByCategory(selected));
+    },
+    [selected]
+  );
   const [subCateId, setSubCateId] = useState("");
 
   const handleChangeSubcate = (event) => {
@@ -252,6 +255,7 @@ export default function BuyerHome() {
   const count = Math.ceil(listServiceFilter.length / PER_PAGE);
   const _DATA = usePagination(listServiceFilter, PER_PAGE);
   const handleChange = (e, p) => {
+    console.log(p);
     setPage(p);
     _DATA.jump(p);
   };
