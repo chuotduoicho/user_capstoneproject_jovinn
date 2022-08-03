@@ -9,14 +9,14 @@ const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 const wallet = JSON.parse(localStorage.getItem("wallet"));
 const topSeller = JSON.parse(localStorage.getItem("topSeller"));
 const initialState =
-  currentUser && topSeller && wallet
-    ? {
-        topSellers: topSeller,
-        currentUser: currentUser,
-        wallet: wallet,
-        status: "idle",
-      }
-    : { topSellers: [], currentUser: {}, wallet: {}, status: "idle" };
+  // currentUser && topSeller && wallet?
+  {
+    topSellers: topSeller ? topSeller : [],
+    currentUser: currentUser ? currentUser : {},
+    wallet: wallet ? wallet : {},
+    status: "idle",
+  };
+// : { topSellers: [], currentUser: {}, wallet: {}, status: "idle" };
 export const fetchTopSellers = createAsyncThunk(
   "user/fetchTopSellers",
   async () => {

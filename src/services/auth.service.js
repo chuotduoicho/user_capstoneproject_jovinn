@@ -29,6 +29,7 @@ const login = (username, password) => {
 const logout = () => {
   localStorage.removeItem("user");
   localStorage.removeItem("currentUser");
+  localStorage.removeItem("wallet");
 };
 
 const verifyAccount = (userId) => {

@@ -11,7 +11,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { logout } from "../../../redux/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Dialog, DialogActions, DialogTitle } from "@material-ui/core";
-import { selectCurrentUser } from "../../../redux/userSlice";
+import { fetchCurrentUser, selectCurrentUser } from "../../../redux/userSlice";
 import { setMessage } from "../../../redux/message";
 export default function BuyerHeader({ search }) {
   const currentUser = useSelector(selectCurrentUser);
@@ -24,6 +24,9 @@ export default function BuyerHeader({ search }) {
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
   };
+  useEffect(() => {
+    dispatch(fetchCurrentUser());
+  }, []);
   const handleJoinSeller = () => {
     if (currentUser.phoneNumber == null) {
       setText("Bạn cần cập nhật đủ thông tin cơ bản để trở thành người bán");

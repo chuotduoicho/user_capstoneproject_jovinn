@@ -16,6 +16,7 @@ import "./sellerDetail.scss";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectSeller } from "../../../redux/userSlice";
+import Topbar from "../../../components/guest/topbar/Topbar";
 function format(date) {
   date = new Date(date);
 
@@ -28,6 +29,7 @@ function format(date) {
 export default function SellerDetail() {
   const { sellerId } = useParams();
   const sellerDetail = useSelector((state) => selectSeller(state, sellerId));
+  const { user } = useSelector((state) => state.auth);
   console.log("sellerDetail", sellerDetail);
   //dialog
   const [openPayment, setOpenPayment] = useState(false);
@@ -45,7 +47,8 @@ export default function SellerDetail() {
 
   return (
     <div className="buyer_profile">
-      <BuyerHeader />
+      {user ? <BuyerHeader /> : <Topbar />}
+
       <h1 className="buyer_profile_title">Thông tin người bán</h1>
       <Container maxWidth="lg" className="sellerProfile_profession_form">
         <div className="sellerHome_leftCard">
@@ -206,40 +209,6 @@ export default function SellerDetail() {
             </Table>
           </div>
         </div>
-
-        {/* <div className="paymentRow">
-          <img
-            src="https://i1-dulich.vnecdn.net/2021/07/16/1-1626437591.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=BWzFqMmUWVFC1OfpPSUqMA"
-            className="paymentRow_img"
-          />
-
-          <div className="paymentRow_title">
-            <h2>
-              {sellerDetail.user.firstName + " " + sellerDetail.user.lastName}
-            </h2>
-            <h4>Gói nâng cao</h4>
-          </div>
-        </div>
-        <div className="paymentRow">
-          <h3>Tổng giá : 1000$ - Phí hủy hợp đồng : 10% (100$)</h3>
-          <h3></h3>
-        </div>
-        <div className="paymentRow">
-          <h4>Sản phẩm bàn giao:</h4>
-          <div>
-            <p>✔️ Sản phẩm bàn giao 1</p>
-          </div>
-        </div>
-        <div className="paymentRow">
-          <h4>Thanh toán : 1 lần </h4>
-        </div>
-        <div className="paymentRow">
-          <h4>Thời gian bàn giao: 3 ngày</h4>
-        </div>
-        <div className="paymentRow">
-          <h2>Số tiền thanh toán : 1000$</h2>
-        </div>{" "}
-        <div className="paymentRow"></div> */}
       </Container>
       <div className="sections_profile">
         <Contact />

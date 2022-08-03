@@ -56,10 +56,10 @@ export default function BuyerHome() {
     } else {
       dispatch(fetchCategories());
       dispatch(fetchTopSellers());
-      dispatch(fetchCurrentUser());
+      // dispatch(fetchCurrentUser());
       dispatch(fetchServicesByCategory(selected));
-      dispatch(fetchRequestsBuyer());
-      dispatch(fetchWallet());
+      // dispatch(fetchRequestsBuyer());
+      // dispatch(fetchWallet());
     }
   }, [user]);
 

@@ -2,17 +2,12 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { setMessage } from "./message";
 import ServiceService from "../services/service.service";
 const services = JSON.parse(localStorage.getItem("services"));
-const initialState = services
-  ? {
-      listServices: services,
-      newServiceId: null,
-      status: "idle",
-    }
-  : {
-      listServices: [],
-      newServiceId: null,
-      status: "idle",
-    };
+const initialState = {
+  listServices: services ? services : [],
+  newServiceId: null,
+  status: "idle",
+};
+
 export const fetchServices = createAsyncThunk(
   "service/fetchServices",
   async () => {

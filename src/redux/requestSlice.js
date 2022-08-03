@@ -1,19 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import requestService from "../services/request.service";
 const requests = JSON.parse(localStorage.getItem("requests"));
-const initialState = requests
-  ? {
-      listRequests: requests,
-      listOffers: [],
-      listSellersInvite: [],
-      status: "idle",
-    }
-  : {
-      listRequests: [],
-      listOffers: [],
-      listSellersInvite: [],
-      status: "idle",
-    };
+const offers = JSON.parse(localStorage.getItem("offers"));
+const initialState = {
+  listRequests: requests ? requests : [],
+  listOffers: offers ? offers : [],
+  listSellersInvite: [],
+  status: "idle",
+};
+
 export const fetchRequestsBuyer = createAsyncThunk(
   "request/fetchRequestsBuyer",
   async () => {
@@ -204,7 +199,7 @@ const requestSlice = createSlice({
       state.status = "loading";
     },
     [fetchOffersSeller.fulfilled]: (state, { payload }) => {
-      state.listOffers = payload.content;
+      state.listOffers = payload;
       state.status = "success";
     },
     [fetchOffersSeller.rejected]: (state, action) => {
@@ -214,7 +209,7 @@ const requestSlice = createSlice({
       state.status = "loading";
     },
     [fetchOffersBuyer.fulfilled]: (state, { payload }) => {
-      state.listOffers = payload.content;
+      state.listOffers = payload;
       state.status = "success";
     },
     [fetchOffersBuyer.rejected]: (state, action) => {

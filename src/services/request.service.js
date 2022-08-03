@@ -101,6 +101,7 @@ const getOffersOfBuyer = (requestId) => {
       headers: authHeader(),
     })
     .then((response) => {
+      localStorage.setItem("offers", JSON.stringify(response.data));
       return response.data;
     });
 };
@@ -111,6 +112,7 @@ const getOffersOfSeller = () => {
       headers: authHeader(),
     })
     .then((response) => {
+      localStorage.setItem("offers", JSON.stringify(response.data));
       return response.data;
     });
 };
