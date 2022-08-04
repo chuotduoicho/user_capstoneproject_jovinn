@@ -128,66 +128,6 @@ const ServiceDetail = () => {
             ></img>
             <h2>Mô tả</h2>
             <p>{serviceDetail.description}</p>
-            <h2>Bình luận && đánh giá</h2>
-            <Paper style={{ padding: "40px 20px", marginBottom: "30px" }}>
-              <Grid container wrap="nowrap" spacing={2}>
-                <Grid item>
-                  <Avatar
-                    alt="Remy Sharp"
-                    src="https://images.pexels.com/photos/941693/pexels-photo-941693.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
-                  />
-                </Grid>
-                <Grid justifyContent="left" item xs zeroMinWidth>
-                  <h4 style={{ margin: 0, textAlign: "left" }}>
-                    Michel Michel | 9⭐
-                  </h4>
-                  <p style={{ textAlign: "left" }}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Aenean luctus ut est sed faucibus. Duis bibendum ac ex
-                    vehicula laoreet. Suspendisse congue vulputate lobortis.
-                    Pellentesque at interdum tortor. Quisque arcu quam,
-                    malesuada vel mauris et, posuere sagittis ipsum. Aliquam
-                    ultricies a ligula nec faucibus. In elit metus, efficitur
-                    lobortis nisi quis, molestie porttitor metus. Pellentesque
-                    et neque risus. Aliquam vulputate, mauris vitae tincidunt
-                    interdum, mauris mi vehicula urna, nec feugiat quam lectus
-                    vitae ex.{" "}
-                  </p>
-                  <p style={{ textAlign: "left", color: "gray" }}>
-                    posted 1 minute ago
-                  </p>
-                </Grid>
-              </Grid>
-              <Divider variant="fullWidth" style={{ margin: "30px 0" }} />
-              <Grid container wrap="nowrap" spacing={2}>
-                <Grid item>
-                  <Avatar
-                    alt="Remy Sharp"
-                    src="https://images.pexels.com/photos/941693/pexels-photo-941693.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
-                  />
-                </Grid>
-                <Grid justifyContent="left" item xs zeroMinWidth>
-                  <h4 style={{ margin: 0, textAlign: "left" }}>
-                    Michel Michel | 3⭐
-                  </h4>
-                  <p style={{ textAlign: "left" }}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Aenean luctus ut est sed faucibus. Duis bibendum ac ex
-                    vehicula laoreet. Suspendisse congue vulputate lobortis.
-                    Pellentesque at interdum tortor. Quisque arcu quam,
-                    malesuada vel mauris et, posuere sagittis ipsum. Aliquam
-                    ultricies a ligula nec faucibus. In elit metus, efficitur
-                    lobortis nisi quis, molestie porttitor metus. Pellentesque
-                    et neque risus. Aliquam vulputate, mauris vitae tincidunt
-                    interdum, mauris mi vehicula urna, nec feugiat quam lectus
-                    vitae ex.{" "}
-                  </p>
-                  <p style={{ textAlign: "left", color: "gray" }}>
-                    posted 1 minute ago
-                  </p>
-                </Grid>
-              </Grid>
-            </Paper>
           </div>
           <div className="detail_right">
             <AppBar position="static" color="default">
