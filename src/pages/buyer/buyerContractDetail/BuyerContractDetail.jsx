@@ -23,6 +23,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Rating from "@material-ui/lab/Rating";
 import { StarBorder } from "@material-ui/icons";
 import Alert from "@material-ui/lab/Alert";
+import Comment from "../../../components/buyer/buyerComment/Comment";
 
 export default function BuyerContractDetail() {
   const { contractId } = useParams();
@@ -101,6 +102,9 @@ export default function BuyerContractDetail() {
         </div>{" "}
         <div className="paymentRow">
           <h2>Các đề nghị phát sinh: {contractDetail.extraOffers}</h2>
+        </div>{" "}
+        <div className="paymentRow">
+          <Comment comments={contractDetail.comments} contractId={contractId} />
         </div>{" "}
         {/* <div className="paymentRow">
           <h2>Bình luận: {contractDetail.comments}</h2>

@@ -29,6 +29,7 @@ import {
 } from "../../../redux/contractSlice";
 import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
 import Alert from "@material-ui/lab/Alert";
+import Comment from "../../../components/buyer/buyerComment/Comment";
 
 export default function SellerContractDetail() {
   const { contractId } = useParams();
@@ -102,14 +103,11 @@ export default function SellerContractDetail() {
           <h2>Ngày hoàn thành dự kiến: {contractDetail.expectCompleteDate}</h2>
         </div>{" "}
         <div className="paymentRow">
-          <h2>Trạng thái bàn giao: {contractDetail.deliveryStatus}</h2>
-        </div>{" "}
-        <div className="paymentRow">
           <h2>Các đề nghị phát sinh: {contractDetail.extraOffers}</h2>
         </div>{" "}
-        {/* <div className="paymentRow">
-          <h2>Bình luận: {contractDetail.comments}</h2>
-        </div>{" "} */}
+        <div className="paymentRow">
+          <h2>Trạng thái bàn giao: {contractDetail.deliveryStatus}</h2>
+        </div>{" "}
         <div className="paymentRow">
           <img
             src={file ? URL.createObjectURL(file) : ""}
@@ -129,6 +127,9 @@ export default function SellerContractDetail() {
             style={{ display: "none" }}
           />
         </div>
+        <div className="paymentRow">
+          <Comment comments={contractDetail.comments} contractId={contractId} />
+        </div>{" "}
         {status == "loading" && (
           <CircularProgress style={{ margin: "0 auto" }} />
         )}
