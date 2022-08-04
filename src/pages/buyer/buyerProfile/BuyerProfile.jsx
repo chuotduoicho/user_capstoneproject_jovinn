@@ -26,6 +26,8 @@ import {
   uploadFile,
 } from "../../../redux/userSlice";
 import { clearMessage } from "../../../redux/message";
+import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
+import { useLocation } from "react-router-dom";
 function format(date) {
   date = new Date(date);
 
@@ -55,6 +57,7 @@ export default function BuyerProfile() {
   const [error, setError] = useState("");
   const [isChange, setIsChange] = useState(true);
   const dispatch = useDispatch();
+  const location = useLocation();
   useEffect(() => {
     dispatch(clearMessage());
     if (url) setAvatar(url);
@@ -140,7 +143,11 @@ export default function BuyerProfile() {
   };
   return (
     <div className="buyer_profile">
-      <BuyerHeader />
+      {location.pathname == "/buyerhome/profile" ? (
+        <BuyerHeader />
+      ) : (
+        <SellerHeader />
+      )}
       <h1 className="buyer_profile_title">Thông tin cá nhân</h1>
       <div className="sections_profile">
         <Container maxWidth="sm" className="form">

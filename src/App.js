@@ -100,6 +100,7 @@ function App() {
           </Route>
           <Route path="/sellerhome">
             <Route index element={<SellerHome />} />
+            <Route path="profile" element={<BuyerProfile />} />
             <Route path="createService" element={<SellerCreateService />} />
             <Route path="manageRequest">
               <Route index element={<SellerManageRequest />} />
@@ -113,6 +114,9 @@ function App() {
               <Route index element={<SellerManageOrder />} />
 
               <Route path=":orderId" element={<SellerOrderDetail />} />
+            </Route>
+            <Route path="manageWallet">
+              <Route index element={<BuyerManageWallet />} />
             </Route>
             <Route
               path="createOffer/:requestId"

@@ -51,6 +51,7 @@ import {
   topupSuccess,
 } from "../../../redux/userSlice";
 import { clearMessage } from "../../../redux/message";
+import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
 function createData(description, subCate, skills, price, cancleFee) {
   return { description, subCate, skills, price, cancleFee };
 }
@@ -321,6 +322,8 @@ export default function BuyerManageWallet() {
   };
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  console.log(location.pathname);
   const handleOpenPayment2 = (e) => {
     // e.preventDefault();
     const obj = { charge: price, currency: "USD" };
@@ -409,7 +412,13 @@ export default function BuyerManageWallet() {
   }, []);
   return (
     <div className="buyer_profile">
-      <BuyerHeader /> <h1 className="wallet_title">Quản lý ví</h1>
+      {location.pathname == "/buyerhome/manageWallet" ? (
+        <BuyerHeader />
+      ) : (
+        <SellerHeader />
+      )}
+
+      <h1 className="wallet_title">Quản lý ví</h1>
       <div className={classes.root}>
         <Paper className={classes.paper}>
           <EnhancedTableToolbar

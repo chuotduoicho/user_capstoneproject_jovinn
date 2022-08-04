@@ -146,7 +146,7 @@ export default function SellerHeader() {
                       onKeyDown={handleListKeyDown}
                     >
                       <Link
-                        to="/buyerhome/profile"
+                        to="/sellerHome/profile"
                         style={{ textDecoration: "none" }}
                       >
                         <MenuItem style={{ color: "black" }}>
@@ -160,7 +160,7 @@ export default function SellerHeader() {
                       </Link>
 
                       <Link
-                        to="/buyerhome/wallet"
+                        to="/sellerHome/manageWallet"
                         style={{ textDecoration: "none" }}
                       >
                         <MenuItem style={{ color: "black" }}>
