@@ -57,8 +57,7 @@ export default function Comment({ comments, contractId }) {
               </h4>
               <p style={{ textAlign: "left" }}>{item.text}</p>
               <p style={{ textAlign: "left", color: "gray" }}>
-                Bình luận {moment(item.createAt).fromNow().slice(0, -12)} phút
-                trước
+                Bình luận {moment(item.createAt).fromNow()} phút trước
               </p>
             </Grid>
           </Grid>

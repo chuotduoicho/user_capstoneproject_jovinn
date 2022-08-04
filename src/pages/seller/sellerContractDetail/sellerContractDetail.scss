@@ -6,6 +6,7 @@
     color: blueviolet;
   }
   .profession_form {
+    display: flex;
     flex-direction: column;
     width: 1600px;
     text-align: center;
@@ -14,13 +15,102 @@
     .paymentRow {
       display: flex;
       margin-bottom: 20px;
+
       .paymentRow_img {
         height: 50px;
         width: 200px;
         margin-right: 50px;
       }
     }
+    .paymentRow_Title {
+      display: flex;
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      width: 100%;
+      border-bottom: 2px groove #f0efef;
+      flex-direction: row;
+      .chip_pending {
+        background-color: #ffeb3b;
+        color: black;
+        width: 10%;
+      }
+      h2 {
+        width: 90%;
+        float: left;
+        text-align: left;
+      }
+      h3 {
+        width: 25%;
+        float: left;
+        text-align: left;
+      }
+      p {
+        top: 50%;
+      }
+    }
+    .paymentRow_Content {
+      display: flex;
+      margin-bottom: 15px;
+      width: 100%;
+      h3 {
+        width: 25%;
+        float: left;
+        text-align: left;
+      }
+      p {
+        top: 50%;
+      }
+    }
+    .paymentRow_ContentLast {
+      border-bottom: 2px groove #f0efef;
+      display: flex;
+      margin-bottom: 15px;
+      padding-bottom: 20px;
+      width: 100%;
+      h3 {
+        width: 25%;
+        float: left;
+        text-align: left;
+      }
+      p {
+        top: 50%;
+      }
+    }
+    .paymentRow_payment {
+      display: flex;
+      padding-bottom: 20px;
+      width: 100%;
+      float: right;
+
+      h4 {
+        width: 30%;
+        margin-left: 60%;
+        float: left;
+        text-align: left;
+      }
+      p {
+        top: 50%;
+      }
+    }
+    .paymentRow_paymentLast {
+      display: flex;
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      width: 100%;
+      float: right;
+      border-bottom: 2px groove #f0efef;
+      h4 {
+        width: 30%;
+        margin-left: 60%;
+        float: left;
+        text-align: left;
+      }
+      p {
+        top: 50%;
+      }
+    }
   }
+
   .sections_profile {
     width: 100%;
     height: calc(100vh - 70px);

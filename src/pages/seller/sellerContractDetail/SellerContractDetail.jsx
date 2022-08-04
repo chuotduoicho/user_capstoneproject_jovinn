@@ -1,5 +1,6 @@
 import {
   Button,
+  Chip,
   CircularProgress,
   Container,
   Dialog,
@@ -21,7 +22,7 @@ import {
 } from "../../../redux/userSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import Rating from "@material-ui/lab/Rating";
-import { StarBorder } from "@material-ui/icons";
+import { CloudUpload, StarBorder } from "@material-ui/icons";
 import {
   selectContractBuyerById,
   selectContractStatus,
@@ -47,7 +48,7 @@ export default function SellerContractDetail() {
   const [file, setFile] = useState(null);
   const handleRating = () => {};
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   const handleOpen = (e) => {
     setFile(e.target.files[0]);
     const formData = new FormData();
@@ -77,16 +78,41 @@ export default function SellerContractDetail() {
       <SellerHeader />
       <h1 className="buyer_profile_title">Chi tiết hợp đồng</h1>
       <Container maxWidth="lg" className="profession_form">
-        <div className="paymentRow">
-          <h3>Mã hợp đồng : {contractDetail.contractCode} </h3>
+        <div className="paymentRow_Title">
+          <h2>Mã hợp đồng : {contractDetail.contractCode} </h2>
+          <Chip
+            label={contractDetail.deliveryStatus}
+            className="chip_pending"
+          />
         </div>
-        <div className="paymentRow">
-          <h4>Yêu cầu: {contractDetail.requirement}</h4>
+        <div className="paymentRow_Content">
+          <h3>Yêu cầu:</h3>
+          <p>{contractDetail.requirement}</p>
         </div>
-        <div className="paymentRow">
-          <h4>Số lượng : {contractDetail.quantity} </h4>
+        <div className="paymentRow_Content">
+          <h3>Tổng thời gian bàn giao:</h3>
+          <p>{contractDetail.totalDeliveryTime} ngày</p>
         </div>
-        <div className="paymentRow">
+        <div className="paymentRow_ContentLast">
+          <h3>Ngày hoàn thành dự kiến:</h3>
+          <p>{contractDetail.expectCompleteDate}</p>
+        </div>
+        <div className="paymentRow_payment">
+          <h4>Số lượng : </h4>
+          <p>{contractDetail.quantity}</p>
+        </div>
+        <div className="paymentRow_payment">
+          <h4>Tổng chi phí : </h4>
+          <p>{contractDetail.totalPrice} $</p>
+        </div>
+        <div className="paymentRow_paymentLast">
+          <h4>Phí hủy hợp đồng : </h4>
+          <p>
+            {contractDetail.quantity}% ( =
+            {(contractDetail.totalPrice * contractDetail.quantity) / 100} $ )
+          </p>
+        </div>
+        {/* <div className="paymentRow">
           <h4>
             Phí hủy hợp đồng: {contractDetail.contractCancelFee}% (= 100$)
           </h4>
@@ -95,30 +121,28 @@ export default function SellerContractDetail() {
           <h2>Tổng chi phí: {contractDetail.totalPrice}$</h2>
         </div>{" "}
         <div className="paymentRow">
-          <h2>
-            Tổng thời gian bàn giao:{contractDetail.totalDeliveryTime} ngày
-          </h2>
-        </div>{" "}
-        <div className="paymentRow">
-          <h2>Ngày hoàn thành dự kiến: {contractDetail.expectCompleteDate}</h2>
-        </div>{" "}
-        <div className="paymentRow">
           <h2>Các đề nghị phát sinh: {contractDetail.extraOffers}</h2>
         </div>{" "}
         <div className="paymentRow">
           <h2>Trạng thái bàn giao: {contractDetail.deliveryStatus}</h2>
-        </div>{" "}
+        </div>{" "} */}
         <div className="paymentRow">
-          <img
-            src={file ? URL.createObjectURL(file) : ""}
-            alt=""
-            style={{ width: "100px" }}
-          />
-          <label
-            htmlFor="file1"
-            style={{ border: "2px solid #e5e0e2", padding: "5px" }}
+          <Button
+            variant="contained"
+            onClick={() => navigate(-1)}
+            style={{ marginRight: "10px" }}
           >
-            Tải lên bàn giao
+            Quay lại
+          </Button>
+          <label htmlFor="file1">
+            <Button
+              variant="contained"
+              color="primary"
+              component="span"
+              startIcon={<CloudUpload />}
+            >
+              Tải lên bàn giao
+            </Button>
           </label>
           <input
             type="file"
@@ -126,15 +150,20 @@ export default function SellerContractDetail() {
             onChange={handleOpen}
             style={{ display: "none" }}
           />
+          <img
+            src={file ? URL.createObjectURL(file) : ""}
+            alt=""
+            style={{ width: "100px" }}
+          />
         </div>
-        <div className="paymentRow">
-          <Comment comments={contractDetail.comments} contractId={contractId} />
-        </div>{" "}
         {status == "loading" && (
           <CircularProgress style={{ margin: "0 auto" }} />
         )}
         {error !== "" && <Alert severity="error">{error}</Alert>}
         {success !== "" && <Alert severity="success">{success}</Alert>}
+        <div className="paymentRow">
+          <Comment comments={contractDetail.comments} contractId={contractId} />
+        </div>{" "}
       </Container>
       <div className="sections_profile">
         <Contact />
