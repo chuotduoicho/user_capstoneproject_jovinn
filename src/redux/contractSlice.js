@@ -108,7 +108,7 @@ const contractSlice = createSlice({
       state.status = "loading";
     },
     [fetchContracts.fulfilled]: (state, { payload }) => {
-      state.listContracts = payload.content;
+      state.listContracts = payload;
       state.status = "success";
     },
     [fetchContracts.rejected]: (state, action) => {
@@ -118,7 +118,7 @@ const contractSlice = createSlice({
       state.status = "loading";
     },
     [fetchListContracts.fulfilled]: (state, { payload }) => {
-      state.listContracts = payload.content;
+      state.listContracts = payload;
       state.status = "success";
     },
     [fetchListContracts.rejected]: (state, action) => {

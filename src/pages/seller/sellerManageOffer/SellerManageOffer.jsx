@@ -24,10 +24,11 @@ import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import { Button } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOffersSeller, selectAllOffer } from "../../../redux/requestSlice";
+import Alert from "@material-ui/lab/Alert";
 function createData(description, subCate, skills, price, cancleFee) {
   return { description, subCate, skills, price, cancleFee };
 }
@@ -265,6 +266,14 @@ export default function SellerManageOffer() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const { state } = useLocation();
+  const { alert } = state || {};
+  const [success, setSuccess] = useState(alert);
+  useEffect(() => {
+    setTimeout(() => {
+      setSuccess("");
+    }, 3000);
+  }, []);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchOffersSeller());
@@ -415,6 +424,7 @@ export default function SellerManageOffer() {
           control={<Switch checked={dense} onChange={handleChangeDense} />}
           label="Dày đặc"
         />
+        {success && <Alert severity="success">{success}</Alert>}
       </div>
       <div className="sections_profile">
         <Contact />

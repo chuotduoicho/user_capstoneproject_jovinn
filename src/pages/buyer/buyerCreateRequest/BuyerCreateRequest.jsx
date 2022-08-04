@@ -55,7 +55,7 @@ export default function BuyerCreateRequest() {
   const [skills, setSkills] = useState([]);
   const [inviteUsers, setInviteUsers] = useState([]);
   const [stages, setStages] = useState([
-    { startDate: "", endDate: "", description: "", milestoneFee: 0 },
+    { startDate: "", endDate: "", description: "", milestoneFee: "0.00" },
   ]);
   const [cancleFee, setCancleFee] = useState(0);
   const request = {
@@ -131,7 +131,11 @@ export default function BuyerCreateRequest() {
       .then(() => {
         dispatch(fetchRequestsBuyer());
         setSuccess("Tạo yêu cầu thành công!");
-        navigate("/buyerHome/manageRequest");
+        navigate("/buyerHome/manageRequest", {
+          state: {
+            alert: "Tạo yêu cầu thành công",
+          },
+        });
       })
       .catch(() => {
         setError("Tạo yêu cầu thất bại!");
@@ -151,7 +155,11 @@ export default function BuyerCreateRequest() {
       .then(() => {
         dispatch(fetchRequestsBuyer());
         setSuccess("Tạo yêu cầu thành công!");
-        navigate("/buyerHome/manageRequest");
+        navigate("/buyerHome/manageRequest", {
+          state: {
+            alert: "Tạo yêu cầu thành công",
+          },
+        });
       })
       .catch(() => {
         setError("Tạo yêu cầu thất bại!");
@@ -163,14 +171,19 @@ export default function BuyerCreateRequest() {
   const handleStageChange = (e, index) => {
     const { name, value } = e.target;
     const list = [...stages];
-    list[index][name] = value;
+    if (name == "milestoneFee") {
+      list[index][name] = parseFloat(value).toFixed(2);
+    } else {
+      list[index][name] = value;
+    }
+
     setStages(list);
   };
 
   const handleStageAdd = () => {
     setStages([
       ...stages,
-      { startDate: "", endDate: "", description: "", milestoneFee: 0 },
+      { startDate: "", endDate: "", description: "", milestoneFee: "0.00" },
     ]);
   };
 
@@ -181,8 +194,6 @@ export default function BuyerCreateRequest() {
       setStages(list);
     }
   };
-
-  console.log("inviteUsers", inviteUsers);
 
   function handleKeyDown(e) {
     if (e.key !== "Enter") return;
@@ -385,13 +396,17 @@ export default function BuyerCreateRequest() {
                 label="Chi phí"
                 variant="outlined"
                 type="number"
+                // value={stage.milestoneFee}
                 style={{ width: "30%", margin: "10px" }}
-                inputProps={{ min: 0 }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">$</InputAdornment>
-                  ),
+                inputProps={{
+                  maxLength: 10,
+                  step: "0.01",
                 }}
+                // InputProps={{
+                //   endAdornment: (
+                //     <InputAdornment position="end">$</InputAdornment>
+                //   ),
+                // }}
                 name="milestoneFee"
                 onChange={(e) => handleStageChange(e, index)}
               />
@@ -419,7 +434,7 @@ export default function BuyerCreateRequest() {
                 <InputAdornment position="end">
                   % Tổng chi phí (={" "}
                   {(stages.reduce(
-                    (total, item) => total + parseInt(item.milestoneFee),
+                    (total, item) => total + parseFloat(item.milestoneFee),
                     0
                   ) *
                     cancleFee) /

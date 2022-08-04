@@ -3,42 +3,15 @@ import React, { useState } from "react";
 import "./sellerCreateOffer.scss";
 
 import {
-  AppBar,
   Button,
   Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  IconButton,
-  MenuItem,
   TextField,
-  makeStyles,
-  Toolbar,
-  Typography,
-  List,
-  ListItem,
   InputAdornment,
-  ListItemText,
-  ListItemAvatar,
-  Avatar,
-  FormControl,
 } from "@material-ui/core";
-import { Close, CloudUpload, AddSharp, RemoveSharp } from "@material-ui/icons";
 import Alert from "@material-ui/lab/Alert";
-import { useDispatch, useSelector } from "react-redux";
-import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
+import { useDispatch } from "react-redux";
 import Contact from "../../../components/guest/contact/Contact";
-import { selectAllCategories } from "../../../redux/categorySlice";
-import {
-  addOffer,
-  addRequest,
-  fetchRequestsBuyer,
-  fetchRequestsSeller,
-} from "../../../redux/requestSlice";
-
-import { selectTopSellers } from "../../../redux/userSlice";
+import { addOffer, fetchRequestsSeller } from "../../../redux/requestSlice";
 import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -75,7 +48,11 @@ export default function SellerCreateOffer() {
         .then(() => {
           dispatch(fetchRequestsSeller());
           setSuccess("Tạo đề nghị thành công!");
-          navigate("/sellerHome/manageOffer");
+          navigate("/sellerHome/manageOffer", {
+            state: {
+              alert: "Tạo đề nghị thành công",
+            },
+          });
         })
         .catch(() => {
           setError("Tạo đề nghị thất bại!");

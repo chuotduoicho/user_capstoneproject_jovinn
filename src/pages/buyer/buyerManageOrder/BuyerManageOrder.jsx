@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Contact from "../../../components/guest/contact/Contact";
 import "./buyerManageOrder.scss";
 import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
@@ -22,7 +22,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { Button } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentUser } from "../../../redux/userSlice";
 import {
@@ -30,6 +30,7 @@ import {
   selectAllContracts,
   selectOrders,
 } from "../../../redux/contractSlice";
+import Alert from "@material-ui/lab/Alert";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -254,6 +255,14 @@ export default function BuyerManageOrder() {
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const dispatch = useDispatch();
+  const { state } = useLocation();
+  const { alert } = state || {};
+  const [success, setSuccess] = useState(alert);
+  useEffect(() => {
+    setTimeout(() => {
+      setSuccess("");
+    }, 3000);
+  }, []);
   useEffect(() => {
     dispatch(fetchContracts());
   }, []);
@@ -377,6 +386,7 @@ export default function BuyerManageOrder() {
           control={<Switch checked={dense} onChange={handleChangeDense} />}
           label="Dày đặc"
         />
+        {success && <Alert severity="success">{success}</Alert>}
       </div>
       <div className="sections_profile">
         <Contact />

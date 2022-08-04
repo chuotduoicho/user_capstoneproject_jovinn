@@ -21,7 +21,6 @@ import {
   addContract,
   selectContractStatus,
 } from "../../../redux/contractSlice";
-import { fetchCurrentUser } from "../../../redux/userSlice";
 
 export default function BuyerPayment() {
   const { state } = useLocation();
@@ -40,7 +39,11 @@ export default function BuyerPayment() {
     dispatch(addContract(order))
       .unwrap()
       .then(() => {
-        navigate("/buyerHome/manageOrder");
+        navigate("/buyerHome/manageOrder", {
+          state: {
+            alert: "Thanh toán thành công",
+          },
+        });
         setSuccessfull("Thanh toán thành công!");
         setError("");
       })

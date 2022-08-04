@@ -22,10 +22,11 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { Button } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectAllRequests } from "../../../redux/requestSlice";
 import { selectAllCategories } from "../../../redux/categorySlice";
+import Alert from "@material-ui/lab/Alert";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -241,6 +242,9 @@ const useStyles = makeStyles((theme) => ({
 export default function BuyerManageRequest() {
   const listRequest = useSelector(selectAllRequests);
   const listCategories = useSelector(selectAllCategories);
+  const { state } = useLocation();
+  const { alert } = state || {};
+  const [success, setSuccess] = useState(alert);
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
@@ -248,7 +252,11 @@ export default function BuyerManageRequest() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
+  useEffect(() => {
+    setTimeout(() => {
+      setSuccess("");
+    }, 3000);
+  }, []);
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -380,6 +388,7 @@ export default function BuyerManageRequest() {
           control={<Switch checked={dense} onChange={handleChangeDense} />}
           label="Dày đặc"
         />
+        {success && <Alert severity="success">{success}</Alert>}
       </div>
       <div className="sections_profile">
         <Contact />

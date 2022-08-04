@@ -40,7 +40,11 @@ export default function BuyerPaymentOffer() {
     dispatch(applyOffer(id))
       .unwrap()
       .then(() => {
-        navigate("/buyerHome/manageContract");
+        navigate("/buyerHome/manageContract", {
+          state: {
+            alert: "Thanh toán thành công",
+          },
+        });
         setSuccessfull("Thanh toán thành công!");
         setError("");
       })

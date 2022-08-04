@@ -15,7 +15,7 @@ import {
   Select,
 } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   fetchCategories,
   selectAllCategories,
@@ -36,6 +36,7 @@ import usePagination from "../../../Pagination";
 import { fetchRequestsBuyer } from "../../../redux/requestSlice";
 export default function BuyerHome() {
   const navigate = useNavigate();
+
   const { user } = useSelector((state) => state.auth);
   const listCategory = useSelector(selectAllCategories);
   const listService = useSelector(selectAllServices);
@@ -59,7 +60,7 @@ export default function BuyerHome() {
       // dispatch(fetchCurrentUser());
       dispatch(fetchServicesByCategory(selected));
       // dispatch(fetchRequestsBuyer());
-      // dispatch(fetchWallet());
+      dispatch(fetchWallet());
     }
   }, [user]);
 
