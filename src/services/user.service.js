@@ -1,14 +1,7 @@
 import axios from "axios";
 import authHeader from "./auth-header";
-const API_URL = "http://localhost:8080/api/v1/users";
-const getTopSellers = () => {
-  return axios
-    .get("http://localhost:8080/api/v1/seller/sellers")
-    .then((response) => {
-      localStorage.setItem("topSeller", JSON.stringify(response.data));
-      return response.data;
-    });
-};
+// const API_URL = "http://localhost:8080/api/v1/users";
+const API_URL = "http://jovinnserver.site/api/v1/users";
 const getUser = () => {
   return axios
     .get(API_URL + "/me", { headers: authHeader() })
@@ -104,7 +97,6 @@ const changePassword = (oldPassword, newPassword, confirmPassword) => {
 };
 
 const userService = {
-  getTopSellers,
   getUser,
   updateUserProfile,
   joinSeller,

@@ -64,9 +64,9 @@ export default function SellerHeader() {
     <div className="sellerHeader ">
       <div className="wrapper">
         <div className="left">
-          <a href="/sellerHome" className="logo">
+          <p className="logo" onClick={() => navigate("/sellerHome")}>
             Jovinn.
-          </a>
+          </p>
           <ButtonGroup
             variant="text"
             color="primary"

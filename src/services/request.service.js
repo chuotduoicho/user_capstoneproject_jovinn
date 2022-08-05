@@ -1,10 +1,12 @@
 import axios from "axios";
 import authHeader from "./auth-header";
-const API_URL = "http://localhost:8080/api/v1/postRequest";
-
+// const API_URL = "http://localhost:8080/api/v1";
+const API_URL = "http://jovinnserver.site/api/v1";
 const addRequest = (request) => {
   return axios
-    .post(API_URL + "/addPostRequest", request, { headers: authHeader() })
+    .post(API_URL + "/postRequest/addPostRequest", request, {
+      headers: authHeader(),
+    })
     .then((response) => {
       return response.data;
     });
@@ -13,7 +15,7 @@ const addOffer = (request) => {
   const requestId = request.requestId;
   const offerObj = request.offer;
   return axios
-    .post(API_URL + "/send-offer/" + requestId, offerObj, {
+    .post(API_URL + "/postRequest/send-offer/" + requestId, offerObj, {
       headers: authHeader(),
     })
     .then((response) => {
@@ -24,7 +26,7 @@ const updateOffer = (obj) => {
   const offerId = obj.offerId;
   const offerObj = obj.offer;
   return axios
-    .put(API_URL + "/updatePostRequest/" + offerId, offerObj, {
+    .put(API_URL + "/postRequest/updatePostRequest/" + offerId, offerObj, {
       headers: authHeader(),
     })
     .then((response) => {
@@ -35,7 +37,7 @@ const updateRequest = (obj) => {
   const requestId = obj.requestId;
   const request = obj.request;
   return axios
-    .put(API_URL + "/updatePostRequest/" + requestId, request, {
+    .put(API_URL + "/postRequest/updatePostRequest/" + requestId, request, {
       headers: authHeader(),
     })
     .then((response) => {
@@ -44,7 +46,7 @@ const updateRequest = (obj) => {
 };
 const applyRequest = (requestId) => {
   return axios
-    .put(API_URL + "/sellerApplyRequest/" + requestId, null, {
+    .put(API_URL + "/postRequest/sellerApplyRequest/" + requestId, null, {
       headers: authHeader(),
     })
     .then((response) => {
@@ -53,7 +55,7 @@ const applyRequest = (requestId) => {
 };
 const applyOffer = (obj) => {
   return axios
-    .post("http://localhost:8080/api/v1/contract/" + obj, null, {
+    .post(API_URL + "/contract/" + obj, null, {
       headers: authHeader(),
     })
     .then((response) => {
@@ -62,7 +64,7 @@ const applyOffer = (obj) => {
 };
 const getAllRequests = () => {
   return axios
-    .get(API_URL + "/getAllPostRequest", { headers: authHeader() })
+    .get(API_URL + "/postRequest/getAllPostRequest", { headers: authHeader() })
     .then((response) => {
       localStorage.setItem("requests", JSON.stringify(response.data));
       return response.data;
@@ -70,7 +72,7 @@ const getAllRequests = () => {
 };
 const getAllSellerInvite = (requestId) => {
   return axios
-    .get(API_URL + "/getListSellerApply/" + requestId, {
+    .get(API_URL + "/postRequest/getListSellerApply/" + requestId, {
       headers: authHeader(),
     })
     .then((response) => {
@@ -79,7 +81,7 @@ const getAllSellerInvite = (requestId) => {
 };
 const getAllRequestsByCate = (cateId) => {
   return axios
-    .get(API_URL + "/getPostRequestByCategoryId/" + cateId, {
+    .get(API_URL + "/postRequest/getPostRequestByCategoryId/" + cateId, {
       headers: authHeader(),
     })
     .then((response) => {
@@ -88,7 +90,9 @@ const getAllRequestsByCate = (cateId) => {
 };
 const getRequestsOfBuyer = () => {
   return axios
-    .get(API_URL + "/getPostRequestByBuyerCreated", { headers: authHeader() })
+    .get(API_URL + "/postRequest/getPostRequestByBuyerCreated", {
+      headers: authHeader(),
+    })
     .then((response) => {
       localStorage.setItem("requests", JSON.stringify(response.data));
       return response.data;
@@ -97,7 +101,7 @@ const getRequestsOfBuyer = () => {
 
 const getOffersOfBuyer = (requestId) => {
   return axios
-    .get("http://localhost:8080/api/v1/users/list-offer/" + requestId, {
+    .get(API_URL + "/users/list-offer/" + requestId, {
       headers: authHeader(),
     })
     .then((response) => {
@@ -108,7 +112,7 @@ const getOffersOfBuyer = (requestId) => {
 
 const getOffersOfSeller = () => {
   return axios
-    .get("http://localhost:8080/api/v1/seller/list-offer", {
+    .get(API_URL + "/seller/list-offer", {
       headers: authHeader(),
     })
     .then((response) => {

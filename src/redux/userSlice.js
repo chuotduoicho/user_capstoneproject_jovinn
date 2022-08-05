@@ -20,7 +20,7 @@ const initialState =
 export const fetchTopSellers = createAsyncThunk(
   "user/fetchTopSellers",
   async () => {
-    const data = await UserService.getTopSellers();
+    const data = await sellerService.getTopSellers();
     return data;
   }
 );

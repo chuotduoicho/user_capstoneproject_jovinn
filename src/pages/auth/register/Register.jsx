@@ -33,7 +33,7 @@ const Register = () => {
     e.preventDefault();
     setSuccessful(false);
     console.log({ username, password, email, firstName, lastName });
-    if (!/^[a-z]*$/.test(username)) {
+    if (!/^[a-z0-9]*$/.test(username)) {
       setError("Tên đăng nhập không hợp lệ!");
     } else if (password.length < 6) {
       setError("Mật khẩu phải có ít nhất 6 kí tự!");

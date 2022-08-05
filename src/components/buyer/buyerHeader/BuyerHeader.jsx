@@ -82,9 +82,9 @@ export default function BuyerHeader({ search }) {
     <div className="buyerHeader ">
       <div className="buyerHeader_wrapper">
         <div className="left">
-          <a href="/buyerHome" className="logo">
+          <p className="logo" onClick={() => navigate("/buyerHome")}>
             Jovinn.
-          </a>
+          </p>
           <div className="search">
             <input
               type="text"

@@ -35,7 +35,6 @@ import SellerDetail from "./pages/guest/sellerDetail/SellerDetail";
 import SellerManageRequest from "./pages/seller/sellerManageRequest/SellerManageRequest";
 import SellerManageOrder from "./pages/seller/sellerManageOrder/SellerManageOrder";
 import SellerOrderDetail from "./pages/seller/sellerOrderDetail/SellerOrderDetail";
-import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import BuyerManageWallet from "./pages/buyer/buyerManageWallet/BuyerManageWallet";
 import SellerManageOffer from "./pages/seller/sellerManageOffer/SellerManageOffer";
 import SellerContractDetail from "./pages/seller/sellerContractDetail/SellerContractDetail";

@@ -62,7 +62,7 @@ export default function BuyerContractDetail() {
         setOpen(true);
       })
       .catch(() => {
-        setError("Xác nhận bàn giao thất bại!");
+        setError("Người bán chưa tải lên bàn giao!");
       });
   };
   const handleClose = () => {
@@ -114,6 +114,8 @@ export default function BuyerContractDetail() {
             </Button>
           )}
         </div>
+        {error !== "" && <Alert severity="error">{error}</Alert>}
+        {success !== "" && <Alert severity="success">{success}</Alert>}
         <div className="paymentRow">
           <Comment comments={contractDetail.comments} contractId={contractId} />
         </div>{" "}
@@ -160,8 +162,7 @@ export default function BuyerContractDetail() {
           </DialogActions>
         </Dialog>
       </Container>
-      {error !== "" && <Alert severity="error">{error}</Alert>}
-      {success !== "" && <Alert severity="success">{success}</Alert>}
+
       <div className="sections_profile">
         <Contact />
       </div>

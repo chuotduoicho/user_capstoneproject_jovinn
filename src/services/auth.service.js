@@ -1,8 +1,9 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/api/auth";
+// const API_URL = "http://localhost:8080/api";
+const API_URL = "http://jovinnserver.site/api";
 const register = (username, password, email, firstName, lastName) => {
-  return axios.post(API_URL + "/signup", {
+  return axios.post(API_URL + "/auth/signup", {
     username,
     password,
     email,
@@ -13,7 +14,7 @@ const register = (username, password, email, firstName, lastName) => {
 
 const login = (username, password) => {
   return axios
-    .post(API_URL + "/signin", {
+    .post(API_URL + "/auth/signin", {
       usernameOrEmail: username,
       password,
     })
@@ -34,17 +35,15 @@ const logout = () => {
 
 const verifyAccount = (userId) => {
   console.log("id", userId);
-  return axios.put(API_URL + "/verify/" + userId);
+  return axios.put(API_URL + "/auth/verify/" + userId);
 };
 const sendMail = (email) => {
-  return axios.post(
-    "http://localhost:8080/api/v1/users/forgot_password/" + email
-  );
+  return axios.post(API_URL + "/v1/users/forgot_password/" + email);
 };
 
 const resetPassword = (capcha, password) => {
   console.log({ capcha, password });
-  return axios.post("http://localhost:8080/api/v1/users/reset_password", {
+  return axios.post(API_URL + "/v1/users/reset_password", {
     token: capcha,
     password,
   });

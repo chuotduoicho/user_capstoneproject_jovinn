@@ -1,6 +1,13 @@
 import axios from "axios";
 import authHeader from "./auth-header";
-const API_URL = "http://localhost:8080/api/v1";
+// const API_URL = "http://localhost:8080/api/v1";
+const API_URL = "http://jovinnserver.site/api/v1";
+const getTopSellers = () => {
+  return axios.get(API_URL + "/seller/sellers").then((response) => {
+    localStorage.setItem("topSeller", JSON.stringify(response.data));
+    return response.data;
+  });
+};
 const updateDescriptionBio = ({ descriptionBio, brandName }) => {
   console.log({ descriptionBio });
   return axios.put(
@@ -106,6 +113,7 @@ const sellerService = {
   deleteSkill,
   deleteCer,
   deleteEdu,
+  getTopSellers,
 };
 
 export default sellerService;

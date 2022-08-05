@@ -3,9 +3,8 @@ import { Button, CircularProgress, TextField } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useState, useEffect } from "react";
 import { clearMessage } from "../../../../redux/message";
-import Link from "@material-ui/core/Link";
 import { sendMail } from "../../../../redux/authSlice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const SendMail = () => {
   const { user } = useSelector((state) => state.auth);
   const [successful, setSuccessful] = useState(false);
@@ -42,9 +41,9 @@ const SendMail = () => {
   };
   return (
     <div className="login">
-      <Link href="/">
-        <p className="logo_login">Jovinn.</p>
-      </Link>
+      <p className="logo_login" onClick={() => navigate("/")}>
+        Jovinn.
+      </p>
 
       <form className="form" onSubmit={handleSendMail}>
         <p className="title_form">Đặt lại mật khẩu</p>
@@ -58,9 +57,10 @@ const SendMail = () => {
         <Button variant="outlined" className="btn" type="submit">
           Tiếp theo
         </Button>
-        <Link href="/auth/login" color="#5327ef" className="link">
+        <Link to="/auth/login" color="#5327ef" className="link">
           ◀️ Trở lại đăng nhập
         </Link>
+
         {message && (
           <div
             className={successful ? "login_success" : "login_error"}

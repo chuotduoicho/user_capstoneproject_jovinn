@@ -475,8 +475,6 @@ export default function SellerCreateService() {
         setError("Chưa chọn đủ ảnh!");
       } else if (galley3 == null) {
         setError("Chưa chọn đủ ảnh!");
-      } else if (document == null) {
-        setError("Chưa chọn tài liệu!");
       } else {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
         setError("");
