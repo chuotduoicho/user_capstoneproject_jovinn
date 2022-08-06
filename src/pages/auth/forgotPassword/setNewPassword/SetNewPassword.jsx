@@ -26,7 +26,11 @@ const SetNewPassword = () => {
     setSuccessful(false);
     setError("");
     console.log({ capcha, password });
-    if (password.length < 6) {
+    if (
+      !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,30}$/.test(
+        password
+      )
+    ) {
       setError("Mật khẩu phải có ít nhất 6 kí tự!");
     } else if (confirmPassword != password) {
       setError("Xác nhận mật khẩu phải trùng với mật khẩu!");
@@ -55,6 +59,16 @@ const SetNewPassword = () => {
           type="password"
           label="Mật khẩu mới"
           onChange={(e) => setPassword(e.target.value)}
+          error={
+            !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,30}$/.test(
+              password
+            )
+          }
+          helperText={
+            !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,30}$/.test(
+              password
+            ) && "Từ 6 đến 30 kí tự, ít nhất 1 kí tự viết hoa và số"
+          }
           required
         />
         <TextField
@@ -63,6 +77,11 @@ const SetNewPassword = () => {
           type="password"
           label="Xác nhận mật khẩu"
           onChange={(e) => setConfirmPassword(e.target.value)}
+          error={confirmPassword != password}
+          helperText={
+            confirmPassword != password &&
+            "Mật khẩu xác nhận phải giống với mật khẩu"
+          }
           required
         />
         {/* <span className="link">Ít nhất 1 kí tự viết thường</span>
@@ -92,12 +111,12 @@ const SetNewPassword = () => {
             {message}
           </div>
         )}
-        {error != "" && (
+        {successful && (
           <div
             className={successful ? "login_success" : "login_error"}
             role="alert"
           >
-            {error}
+            Tạo mật khẩu thành công!
           </div>
         )}
       </form>

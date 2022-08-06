@@ -23,7 +23,7 @@ const SendMail = () => {
     setIsFetching(true);
     e.preventDefault();
     if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
-      setError("Email không hợp lệ!");
+      // setError("Email không hợp lệ!");
     } else {
       dispatch(sendMail(email))
         .unwrap()
@@ -52,6 +52,11 @@ const SendMail = () => {
           variant="outlined"
           label="Địa chỉ Email"
           onChange={(e) => setEmail(e.target.value)}
+          error={!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)}
+          helperText={
+            !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email) &&
+            "Email phải theo mẫu 'mysite123@gmail.com'"
+          }
           required
         />
         <Button variant="outlined" className="btn" type="submit">
@@ -67,6 +72,14 @@ const SendMail = () => {
             role="alert"
           >
             {message}
+          </div>
+        )}
+        {successful && (
+          <div
+            className={successful ? "login_success" : "login_error"}
+            role="alert"
+          >
+            Liên kết đổi mật khẩu đã được gửi vào email của bạn!
           </div>
         )}
         {error != "" && (

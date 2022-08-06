@@ -38,12 +38,12 @@ const verifyAccount = (userId) => {
   return axios.put(API_URL + "/auth/verify/" + userId);
 };
 const sendMail = (email) => {
-  return axios.post(API_URL + "/v1/users/forgot_password/" + email);
+  return axios.post(API_URL + "/auth/forgot-password?email=" + email);
 };
 
 const resetPassword = (capcha, password) => {
   console.log({ capcha, password });
-  return axios.post(API_URL + "/v1/users/reset_password", {
+  return axios.post(API_URL + "/v1/users/reset-password", {
     token: capcha,
     password,
   });
