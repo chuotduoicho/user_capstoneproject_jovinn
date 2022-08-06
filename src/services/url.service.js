@@ -1,6 +1,6 @@
 import axios from "axios";
-// const API_URL = "http://localhost:8080/api/v1/files/";
-const API_URL = "http://jovinnserver.site/api/v1/files/";
+const API_URL = "http://localhost:8080/api/v1/files/";
+// const API_URL = "http://jovinnserver.site/api/v1/files/";
 const uploadFile = (obj) => {
   return axios
     .put(API_URL, obj, {

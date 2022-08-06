@@ -20,7 +20,7 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [error, setError] = useState("");
+  // const [error, setError] = useState("");
   const navigate = useNavigate();
   useEffect(() => {
     dispatch(clearMessage());
@@ -28,19 +28,29 @@ const Register = () => {
   }, [dispatch]);
 
   const handleRegister = (e) => {
-    setError("");
+    // setError("");
     dispatch(clearMessage());
     e.preventDefault();
     setSuccessful(false);
     console.log({ username, password, email, firstName, lastName });
-    if (!/^[a-z0-9]*$/.test(username)) {
-      setError("Tên đăng nhập không hợp lệ!");
-    } else if (password.length < 6) {
-      setError("Mật khẩu phải có ít nhất 6 kí tự!");
+    if (
+      !/^[a-zA-Z0-9]{6,30}$/.test(username) ||
+      firstName.length < 2 ||
+      firstName.length > 30 ||
+      lastName.length < 2 ||
+      lastName.length > 30
+    ) {
+      // setError("Tên đăng nhập không hợp lệ!");
+    } else if (
+      !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,30}$/.test(
+        password
+      )
+    ) {
+      // setError("Mật khẩu phải có ít nhất 6 kí tự!");
     } else if (confirmPassword != password) {
-      setError("Xác nhận mật khẩu phải trùng với mật khẩu!");
+      // setError("Xác nhận mật khẩu phải trùng với mật khẩu!");
     } else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
-      setError("Email không hợp lệ!");
+      // setError("Email không hợp lệ!");
     } else {
       dispatch(register({ username, password, email, firstName, lastName }))
         .unwrap()
@@ -64,6 +74,11 @@ const Register = () => {
           variant="outlined"
           label="Tên đăng nhập"
           onChange={(e) => setUsername(e.target.value)}
+          error={!/^[a-zA-Z0-9]{6,30}$/.test(username)}
+          helperText={
+            !/^[a-zA-Z0-9]{6,30}$/.test(username) &&
+            "Từ 6 đến 30 kí tự và không gồm kí tự đặc biệt"
+          }
           required
         />
         <TextField
@@ -72,6 +87,16 @@ const Register = () => {
           variant="outlined"
           label="Mật khẩu"
           onChange={(e) => setPassword(e.target.value)}
+          error={
+            !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,30}$/.test(
+              password
+            )
+          }
+          helperText={
+            !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,30}$/.test(
+              password
+            ) && "Từ 6 đến 30 kí tự, ít nhất 1 kí tự viết hoa và số"
+          }
           required
         />
         <TextField
@@ -80,6 +105,11 @@ const Register = () => {
           variant="outlined"
           label="Xác nhận mật khẩu"
           onChange={(e) => setConfirmPassword(e.target.value)}
+          error={confirmPassword != password}
+          helperText={
+            confirmPassword != password &&
+            "Mật khẩu xác nhận phải giống với mật khẩu"
+          }
           required
         />
         <div style={{ display: "flex" }}>
@@ -88,7 +118,12 @@ const Register = () => {
             variant="outlined"
             label="Họ"
             onChange={(e) => setFirstName(e.target.value)}
-            style={{ width: "50%" }}
+            style={{ width: "48%", marginRight: "4%" }}
+            error={firstName.length < 2 || firstName.length > 30}
+            helperText={
+              (firstName.length < 2 || firstName.length > 30) &&
+              "Từ 2 đến 30 kí tự"
+            }
             required
           />
           <TextField
@@ -96,7 +131,12 @@ const Register = () => {
             variant="outlined"
             label="Tên"
             onChange={(e) => setLastName(e.target.value)}
-            style={{ width: "50%" }}
+            style={{ width: "48%" }}
+            error={lastName.length < 2 || lastName.length > 30}
+            helperText={
+              (lastName.length < 2 || lastName.length > 30) &&
+              "Từ 2 đến 30 kí tự"
+            }
             required
           />
         </div>
@@ -106,6 +146,11 @@ const Register = () => {
           variant="outlined"
           label="Email"
           onChange={(e) => setEmail(e.target.value)}
+          error={!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)}
+          helperText={
+            !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email) &&
+            "Email phải theo mẫu 'mysite123@gmail.com'"
+          }
           required
         />
 
@@ -124,14 +169,6 @@ const Register = () => {
             role="alert"
           >
             {message}
-          </div>
-        )}
-        {error != "" && (
-          <div
-            className={successful ? "login_success" : "login_error"}
-            role="alert"
-          >
-            {error}
           </div>
         )}
         {isFetching && <CircularProgress style={{ margin: "0 auto" }} />}

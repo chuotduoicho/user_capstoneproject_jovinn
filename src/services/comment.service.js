@@ -1,7 +1,7 @@
 import axios from "axios";
 import authHeader from "./auth-header";
-// const API_URL = "http://localhost:8080/api/v1";
-const API_URL = "http://jovinnserver.site/api/v1";
+const API_URL = "http://localhost:8080/api/v1";
+// const API_URL = "http://jovinnserver.site/api/v1";
 const addComment = (obj) => {
   const id = obj.contractId;
   const text = obj.text;
