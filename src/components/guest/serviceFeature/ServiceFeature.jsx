@@ -58,11 +58,12 @@ export default function ServiceFeature({ search }) {
                 }
                 alt=""
               />
-              {/* <div className="guest_absolute"> */} <h3>{d.title}</h3>
-              {/* <h4>{d.description}</h4>
-              <h3>{d.packages[0].price} $</h3> */}
+              <div className="guest_absolute">
+                <h3>{d.title}</h3>
+                <h4>{d.description}</h4>
+                <h3>{d.packages[0].price} $</h3>
+              </div>
             </div>
-            // </div>
           ))}
       </div>
     </div>

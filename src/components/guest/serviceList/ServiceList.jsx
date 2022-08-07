@@ -61,7 +61,9 @@ export default function ServiceList({
             </Typography>
           </div>
           <Typography variant="h6">{title}.</Typography>
-          <Typography>{description}.</Typography>
+          <Typography style={{ overflow: "ellipsis" }}>
+            {description}.
+          </Typography>
         </CardContent>
         <CardActions
           className={

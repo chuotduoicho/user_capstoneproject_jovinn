@@ -45,7 +45,10 @@ export default function SellerDetail() {
   };
 
   return (
-    <div className="buyer_profile">
+    <div
+      className="buyer_profile"
+      style={{ marginTop: user ? "0px" : "100px" }}
+    >
       {user ? <BuyerHeader /> : <Topbar />}
 
       <h1 className="buyer_profile_title">Thông tin người bán</h1>
@@ -109,26 +112,38 @@ export default function SellerDetail() {
         </div>
         <div className="sellerProfile_rightCard">
           <div className="paymentRow">
-            <Typography variant="h5">
-              Lời giới thiệu:{" "}
-              <Typography variant="inherit">
-                {sellerDetail.descriptionBio}
-              </Typography>
+            <Typography
+              variant="h5"
+              style={{ width: "30%", textAlign: "left" }}
+            >
+              Lời giới thiệu:
+            </Typography>
+            <Typography variant="inherit">
+              {sellerDetail.descriptionBio}
             </Typography>
           </div>
           <div className="paymentRow">
-            <Typography variant="h5">
-              Kĩ năng:{" "}
-              {sellerDetail.skills.map((skill, index) => (
-                <>
-                  {" "}
-                  <Chip label={skill.name} />{" "}
-                </>
-              ))}
+            <Typography
+              variant="h5"
+              style={{ width: "30%", textAlign: "left" }}
+            >
+              Kĩ năng:
             </Typography>
+
+            {sellerDetail.skills.map((skill, index) => (
+              <>
+                {" "}
+                <Chip label={skill.name} />{" "}
+              </>
+            ))}
           </div>
           <div className="paymentRow">
-            <Typography variant="h5">Học vấn:</Typography>
+            <Typography
+              variant="h5"
+              style={{ width: "30%", textAlign: "left" }}
+            >
+              Học vấn:
+            </Typography>
             <Table
               sx={{ minWidth: 650 }}
               size="small"
@@ -171,7 +186,12 @@ export default function SellerDetail() {
             </Table>
           </div>
           <div className="paymentRow">
-            <Typography variant="h5">Chứng chỉ : </Typography>
+            <Typography
+              variant="h5"
+              style={{ width: "30%", textAlign: "left" }}
+            >
+              Chứng chỉ :{" "}
+            </Typography>
             <Table
               sx={{ minWidth: 850 }}
               size="small"
