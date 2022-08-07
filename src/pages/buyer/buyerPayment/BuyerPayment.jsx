@@ -11,8 +11,6 @@ import React, { useState } from "react";
 import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
 import Contact from "../../../components/guest/contact/Contact";
 import Alert from "@material-ui/lab/Alert";
-import Card from "react-credit-cards";
-import "react-credit-cards/es/styles-compiled.css";
 import "./buyerPayment.scss";
 import Checkout from "../../../components/payment/Checkout";
 import { useLocation, useNavigate } from "react-router-dom";

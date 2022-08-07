@@ -16,8 +16,8 @@ import {
   Radio,
   RadioGroup,
   TextField,
+  MenuItem,
 } from "@material-ui/core";
-import Alert from "@material-ui/lab/Alert";
 import { useDispatch, useSelector } from "react-redux";
 import {
   changePassword,
@@ -27,6 +27,10 @@ import {
 } from "../../../redux/userSlice";
 import { clearMessage } from "../../../redux/message";
 import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+
+import "react-toastify/dist/ReactToastify.css";
 import { useLocation } from "react-router-dom";
 function format(date) {
   date = new Date(date);
@@ -56,6 +60,7 @@ export default function BuyerProfile() {
   const { url } = useSelector((state) => state.url);
   const [error, setError] = useState("");
   const [isChange, setIsChange] = useState(true);
+
   const dispatch = useDispatch();
   const location = useLocation();
   useEffect(() => {
@@ -74,7 +79,6 @@ export default function BuyerProfile() {
       .then(() => {
         setSuccessful(true);
         setIsChange(false);
-        setError("Cập nhật thông tin thành công!");
       })
       .catch(() => {
         setSuccessful(false);
@@ -85,53 +89,45 @@ export default function BuyerProfile() {
     setSuccessful(false);
     console.log(avatar);
     setError("");
-    if (!/((09|03|07|08|05)+([0-9]{8})\b)/.test(phone)) {
-      setError(
-        "Số điện thoại phải có độ dài 10 số và bắt đầu bằng 09,03,07,08,05!"
-      );
-    } else {
-      dispatch(
-        updateUserProfile({
-          id,
-          firstName,
-          lastName,
-          gender,
-          birthDate,
-          phone,
-          address,
-          city,
-          avatar,
-        })
-      )
-        .unwrap()
-        .then(() => {
-          setSuccessful(true);
-          setError("Cập nhật thông tin thành công!");
-        })
-        .catch(() => {
-          setSuccessful(false);
-        });
-    }
+    dispatch(
+      updateUserProfile({
+        id,
+        firstName,
+        lastName,
+        gender,
+        birthDate,
+        phone,
+        address,
+        city,
+        avatar,
+      })
+    )
+      .unwrap()
+      .then(() => {
+        setSuccessful(true);
+        toast.success(message ? message : "Cập nhật thông tin thành công!");
+        setIsChange(true);
+      })
+      .catch(() => {
+        setSuccessful(false);
+        toast.error(message ? message : "Cập nhật thông tin thất bại!");
+      });
   };
   const handleChangePassword = () => {
     dispatch(clearMessage());
     setSuccessful(false);
-    if (newPassword.length < 6) {
-      setError("Mật khẩu phải có ít nhất 6 kí tự!");
-    } else if (confirmPassword != newPassword) {
-      setError("Xác nhận mật khẩu phải trùng với mật khẩu!");
-    } else {
-      console.log({ oldPassword, newPassword, confirmPassword });
-      dispatch(changePassword({ oldPassword, newPassword, confirmPassword }))
-        .unwrap()
-        .then(() => {
-          setOpen(false);
-          setSuccessful(true);
-        })
-        .catch(() => {
-          setSuccessful(false);
-        });
-    }
+    dispatch(changePassword({ oldPassword, newPassword, confirmPassword }))
+      .unwrap()
+      .then(() => {
+        setOpen(false);
+        setSuccessful(true);
+        toast.success(message ? message : "Đổi mật khẩu thành công!");
+      })
+      .catch(() => {
+        setSuccessful(false);
+        setOpen(false);
+        toast.error(message ? message : "Dổi mật khẩu thất bại!");
+      });
   };
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
@@ -141,6 +137,32 @@ export default function BuyerProfile() {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const [dataCountry, setDataCountry] = useState([]);
+  const [dataCity, setDataCity] = useState([]);
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const response = await axios.get(
+          `https://countriesnow.space/api/v0.1/countries`
+        );
+        console.log(response.data.data);
+        setDataCountry(response.data.data);
+        if (currentUser.country)
+          setDataCity(
+            response.data.data.find((val) => {
+              return val.country == currentUser.country;
+            }).cities
+          );
+        setError(null);
+      } catch (err) {
+        console.log(err.message);
+        setDataCountry(null);
+      }
+    };
+    getData();
+  }, []);
+  // console.log(dataCountry[0].cities);
   return (
     <div className="buyer_profile">
       {location.pathname == "/buyerhome/profile" ? (
@@ -180,6 +202,11 @@ export default function BuyerProfile() {
                   setFirstName(e.target.value);
                   setIsChange(false);
                 }}
+                error={firstName.length < 2 || firstName.length > 30}
+                helperText={
+                  (firstName.length < 2 || firstName.length > 30) &&
+                  "Từ 2 đến 30 kí tự"
+                }
               />
 
               <TextField
@@ -195,12 +222,19 @@ export default function BuyerProfile() {
                   setLastName(e.target.value);
                   setIsChange(false);
                 }}
+                error={lastName.length < 2 || lastName.length > 30}
+                helperText={
+                  (lastName.length < 2 || lastName.length > 30) &&
+                  "Từ 2 đến 30 kí tự"
+                }
               />
               <FormControl
                 component="fieldset"
                 className="form_right_row_input"
               >
-                <FormLabel component="legend">Giới tính</FormLabel>
+                <FormLabel component="legend" error={gender == null}>
+                  Giới tính
+                </FormLabel>
                 <RadioGroup
                   aria-label="gender"
                   name="gender1"
@@ -257,6 +291,11 @@ export default function BuyerProfile() {
                   setIsChange(false);
                 }}
                 type="number"
+                error={!/((09|03|07|08|05)+([0-9]{8})\b)/.test(phone)}
+                helperText={
+                  !/((09|03|07|08|05)+([0-9]{8})\b)/.test(phone) &&
+                  "10 số và bắt đầu bằng 09,03,07,08,05!"
+                }
               />
               <TextField
                 id="outlined-basic"
@@ -267,7 +306,10 @@ export default function BuyerProfile() {
                   shrink: true,
                 }}
                 className="form_right_row_input"
-                defaultValue={format(currentUser.birthDate)}
+                defaultValue={
+                  currentUser.birthDate ? format(currentUser.birthDate) : ""
+                }
+                error={!currentUser.birthDate}
                 onChange={(e) => {
                   setBirthDate(e.target.value);
                   setIsChange(false);
@@ -277,9 +319,10 @@ export default function BuyerProfile() {
             <div className="form_right_row">
               <TextField
                 id="outlined-basic"
-                label="Thành phố"
+                select
+                label="Quốc gia"
                 variant="outlined"
-                className="form_right_row_input_country"
+                className="form_right_row_input"
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -287,13 +330,26 @@ export default function BuyerProfile() {
                 onChange={(e) => {
                   setAddress(e.target.value);
                   setIsChange(false);
+                  setDataCity(
+                    dataCountry.find((val) => {
+                      return val.country == e.target.value;
+                    }).cities
+                  );
                 }}
-              />
+                error={address == null}
+              >
+                {dataCountry.map((data) => (
+                  <MenuItem key={data.country} value={data.country}>
+                    {data.country}
+                  </MenuItem>
+                ))}
+              </TextField>
               <TextField
                 id="outlined-basic"
-                label="Địa chỉ"
+                select
+                label="Tỉnh/Thành phố"
                 variant="outlined"
-                className="form_right_row_input_adress"
+                className="form_right_row_input"
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -302,7 +358,28 @@ export default function BuyerProfile() {
                   setCity(e.target.value);
                   setIsChange(false);
                 }}
-              />
+                error={city == null}
+              >
+                {dataCity.map((data) => (
+                  <MenuItem key={data} value={data}>
+                    {data}
+                  </MenuItem>
+                ))}
+              </TextField>
+              {/* <TextField
+                id="outlined-basic"
+                label="Số nhà/Thôn/Quận huyện"
+                variant="outlined"
+                className="form_right_row_input"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                defaultValue={currentUser.city}
+                onChange={(e) => {
+                  setCity(e.target.value);
+                  setIsChange(false);
+                }}
+              /> */}
             </div>
             <div className="form_right_row">
               <Button
@@ -323,24 +400,6 @@ export default function BuyerProfile() {
                 Đổi mật khẩu
               </Button>
             </div>
-            <div className="form_right_row">
-              {message && (
-                <div
-                  className={successful ? "login_success" : "login_error"}
-                  role="alert"
-                >
-                  {message}
-                </div>
-              )}
-              {error != "" && (
-                <div
-                  className={successful ? "login_success" : "login_error"}
-                  role="alert"
-                >
-                  {error}
-                </div>
-              )}
-            </div>
           </div>
           <Dialog
             fullWidth
@@ -358,6 +417,17 @@ export default function BuyerProfile() {
                 type="password"
                 label="Mật khẩu cũ"
                 onChange={(e) => setOldPassword(e.target.value)}
+                style={{ marginBottom: "15px" }}
+                error={
+                  !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,30}$/.test(
+                    oldPassword
+                  )
+                }
+                helperText={
+                  !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,30}$/.test(
+                    oldPassword
+                  ) && "Từ 6 đến 30 kí tự, ít nhất 1 kí tự viết hoa và số"
+                }
                 required
               />
               <TextField
@@ -366,6 +436,17 @@ export default function BuyerProfile() {
                 type="password"
                 label="Mật khẩu mới"
                 onChange={(e) => setNewPassword(e.target.value)}
+                style={{ marginBottom: "15px" }}
+                error={
+                  !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,30}$/.test(
+                    newPassword
+                  )
+                }
+                helperText={
+                  !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,30}$/.test(
+                    newPassword
+                  ) && "Từ 6 đến 30 kí tự, ít nhất 1 kí tự viết hoa và số"
+                }
                 required
               />
               <TextField
@@ -374,6 +455,12 @@ export default function BuyerProfile() {
                 type="password"
                 label="Xác nhận mật khẩu"
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                style={{ marginBottom: "15px" }}
+                error={confirmPassword != newPassword}
+                helperText={
+                  confirmPassword != newPassword &&
+                  "Mật khẩu xác nhận phải giống với mật khẩu"
+                }
                 required
               />
             </DialogContent>
@@ -382,6 +469,15 @@ export default function BuyerProfile() {
                 color="primary"
                 variant="contained"
                 onClick={handleChangePassword}
+                disabled={
+                  !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,30}$/.test(
+                    oldPassword
+                  ) ||
+                  !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,30}$/.test(
+                    newPassword
+                  ) ||
+                  confirmPassword != newPassword
+                }
               >
                 Xác nhận
               </Button>
@@ -391,7 +487,7 @@ export default function BuyerProfile() {
             </DialogActions>
           </Dialog>
         </Container>
-
+        <ToastContainer position="bottom-right" autoClose={2000} />
         <Contact />
       </div>
     </div>

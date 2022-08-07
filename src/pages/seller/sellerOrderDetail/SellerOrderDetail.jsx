@@ -9,7 +9,6 @@ import {
 } from "@material-ui/core";
 import React, { useState } from "react";
 import Contact from "../../../components/guest/contact/Contact";
-import "react-credit-cards/es/styles-compiled.css";
 import "./sellerOrderDetail.scss";
 import { useDispatch, useSelector } from "react-redux";
 import {

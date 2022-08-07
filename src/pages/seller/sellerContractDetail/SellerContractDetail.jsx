@@ -12,7 +12,6 @@ import {
 import React, { useState } from "react";
 import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
 import Contact from "../../../components/guest/contact/Contact";
-import "react-credit-cards/es/styles-compiled.css";
 import "./sellerContractDetail.scss";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -21,7 +20,6 @@ import {
   uploadFile,
 } from "../../../redux/userSlice";
 import { useNavigate, useParams } from "react-router-dom";
-import Rating from "@material-ui/lab/Rating";
 import { CloudUpload, StarBorder } from "@material-ui/icons";
 import {
   selectContractBuyerById,

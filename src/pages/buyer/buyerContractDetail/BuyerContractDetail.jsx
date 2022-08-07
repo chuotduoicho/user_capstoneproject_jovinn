@@ -11,7 +11,6 @@ import {
 import React, { useState } from "react";
 import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
 import Contact from "../../../components/guest/contact/Contact";
-import "react-credit-cards/es/styles-compiled.css";
 import "./buyerContractDetail.scss";
 import { useDispatch, useSelector } from "react-redux";
 import {

@@ -2,7 +2,6 @@ import { Button, Chip, Container } from "@material-ui/core";
 import React from "react";
 import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
 import Contact from "../../../components/guest/contact/Contact";
-import "react-credit-cards/es/styles-compiled.css";
 import "./buyerOrderDetail.scss";
 import { useSelector } from "react-redux";
 import { selectContractBuyerById } from "../../../redux/contractSlice";
