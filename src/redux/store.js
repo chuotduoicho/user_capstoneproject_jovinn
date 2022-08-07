@@ -6,6 +6,7 @@ import userReducer from "./userSlice";
 import messageReducer from "./message";
 import contractReducer from "./contractSlice";
 import requestReducer from "./requestSlice";
+import notificationReducer from "./notificationSlice";
 const reducer = {
   auth: authReducer,
   message: messageReducer,
@@ -14,6 +15,7 @@ const reducer = {
   user: userReducer,
   contract: contractReducer,
   request: requestReducer,
+  notification: notificationReducer,
 };
 export const store = configureStore({
   reducer: reducer,

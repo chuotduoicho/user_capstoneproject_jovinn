@@ -13,13 +13,27 @@ import MenuItem from "@material-ui/core/MenuItem";
 import MenuList from "@material-ui/core/MenuList";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef, useCallback } from "react";
-import { Button } from "@material-ui/core";
-import { useDispatch } from "react-redux";
+import { Button, List, ListItem, ListItemText, Popover } from "@material-ui/core";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchNotifications, selectNotifications } from "../../../redux/notificationSlice";
 export default function SellerHeader() {
+  
   const [open, setOpen] = useState(false);
+  const listNotification = useSelector(selectNotifications);
   const anchorRef = useRef(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [anchorEl, setAnchorEl] = useState(null);
+  
+  const handleIconClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleIconClose = () => {
+    setAnchorEl(null);
+  };
+  const iconOpen = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
+
   const logOut = useCallback(() => {
     dispatch(logOut());
   }, [dispatch]);
@@ -52,10 +66,17 @@ export default function SellerHeader() {
 
   // return focus to the button when we transitioned from !open -> open
   const prevOpen = useRef(open);
+
   useEffect(() => {
+    let eventSource = new EventSource('http://localhost:8080/api/v1/users/recieve-notify');
+    eventSource.onmessage = () => {
+
+    }
+    dispatch(fetchNotifications());
     if (prevOpen.current === true && open === false) {
       anchorRef.current.focus();
     }
+
 
     prevOpen.current = open;
   }, [open]);
@@ -100,11 +121,34 @@ export default function SellerHeader() {
               </Button>{" "}
             </Link>
           </div> */}
-          {/* <div className="item">
-            <NotificationImportantOutlined className="icon" />
-            <div className="counter">1</div>
-          </div>
           <div className="item">
+            <NotificationImportantOutlined className="icon" onClick={handleIconClick}/>
+            <div className="counter" >{listNotification.unread}</div>
+            <Popover
+              id={id}
+              open={iconOpen}
+              anchorEl={anchorEl}
+              onClose={handleIconClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'center',
+              }}
+            >
+              <List>
+                {
+                  listNotification.list.map((item) => (
+                    <ListItem onClick={handleNotiOnClick}>
+                      <ListItemText
+                        primary={item.shortContent}
+                        secondary={item.createAt}
+                      />
+                    </ListItem>
+                  ))
+                }
+              </List>
+            </Popover>
+          </div>
+          {/* <div className="item">
             <ChatBubbleOutline className="icon" />
             <div className="counter">2</div>
           </div> */}
