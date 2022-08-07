@@ -5,13 +5,13 @@ import { Link, useNavigate } from "react-router-dom";
 export default function Topbar({ menuOpen, setMenuOpen, search }) {
   const navigate = useNavigate();
   return (
-    <div className={"topbarHome " + (menuOpen && "active")}>
-      <div className="topbarHome_wrapper">
-        <div className="left">
-          <a href="/" className="logo">
+    <div className={menuOpen ? "guest_topbar active" : "guest_topbar"}>
+      <div className="guest_wrapper">
+        <div className="guest_left">
+          <a href="/" className="guest_logo">
             Jovinn.
           </a>
-          <div className="search">
+          <div className="guest_search">
             <input
               type="text"
               placeholder="Tìm kiếm theo dịch vụ ..."
@@ -22,11 +22,11 @@ export default function Topbar({ menuOpen, setMenuOpen, search }) {
                 navigate("#service");
               }}
             />
-            <Link to="#service" style={{ textDecoration: "none" }}>
+            <a href="#service">
               <SearchOutlined className="search_icon" />
-            </Link>
+            </a>
           </div>
-          <div className="itemButtons">
+          <div className="guest_itemButtons">
             <Button
               className="button"
               onClick={() => navigate("/auth/register")}
@@ -42,11 +42,14 @@ export default function Topbar({ menuOpen, setMenuOpen, search }) {
             </Button>
           </div>
         </div>
-        <div className="right">
-          <div className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
-            <span className="line1"></span>
-            <span className="line2"></span>
-            <span className="line3"></span>
+        <div className="guest_right">
+          <div
+            className="guest_hamburger"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            <span className="guest_line1"></span>
+            <span className="guest_line2"></span>
+            <span className="guest_line3"></span>
           </div>
         </div>
       </div>

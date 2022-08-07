@@ -26,14 +26,14 @@ export default function Home() {
     if (user) navigate("/buyerHome");
   }, []);
   return (
-    <div className="app">
+    <div className="guest_app">
       <Topbar
         menuOpen={menuOpen}
         setMenuOpen={setMenuOpen}
         search={setSearch}
       />
-      <Menu menuOpen={menuOpen} setMenuOpen={setMenuOpen} search={search} />
-      <div className="sections">
+      <Menu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <div className="guest_sections">
         <Intro />
         <ServiceFeature search={search} />
         <Topseller />

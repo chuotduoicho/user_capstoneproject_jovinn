@@ -15,21 +15,21 @@ export default function Intro() {
   }, []);
 
   return (
-    <div className="introHome" id="intro">
-      <div className="left">
-        <div className="imgContainer">
+    <div className="guest_intro" id="intro">
+      <div className="guest_left">
+        <div className="guest_imgContainer">
           <img src="assets/man.png" alt="" />
         </div>
       </div>
-      <div className="right">
-        <div className="wrapper">
+      <div className="guest_right">
+        <div className="guest_wrapper">
           <h2>Xin chào, chúng tôi là</h2>
           <h1>Jovinn Team</h1>
           <h3>
             Freelance <span ref={textRef}></span>
           </h3>
         </div>
-        <a href="#portfolio">
+        <a href="#service">
           <img src="assets/down.png" alt="" />
         </a>
       </div>

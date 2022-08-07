@@ -19,7 +19,7 @@ export default function ServiceFeature({ search }) {
     if (selected != "") dispatch(fetchServicesByCategory(selected));
   }, [selected]);
   return (
-    <div className="portfolio" id="service">
+    <div className="guest_service" id="service">
       <h1>DỊCH VỤ NỔI BẬT</h1>
       <ul>
         {listCategory.map((item) => (
@@ -31,7 +31,7 @@ export default function ServiceFeature({ search }) {
           />
         ))}
       </ul>
-      <div className="container">
+      <div className="guest_container">
         {listService
           .filter((val) => {
             if (search === "") {
@@ -47,7 +47,7 @@ export default function ServiceFeature({ search }) {
           .slice(0, 8)
           .map((d) => (
             <div
-              className="item"
+              className="guest_item"
               onClick={() => navigate("/serviceDetail/" + d.id)}
             >
               <img
@@ -58,13 +58,11 @@ export default function ServiceFeature({ search }) {
                 }
                 alt=""
               />
-              <div className="absolute">
-                {" "}
-                <h3>{d.title}</h3>
-                <h4>{d.description}</h4>
-                <h3>{d.packages[0].price} $</h3>
-              </div>
+              {/* <div className="guest_absolute"> */} <h3>{d.title}</h3>
+              {/* <h4>{d.description}</h4>
+              <h3>{d.packages[0].price} $</h3> */}
             </div>
+            // </div>
           ))}
       </div>
     </div>

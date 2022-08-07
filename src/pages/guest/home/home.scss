@@ -1,7 +1,7 @@
-.app {
+.guest_app {
   height: 100vh;
   overflow-x: hidden;
-  .sections {
+  .guest_sections {
     width: 100%;
     height: calc(100vh - 70px);
     background-color: lightsalmon;
@@ -9,7 +9,7 @@
     top: 70px;
     scroll-behavior: smooth;
     scroll-snap-type: y mandatory;
-    scrollbar-width: none;
+    scrollbar-width: none; //for firefox
     &::-webkit-scrollbar {
       display: none;
     }

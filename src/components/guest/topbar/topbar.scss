@@ -1,25 +1,34 @@
 @import "../../../global.scss";
 
-.topbarHome {
+.guest_topbar {
   width: 100%;
-  height: 10px;
+  height: 70px;
   background-color: white;
   color: $mainColor;
-  position: relative;
+  position: fixed;
   top: 0;
   z-index: 3;
   transition: all 1s ease;
 
-  .topbarHome_wrapper {
+  .guest_wrapper {
     padding: 10px 30px;
     display: flex;
     align-items: center;
     justify-content: space-between;
 
-    .left {
+    .guest_left {
       display: flex;
       align-items: center;
-      .search {
+
+      .guest_logo {
+        font-size: 40px;
+        font-weight: 700;
+        text-decoration: none;
+        color: inherit;
+        margin-right: 40px;
+      }
+
+      .guest_search {
         display: flex;
         align-items: center;
         border: 0.5px solid rgb(211, 211, 211);
@@ -32,14 +41,18 @@
           cursor: pointer;
         }
       }
-      .logo {
-        font-size: 40px;
-        font-weight: 700;
-        text-decoration: none;
-        color: #6a50ca;
-        margin-right: 40px;
-      }
+      .guest_itemButtons {
+        display: flex;
+        align-items: center;
+        // float: right;
+        margin-left: 500px;
 
+        .button {
+          margin-right: 10px;
+          color: inherit;
+          border-color: inherit;
+        }
+      }
       .itemContainer {
         display: flex;
         align-items: center;
@@ -60,23 +73,11 @@
         }
       }
     }
-    .itemButtons {
-      display: flex;
-      align-items: center;
-      // float: right;
-      margin-left: 500px;
 
-      .button {
-        margin-right: 10px;
-        color: inherit;
-        border-color: inherit;
-      }
-    }
-
-    .right {
-      .hamburger {
+    .guest_right {
+      .guest_hamburger {
         width: 32px;
-        height: 26px;
+        height: 25px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -97,7 +98,7 @@
     background-color: $mainColor;
     color: white;
 
-    .hamburger {
+    .guest_hamburger {
       span {
         &:first-child {
           background-color: white;

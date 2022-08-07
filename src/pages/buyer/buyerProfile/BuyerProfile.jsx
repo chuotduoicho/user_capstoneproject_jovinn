@@ -157,7 +157,7 @@ export default function BuyerProfile() {
         setError(null);
       } catch (err) {
         console.log(err.message);
-        setDataCountry(null);
+        setDataCountry([]);
       }
     };
     getData();

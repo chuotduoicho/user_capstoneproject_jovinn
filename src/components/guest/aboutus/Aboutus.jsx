@@ -45,7 +45,7 @@ export default function Aboutus() {
     },
   ];
   return (
-    <div className="aboutus" id="testimonials">
+    <div className="aboutus" id="about">
       <h1>THÀNH VIÊN DỰ ÁN</h1>
       <div className="aboutus_container">
         {data.map((d) => (
