@@ -228,10 +228,14 @@ export default function BuyerProfile() {
                   setFirstName(e.target.value);
                 }}
                 error={
-                  (firstName.length < 2 || firstName.length > 30) && check1
+                  !/^[^\s][a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{0,28}[^\s]$/.test(
+                    firstName
+                  ) && check1
                 }
                 helperText={
-                  (firstName.length < 2 || firstName.length > 30) &&
+                  !/^[^\s][a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{0,28}[^\s]$/.test(
+                    firstName
+                  ) &&
                   check1 &&
                   "Từ 2 đến 30 kí tự"
                 }
@@ -249,9 +253,15 @@ export default function BuyerProfile() {
                 onChange={(e) => {
                   setLastName(e.target.value);
                 }}
-                error={(lastName.length < 2 || lastName.length > 30) && check1}
+                error={
+                  !/^[^\s][a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{0,28}[^\s]$/.test(
+                    lastName
+                  ) && check1
+                }
                 helperText={
-                  (lastName.length < 2 || lastName.length > 30) &&
+                  !/^[^\s][a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{0,28}[^\s]$/.test(
+                    lastName
+                  ) &&
                   check1 &&
                   "Từ 2 đến 30 kí tự"
                 }

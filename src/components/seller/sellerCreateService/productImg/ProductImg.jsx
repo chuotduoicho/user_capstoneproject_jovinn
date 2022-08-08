@@ -1,4 +1,5 @@
-import { LinearProgress, TextField } from "@material-ui/core";
+import { Button, LinearProgress, TextField } from "@material-ui/core";
+import { CloudUpload } from "@material-ui/icons";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -234,19 +235,25 @@ export default function ProductImg({
         <div className="duoi">
           <h4>Tải lên tài liệu của bạn</h4>
           <div className="formInput">
-            <img
-              src={file4 ? URL.createObjectURL(file4) : documentV}
-              alt=""
-              style={{ width: "100px" }}
-            />
-            <TextField
-              required
-              id="standard-required"
-              className="text_field"
+            <input
+              accept="image/*,.doc,.docx,.xlsx,.xls,.csv,.pdf,text/plain"
+              className="request_form_input"
+              id="request-input-file"
+              multiple
               type="file"
-              label="Chọn tài liệu"
               onChange={handleUploadFile4}
+              hidden
             />
+            <label htmlFor="request-input-file">
+              <Button
+                variant="contained"
+                color="primary"
+                component="span"
+                startIcon={<CloudUpload />}
+              >
+                {file4 ? file4.name : "FILE ĐÍNH KÈM"}
+              </Button>
+            </label>{" "}
             {loading4 && <LinearProgress />}
           </div>
         </div>

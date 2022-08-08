@@ -30,17 +30,26 @@ export default function SellerCreateOffer() {
   const dispatch = useDispatch();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [check, setCheck] = useState(false);
   const navigate = useNavigate();
   const sendOffer = () => {
     setError("");
-
-    if (description == "") {
+    setCheck(true);
+    if (
+      !/^[^\s][a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{28,498}[^\s]$/.test(
+        description
+      )
+    ) {
       setError("Chưa nhập mô tả!");
-    } else if (totalDeliveryTime == 0) {
+    } else if (totalDeliveryTime == 0 || totalDeliveryTime < 1) {
       setError("Chưa nhập số ngày bàn giao!");
-    } else if (offerPrice == 0) {
+    } else if (
+      offerPrice.length == 0 ||
+      offerPrice < 1 ||
+      offerPrice.length > 10
+    ) {
       setError("Chưa nhập chi phí!");
-    } else if (cancleFee == 0) {
+    } else if (cancleFee.length == 0 || cancleFee < 0 || cancleFee > 100) {
       setError("Chưa nhập phí hủy hợp đồng!");
     } else {
       dispatch(addOffer({ offer, requestId }))
@@ -48,6 +57,7 @@ export default function SellerCreateOffer() {
         .then(() => {
           dispatch(fetchRequestsSeller());
           setSuccess("Tạo đề nghị thành công!");
+          setCheck(false);
           navigate("/sellerHome/manageOffer", {
             state: {
               alert: "Tạo đề nghị thành công",
@@ -55,6 +65,7 @@ export default function SellerCreateOffer() {
           });
         })
         .catch(() => {
+          setCheck(false);
           setError("Tạo đề nghị thất bại!");
         });
     }
@@ -74,6 +85,18 @@ export default function SellerCreateOffer() {
             rows={6}
             style={{ width: "62%" }}
             onChange={(e) => setDescription(e.target.value)}
+            error={
+              !/^[^\s][a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{28,498}[^\s]$/.test(
+                description
+              ) && check
+            }
+            helperText={
+              !/^[^\s][a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{28,498}[^\s]$/.test(
+                description
+              ) &&
+              check &&
+              "Từ 30 đến 500 kí tự không được bắt đầu với khoảng trắng"
+            }
           />
         </div>
         <div className="profession_row">
@@ -86,6 +109,8 @@ export default function SellerCreateOffer() {
             type="number"
             InputProps={{ inputProps: { min: 0 } }}
             onChange={(e) => setTotalDeliveryTime(e.target.value)}
+            error={totalDeliveryTime < 1 && check}
+            helperText={totalDeliveryTime < 1 && check && "Tối thiểu là 1 ngày"}
             required
           />
           <TextField
@@ -94,6 +119,15 @@ export default function SellerCreateOffer() {
             type="number"
             InputProps={{ inputProps: { min: 0 } }}
             onChange={(e) => setOfferPrice(e.target.value)}
+            error={
+              (offerPrice < 1 || offerPrice.length > 10 || offerPrice == "") &&
+              check
+            }
+            helperText={
+              (offerPrice < 1 || offerPrice.length > 10 || offerPrice == "") &&
+              check &&
+              "Tối thiểu là 1$ , tối đa 10 chữ số"
+            }
             required
           />
         </div>
@@ -111,6 +145,12 @@ export default function SellerCreateOffer() {
               ),
             }}
             onChange={(e) => setCancleFee(e.target.value)}
+            error={(cancleFee < 0 || cancleFee > 100 || !cancleFee) && check}
+            helperText={
+              (cancleFee < 0 || cancleFee > 100 || !cancleFee) &&
+              check &&
+              "Tối thiểu là 0% , tối đa là 100%"
+            }
           />
         </div>
         <div className="profession_row">
@@ -123,8 +163,8 @@ export default function SellerCreateOffer() {
           >
             Gửi đề nghị
           </Button>
-          {error !== "" && <Alert severity="error">{error}</Alert>}
-          {success !== "" && <Alert severity="success">{success}</Alert>}
+          {/* {error !== "" && <Alert severity="error">{error}</Alert>}
+          {success !== "" && <Alert severity="success">{success}</Alert>} */}
         </div>
       </Container>
       <div className="sections_profile">

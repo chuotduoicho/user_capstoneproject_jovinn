@@ -53,9 +53,15 @@ export default function Overview({
           label="Tiêu đề"
           defaultValue={titleDf}
           onChange={title}
-          error={(titleDf.length > 50 || titleDf.length < 5) && check1}
+          error={
+            !/^[^\s][a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{3,48}[^\s]$/.test(
+              titleDf
+            ) && check1
+          }
           helperText={
-            (titleDf.length > 50 || titleDf.length < 5) &&
+            !/^[^\s][a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{3,48}[^\s]$/.test(
+              titleDf
+            ) &&
             check1 &&
             "Từ 5 đến 50 kí tự"
           }
@@ -73,10 +79,14 @@ export default function Overview({
           rows={5}
           onChange={description}
           error={
-            (descriptionDf.length > 500 || descriptionDf.length < 30) && check1
+            !/^[^\s][a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{48,498}[^\s]$/.test(
+              descriptionDf
+            ) && check1
           }
           helperText={
-            (descriptionDf.length > 500 || descriptionDf.length < 30) &&
+            !/^[^\s][a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{48,498}[^\s]$/.test(
+              descriptionDf
+            ) &&
             check1 &&
             "Từ 30 đến 500 kí tự"
           }

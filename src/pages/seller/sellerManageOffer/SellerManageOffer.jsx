@@ -29,6 +29,7 @@ import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOffersSeller, selectAllOffer } from "../../../redux/requestSlice";
 import Alert from "@material-ui/lab/Alert";
+import { toast, ToastContainer } from "react-toastify";
 function createData(description, subCate, skills, price, cancleFee) {
   return { description, subCate, skills, price, cancleFee };
 }
@@ -270,9 +271,7 @@ export default function SellerManageOffer() {
   const { alert } = state || {};
   const [success, setSuccess] = useState(alert);
   useEffect(() => {
-    setTimeout(() => {
-      setSuccess("");
-    }, 3000);
+    if (alert) toast.success(alert);
   }, []);
   const dispatch = useDispatch();
   useEffect(() => {
@@ -424,7 +423,8 @@ export default function SellerManageOffer() {
           control={<Switch checked={dense} onChange={handleChangeDense} />}
           label="Dày đặc"
         />
-        {success && <Alert severity="success">{success}</Alert>}
+        <ToastContainer limit={5000} position="bottom-right" />
+        {/* {success && <Alert severity="success">{success}</Alert>} */}
       </div>
       <div className="sections_profile">
         <Contact />

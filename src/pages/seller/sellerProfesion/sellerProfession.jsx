@@ -219,11 +219,14 @@ export default function SellerProfession() {
             style={{ width: "75%", marginRight: "20px" }}
             onChange={(e) => setDescriptionBio(e.target.value)}
             error={
-              (descriptionBio.length < 10 || descriptionBio.length > 255) &&
-              checkError
+              !/^[^\s][a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{8,253}[^\s]$/.test(
+                descriptionBio
+              ) && checkError
             }
             helperText={
-              (descriptionBio.length < 10 || descriptionBio.length > 255) &&
+              !/^[^\s][a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{8,253}[^\s]$/.test(
+                descriptionBio
+              ) &&
               checkError &&
               "Từ 10 đến 255 kí tự !"
             }
@@ -235,10 +238,14 @@ export default function SellerProfession() {
             style={{ width: "23%" }}
             onChange={(e) => setBrandName(e.target.value)}
             error={
-              (brandName.length < 3 || brandName.length > 30) && checkError
+              !/^[^\s][a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{1,28}[^\s]$/.test(
+                brandName
+              ) && checkError
             }
             helperText={
-              (brandName.length < 3 || brandName.length > 30) &&
+              !/^[^\s][a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{1,28}[^\s]$/.test(
+                brandName
+              ) &&
               checkError &&
               "Từ 3 đến 30 kí tự !"
             }
@@ -289,10 +296,14 @@ export default function SellerProfession() {
                 name="title"
                 onChange={(e) => handleEduChange(e, index)}
                 error={
-                  (edu.title.length < 5 || edu.title.length > 50) && checkError
+                  !/^[^\s][a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{3,48}[^\s]$/.test(
+                    edu.title
+                  ) && checkError
                 }
                 helperText={
-                  (edu.title.length < 5 || edu.title.length > 50) &&
+                  !/^[^\s][a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{3,48}[^\s]$/.test(
+                    edu.title
+                  ) &&
                   checkError &&
                   "Từ 5 đến 50 kí tự!"
                 }
@@ -306,13 +317,14 @@ export default function SellerProfession() {
                 style={{ width: "22%" }}
                 onChange={(e) => handleEduChange(e, index)}
                 error={
-                  (edu.universityName.length < 3 ||
-                    edu.universityName.length > 50) &&
-                  checkError
+                  !/^[^\s][a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{1,48}[^\s]$/.test(
+                    edu.universityName
+                  ) && checkError
                 }
                 helperText={
-                  (edu.universityName.length < 3 ||
-                    edu.universityName.length > 50) &&
+                  !/^[^\s][a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{1,48}[^\s]$/.test(
+                    edu.universityName
+                  ) &&
                   checkError &&
                   "Từ 3 đến 50 kí tự!"
                 }
@@ -325,10 +337,14 @@ export default function SellerProfession() {
                 style={{ width: "22%" }}
                 onChange={(e) => handleEduChange(e, index)}
                 error={
-                  (edu.major.length < 3 || edu.major.length > 50) && checkError
+                  !/^[^\s][a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{1,48}[^\s]$/.test(
+                    edu.major
+                  ) && checkError
                 }
                 helperText={
-                  (edu.major.length < 3 || edu.major.length > 50) &&
+                  !/^[^\s][a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{1,48}[^\s]$/.test(
+                    edu.major
+                  ) &&
                   checkError &&
                   "Từ 3 đến 50 kí tự!"
                 }

@@ -26,9 +26,8 @@ const Login = () => {
 
     console.log("user name password: ", { username, password });
     if (
-      username.length < 6 ||
+      !/^[^\s][a-zA-Z0-9]{4,28}[^\s]$/.test(username) ||
       password.length < 6 ||
-      username.length > 30 ||
       password.length > 30
     ) {
       setCheck(true);
@@ -60,7 +59,7 @@ const Login = () => {
           variant="outlined"
           label="Tên đăng nhập"
           onChange={(e) => setUsername(e.target.value)}
-          error={(username.length < 6 || username.length > 30) && check}
+          error={!/^[^\s][a-zA-Z0-9]{4,28}[^\s]$/.test(username) && check}
           helperText={
             (username.length < 6 || username.length > 30) &&
             check &&

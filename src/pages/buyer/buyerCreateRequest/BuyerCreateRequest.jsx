@@ -20,6 +20,7 @@ import {
   ListItemAvatar,
   Avatar,
   FormControl,
+  LinearProgress,
 } from "@material-ui/core";
 import { Close, CloudUpload, AddSharp, RemoveSharp } from "@material-ui/icons";
 import Alert from "@material-ui/lab/Alert";
@@ -31,7 +32,11 @@ import Contact from "../../../components/guest/contact/Contact";
 import { selectAllCategories } from "../../../redux/categorySlice";
 import { addRequest, fetchRequestsBuyer } from "../../../redux/requestSlice";
 
-import { selectTopSellers } from "../../../redux/userSlice";
+import {
+  selectCurrentUser,
+  selectTopSellers,
+  uploadFile,
+} from "../../../redux/userSlice";
 import "./buyerCreateRequest.scss";
 
 const useStyles = makeStyles((theme) => ({
@@ -68,6 +73,7 @@ export default function BuyerCreateRequest() {
     milestoneContracts: stages,
     contractCancelFee: cancleFee,
     invitedUsers: inviteUsers,
+    attachFile: file,
   };
   const dispatch = useDispatch();
   const [error, setError] = useState("");
@@ -76,6 +82,28 @@ export default function BuyerCreateRequest() {
   const maxDate = new Date();
   maxDate.setHours(0, 0, 0, 0);
   maxDate.setDate(maxDate.getDate());
+  const [file, setFile] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const currentUser = useSelector(selectCurrentUser);
+  const handleUploadFile = async (e) => {
+    setLoading(true);
+    setFile(e.target.files[0]);
+    console.log(e.target.files[0].name);
+    const formData = new FormData();
+    formData.append("file", e.target.files[0]);
+    formData.append("id", currentUser.id);
+    formData.append("type", "BOX");
+
+    dispatch(uploadFile(formData))
+      .unwrap()
+      .then(() => {
+        setLoading(false);
+        // toast.success("Ảnh 1 tải lên thành công");
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
   // ssssssss
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -314,12 +342,12 @@ export default function BuyerCreateRequest() {
             style={{ width: "62%" }}
             onChange={(e) => setJobTitle(e.target.value)}
             error={
-              !/^[^\s][a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{3,48}[^\s]$/.test(
+              !/^[^\s][a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{3,48}[^\s]$/.test(
                 jobTitle
               ) && check
             }
             helperText={
-              !/^[^\s][a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{3,48}[^\s]$/.test(
+              !/^[^\s][a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{3,48}[^\s]$/.test(
                 jobTitle
               ) &&
               check &&
@@ -337,12 +365,12 @@ export default function BuyerCreateRequest() {
             style={{ width: "62%" }}
             onChange={(e) => setDescription(e.target.value)}
             error={
-              !/^[^\s][a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{28,498}[^\s]$/.test(
+              !/^[^\s][a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{28,498}[^\s]$/.test(
                 description
               ) && check
             }
             helperText={
-              !/^[^\s][a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{28,498}[^\s]$/.test(
+              !/^[^\s][a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{28,498}[^\s]$/.test(
                 description
               ) &&
               check &&
@@ -359,6 +387,7 @@ export default function BuyerCreateRequest() {
               id="request-input-file"
               multiple
               type="file"
+              onChange={handleUploadFile}
               hidden
             />
             <label htmlFor="request-input-file">
@@ -368,9 +397,10 @@ export default function BuyerCreateRequest() {
                 component="span"
                 startIcon={<CloudUpload />}
               >
-                FILE ĐÍNH KÈM
+                {file ? file.name : "FILE ĐÍNH KÈM"}
               </Button>
             </label>{" "}
+            {loading && <LinearProgress />}
           </FormControl>
         </div>
         <div className="profession_row">
@@ -460,12 +490,12 @@ export default function BuyerCreateRequest() {
                 name="description"
                 onChange={(e) => handleStageChange(e, index)}
                 error={
-                  !/^[^\s][a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{28,498}[^\s]$/.test(
+                  !/^[^\s][a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{28,498}[^\s]$/.test(
                     stage.description
                   ) && check
                 }
                 helperText={
-                  !/^[^\s][a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{28,498}[^\s]$/.test(
+                  !/^[^\s][a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{28,498}[^\s]$/.test(
                     stage.description
                   ) &&
                   check &&
