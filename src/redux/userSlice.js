@@ -20,7 +20,6 @@ export const fetchCurrentUser = createAsyncThunk(
   "user/fetchCurrentUser",
   async () => {
     const data = await UserService.getUser();
-    console.log("current user", data);
     return data;
   }
 );

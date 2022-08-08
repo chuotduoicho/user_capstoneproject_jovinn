@@ -5,12 +5,10 @@ const notifications = JSON.parse(localStorage.getItem("notifications"));
 const initialState = notifications
     ? {
         notifications: notifications,
-        unread: {},
         status: "idle"
     }
     : {
         notifications: {},
-        unread: {},
         status: "idle"
     }
 export const fetchNotifications = createAsyncThunk(
