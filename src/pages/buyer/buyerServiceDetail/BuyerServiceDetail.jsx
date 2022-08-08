@@ -64,7 +64,7 @@ export default function ServiceDetail() {
   const [requirement, setRequirement] = useState("");
   const [packageId, setPackageId] = useState("");
   const [pack, setPack] = useState();
-  const [error, setError] = useState("");
+  const [check, setCheck] = useState(false);
   const serviceDetail = useSelector((state) =>
     selectServiceById(state, serviceId)
   );
@@ -96,12 +96,13 @@ export default function ServiceDetail() {
     if (requirement.length >= 30 && requirement.length <= 500) {
       navigate("/buyerHome/payment", { state: { order, pack } });
     } else {
-      setError("Mô tả yêu cầu phải từ 30 đến 500 kí tự");
+      setCheck(true);
     }
   };
 
   const handleClose = () => {
     setOpen(false);
+    setCheck(false);
   };
 
   const packages = [...serviceDetail.packages].sort(
@@ -233,6 +234,15 @@ export default function ServiceDetail() {
                     rows={15}
                     style={{ width: "100%" }}
                     onChange={(e) => setRequirement(e.target.value)}
+                    error={
+                      (requirement.length < 30 || requirement.length > 500) &&
+                      check
+                    }
+                    helperText={
+                      (requirement.length < 30 || requirement.length > 500) &&
+                      check &&
+                      "Mô tả phải từ 30 đến 500 kí tự"
+                    }
                   />
                 </div>
               </DialogContent>
@@ -248,7 +258,6 @@ export default function ServiceDetail() {
                   Hủy
                 </Button>
               </DialogActions>
-              {error !== "" && <Alert severity="error">{error}</Alert>}
             </Dialog>
           </SwipeableViews>
         </div>
