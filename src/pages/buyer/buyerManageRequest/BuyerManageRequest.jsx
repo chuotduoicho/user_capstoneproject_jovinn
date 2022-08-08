@@ -27,6 +27,7 @@ import { useSelector } from "react-redux";
 import { selectAllRequests } from "../../../redux/requestSlice";
 import { selectAllCategories } from "../../../redux/categorySlice";
 import Alert from "@material-ui/lab/Alert";
+import { toast, ToastContainer } from "react-toastify";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -252,11 +253,10 @@ export default function BuyerManageRequest() {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const { state } = useLocation();
   const { alert } = state || {};
-  const [success, setSuccess] = useState(alert);
   useEffect(() => {
-    setTimeout(() => {
-      setSuccess("");
-    }, 3000);
+    if (alert) {
+      toast.success(alert);
+    }
   }, []);
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -389,8 +389,8 @@ export default function BuyerManageRequest() {
           control={<Switch checked={dense} onChange={handleChangeDense} />}
           label="Dày đặc"
         />
-        {success && <Alert severity="success">{success}</Alert>}
       </div>
+      <ToastContainer limit={5000} position="bottom-right" />
       <div className="sections_profile">
         <Contact />
       </div>
