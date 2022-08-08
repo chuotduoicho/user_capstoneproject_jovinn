@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import Contact from "../../../components/guest/contact/Contact";
+import { ToastContainer, toast } from "react-toastify";
 import "./sellerCreateService.scss";
 import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
 import PropTypes from "prop-types";
@@ -19,7 +20,7 @@ import Overview from "../../../components/seller/sellerCreateService/overview/Ov
 import Package from "../../../components/seller/sellerCreateService/package/Package";
 import ProductImg from "../../../components/seller/sellerCreateService/productImg/ProductImg";
 import Confirm from "../../../components/seller/sellerCreateService/confirm/Confirm";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -206,6 +207,13 @@ export default function SellerCreateService() {
   // const packages = [...serviceDetail.packages].sort(
   //   (a, b) => a.price - b.price
   // );
+  const { state } = useLocation();
+  const { mess } = state || {};
+  useEffect(() => {
+    if (mess) {
+      toast.success(mess);
+    }
+  }, []);
   const [title, setTitle] = useState(serviceId ? serviceDetail.title : "");
   const [description, setDescription] = useState(
     serviceId ? serviceDetail.description : ""
@@ -398,10 +406,18 @@ export default function SellerCreateService() {
       const list2 = [...packagesError];
       packages.map((p, index) => {
         console.log(index);
-        if (p.title.length < 5 || p.title.length > 50) {
+        if (
+          !/^[^\s][a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{3,48}[^\s]$/.test(
+            p.title
+          )
+        ) {
           list2[index].title = "Không được để trống";
         }
-        if (p.shortDescription.length < 30 || p.shortDescription.length > 255) {
+        if (
+          !/^[^\s][a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{28,498}[^\s]$/.test(
+            p.shortDescription
+          )
+        ) {
           list2[index].shortDescription = "Không được để trống và hơn 20 kí tự";
         }
         if (p.deliveryTime == "" || p.deliveryTime < 1) {
@@ -439,12 +455,8 @@ export default function SellerCreateService() {
     }
 
     if (activeStep == 2) {
-      if (galley1 == null) {
-        setError("Chưa chọn đủ ảnh!");
-      } else if (galley2 == null) {
-        setError("Chưa chọn đủ ảnh!");
-      } else if (galley3 == null) {
-        setError("Chưa chọn đủ ảnh!");
+      if (galley1 == null && galley2 == null && galley3 == null) {
+        toast.warning("Chọn ít nhất 1 ảnh");
       } else {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
         setError("");
@@ -485,10 +497,12 @@ export default function SellerCreateService() {
       .unwrap()
       .then(() => {
         setSuccess("Tạo dịch vụ thành công!");
+        toast.success("Tạo dịch vụ thành công !");
         dispath(fetchServices());
       })
       .catch(() => {
         setError("Tạo dịch vụ thất bại !");
+        toast.error("Tạo dịch vụ thất bại !");
       });
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
@@ -516,10 +530,12 @@ export default function SellerCreateService() {
       .unwrap()
       .then(() => {
         setSuccess("Tạo dịch vụ thành công!");
+        toast.success("Tạo dịch vụ thành công !");
         dispath(fetchServices());
       })
       .catch(() => {
         setError("Tạo dịch vụ thất bại !");
+        toast.error("Tạo dịch vụ thất bại !");
       });
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
@@ -586,8 +602,8 @@ export default function SellerCreateService() {
             <Button onClick={handleView} className={classes.button}>
               Xem chi tiết dịch vụ
             </Button>
-            {error !== "" && <Alert severity="error">{error}</Alert>}
-            {success !== "" && <Alert severity="success">{success}</Alert>}
+            {/* {error !== "" && <Alert severity="error">{error}</Alert>}
+            {success !== "" && <Alert severity="success">{success}</Alert>} */}
           </div>
         ) : (
           <div>
@@ -650,15 +666,16 @@ export default function SellerCreateService() {
                   {error}
                 </Alert>
               )}
-              {success !== "" && (
+              {/* {success !== "" && (
                 <Alert severity="success" style={{ justifyContent: "center" }}>
                   {success}
                 </Alert>
-              )}
+              )} */}
             </div>
           </div>
         )}
       </div>
+      <ToastContainer position="bottom-right" autoClose={5000} />
       <div className="sections">
         <Contact />
       </div>

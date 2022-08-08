@@ -1,7 +1,8 @@
-import { TextField } from "@material-ui/core";
+import { LinearProgress, TextField } from "@material-ui/core";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import { clearUrl } from "../../../../redux/url";
 import { selectCurrentUser, uploadFile } from "../../../../redux/userSlice";
 
@@ -18,27 +19,38 @@ export default function ProductImg({
   const { url } = useSelector((state) => state.url);
   const currentUser = useSelector(selectCurrentUser);
   const dispatch = useDispatch();
-
+  var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
   console.log(galley1V);
   console.log(galley2V);
   console.log(galley3V);
   const handleUploadFile1 = async (e) => {
+    setLoading1(true);
     setFile1(e.target.files[0]);
+    console.log(e.target.files[0].name);
     const formData = new FormData();
     formData.append("file", e.target.files[0]);
     formData.append("id", currentUser.id);
-    formData.append("type", "AVATAR");
-    dispatch(uploadFile(formData))
-      .unwrap()
-      .then(() => {
-        setCheck1(true);
-        setCheck2(false);
-        setCheck3(false);
-        setCheck4(false);
-      })
-      .catch(() => {});
+    formData.append("type", "BOX");
+    if (!allowedExtensions.exec(e.target.files[0].name)) {
+      toast.error("Phải tải lên file ảnh (.jpg, .jpeg, .png, .gif)");
+    } else {
+      dispatch(uploadFile(formData))
+        .unwrap()
+        .then(() => {
+          setCheck1(true);
+          setCheck2(false);
+          setCheck3(false);
+          setCheck4(false);
+          setLoading1(false);
+          // toast.success("Ảnh 1 tải lên thành công");
+        })
+        .catch(() => {
+          setLoading1(false);
+        });
+    }
   };
   const handleUploadFile2 = async (e) => {
+    setLoading2(true);
     setFile2(e.target.files[0]);
     const formData = new FormData();
     formData.append("file", e.target.files[0]);
@@ -51,10 +63,14 @@ export default function ProductImg({
         setCheck2(true);
         setCheck3(false);
         setCheck4(false);
+        setLoading2(false);
       })
-      .catch(() => {});
+      .catch(() => {
+        setLoading2(false);
+      });
   };
   const handleUploadFile3 = async (e) => {
+    setLoading3(true);
     setFile3(e.target.files[0]);
     const formData = new FormData();
     formData.append("file", e.target.files[0]);
@@ -67,10 +83,14 @@ export default function ProductImg({
         setCheck2(false);
         setCheck3(true);
         setCheck4(false);
+        setLoading3(false);
       })
-      .catch(() => {});
+      .catch(() => {
+        setLoading3(false);
+      });
   };
   const handleUploadFile4 = async (e) => {
+    setLoading4(true);
     setFile4(e.target.files[0]);
     const formData = new FormData();
     formData.append("file", e.target.files[0]);
@@ -83,8 +103,11 @@ export default function ProductImg({
         setCheck2(false);
         setCheck3(false);
         setCheck4(true);
+        setLoading4(false);
       })
-      .catch(() => {});
+      .catch(() => {
+        setLoading4(false);
+      });
   };
 
   useEffect(() => {
@@ -118,6 +141,10 @@ export default function ProductImg({
   const [check2, setCheck2] = useState(false);
   const [check3, setCheck3] = useState(false);
   const [check4, setCheck4] = useState(false);
+  const [loading1, setLoading1] = useState(false);
+  const [loading2, setLoading2] = useState(false);
+  const [loading3, setLoading3] = useState(false);
+  const [loading4, setLoading4] = useState(false);
   return (
     <div>
       <form
@@ -143,16 +170,19 @@ export default function ProductImg({
         <div className="tren" style={{ display: "flex", marginBottom: "50px" }}>
           <div className="formInput" style={{ marginRight: "50px" }}>
             <img
-              src={file1 ? URL.createObjectURL(file1) : galley1}
+              src={file1 ? URL.createObjectURL(file1) : galley1V}
               alt=""
               style={{ width: "100px", height: "80px" }}
             />
+
             <label
               htmlFor="file1"
               style={{ border: "2px solid #e5e0e2", padding: "5px" }}
             >
               Chọn ảnh
             </label>
+            {loading1 && <LinearProgress />}
+
             <input
               type="file"
               id="file1"
@@ -172,6 +202,7 @@ export default function ProductImg({
             >
               Chọn ảnh
             </label>
+            {loading2 && <LinearProgress />}
             <input
               type="file"
               id="file2"
@@ -191,6 +222,7 @@ export default function ProductImg({
             >
               Chọn ảnh
             </label>
+            {loading3 && <LinearProgress />}
             <input
               type="file"
               id="file3"
@@ -215,6 +247,7 @@ export default function ProductImg({
               label="Chọn tài liệu"
               onChange={handleUploadFile4}
             />
+            {loading4 && <LinearProgress />}
           </div>
         </div>
       </form>

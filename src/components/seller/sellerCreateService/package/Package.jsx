@@ -76,13 +76,16 @@ export default function Package({
             name="title"
             onChange={(e) => handlePackageChange(e, 0)}
             error={
-              (packages[0].title.length > 50 || packages[0].title.length < 5) &&
-              check2
+              !/^[^\s][a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{3,48}[^\s]$/.test(
+                packages[0].title
+              ) && check2
             }
             helperText={
-              (packages[0].title.length > 50 || packages[0].title.length < 5) &&
+              !/^[^\s][a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{3,48}[^\s]$/.test(
+                packages[0].title
+              ) &&
               check2 &&
-              "Từ 5 đến 50 kí tự"
+              "Từ 5 đến 50 kí tự không được bắt đầu với khoảng trắng"
             }
             required
           />
@@ -98,15 +101,16 @@ export default function Package({
             name="shortDescription"
             onChange={(e) => handlePackageChange(e, 0)}
             error={
-              (packages[0].shortDescription.length > 500 ||
-                packages[0].shortDescription.length < 30) &&
-              check2
+              !/^[^\s][a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{28,498}[^\s]$/.test(
+                packages[0].shortDescription
+              ) && check2
             }
             helperText={
-              (packages[0].shortDescription.length > 500 ||
-                packages[0].shortDescription.length < 30) &&
+              !/^[^\s][a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{28,498}[^\s]$/.test(
+                packages[0].shortDescription
+              ) &&
               check2 &&
-              "Từ 30 đến 500 kí tự"
+              "Từ 30 đến 500 kí tự không được bắt đầu với khoảng trắng"
             }
             required
           />
@@ -208,11 +212,17 @@ export default function Package({
                 defaultValue={p.title}
                 name="title"
                 onChange={(e) => handlePackageChange(e, index + 1)}
-                error={(p.title.length > 50 || p.title.length < 5) && check2}
+                error={
+                  !/^[^\s][a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{3,48}[^\s]$/.test(
+                    p.title
+                  ) && check2
+                }
                 helperText={
-                  (p.title.length > 50 || p.title.length < 5) &&
+                  !/^[^\s][a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{3,48}[^\s]$/.test(
+                    p.title
+                  ) &&
                   check2 &&
-                  "Từ 5 đến 50 kí tự"
+                  "Từ 5 đến 50 kí tự không được bắt đầu với khoảng trắng"
                 }
                 required
               />
@@ -228,15 +238,16 @@ export default function Package({
                 multiline
                 rows={4}
                 error={
-                  (p.shortDescription.length > 500 ||
-                    p.shortDescription.length < 30) &&
-                  check2
+                  !/^[^\s][a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{28,498}[^\s]$/.test(
+                    p.shortDescription
+                  ) && check2
                 }
                 helperText={
-                  (p.shortDescription.length > 500 ||
-                    p.shortDescription.length < 30) &&
+                  !/^[^\s][a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{28,498}[^\s]$/.test(
+                    p.shortDescription
+                  ) &&
                   check2 &&
-                  "Từ 30 đến 500 kí tự"
+                  "Từ 30 đến 500 kí tự không được bắt đầu với khoảng trắng"
                 }
                 required
               />

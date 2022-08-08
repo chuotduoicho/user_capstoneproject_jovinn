@@ -242,9 +242,7 @@ const useStyles = makeStyles((theme) => ({
 export default function BuyerManageRequest() {
   const listRequest = useSelector(selectAllRequests);
   const listCategories = useSelector(selectAllCategories);
-  const { state } = useLocation();
-  const { alert } = state || {};
-  const [success, setSuccess] = useState(alert);
+
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
@@ -252,6 +250,9 @@ export default function BuyerManageRequest() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const { state } = useLocation();
+  const { alert } = state || {};
+  const [success, setSuccess] = useState(alert);
   useEffect(() => {
     setTimeout(() => {
       setSuccess("");

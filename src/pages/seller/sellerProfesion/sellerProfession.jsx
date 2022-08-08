@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import Contact from "../../../components/guest/contact/Contact";
 import "./sellerProfession.scss";
-
+import { ToastContainer, toast } from "react-toastify";
 import { Button, Container, TextField } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 
 import { useNavigate } from "react-router-dom";
-import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
 import { Add, Delete } from "@material-ui/icons";
 import { fetchCurrentUser, joinSeller } from "../../../redux/userSlice";
 import Alert from "@material-ui/lab/Alert";
@@ -63,12 +62,7 @@ export default function SellerProfession() {
         list2[index].toDate = "";
       }
 
-      if (name == "toDate" && selected > maxDate) {
-        list2[index][name] = "Ngày kết thúc phải trước ngày hiện tại";
-      } else if (
-        name == "toDate" &&
-        selected < new Date(edus[index].fromDate)
-      ) {
+      if (name == "toDate" && selected < new Date(edus[index].fromDate)) {
         list2[index][name] = "Ngày kết thúc phải sau ngày bắt đầu";
       } else if (name == "toDate") {
         list2[index][name] = "";
@@ -135,24 +129,28 @@ export default function SellerProfession() {
     console.log("certificates", certificates);
     const list2 = [...edusError];
     let check = true;
-    if (descriptionBio == "") {
-      // setError("Chưa nhập lời giới thiệu !");
-      check = false;
-    } else if (brandName == "") {
-      // setError("Chưa nhập tên thương hiệu !");
+    if (
+      descriptionBio.length < 10 ||
+      descriptionBio.length > 255 ||
+      brandName.length < 3 ||
+      brandName.length > 30
+    ) {
       check = false;
     } else if (skills.length == 0) {
       setError("Chưa nhập kĩ năng !");
       check = false;
     } else {
       edus.map((item, index) => {
-        if (item.title == "") {
+        if (item.title.length < 5 || item.title.length > 50) {
           // setError("Chưa nhập tiêu đề của học vấn " + parseInt(index + 1));
           check = false;
-        } else if (item.universityName == "") {
+        } else if (
+          item.universityName.length < 3 ||
+          item.universityName.length > 50
+        ) {
           // setError("Chưa nhập tên trường của học vấn " + parseInt(index + 1));
           check = false;
-        } else if (item.major == "") {
+        } else if (item.major.length < 3 || item.major.length > 50) {
           // setError("Chưa nhập tên ngành của học vấn " + parseInt(index + 1));
           check = false;
         } else if (item.fromDate == "") {
@@ -193,10 +191,13 @@ export default function SellerProfession() {
             .then(() => {
               // setSuccessful(true);
               dispatch(fetchCurrentUser());
-              navigate("/sellerHome/createService");
+              navigate("/sellerHome/createService", {
+                state: { mess: "Tạo thông tin nâng cao thành công!" },
+              });
             })
 
             .catch(() => {
+              toast.error("Tạo thông tin nâng cao thất bại");
               setError("Đã đăng kí thông tin nâng cao rồi !");
             });
         }
@@ -217,11 +218,14 @@ export default function SellerProfession() {
             variant="outlined"
             style={{ width: "75%", marginRight: "20px" }}
             onChange={(e) => setDescriptionBio(e.target.value)}
-            error={descriptionBio.length == 0 && checkError}
+            error={
+              (descriptionBio.length < 10 || descriptionBio.length > 255) &&
+              checkError
+            }
             helperText={
-              descriptionBio.length == 0 &&
+              (descriptionBio.length < 10 || descriptionBio.length > 255) &&
               checkError &&
-              "Chưa nhập lời giới thiệu!"
+              "Từ 10 đến 255 kí tự !"
             }
           />
           <TextField
@@ -230,9 +234,13 @@ export default function SellerProfession() {
             variant="outlined"
             style={{ width: "23%" }}
             onChange={(e) => setBrandName(e.target.value)}
-            error={brandName.length == 0 && checkError}
+            error={
+              (brandName.length < 3 || brandName.length > 30) && checkError
+            }
             helperText={
-              brandName.length == 0 && checkError && "Chưa nhập lời giới thiệu!"
+              (brandName.length < 3 || brandName.length > 30) &&
+              checkError &&
+              "Từ 3 đến 30 kí tự !"
             }
           />
         </div>
@@ -277,14 +285,16 @@ export default function SellerProfession() {
                 id="outlined-basic"
                 label="Tiêu đề"
                 variant="outlined"
-                style={{ width: "29%" }}
+                style={{ width: "26%" }}
                 name="title"
                 onChange={(e) => handleEduChange(e, index)}
-                error={edu.title.length == 0 && checkError}
+                error={
+                  (edu.title.length < 5 || edu.title.length > 50) && checkError
+                }
                 helperText={
-                  edu.title.length == 0 &&
+                  (edu.title.length < 5 || edu.title.length > 50) &&
                   checkError &&
-                  "Chưa nhập tiêu đề học vấn!"
+                  "Từ 5 đến 50 kí tự!"
                 }
               />
 
@@ -293,13 +303,18 @@ export default function SellerProfession() {
                 label="Trường"
                 variant="outlined"
                 name="universityName"
-                style={{ width: "25%" }}
+                style={{ width: "22%" }}
                 onChange={(e) => handleEduChange(e, index)}
-                error={edu.universityName.length == 0 && checkError}
+                error={
+                  (edu.universityName.length < 3 ||
+                    edu.universityName.length > 50) &&
+                  checkError
+                }
                 helperText={
-                  edu.universityName.length == 0 &&
+                  (edu.universityName.length < 3 ||
+                    edu.universityName.length > 50) &&
                   checkError &&
-                  "Chưa nhập tên trường học!"
+                  "Từ 3 đến 50 kí tự!"
                 }
               />
               <TextField
@@ -307,13 +322,15 @@ export default function SellerProfession() {
                 label="Ngành"
                 variant="outlined"
                 name="major"
-                style={{ width: "20%" }}
+                style={{ width: "22%" }}
                 onChange={(e) => handleEduChange(e, index)}
-                error={edu.major.length == 0 && checkError}
+                error={
+                  (edu.major.length < 3 || edu.major.length > 50) && checkError
+                }
                 helperText={
-                  edu.major.length == 0 &&
+                  (edu.major.length < 3 || edu.major.length > 50) &&
                   checkError &&
-                  "Chưa nhập tên ngành học!"
+                  "Từ 3 đến 50 kí tự!"
                 }
               />
               <TextField
@@ -321,7 +338,7 @@ export default function SellerProfession() {
                 label="Ngày bắt đầu "
                 variant="outlined"
                 type="date"
-                style={{ width: "10%" }}
+                style={{ width: "12%" }}
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -346,7 +363,7 @@ export default function SellerProfession() {
                 InputLabelProps={{
                   shrink: true,
                 }}
-                style={{ width: "10%" }}
+                style={{ width: "12%" }}
                 name="toDate"
                 onChange={(e) => handleEduChange(e, index)}
                 error={
@@ -418,12 +435,6 @@ export default function SellerProfession() {
                   "Chưa nhập tên chứng chỉ!"
                 }
               />
-              {/* <TextField
-                id="outlined-basic"
-                label="Năm"
-                variant="outlined"
-                style={{ width: "10%" }}
-              /> */}
               <TextField
                 id="outlined-basic"
                 label="Liên kết"
@@ -457,6 +468,7 @@ export default function SellerProfession() {
         {error !== "" && <Alert severity="error">{error}</Alert>}
         {success !== "" && <Alert severity="success">{success}</Alert>}
       </Container>
+      <ToastContainer position="bottom-right" autoClose={5000} />
       <div className="sections_profile">
         <Contact />
       </div>
