@@ -20,6 +20,8 @@ export default function SellerHeader() {
   
   const [open, setOpen] = useState(false);
   const listNotification = useSelector(selectNotifications);
+  const [ notifications, setNotifications] = useState(listNotification.list);
+  const [ unread, setUnread ] = useState(listNotification.unread);
   const anchorRef = useRef(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -68,10 +70,13 @@ export default function SellerHeader() {
   const prevOpen = useRef(open);
 
   useEffect(() => {
-    let eventSource = new EventSource('http://localhost:8080/api/v1/users/recieve-notify');
-    eventSource.onmessage = () => {
-
-    }
+    // let eventSource = new EventSource('http://localhost:8080/api/v1/users/recieve-notify');
+    // eventSource.onmessage = () => {
+    //   dispatch(fetchNotifications());
+    //   const updatedNoti = localStorage.getItem("notifications");
+    //   setNotifications(updatedNoti.list);
+    //   setUnread(updatedNoti.unread);
+    // }
     dispatch(fetchNotifications());
     if (prevOpen.current === true && open === false) {
       anchorRef.current.focus();
@@ -123,7 +128,7 @@ export default function SellerHeader() {
           </div> */}
           <div className="item">
             <NotificationImportantOutlined className="icon" onClick={handleIconClick}/>
-            <div className="counter" >{listNotification.unread}</div>
+            <div className="counter" >{unread}</div>
             <Popover
               id={id}
               open={iconOpen}
@@ -136,9 +141,10 @@ export default function SellerHeader() {
             >
               <List>
                 {
-                  listNotification.list.map((item) => (
-                    <ListItem onClick={handleNotiOnClick}>
+                  notifications.map((item) => (
+                    <ListItem >
                       <ListItemText
+                        // onClick={navigate(item.link)}
                         primary={item.shortContent}
                         secondary={item.createAt}
                       />
