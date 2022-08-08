@@ -10,27 +10,11 @@ import React from "react";
 
 export default function Package({
   packages,
-  checked,
   handleChange,
   handleChange2,
   handlePackageChange,
-  packagesError,
-  // errorPackTitle,
-  // num,
-  // errorPackDescription,
-  // num1,
-  // errorPackDelevery,
-  // num2,
-  // errorPackPrice,
-  // num3,
-  // errorPackContractFee,
-  // num4,
+  check2,
 }) {
-  // console.log(num);
-  // console.log(num1);
-  // console.log(num2);
-  // console.log(num3);
-  console.log(packagesError);
   return (
     <div>
       {packages.length < 3 && (
@@ -91,8 +75,15 @@ export default function Package({
             defaultValue={packages[0].title}
             name="title"
             onChange={(e) => handlePackageChange(e, 0)}
-            error={packagesError[0].title.length > 0}
-            helperText={packagesError[0].title}
+            error={
+              (packages[0].title.length > 50 || packages[0].title.length < 5) &&
+              check2
+            }
+            helperText={
+              (packages[0].title.length > 50 || packages[0].title.length < 5) &&
+              check2 &&
+              "Từ 5 đến 50 kí tự"
+            }
             required
           />
           <TextField
@@ -106,8 +97,17 @@ export default function Package({
             defaultValue={packages[0].shortDescription}
             name="shortDescription"
             onChange={(e) => handlePackageChange(e, 0)}
-            error={packagesError[0].shortDescription.length > 0}
-            helperText={packagesError[0].shortDescription}
+            error={
+              (packages[0].shortDescription.length > 500 ||
+                packages[0].shortDescription.length < 30) &&
+              check2
+            }
+            helperText={
+              (packages[0].shortDescription.length > 500 ||
+                packages[0].shortDescription.length < 30) &&
+              check2 &&
+              "Từ 30 đến 500 kí tự"
+            }
             required
           />
 
@@ -128,8 +128,10 @@ export default function Package({
               InputProps={{ inputProps: { min: 0 } }}
               name="deliveryTime"
               onChange={(e) => handlePackageChange(e, 0)}
-              error={packagesError[0].deliveryTime.length > 0}
-              helperText={packagesError[0].deliveryTime}
+              error={packages[0].deliveryTime < 1 && check2}
+              helperText={
+                packages[0].deliveryTime < 1 && check2 && "Tối thiểu là 1 ngày"
+              }
               required
             />
             <TextField
@@ -140,8 +142,8 @@ export default function Package({
               InputProps={{ inputProps: { min: 0 } }}
               name="price"
               onChange={(e) => handlePackageChange(e, 0)}
-              error={packagesError[0].price.length > 0}
-              helperText={packagesError[0].price}
+              error={packages[0].price < 1 && check2}
+              helperText={packages[0].price < 1 && check2 && "Tối thiểu là 1$"}
               required
             />
           </div>
@@ -159,22 +161,22 @@ export default function Package({
             defaultValue={packages[0].contractCancelFee}
             name="contractCancelFee"
             onChange={(e) => handlePackageChange(e, 0)}
-            error={packagesError[0].contractCancelFee.length > 0}
-            helperText={packagesError[0].contractCancelFee}
+            error={
+              (packages[0].contractCancelFee < 0 ||
+                packages[0].contractCancelFee > 100 ||
+                packages[0].contractCancelFee.length == 0) &&
+              check2
+            }
+            helperText={
+              (packages[0].contractCancelFee < 0 ||
+                packages[0].contractCancelFee > 100 ||
+                packages[0].contractCancelFee.length == 0) &&
+              check2 &&
+              "Tối thiểu là 0%,tối đa là 100%"
+            }
             required
           />
         </form>{" "}
-        {/* <div> */}
-        {/* <FormControlLabel
-          control={<Switch checked={checked} onChange={handleChange} />}
-          label="Thêm các gói nâng cao"
-        /> */}
-        {/* <Grow in={true}>
-          <div
-            style={{
-              display: "flex",
-            }}
-          > */}
         {packages.slice(1).map((p, index) => {
           return (
             <form
@@ -206,8 +208,12 @@ export default function Package({
                 defaultValue={p.title}
                 name="title"
                 onChange={(e) => handlePackageChange(e, index + 1)}
-                error={packagesError[index + 1].title.length > 0}
-                helperText={packagesError[index + 1].title}
+                error={(p.title.length > 50 || p.title.length < 5) && check2}
+                helperText={
+                  (p.title.length > 50 || p.title.length < 5) &&
+                  check2 &&
+                  "Từ 5 đến 50 kí tự"
+                }
                 required
               />
               <TextField
@@ -221,8 +227,17 @@ export default function Package({
                 defaultValue={p.shortDescription}
                 multiline
                 rows={4}
-                error={packagesError[index + 1].shortDescription.length > 0}
-                helperText={packagesError[index + 1].shortDescription}
+                error={
+                  (p.shortDescription.length > 500 ||
+                    p.shortDescription.length < 30) &&
+                  check2
+                }
+                helperText={
+                  (p.shortDescription.length > 500 ||
+                    p.shortDescription.length < 30) &&
+                  check2 &&
+                  "Từ 30 đến 500 kí tự"
+                }
                 required
               />
 
@@ -243,8 +258,8 @@ export default function Package({
                   InputProps={{ inputProps: { min: 0 } }}
                   name="deliveryTime"
                   onChange={(e) => handlePackageChange(e, index + 1)}
-                  error={packagesError[index + 1].deliveryTime.length > 0}
-                  helperText={packagesError[index + 1].deliveryTime}
+                  error={p.deliveryTime < 1 && check2}
+                  helperText={p.deliveryTime < 1 && check2 && "Tối thiểu là 1"}
                   required
                 />
                 <TextField
@@ -255,8 +270,8 @@ export default function Package({
                   InputProps={{ inputProps: { min: 0 } }}
                   name="price"
                   onChange={(e) => handlePackageChange(e, index + 1)}
-                  error={packagesError[index + 1].price.length > 0}
-                  helperText={packagesError[index + 1].price}
+                  error={p.price < 1 && check2}
+                  helperText={p.price < 1 && check2 && "Tối thiểu là 1$"}
                   required
                 />
               </div>
@@ -276,8 +291,19 @@ export default function Package({
                 defaultValue={p.contractCancelFee}
                 name="contractCancelFee"
                 onChange={(e) => handlePackageChange(e, index + 1)}
-                error={packagesError[index + 1].contractCancelFee.length > 0}
-                helperText={packagesError[index + 1].contractCancelFee}
+                error={
+                  (p.contractCancelFee < 0 ||
+                    p.contractCancelFee > 100 ||
+                    p.contractCancelFee.length == 0) &&
+                  check2
+                }
+                helperText={
+                  (p.contractCancelFee < 0 ||
+                    p.contractCancelFee > 100 ||
+                    p.contractCancelFee.length == 0) &&
+                  check2 &&
+                  "Tối thiểu là 0%,tối đa là 100%"
+                }
                 required
               />
             </form>

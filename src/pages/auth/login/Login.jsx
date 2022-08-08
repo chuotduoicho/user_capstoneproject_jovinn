@@ -12,6 +12,7 @@ const Login = () => {
   const [successful, setSuccessful] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [check, setCheck] = useState(false);
   const { message } = useSelector((state) => state.message);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -24,18 +25,27 @@ const Login = () => {
     e.preventDefault();
 
     console.log("user name password: ", { username, password });
-    dispatch(login({ username, password }))
-      .unwrap()
-      .then(() => {
-        setSuccessful(true);
-        dispatch(fetchCurrentUser());
-      })
-      .then(() => {
-        navigate("/buyerhome");
-      })
-      .catch(() => {
-        setSuccessful(false);
-      });
+    if (
+      username.length < 6 ||
+      password.length < 6 ||
+      username.length > 30 ||
+      password.length > 30
+    ) {
+      setCheck(true);
+    } else {
+      dispatch(login({ username, password }))
+        .unwrap()
+        .then(() => {
+          setSuccessful(true);
+          dispatch(fetchCurrentUser());
+        })
+        .then(() => {
+          navigate("/buyerhome");
+        })
+        .catch(() => {
+          setSuccessful(false);
+        });
+    }
   };
   return (
     <div className="login">
@@ -50,6 +60,12 @@ const Login = () => {
           variant="outlined"
           label="Tên đăng nhập"
           onChange={(e) => setUsername(e.target.value)}
+          error={(username.length < 6 || username.length > 30) && check}
+          helperText={
+            (username.length < 6 || username.length > 30) &&
+            check &&
+            "Từ 6 đến 30 kí tự"
+          }
           required
         />
         <TextField
@@ -58,6 +74,12 @@ const Login = () => {
           type="password"
           label="Mật khẩu"
           onChange={(e) => setPassword(e.target.value)}
+          error={(password.length < 6 || password.length > 30) && check}
+          helperText={
+            (password.length < 6 || password.length > 30) &&
+            check &&
+            "Từ 6 đến 30 kí tự"
+          }
           required
         />
 

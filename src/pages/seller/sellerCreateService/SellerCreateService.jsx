@@ -215,9 +215,9 @@ export default function SellerCreateService() {
   );
   const listCategory = useSelector(selectAllCategories);
   const [category, setCategory] = useState(listCategory[0]);
-  const [errorTitle, setErrorTitle] = React.useState("");
-  const [errorDescription, setErrorDescription] = React.useState("");
-  const [errorSubcate, setErrorSubcate] = React.useState("");
+  const [check1, setCheck1] = useState(false);
+  const [check2, setCheck2] = useState(false);
+  const [check3, setCheck3] = useState(false);
   const handleChangeCategory = (e) => {
     setCategory(e.target.value);
   };
@@ -230,26 +230,6 @@ export default function SellerCreateService() {
   const handleChangeSubcateId = (e) => {
     setSubCateId(e.target.value);
   };
-  // useEffect(() => {
-  //   if (title.length == 0) {
-  //     setErrorTitle("Chưa nhập tiêu đề!");
-  //   }
-  // }, [title]);
-  useEffect(() => {
-    if (title.length > 0 && errorTitle) {
-      setErrorTitle("");
-    }
-  }, [title, errorTitle]);
-  useEffect(() => {
-    if (description.length > 0 && errorDescription) {
-      setErrorDescription("");
-    }
-  }, [description, errorDescription]);
-  useEffect(() => {
-    if (subCateId.length > 0 && errorSubcate) {
-      setErrorSubcate("");
-    }
-  }, [subCateId, errorSubcate]);
   const [packages, setPackages] = useState(
     serviceId
       ? serviceDetail.packages
@@ -310,14 +290,9 @@ export default function SellerCreateService() {
     const list2 = [...packagesError];
     // console.log(list);
     list[index][name] = value;
-    if (value != "") {
-      if (
-        name != "shortDescription" ||
-        (name == "shortDescription" && value.length > 20)
-      ) {
-        list2[index][name] = "";
-      }
-    }
+
+    list2[index][name] = "";
+
     // console.log(list);
     setPackages(list);
     setPackagesError(list2);
@@ -361,9 +336,7 @@ export default function SellerCreateService() {
             listCategory={listCategory}
             category={category}
             setCategory={handleChangeCategory}
-            errorTitle={errorTitle}
-            errorDescription={errorDescription}
-            errorSubcate={errorSubcate}
+            check1={check1}
           />
         );
       case 1:
@@ -375,6 +348,7 @@ export default function SellerCreateService() {
             handleChange2={handleChange2}
             handlePackageChange={handlePackageChange}
             packagesError={packagesError}
+            check2={check2}
           />
         );
 
@@ -406,49 +380,45 @@ export default function SellerCreateService() {
   const handleNext = () => {
     setError("");
     if (activeStep == 0) {
-      if (title == "") {
-        setErrorTitle("Tiêu đề không được trống!");
-      }
-      if (description == "") {
-        setErrorDescription("Mô tả không được trống!");
-      }
-      if (subCateId == "") {
-        setErrorSubcate("Danh mục không được trống!");
-      }
-      if (title != "" && description != "" && subCateId != "") {
+      if (
+        title.length < 5 ||
+        title.length > 50 ||
+        description.length < 30 ||
+        description.length > 500 ||
+        subCateId == ""
+      ) {
+        setCheck1(true);
+      } else {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        setError("");
       }
     }
 
     if (activeStep == 1) {
+      setCheck2(true);
       const list2 = [...packagesError];
-      let temp = packages[0].price;
       packages.map((p, index) => {
         console.log(index);
-        if (p.title == "") {
+        if (p.title.length < 5 || p.title.length > 50) {
           list2[index].title = "Không được để trống";
         }
-        if (
-          p.shortDescription == "" ||
-          p.shortDescription.length < 20 ||
-          p.shortDescription.length > 500
-        ) {
+        if (p.shortDescription.length < 30 || p.shortDescription.length > 255) {
           list2[index].shortDescription = "Không được để trống và hơn 20 kí tự";
         }
-        if (p.deliveryTime == "") {
+        if (p.deliveryTime == "" || p.deliveryTime < 1) {
           list2[index].deliveryTime = "Không được để trống";
         }
         if (p.price == "") {
           list2[index].price = "Không được để trống";
         }
-        if (p.contractCancelFee == "") {
+        if (
+          p.contractCancelFee == "" ||
+          p.contractCancelFee < 0 ||
+          p.contractCancelFee > 100
+        ) {
           list2[index].contractCancelFee = "Không được để trống";
         }
-        if (index > 0 && p.price <= temp) {
-          list2[index].price = "Giá phải cao hơn giá gói trước";
-        } else {
-          temp = p.price;
+        if (p.price < 1) {
+          list2[index].price = "Giá tối thiểu là 1$";
         }
       });
       setPackagesError(list2);

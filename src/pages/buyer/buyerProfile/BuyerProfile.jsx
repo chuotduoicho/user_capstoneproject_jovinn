@@ -59,8 +59,8 @@ export default function BuyerProfile() {
   const { message } = useSelector((state) => state.message);
   const { url } = useSelector((state) => state.url);
   const [error, setError] = useState("");
-  const [isChange, setIsChange] = useState(true);
-
+  const [check1, setCheck1] = useState(false);
+  const [check2, setCheck2] = useState(false);
   const dispatch = useDispatch();
   const location = useLocation();
   useEffect(() => {
@@ -78,7 +78,6 @@ export default function BuyerProfile() {
       .unwrap()
       .then(() => {
         setSuccessful(true);
-        setIsChange(false);
       })
       .catch(() => {
         setSuccessful(false);
@@ -88,46 +87,73 @@ export default function BuyerProfile() {
     const id = currentUser.id;
     setSuccessful(false);
     console.log(avatar);
-    setError("");
-    dispatch(
-      updateUserProfile({
-        id,
-        firstName,
-        lastName,
-        gender,
-        birthDate,
-        phone,
-        address,
-        city,
-        avatar,
-      })
-    )
-      .unwrap()
-      .then(() => {
-        setSuccessful(true);
-        toast.success(message ? message : "Cập nhật thông tin thành công!");
-        setIsChange(true);
-      })
-      .catch(() => {
-        setSuccessful(false);
-        toast.error(message ? message : "Cập nhật thông tin thất bại!");
-      });
+
+    if (
+      firstName.length < 2 ||
+      lastName.length < 2 ||
+      firstName.length > 30 ||
+      lastName.length > 30 ||
+      !gender ||
+      !birthDate ||
+      !/((09|03|07|08|05)+([0-9]{8})\b)/.test(phone)
+    ) {
+      setCheck1(true);
+    } else {
+      dispatch(
+        updateUserProfile({
+          id,
+          firstName,
+          lastName,
+          gender,
+          birthDate,
+          phone,
+          address,
+          city,
+          avatar,
+        })
+      )
+        .unwrap()
+        .then(() => {
+          setSuccessful(true);
+          setCheck1(false);
+          toast.success(message ? message : "Cập nhật thông tin thành công!");
+        })
+        .catch(() => {
+          setSuccessful(false);
+          toast.error(message ? message : "Cập nhật thông tin thất bại!");
+        });
+    }
   };
   const handleChangePassword = () => {
     dispatch(clearMessage());
     setSuccessful(false);
-    dispatch(changePassword({ oldPassword, newPassword, confirmPassword }))
-      .unwrap()
-      .then(() => {
-        setOpen(false);
-        setSuccessful(true);
-        toast.success(message ? message : "Đổi mật khẩu thành công!");
-      })
-      .catch(() => {
-        setSuccessful(false);
-        setOpen(false);
-        toast.error(message ? message : "Dổi mật khẩu thất bại!");
-      });
+
+    if (
+      !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,30}$/.test(
+        oldPassword
+      ) ||
+      !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,30}$/.test(
+        newPassword
+      ) ||
+      confirmPassword != newPassword
+    ) {
+      setCheck2(true);
+    } else {
+      dispatch(changePassword({ oldPassword, newPassword, confirmPassword }))
+        .unwrap()
+        .then(() => {
+          setOpen(false);
+          setSuccessful(true);
+          setCheck2(false);
+          toast.success(message ? message : "Đổi mật khẩu thành công!");
+        })
+        .catch(() => {
+          setSuccessful(false);
+          setOpen(false);
+          setCheck2(false);
+          toast.error(message ? message : "Dổi mật khẩu thất bại!");
+        });
+    }
   };
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
@@ -200,11 +226,13 @@ export default function BuyerProfile() {
                 }}
                 onChange={(e) => {
                   setFirstName(e.target.value);
-                  setIsChange(false);
                 }}
-                error={firstName.length < 2 || firstName.length > 30}
+                error={
+                  (firstName.length < 2 || firstName.length > 30) && check1
+                }
                 helperText={
                   (firstName.length < 2 || firstName.length > 30) &&
+                  check1 &&
                   "Từ 2 đến 30 kí tự"
                 }
               />
@@ -220,11 +248,11 @@ export default function BuyerProfile() {
                 }}
                 onChange={(e) => {
                   setLastName(e.target.value);
-                  setIsChange(false);
                 }}
-                error={lastName.length < 2 || lastName.length > 30}
+                error={(lastName.length < 2 || lastName.length > 30) && check1}
                 helperText={
                   (lastName.length < 2 || lastName.length > 30) &&
+                  check1 &&
                   "Từ 2 đến 30 kí tự"
                 }
               />
@@ -232,7 +260,7 @@ export default function BuyerProfile() {
                 component="fieldset"
                 className="form_right_row_input"
               >
-                <FormLabel component="legend" error={gender == null}>
+                <FormLabel component="legend" error={gender == null && check1}>
                   Giới tính
                 </FormLabel>
                 <RadioGroup
@@ -242,7 +270,6 @@ export default function BuyerProfile() {
                   className="form_right_row_input_radio"
                   onChange={(e) => {
                     setGender(e.target.value);
-                    setIsChange(false);
                   }}
                 >
                   <FormControlLabel
@@ -255,12 +282,6 @@ export default function BuyerProfile() {
                     control={<Radio />}
                     label="Nữ"
                   />
-
-                  {/* <FormControlLabel
-                    value="other"
-                    control={<Radio />}
-                    label="Other"
-                  /> */}
                 </RadioGroup>
               </FormControl>
             </div>
@@ -288,12 +309,12 @@ export default function BuyerProfile() {
                 defaultValue={currentUser.phoneNumber}
                 onChange={(e) => {
                   setPhone(e.target.value);
-                  setIsChange(false);
                 }}
                 type="number"
-                error={!/((09|03|07|08|05)+([0-9]{8})\b)/.test(phone)}
+                error={!/((09|03|07|08|05)+([0-9]{8})\b)/.test(phone) && check1}
                 helperText={
                   !/((09|03|07|08|05)+([0-9]{8})\b)/.test(phone) &&
+                  check1 &&
                   "10 số và bắt đầu bằng 09,03,07,08,05!"
                 }
               />
@@ -309,10 +330,9 @@ export default function BuyerProfile() {
                 defaultValue={
                   currentUser.birthDate ? format(currentUser.birthDate) : ""
                 }
-                error={!currentUser.birthDate}
+                error={!currentUser.birthDate && check1}
                 onChange={(e) => {
                   setBirthDate(e.target.value);
-                  setIsChange(false);
                 }}
               />
             </div>
@@ -329,14 +349,13 @@ export default function BuyerProfile() {
                 defaultValue={currentUser.country}
                 onChange={(e) => {
                   setAddress(e.target.value);
-                  setIsChange(false);
                   setDataCity(
                     dataCountry.find((val) => {
                       return val.country == e.target.value;
                     }).cities
                   );
                 }}
-                error={address == null}
+                error={!address && check1}
               >
                 {dataCountry.map((data) => (
                   <MenuItem key={data.country} value={data.country}>
@@ -356,9 +375,8 @@ export default function BuyerProfile() {
                 defaultValue={currentUser.city}
                 onChange={(e) => {
                   setCity(e.target.value);
-                  setIsChange(false);
                 }}
-                error={city == null}
+                error={city == null && check1}
               >
                 {dataCity.map((data) => (
                   <MenuItem key={data} value={data}>
@@ -366,20 +384,6 @@ export default function BuyerProfile() {
                   </MenuItem>
                 ))}
               </TextField>
-              {/* <TextField
-                id="outlined-basic"
-                label="Số nhà/Thôn/Quận huyện"
-                variant="outlined"
-                className="form_right_row_input"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                defaultValue={currentUser.city}
-                onChange={(e) => {
-                  setCity(e.target.value);
-                  setIsChange(false);
-                }}
-              /> */}
             </div>
             <div className="form_right_row">
               <Button
@@ -387,7 +391,6 @@ export default function BuyerProfile() {
                 color="primary"
                 className="form_right_row_btn"
                 onClick={handleUpdate}
-                disabled={isChange}
               >
                 Cập nhật
               </Button>
@@ -421,12 +424,14 @@ export default function BuyerProfile() {
                 error={
                   !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,30}$/.test(
                     oldPassword
-                  )
+                  ) && check2
                 }
                 helperText={
                   !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,30}$/.test(
                     oldPassword
-                  ) && "Từ 6 đến 30 kí tự, ít nhất 1 kí tự viết hoa và số"
+                  ) &&
+                  check2 &&
+                  "Từ 6 đến 30 kí tự, ít nhất 1 kí tự viết hoa và số"
                 }
                 required
               />
@@ -440,12 +445,14 @@ export default function BuyerProfile() {
                 error={
                   !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,30}$/.test(
                     newPassword
-                  )
+                  ) && check2
                 }
                 helperText={
                   !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,30}$/.test(
                     newPassword
-                  ) && "Từ 6 đến 30 kí tự, ít nhất 1 kí tự viết hoa và số"
+                  ) &&
+                  check2 &&
+                  "Từ 6 đến 30 kí tự, ít nhất 1 kí tự viết hoa và số"
                 }
                 required
               />
@@ -456,9 +463,10 @@ export default function BuyerProfile() {
                 label="Xác nhận mật khẩu"
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 style={{ marginBottom: "15px" }}
-                error={confirmPassword != newPassword}
+                error={confirmPassword != newPassword && check2}
                 helperText={
                   confirmPassword != newPassword &&
+                  check2 &&
                   "Mật khẩu xác nhận phải giống với mật khẩu"
                 }
                 required
@@ -469,19 +477,16 @@ export default function BuyerProfile() {
                 color="primary"
                 variant="contained"
                 onClick={handleChangePassword}
-                disabled={
-                  !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,30}$/.test(
-                    oldPassword
-                  ) ||
-                  !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,30}$/.test(
-                    newPassword
-                  ) ||
-                  confirmPassword != newPassword
-                }
               >
                 Xác nhận
               </Button>
-              <Button onClick={() => setOpen(false)} color="primary">
+              <Button
+                onClick={() => {
+                  setOpen(false);
+                  setCheck2(false);
+                }}
+                color="primary"
+              >
                 Hủy
               </Button>
             </DialogActions>

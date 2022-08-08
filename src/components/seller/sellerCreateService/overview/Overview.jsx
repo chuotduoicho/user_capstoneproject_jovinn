@@ -17,9 +17,7 @@ export default function Overview({
   listCategory,
   category,
   setCategory,
-  errorTitle,
-  errorDescription,
-  errorSubcate,
+  check1,
 }) {
   console.log("title", titleDf);
   console.log("description", descriptionDf);
@@ -55,8 +53,12 @@ export default function Overview({
           label="Tiêu đề"
           defaultValue={titleDf}
           onChange={title}
-          error={errorTitle.length > 0}
-          helperText={errorTitle}
+          error={(titleDf.length > 50 || titleDf.length < 5) && check1}
+          helperText={
+            (titleDf.length > 50 || titleDf.length < 5) &&
+            check1 &&
+            "Từ 5 đến 50 kí tự"
+          }
           required
         />
         <TextField
@@ -70,8 +72,14 @@ export default function Overview({
           multiline
           rows={5}
           onChange={description}
-          error={errorDescription.length > 0}
-          helperText={errorDescription}
+          error={
+            (descriptionDf.length > 500 || descriptionDf.length < 30) && check1
+          }
+          helperText={
+            (descriptionDf.length > 500 || descriptionDf.length < 30) &&
+            check1 &&
+            "Từ 30 đến 500 kí tự"
+          }
         />
         <FormControl
           fullWidth
@@ -105,8 +113,8 @@ export default function Overview({
             defaultValue={subCateIdDf}
             label="Danh mục con"
             onChange={subCateId}
-            error={errorSubcate.length > 0}
-            helperText={errorSubcate}
+            error={subCateIdDf == "" && check1}
+            helperText={subCateIdDf == "" && check1 && "Không được để trống"}
           >
             {category.subCategories.map((item) => (
               <MenuItem value={item.id}>{item.name}</MenuItem>

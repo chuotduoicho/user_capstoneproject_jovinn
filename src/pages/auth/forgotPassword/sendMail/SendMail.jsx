@@ -10,7 +10,7 @@ const SendMail = () => {
   const [successful, setSuccessful] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
+  const [check, setCheck] = useState(false);
   const { message } = useSelector((state) => state.message);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -20,11 +20,12 @@ const SendMail = () => {
   }, [dispatch]);
 
   const handleSendMail = (e) => {
-    setIsFetching(true);
+    setCheck(true);
+
     e.preventDefault();
     if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
-      // setError("Email không hợp lệ!");
     } else {
+      setIsFetching(true);
       dispatch(sendMail(email))
         .unwrap()
         .then(() => {
@@ -52,9 +53,10 @@ const SendMail = () => {
           variant="outlined"
           label="Địa chỉ Email"
           onChange={(e) => setEmail(e.target.value)}
-          error={!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)}
+          error={!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email) && check}
           helperText={
             !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email) &&
+            check &&
             "Email phải theo mẫu 'mysite123@gmail.com'"
           }
           required
@@ -80,14 +82,6 @@ const SendMail = () => {
             role="alert"
           >
             Liên kết đổi mật khẩu đã được gửi vào email của bạn!
-          </div>
-        )}
-        {error != "" && (
-          <div
-            className={successful ? "login_success" : "login_error"}
-            role="alert"
-          >
-            {error}
           </div>
         )}
         {isFetching && <CircularProgress style={{ margin: "0 auto" }} />}

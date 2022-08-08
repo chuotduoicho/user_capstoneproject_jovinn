@@ -20,7 +20,7 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  // const [error, setError] = useState("");
+  const [check, setCheck] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
     dispatch(clearMessage());
@@ -28,29 +28,27 @@ const Register = () => {
   }, [dispatch]);
 
   const handleRegister = (e) => {
-    // setError("");
+    setCheck(true);
     dispatch(clearMessage());
     e.preventDefault();
     setSuccessful(false);
     console.log({ username, password, email, firstName, lastName });
     if (
       !/^[a-zA-Z0-9]{6,30}$/.test(username) ||
-      firstName.length < 2 ||
-      firstName.length > 30 ||
-      lastName.length < 2 ||
-      lastName.length > 30
+      !/^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{2,30}$/.test(
+        lastName
+      ) ||
+      !/^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{2,30}$/.test(
+        firstName
+      )
     ) {
-      // setError("Tên đăng nhập không hợp lệ!");
     } else if (
       !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,30}$/.test(
         password
       )
     ) {
-      // setError("Mật khẩu phải có ít nhất 6 kí tự!");
     } else if (confirmPassword != password) {
-      // setError("Xác nhận mật khẩu phải trùng với mật khẩu!");
     } else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
-      // setError("Email không hợp lệ!");
     } else {
       dispatch(register({ username, password, email, firstName, lastName }))
         .unwrap()
@@ -74,9 +72,10 @@ const Register = () => {
           variant="outlined"
           label="Tên đăng nhập"
           onChange={(e) => setUsername(e.target.value)}
-          error={!/^[a-zA-Z0-9]{6,30}$/.test(username)}
+          error={!/^[a-zA-Z0-9]{6,30}$/.test(username) && check}
           helperText={
             !/^[a-zA-Z0-9]{6,30}$/.test(username) &&
+            check &&
             "Từ 6 đến 30 kí tự và không gồm kí tự đặc biệt"
           }
           required
@@ -90,12 +89,14 @@ const Register = () => {
           error={
             !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,30}$/.test(
               password
-            )
+            ) && check
           }
           helperText={
             !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,30}$/.test(
               password
-            ) && "Từ 6 đến 30 kí tự, ít nhất 1 kí tự viết hoa và số"
+            ) &&
+            check &&
+            "Từ 6 đến 30 kí tự, ít nhất 1 kí tự viết hoa và số"
           }
           required
         />
@@ -105,9 +106,10 @@ const Register = () => {
           variant="outlined"
           label="Xác nhận mật khẩu"
           onChange={(e) => setConfirmPassword(e.target.value)}
-          error={confirmPassword != password}
+          error={confirmPassword != password && check}
           helperText={
             confirmPassword != password &&
+            check &&
             "Mật khẩu xác nhận phải giống với mật khẩu"
           }
           required
@@ -119,9 +121,16 @@ const Register = () => {
             label="Họ"
             onChange={(e) => setFirstName(e.target.value)}
             style={{ width: "48%", marginRight: "4%" }}
-            error={firstName.length < 2 || firstName.length > 30}
+            error={
+              !/^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{2,30}$/.test(
+                firstName
+              ) && check
+            }
             helperText={
-              (firstName.length < 2 || firstName.length > 30) &&
+              !/^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{2,30}$/.test(
+                firstName
+              ) &&
+              check &&
               "Từ 2 đến 30 kí tự"
             }
             required
@@ -132,9 +141,16 @@ const Register = () => {
             label="Tên"
             onChange={(e) => setLastName(e.target.value)}
             style={{ width: "48%" }}
-            error={lastName.length < 2 || lastName.length > 30}
+            error={
+              !/^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{2,30}$/.test(
+                lastName
+              ) && check
+            }
             helperText={
-              (lastName.length < 2 || lastName.length > 30) &&
+              !/^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{2,30}$/.test(
+                lastName
+              ) &&
+              check &&
               "Từ 2 đến 30 kí tự"
             }
             required
@@ -146,9 +162,10 @@ const Register = () => {
           variant="outlined"
           label="Email"
           onChange={(e) => setEmail(e.target.value)}
-          error={!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)}
+          error={!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email) && check}
           helperText={
             !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email) &&
+            check &&
             "Email phải theo mẫu 'mysite123@gmail.com'"
           }
           required

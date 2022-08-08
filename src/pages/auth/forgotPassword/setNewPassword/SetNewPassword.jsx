@@ -11,7 +11,7 @@ const SetNewPassword = () => {
   const [successful, setSuccessful] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
+  const [check, setCheck] = useState("");
   const { message } = useSelector((state) => state.message);
   const { capcha } = useParams();
   const dispatch = useDispatch();
@@ -23,17 +23,16 @@ const SetNewPassword = () => {
 
   const handleSetNewPassword = (e) => {
     e.preventDefault();
+    setCheck(true);
     setSuccessful(false);
-    setError("");
+
     console.log({ capcha, password });
     if (
       !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,30}$/.test(
         password
       )
     ) {
-      setError("Mật khẩu phải có ít nhất 6 kí tự!");
     } else if (confirmPassword != password) {
-      setError("Xác nhận mật khẩu phải trùng với mật khẩu!");
     } else {
       dispatch(resetPassword({ capcha, password }))
         .unwrap()
@@ -62,12 +61,14 @@ const SetNewPassword = () => {
           error={
             !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,30}$/.test(
               password
-            )
+            ) && check
           }
           helperText={
             !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,30}$/.test(
               password
-            ) && "Từ 6 đến 30 kí tự, ít nhất 1 kí tự viết hoa và số"
+            ) &&
+            check &&
+            "Từ 6 đến 30 kí tự, ít nhất 1 kí tự viết hoa và số"
           }
           required
         />
@@ -77,9 +78,10 @@ const SetNewPassword = () => {
           type="password"
           label="Xác nhận mật khẩu"
           onChange={(e) => setConfirmPassword(e.target.value)}
-          error={confirmPassword != password}
+          error={confirmPassword != password && check}
           helperText={
             confirmPassword != password &&
+            check &&
             "Mật khẩu xác nhận phải giống với mật khẩu"
           }
           required

@@ -29,11 +29,11 @@ export default function Topseller() {
           <div className="topseller_container" key={d}>
             <div className="topseller_item">
               <div className="topseller_left">
-                <div className="topseller_leftContainer">
-                  <div
-                    className="topseller_imgContainer"
-                    onClick={() => navigate("/seller/" + d.id)}
-                  >
+                <div
+                  className="topseller_leftContainer"
+                  onClick={() => navigate("/seller/" + d.id)}
+                >
+                  <div className="topseller_imgContainer">
                     <img
                       src={
                         d.user.avatar
