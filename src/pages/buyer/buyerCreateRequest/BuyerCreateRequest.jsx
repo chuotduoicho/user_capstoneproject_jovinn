@@ -72,6 +72,10 @@ export default function BuyerCreateRequest() {
   const dispatch = useDispatch();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [check, setCheck] = useState(false);
+  const maxDate = new Date();
+  maxDate.setHours(0, 0, 0, 0);
+  maxDate.setDate(maxDate.getDate());
   // ssssssss
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -79,48 +83,64 @@ export default function BuyerCreateRequest() {
   const handleOpen = () => {
     setError("");
     let check1 = false;
-    let check2 = true;
     let check3 = true;
-    stages.map((item, index) => {
-      if (item.startDate == "") {
+    setCheck(true);
+    stages.map((stage, index) => {
+      if (
+        new Date(stage.startDate) < maxDate ||
+        stage.startDate > stage.endDate ||
+        !stage.startDate
+      ) {
         check3 = false;
         setError("Chưa nhập ngày bắt đầu của giai đoạn " + parseInt(index + 1));
-      } else if (item.endDate == "") {
+      } else if (
+        new Date(stage.endDate) < maxDate ||
+        stage.startDate > stage.endDate ||
+        !stage.endDate
+      ) {
         check3 = false;
         setError(
           "Chưa nhập ngày kết thúc của giai đoạn " + parseInt(index + 1)
         );
-      } else if (item.description == "") {
+      } else if (
+        !/^[^\s][a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{28,498}[^\s]$/.test(
+          stage.description
+        )
+      ) {
         check3 = false;
         setError(
           "Chưa nhập sản phẩm bàn giao của giai đoạn " + parseInt(index + 1)
         );
-      } else if (item.milestoneFee == 0) {
+      } else if (
+        stage.milestoneFee < 1 ||
+        stage.milestoneFee.length > 10 ||
+        stage.milestoneFee == ""
+      ) {
         check3 = false;
         setError("Chưa nhập chi phí của giai đoạn " + parseInt(index + 1));
       }
     });
-    if (subCateId == "") {
-      setError("Chưa chọn danh mục con!");
-    } else if (jobTitle == "") {
-      setError("Chưa nhập tiêu đề!");
-    } else if (description == "") {
-      setError("Chưa nhập mô tả!");
-    } else if (cancleFee == 0) {
-      setError("Chưa nhập phí hủy hợp đồng!");
+    if (
+      subCateId == "" ||
+      !/^[^\s][a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{3,48}[^\s]$/.test(
+        jobTitle
+      ) ||
+      !/^[^\s][a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{28,498}[^\s]$/.test(
+        description
+      ) ||
+      cancleFee < 0 ||
+      cancleFee > 100 ||
+      !cancleFee ||
+      skills.length == 0
+    ) {
+      setError("Chưa nhập kĩ năng!");
     } else {
       check1 = true;
-
-      skills.map((item, index) => {
-        if (item == "") {
-          check2 = false;
-          setError("Chưa nhập kĩ năng " + parseInt(index + 1));
-        }
-      });
     }
 
-    if (check2 && check1 && check3) {
+    if (check1 && check3) {
       setOpen(true);
+      setCheck(false);
     }
   };
 
@@ -171,12 +191,12 @@ export default function BuyerCreateRequest() {
   const handleStageChange = (e, index) => {
     const { name, value } = e.target;
     const list = [...stages];
-    if (name == "milestoneFee") {
-      list[index][name] = parseFloat(value).toFixed(2);
-    } else {
-      list[index][name] = value;
-    }
-
+    // if (name == "milestoneFee") {
+    //   list[index][name] = parseFloat(value).toFixed(2);
+    // } else {
+    //   list[index][name] = value;
+    // }
+    list[index][name] = value;
     setStages(list);
   };
 
@@ -237,6 +257,8 @@ export default function BuyerCreateRequest() {
             onChange={(e) => setSubCateId(e.target.value)}
             style={{ width: "30%", margin: "10px" }}
             variant="outlined"
+            error={!subCateId && check}
+            helperText={!subCateId && check && "Chưa chọn danh mục con!"}
           >
             {listCategory
               .find((val) => {
@@ -291,6 +313,18 @@ export default function BuyerCreateRequest() {
             variant="outlined"
             style={{ width: "62%" }}
             onChange={(e) => setJobTitle(e.target.value)}
+            error={
+              !/^[^\s][a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{3,48}[^\s]$/.test(
+                jobTitle
+              ) && check
+            }
+            helperText={
+              !/^[^\s][a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{3,48}[^\s]$/.test(
+                jobTitle
+              ) &&
+              check &&
+              "Từ 5 đến 50 kí tự không được bắt đầu với khoảng trắng"
+            }
           />
         </div>
         <div className="profession_row">
@@ -302,6 +336,18 @@ export default function BuyerCreateRequest() {
             rows={6}
             style={{ width: "62%" }}
             onChange={(e) => setDescription(e.target.value)}
+            error={
+              !/^[^\s][a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{28,498}[^\s]$/.test(
+                description
+              ) && check
+            }
+            helperText={
+              !/^[^\s][a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{28,498}[^\s]$/.test(
+                description
+              ) &&
+              check &&
+              "Từ 30 đến 500 kí tự không được bắt đầu với khoảng trắng"
+            }
           />
         </div>
         <div className="profession_row">
@@ -362,6 +408,19 @@ export default function BuyerCreateRequest() {
                 style={{ width: "30%", margin: "10px" }}
                 name="startDate"
                 onChange={(e) => handleStageChange(e, index)}
+                error={
+                  (new Date(stage.startDate) < maxDate ||
+                    stage.startDate > stage.endDate ||
+                    !stage.startDate) &&
+                  check
+                }
+                helperText={
+                  (new Date(stage.startDate) < maxDate ||
+                    stage.startDate > stage.endDate ||
+                    !stage.startDate) &&
+                  check &&
+                  "Phải từ ngày hiện tại trở đi và trước ngày kết thúc"
+                }
               />
               <TextField
                 id="outlined-basic"
@@ -374,6 +433,19 @@ export default function BuyerCreateRequest() {
                 style={{ width: "30%", margin: "10px" }}
                 name="endDate"
                 onChange={(e) => handleStageChange(e, index)}
+                error={
+                  (new Date(stage.endDate) < maxDate ||
+                    stage.startDate > stage.endDate ||
+                    !stage.endDate) &&
+                  check
+                }
+                helperText={
+                  (new Date(stage.endDate) < maxDate ||
+                    stage.startDate > stage.endDate ||
+                    !stage.endDate) &&
+                  check &&
+                  "Phải từ ngày hiện tại trở đi và sau ngày bắt đàu"
+                }
               />
             </div>
             <div className="profession_row">
@@ -387,6 +459,18 @@ export default function BuyerCreateRequest() {
                 style={{ width: "62%" }}
                 name="description"
                 onChange={(e) => handleStageChange(e, index)}
+                error={
+                  !/^[^\s][a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{28,498}[^\s]$/.test(
+                    stage.description
+                  ) && check
+                }
+                helperText={
+                  !/^[^\s][a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{28,498}[^\s]$/.test(
+                    stage.description
+                  ) &&
+                  check &&
+                  "Từ 30 đến 500 kí tự không được bắt đầu với khoảng trắng"
+                }
               />
             </div>
             <div className="profession_row">
@@ -409,6 +493,19 @@ export default function BuyerCreateRequest() {
                 // }}
                 name="milestoneFee"
                 onChange={(e) => handleStageChange(e, index)}
+                error={
+                  (stage.milestoneFee < 1 ||
+                    stage.milestoneFee.length > 10 ||
+                    stage.milestoneFee == "") &&
+                  check
+                }
+                helperText={
+                  (stage.milestoneFee < 1 ||
+                    stage.milestoneFee.length > 10 ||
+                    stage.milestoneFee == "") &&
+                  check &&
+                  "Tối thiểu là 1$ , tối đa 10 chữ số"
+                }
               />
             </div>
           </div>
@@ -444,6 +541,12 @@ export default function BuyerCreateRequest() {
               ),
             }}
             onChange={(e) => setCancleFee(e.target.value)}
+            error={(cancleFee < 0 || cancleFee > 100 || !cancleFee) && check}
+            helperText={
+              (cancleFee < 0 || cancleFee > 100 || !cancleFee) &&
+              check &&
+              "Tối thiểu là 0% , tối đa là 100%"
+            }
           />
         </div>
         <div className="profession_row">
