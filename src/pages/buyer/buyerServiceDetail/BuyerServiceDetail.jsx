@@ -9,7 +9,6 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
-import Alert from "@material-ui/lab/Alert";
 import {
   Button,
   Dialog,
@@ -18,13 +17,15 @@ import {
   DialogTitle,
   TextField,
 } from "@material-ui/core";
-import { Divider, Avatar, Grid, Paper } from "@material-ui/core";
 import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { selectServiceById } from "../../../redux/serviceSlice";
-import { addContract } from "../../../redux/contractSlice";
-import { fetchCurrentUser, selectWallet } from "../../../redux/userSlice";
+import {
+  fetchServiceDetail,
+  selectServiceDetail,
+} from "../../../redux/serviceSlice";
+import { selectWallet } from "../../../redux/userSlice";
+import { useEffect } from "react";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -64,10 +65,12 @@ export default function ServiceDetail() {
   const [requirement, setRequirement] = useState("");
   const [packageId, setPackageId] = useState("");
   const [pack, setPack] = useState();
+  const [listPack, setListPack] = useState([]);
   const [check, setCheck] = useState(false);
-  const serviceDetail = useSelector((state) =>
-    selectServiceById(state, serviceId)
-  );
+  // const serviceDetail = useSelector((state) =>
+  //   selectServiceById(state, serviceId)
+  // );
+  const serviceDetail = useSelector(selectServiceDetail);
   const wallet = useSelector(selectWallet);
   console.log("service", serviceDetail);
   const theme = useTheme();
@@ -77,7 +80,10 @@ export default function ServiceDetail() {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
+  useEffect(() => {
+    dispatch(fetchServiceDetail(serviceId));
+    setListPack(serviceDetail.packages);
+  }, []);
   const handleChangeIndex = (index) => {
     setValue(index);
   };
@@ -105,11 +111,6 @@ export default function ServiceDetail() {
     setCheck(false);
   };
 
-  const packages = [...serviceDetail.packages].sort(
-    (a, b) => a.price - b.price
-  );
-  console.log("anh", serviceDetail.gallery.imageGallery1);
-  // console.log("nmame ", serviceDetail.seller.user);
   return (
     <div className="buyer_service_detail">
       <BuyerHeader />
@@ -133,7 +134,7 @@ export default function ServiceDetail() {
               </p>
             </div>
           </Link>
-          <img src={serviceDetail.gallery.imageGallery1} alt=""></img>
+          <img src={serviceDetail.imageGallery1} alt=""></img>
           <h2>Mô tả</h2>
           <p>{serviceDetail.description}</p>
         </div>
@@ -158,7 +159,7 @@ export default function ServiceDetail() {
             onChangeIndex={handleChangeIndex}
             style={{ border: "2px groove #d8d0d2" }}
           >
-            {packages.map((item, index) => {
+            {listPack.map((item, index) => {
               return (
                 <TabPanel value={value} index={index} dir={theme.direction}>
                   <div style={{ display: "flex" }}>
@@ -185,7 +186,7 @@ export default function ServiceDetail() {
                   </p>
                   <h4>⏲️ {item.deliveryTime} Day Delivery</h4>
                   <p>✔️ {item.shortDescription}</p>
-                  {/* <p>✔️ Sản phẩm bàn giao 2</p> */}
+
                   <h3>
                     Phí hủy hợp đồng :{item.contractCancelFee}% Tổng chi phí
                   </h3>

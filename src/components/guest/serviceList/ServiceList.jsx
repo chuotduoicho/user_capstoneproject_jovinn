@@ -21,7 +21,6 @@ export default function ServiceList({
   lastName,
   avatar,
 }) {
-  console.log(image);
   const navigate = useNavigate();
   return (
     <Grid item xs={12} sm={6} md={4} height="415">

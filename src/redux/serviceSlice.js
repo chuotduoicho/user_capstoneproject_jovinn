@@ -2,14 +2,16 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { setMessage } from "./message";
 import ServiceService from "../services/service.service";
 const services = JSON.parse(localStorage.getItem("services"));
+const serviceDetail = JSON.parse(localStorage.getItem("serviceDetail"));
 const servicesImpression = JSON.parse(
   localStorage.getItem("servicesImpression")
 );
 const servicesHistory = JSON.parse(localStorage.getItem("servicesHistory"));
 const initialState = {
-  listServices: services.content ? services.content : [],
+  listServices: services ? services : {},
   listServicesImpression: servicesImpression ? servicesImpression : [],
   listServicesHistory: servicesHistory ? servicesHistory : [],
+  serviceDetail: serviceDetail ? serviceDetail : {},
   newServiceId: null,
   status: "idle",
 };
@@ -32,8 +34,16 @@ export const fetchServicesImpressionByCate = createAsyncThunk(
 );
 export const fetchServices = createAsyncThunk(
   "service/fetchServices",
-  async () => {
-    const data = await ServiceService.getAllServices();
+  async (obj) => {
+    const data = await ServiceService.getServices(obj);
+    console.log(data);
+    return data;
+  }
+);
+export const fetchServicesSearchFilter = createAsyncThunk(
+  "service/fetchServicesSearchFilter",
+  async (obj) => {
+    const data = await ServiceService.fetchServicesSearchFilter(obj);
     console.log(data);
     return data;
   }
@@ -135,14 +145,15 @@ const serviceSlice = createSlice({
     [fetchServices.rejected]: (state, action) => {
       state.status = "failed";
     },
-    [fetchServices.pending]: (state, action) => {
+
+    [fetchServicesSearchFilter.pending]: (state, action) => {
       state.status = "loading";
     },
-    [fetchServices.fulfilled]: (state, { payload }) => {
+    [fetchServicesSearchFilter.fulfilled]: (state, { payload }) => {
       state.listServices = payload;
       state.status = "success";
     },
-    [fetchServices.rejected]: (state, action) => {
+    [fetchServicesSearchFilter.rejected]: (state, action) => {
       state.status = "failed";
     },
     [fetchServicesByCategory.pending]: (state, action) => {
@@ -153,6 +164,16 @@ const serviceSlice = createSlice({
       state.status = "success";
     },
     [fetchServicesByCategory.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [fetchServiceDetail.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [fetchServiceDetail.fulfilled]: (state, { payload }) => {
+      state.serviceDetail = payload;
+      state.status = "success";
+    },
+    [fetchServiceDetail.rejected]: (state, action) => {
       state.status = "failed";
     },
     [addService.pending]: (state, action) => {
@@ -211,7 +232,7 @@ export default reducer;
 export const selectAllServices = (state) => state.service.listServices;
 export const selectServicesImpression = (state) =>
   state.service.listServicesImpression;
-// export const selectServiceDetail = (state) => state.service.serviceDetail;
+export const selectServiceDetail = (state) => state.service.serviceDetail;
 export const selectNewServiceId = (state) => state.service.newServiceId;
 export const selectServiceStatus = (state) => state.service.status;
 export const selectServiceById = (state, serviceId) =>

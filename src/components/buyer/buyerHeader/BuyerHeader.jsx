@@ -23,6 +23,7 @@ export default function BuyerHeader({ search }) {
   const currentUser = useSelector(selectCurrentUser);
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
+  const [searchText, setSearchText] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const anchorRef = useRef(null);
   const dispatch = useDispatch();
@@ -91,15 +92,6 @@ export default function BuyerHeader({ search }) {
           <p className="logo" onClick={() => navigate("/buyerHome")}>
             Jovinn.
           </p>
-          {/* <div className="search">
-            <input
-              type="text"
-              placeholder="Tìm kiếm theo dịch vụ ..."
-              className="search_text"
-              onChange={(e) => search(e.target.value)}
-            />
-            <SearchOutlined className="search_icon" />
-          </div> */}
           <TextField
             placeholder="Tìm kiếm dịch vụ ..."
             variant="outlined"
@@ -110,6 +102,7 @@ export default function BuyerHeader({ search }) {
                     style={{
                       cursor: "pointer",
                     }}
+                    onClick={() => search(searchText)}
                   />
                 </a>
               ),
@@ -118,7 +111,7 @@ export default function BuyerHeader({ search }) {
               width: "500px",
               borderRadius: "4px",
             }}
-            onChange={(e) => search(e.target.value)}
+            onChange={(e) => setSearchText(e.target.value)}
             size="small"
           />
         </div>

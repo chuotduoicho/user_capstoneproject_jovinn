@@ -1,5 +1,6 @@
 import axios from "axios";
-const API_URL = "http://localhost:8080/api/v1/files/";
+import { API_PATH } from "../config";
+const API_URL = API_PATH + "/api/v1/files/";
 // const API_URL = "http://jovinnserver.site/api/v1/files/";
 const uploadFile = (obj) => {
   return axios

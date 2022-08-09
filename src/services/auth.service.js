@@ -1,6 +1,7 @@
 import axios from "axios";
+import { API_PATH } from "../config";
 
-const API_URL = "http://localhost:8080/api";
+const API_URL = API_PATH + "/api";
 // const API_URL = "http://jovinnserver.site/api";
 const register = (username, password, email, firstName, lastName) => {
   return axios.post(API_URL + "/auth/signup", {

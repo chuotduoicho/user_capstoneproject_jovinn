@@ -7,6 +7,7 @@ import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
 import { FilterListOutlined } from "@material-ui/icons";
 import CategoryList from "../../../components/guest/categoryList/CategoryList";
 import {
+  Button,
   Container,
   FormControl,
   Grid,
@@ -15,15 +16,9 @@ import {
   Select,
 } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
-import {
-  fetchCategories,
-  selectAllCategories,
-} from "../../../redux/categorySlice";
-import {
-  fetchServicesByCategory,
-  selectAllServices,
-} from "../../../redux/serviceSlice";
+import { useNavigate } from "react-router-dom";
+import { selectAllCategories } from "../../../redux/categorySlice";
+import { fetchServices, selectAllServices } from "../../../redux/serviceSlice";
 import Pagination from "@material-ui/lab/Pagination";
 import Rating from "@material-ui/lab/Rating";
 import {
@@ -32,7 +27,6 @@ import {
   fetchWallet,
   selectCurrentUser,
 } from "../../../redux/userSlice";
-import usePagination from "../../../Pagination";
 import { fetchRequestsBuyer } from "../../../redux/requestSlice";
 export default function BuyerHome() {
   const navigate = useNavigate();
@@ -44,221 +38,84 @@ export default function BuyerHome() {
   console.log("currnet", currentUser);
   const [selected, setSelected] = useState(listCategory[0].id);
   const [search, setSearch] = useState("");
+  const [subCateId, setSubCateId] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
-  const [rating, setRating] = useState(2);
+  const [rating, setRating] = useState(0);
+  const [subCateIdFil, setSubCateIdFil] = useState("");
+  const [minPriceFil, setMinPriceFil] = useState("");
+  const [maxPriceFil, setMaxPriceFil] = useState("");
+  const [ratingFil, setRatingFil] = useState(0);
+  const [page, setPage] = useState(1);
+  const [list, setList] = useState(
+    listService.content ? listService.content : []
+  );
   console.log("search", search);
-  console.log("listCategory", listCategory);
+  console.log("listService", listService);
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (!user) {
       navigate("/auth/login");
     } else {
-      dispatch(fetchCategories());
       dispatch(fetchTopSellers());
-      // dispatch(fetchCurrentUser());
-      dispatch(fetchServicesByCategory(selected));
-      // dispatch(fetchRequestsBuyer());
+      dispatch(fetchCurrentUser());
+      const obj = {
+        categoryId: selected,
+        page: page,
+      };
+      dispatch(fetchServices(obj));
+      dispatch(fetchRequestsBuyer());
       dispatch(fetchWallet());
+      setList(listService.content);
     }
   }, [user]);
 
   useEffect(
     (e) => {
       setSubCateId("");
-      dispatch(fetchServicesByCategory(selected));
+      setPage(1);
+      const obj = {
+        categoryId: selected,
+        page: page,
+        subCategoryId: subCateId,
+      };
+      dispatch(fetchServices(obj));
     },
     [selected]
   );
-  const [subCateId, setSubCateId] = useState("");
-
-  const handleChangeSubcate = (event) => {
-    setSubCateId(event.target.value);
-  };
-  console.log("sub id", subCateId);
-  console.log(listService);
-
-  //pagination
-  let [page, setPage] = useState(1);
-  const PER_PAGE = 6;
-  const listServiceFilter = listService.filter((val) => {
-    if (
-      search === "" &&
-      subCateId === "" &&
-      minPrice === "" &&
-      maxPrice === "" &&
-      val.status === "ACTIVE"
-    ) {
-      return val;
-    } else if (
-      val.status === "ACTIVE" &&
-      search !== "" &&
-      subCateId === "" &&
-      minPrice === "" &&
-      maxPrice === "" &&
-      (val.title.toLowerCase().includes(search.toLowerCase()) ||
-        val.description.toLowerCase().includes(search.toLowerCase()))
-    ) {
-      return val;
-    } else if (
-      val.status === "ACTIVE" &&
-      search === "" &&
-      subCateId !== "" &&
-      minPrice === "" &&
-      maxPrice === "" &&
-      val.subcategory.id.toLowerCase().includes(subCateId.toLowerCase())
-    ) {
-      return val;
-    } else if (
-      val.status === "ACTIVE" &&
-      search !== "" &&
-      subCateId !== "" &&
-      minPrice === "" &&
-      maxPrice === "" &&
-      val.subcategory.id.toLowerCase().includes(subCateId.toLowerCase()) &&
-      (val.title.toLowerCase().includes(search.toLowerCase()) ||
-        val.description.toLowerCase().includes(search.toLowerCase()))
-    ) {
-      return val;
-    } else if (
-      search === "" &&
-      subCateId === "" &&
-      minPrice !== "" &&
-      maxPrice === "" &&
-      val.status === "ACTIVE" &&
-      val.packages[0].price >= minPrice
-    ) {
-      return val;
-    } else if (
-      val.status === "ACTIVE" &&
-      search !== "" &&
-      subCateId === "" &&
-      minPrice !== "" &&
-      maxPrice === "" &&
-      (val.title.toLowerCase().includes(search.toLowerCase()) ||
-        val.description.toLowerCase().includes(search.toLowerCase())) &&
-      val.packages[0].price >= minPrice
-    ) {
-      return val;
-    } else if (
-      val.status === "ACTIVE" &&
-      search === "" &&
-      subCateId !== "" &&
-      minPrice !== "" &&
-      maxPrice === "" &&
-      val.subcategory.id.toLowerCase().includes(subCateId.toLowerCase()) &&
-      val.packages[0].price >= minPrice
-    ) {
-      return val;
-    } else if (
-      val.status === "ACTIVE" &&
-      search !== "" &&
-      subCateId !== "" &&
-      minPrice !== "" &&
-      maxPrice === "" &&
-      val.subcategory.id.toLowerCase().includes(subCateId.toLowerCase()) &&
-      (val.title.toLowerCase().includes(search.toLowerCase()) ||
-        val.description.toLowerCase().includes(search.toLowerCase())) &&
-      val.packages[0].price >= minPrice
-    ) {
-      return val;
-    } else if (
-      search === "" &&
-      subCateId === "" &&
-      minPrice === "" &&
-      maxPrice !== "" &&
-      val.status === "ACTIVE" &&
-      val.packages[0].price <= maxPrice
-    ) {
-      return val;
-    } else if (
-      val.status === "ACTIVE" &&
-      search !== "" &&
-      subCateId === "" &&
-      minPrice === "" &&
-      maxPrice !== "" &&
-      (val.title.toLowerCase().includes(search.toLowerCase()) ||
-        val.description.toLowerCase().includes(search.toLowerCase())) &&
-      val.packages[0].price <= maxPrice
-    ) {
-      return val;
-    } else if (
-      val.status === "ACTIVE" &&
-      search === "" &&
-      subCateId !== "" &&
-      minPrice === "" &&
-      maxPrice !== "" &&
-      val.subcategory.id.toLowerCase().includes(subCateId.toLowerCase()) &&
-      val.packages[0].price <= maxPrice
-    ) {
-      return val;
-    } else if (
-      val.status === "ACTIVE" &&
-      search !== "" &&
-      subCateId !== "" &&
-      minPrice === "" &&
-      maxPrice !== "" &&
-      val.subcategory.id.toLowerCase().includes(subCateId.toLowerCase()) &&
-      (val.title.toLowerCase().includes(search.toLowerCase()) ||
-        val.description.toLowerCase().includes(search.toLowerCase())) &&
-      val.packages[0].price <= maxPrice
-    ) {
-      return val;
-    } else if (
-      search === "" &&
-      subCateId === "" &&
-      minPrice !== "" &&
-      maxPrice !== "" &&
-      val.status === "ACTIVE" &&
-      val.packages[0].price >= minPrice &&
-      val.packages[0].price <= maxPrice
-    ) {
-      return val;
-    } else if (
-      val.status === "ACTIVE" &&
-      search !== "" &&
-      subCateId === "" &&
-      minPrice !== "" &&
-      maxPrice !== "" &&
-      (val.title.toLowerCase().includes(search.toLowerCase()) ||
-        val.description.toLowerCase().includes(search.toLowerCase())) &&
-      val.packages[0].price >= minPrice &&
-      val.packages[0].price <= maxPrice
-    ) {
-      return val;
-    } else if (
-      val.status === "ACTIVE" &&
-      search === "" &&
-      subCateId !== "" &&
-      minPrice !== "" &&
-      maxPrice !== "" &&
-      val.subcategory.id.toLowerCase().includes(subCateId.toLowerCase()) &&
-      val.packages[0].price >= minPrice &&
-      val.packages[0].price <= maxPrice
-    ) {
-      return val;
-    } else if (
-      val.status === "ACTIVE" &&
-      search !== "" &&
-      subCateId !== "" &&
-      minPrice !== "" &&
-      maxPrice !== "" &&
-      val.subcategory.id.toLowerCase().includes(subCateId.toLowerCase()) &&
-      (val.title.toLowerCase().includes(search.toLowerCase()) ||
-        val.description.toLowerCase().includes(search.toLowerCase())) &&
-      val.packages[0].price >= minPrice &&
-      val.packages[0].price <= maxPrice
-    ) {
-      return val;
-    }
-  });
-  const count = Math.ceil(listServiceFilter.length / PER_PAGE);
-  const _DATA = usePagination(listServiceFilter, PER_PAGE);
+  useEffect(
+    (e) => {
+      setPage(1);
+      const obj = {
+        categoryId: selected,
+        page: page,
+        subCategoryId: subCateId,
+      };
+      dispatch(fetchServices(obj));
+    },
+    [subCateId]
+  );
   const handleChange = (e, p) => {
     console.log(p);
     setPage(p);
-    _DATA.jump(p);
+  };
+
+  const handleSetfilter = (e) => {
+    setSubCateIdFil(subCateId);
+    setMinPriceFil(minPrice);
+    setMaxPriceFil(maxPrice);
+    setRatingFil(rating);
+    setPage(1);
+    if (!search) {
+      const obj = {
+        categoryId: selected,
+        page: page,
+        subCategoryId: subCateId,
+      };
+      dispatch(fetchServices(obj));
+    } else {
+    }
   };
   return (
     <div className="buyerHome">
@@ -279,7 +136,7 @@ export default function BuyerHome() {
                   id="demo-simple-select"
                   value={subCateId}
                   label="Age"
-                  onChange={handleChangeSubcate}
+                  onChange={(e) => setSubCateId(e.target.value)}
                 >
                   {listCategory
                     .find((val) => {
@@ -321,6 +178,15 @@ export default function BuyerHome() {
                     onChange={(e) => setRating(e.target.value)}
                   />
                 </div>
+                <div className="lsOptionItem">
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={() => handleSetfilter}
+                  >
+                    Lọc
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
@@ -336,33 +202,29 @@ export default function BuyerHome() {
               />
             ))}
           </ul>
-          {/* <div className="sort">Sắp xếp theo:</div> */}
+
           <div className="serviceList" id="intro">
             <Container className="service_cardGrid" maxWidth="md">
-              {/* End hero unit */}
               <Grid container spacing={4}>
-                {_DATA
-                  .currentData()
-                  // .slice(0, 6)
-                  .map((item) => (
-                    <ServiceList
-                      className="service"
-                      id={item.id}
-                      image={item.gallery.imageGallery1}
-                      title={item.title}
-                      sellerId={item.sellerId}
-                      description={item.description}
-                      rating={item.impression}
-                      price={item.packages[0].price}
-                      status={item.status}
-                      firstName={item.firstName}
-                      lastName={item.lastName}
-                      avatar={item.avatar}
-                    />
-                  ))}
+                {list.map((item) => (
+                  <ServiceList
+                    className="service"
+                    id={item.id}
+                    image={item.imageGallery1}
+                    title={item.title}
+                    sellerId={item.sellerId}
+                    description={item.branchName}
+                    rating={item.ratingPoint}
+                    price={item.fromPrice}
+                    status={item.status}
+                    firstName={item.firstName}
+                    lastName={item.lastName}
+                    avatar={item.avatar}
+                  />
+                ))}
               </Grid>
               <Pagination
-                count={count}
+                count={listService.totalPages}
                 color="primary"
                 className="service_pagging"
                 page={page}

@@ -10,10 +10,7 @@ import Aboutus from "../../../components/guest/aboutus/Aboutus";
 import ServiceFeature from "../../../components/guest/serviceFeature/ServiceFeature";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategories } from "../../../redux/categorySlice";
-import {
-  fetchServices,
-  fetchServicesImpression,
-} from "../../../redux/serviceSlice";
+import { fetchServicesImpression } from "../../../redux/serviceSlice";
 import { fetchTopSellers } from "../../../redux/userSlice";
 import { useNavigate } from "react-router-dom";
 export default function Home() {
