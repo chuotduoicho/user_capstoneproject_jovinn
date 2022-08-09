@@ -18,7 +18,11 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { selectAllCategories } from "../../../redux/categorySlice";
-import { fetchServices, selectAllServices } from "../../../redux/serviceSlice";
+import {
+  fetchServices,
+  fetchServicesSearchFilter,
+  selectAllServices,
+} from "../../../redux/serviceSlice";
 import Pagination from "@material-ui/lab/Pagination";
 import Rating from "@material-ui/lab/Rating";
 import {
@@ -42,14 +46,8 @@ export default function BuyerHome() {
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [rating, setRating] = useState(0);
-  const [subCateIdFil, setSubCateIdFil] = useState("");
-  const [minPriceFil, setMinPriceFil] = useState("");
-  const [maxPriceFil, setMaxPriceFil] = useState("");
-  const [ratingFil, setRatingFil] = useState(0);
   const [page, setPage] = useState(1);
-  const [list, setList] = useState(
-    listService.content ? listService.content : []
-  );
+
   console.log("search", search);
   console.log("listService", listService);
   const dispatch = useDispatch();
@@ -67,7 +65,6 @@ export default function BuyerHome() {
       dispatch(fetchServices(obj));
       dispatch(fetchRequestsBuyer());
       dispatch(fetchWallet());
-      setList(listService.content);
     }
   }, [user]);
 
@@ -84,42 +81,49 @@ export default function BuyerHome() {
     },
     [selected]
   );
-  useEffect(
-    (e) => {
-      setPage(1);
-      const obj = {
-        categoryId: selected,
-        page: page,
-        subCategoryId: subCateId,
-      };
-      dispatch(fetchServices(obj));
-    },
-    [subCateId]
-  );
+  // useEffect(
+  //   (e) => {
+  //     setPage(1);
+  //     const obj = {
+  //       categoryId: selected,
+  //       page: page,
+  //       subCategoryId: subCateId,
+  //     };
+  //     dispatch(fetchServices(obj));
+  //   },
+  //   [subCateId]
+  // );
   const handleChange = (e, p) => {
-    console.log(p);
     setPage(p);
   };
 
   const handleSetfilter = (e) => {
-    setSubCateIdFil(subCateId);
-    setMinPriceFil(minPrice);
-    setMaxPriceFil(maxPrice);
-    setRatingFil(rating);
     setPage(1);
+
     if (!search) {
       const obj = {
         categoryId: selected,
         page: page,
         subCategoryId: subCateId,
+        minPrice: minPrice,
+        maxPrice: maxPrice,
       };
       dispatch(fetchServices(obj));
     } else {
+      const obj = {
+        categoryId: selected,
+        page: page - 1,
+        subCategoryId: subCateId,
+        minPrice: minPrice,
+        maxPrice: maxPrice,
+      };
+      dispatch(fetchServicesSearchFilter({ search, obj }));
     }
   };
+  const list = listService.content ? listService.content : [];
   return (
     <div className="buyerHome">
-      <BuyerHeader search={setSearch} />
+      <BuyerHeader search={setSearch} handleSearch={handleSetfilter} />
 
       <div className="buyerHome_form">
         <div className="buyerHome_left">
@@ -182,7 +186,7 @@ export default function BuyerHome() {
                   <Button
                     variant="contained"
                     color="secondary"
-                    onClick={() => handleSetfilter}
+                    onClick={handleSetfilter}
                   >
                     Lọc
                   </Button>

@@ -43,7 +43,7 @@ export const fetchServices = createAsyncThunk(
 export const fetchServicesSearchFilter = createAsyncThunk(
   "service/fetchServicesSearchFilter",
   async (obj) => {
-    const data = await ServiceService.fetchServicesSearchFilter(obj);
+    const data = await ServiceService.getServicesSearchFilter(obj);
     console.log(data);
     return data;
   }

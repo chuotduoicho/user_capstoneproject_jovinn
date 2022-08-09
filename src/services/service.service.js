@@ -35,7 +35,8 @@ const getServices = (obj) => {
 };
 const getServicesSearchFilter = (obj) => {
   const search = obj.search;
-  const params = obj.params;
+  const params = obj.obj;
+  console.log(search, params);
   return axios
     .get(API_URL + "/box/search/" + search, { params: params })
     .then((response) => {
