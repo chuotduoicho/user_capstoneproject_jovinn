@@ -2,6 +2,7 @@ import "./topbar.scss";
 import { SearchOutlined } from "@material-ui/icons";
 import Button from "@material-ui/core/Button";
 import { Link, useNavigate } from "react-router-dom";
+import { TextField } from "@material-ui/core";
 export default function Topbar({ menuOpen, setMenuOpen, search }) {
   const navigate = useNavigate();
   return (
@@ -11,7 +12,7 @@ export default function Topbar({ menuOpen, setMenuOpen, search }) {
           <a href="/" className="guest_logo">
             Jovinn.
           </a>
-          <div className="guest_search">
+          {/* <div className="guest_search">
             <input
               type="text"
               placeholder="Tìm kiếm theo dịch vụ ..."
@@ -24,8 +25,34 @@ export default function Topbar({ menuOpen, setMenuOpen, search }) {
             />
             <a href="#service">
               <SearchOutlined className="search_icon" />
-            </a>
-          </div>
+            </a> 
+             </div>*/}
+          <TextField
+            placeholder="Tìm kiếm dịch vụ ..."
+            variant="outlined"
+            InputProps={{
+              endAdornment: (
+                <a href="#service">
+                  <SearchOutlined
+                    style={{
+                      cursor: "pointer",
+                    }}
+                  />
+                </a>
+              ),
+            }}
+            style={{
+              width: "500px",
+              borderRadius: "4px",
+            }}
+            onChange={(e) => {
+              search(e.target.value);
+              setMenuOpen(false);
+              navigate("#service");
+            }}
+            size="small"
+          />
+
           <div className="guest_itemButtons">
             <Button
               className="button"

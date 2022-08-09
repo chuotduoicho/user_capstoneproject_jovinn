@@ -322,7 +322,6 @@ export default function BuyerHome() {
                   />
                 </div>
               </div>
-              {/* <button onClick={handleClick}>Search</button> */}
             </div>
           </div>
         </div>

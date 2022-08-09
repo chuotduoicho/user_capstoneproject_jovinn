@@ -5,18 +5,18 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAllCategories } from "../../../redux/categorySlice";
 import {
-  fetchServicesByCategory,
-  selectAllServices,
+  fetchServicesImpressionByCate,
+  selectServicesImpression,
 } from "../../../redux/serviceSlice";
 import { useEffect } from "react";
 export default function ServiceFeature({ search }) {
   const listCategory = useSelector(selectAllCategories);
-  const listService = useSelector(selectAllServices);
+  const listService = useSelector(selectServicesImpression);
   const [selected, setSelected] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
-    if (selected != "") dispatch(fetchServicesByCategory(selected));
+    if (selected != "") dispatch(fetchServicesImpressionByCate(selected));
   }, [selected]);
   return (
     <div className="guest_service" id="service">
@@ -52,16 +52,16 @@ export default function ServiceFeature({ search }) {
             >
               <img
                 src={
-                  d.gallery.imageGallery1
-                    ? d.gallery.imageGallery1
+                  d.imageGallery1
+                    ? d.imageGallery1
                     : "https://img6.thuthuatphanmem.vn/uploads/2022/01/28/anh-ve-co-trang-nu-trung-quoc-dep-nhat_044336041.jpg"
                 }
                 alt=""
               />
               <div className="guest_absolute">
-                <h3>{d.title}</h3>
-                <h4>{d.description}</h4>
-                <h3>{d.packages[0].price} $</h3>
+                <h3>{d.branchName}</h3>
+                <h4>{d.title}</h4>
+                <h3>{d.fromPrice} $</h3>
               </div>
             </div>
           ))}

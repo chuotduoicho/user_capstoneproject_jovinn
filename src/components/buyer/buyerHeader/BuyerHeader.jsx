@@ -10,7 +10,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { logout } from "../../../redux/authSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Dialog, DialogActions, DialogTitle } from "@material-ui/core";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  TextField,
+} from "@material-ui/core";
 import { fetchCurrentUser, selectCurrentUser } from "../../../redux/userSlice";
 import { setMessage } from "../../../redux/message";
 export default function BuyerHeader({ search }) {
@@ -85,7 +91,7 @@ export default function BuyerHeader({ search }) {
           <p className="logo" onClick={() => navigate("/buyerHome")}>
             Jovinn.
           </p>
-          <div className="search">
+          {/* <div className="search">
             <input
               type="text"
               placeholder="Tìm kiếm theo dịch vụ ..."
@@ -93,7 +99,28 @@ export default function BuyerHeader({ search }) {
               onChange={(e) => search(e.target.value)}
             />
             <SearchOutlined className="search_icon" />
-          </div>
+          </div> */}
+          <TextField
+            placeholder="Tìm kiếm dịch vụ ..."
+            variant="outlined"
+            InputProps={{
+              endAdornment: (
+                <a>
+                  <SearchOutlined
+                    style={{
+                      cursor: "pointer",
+                    }}
+                  />
+                </a>
+              ),
+            }}
+            style={{
+              width: "500px",
+              borderRadius: "4px",
+            }}
+            onChange={(e) => search(e.target.value)}
+            size="small"
+          />
         </div>
         <div className="right">
           <Button

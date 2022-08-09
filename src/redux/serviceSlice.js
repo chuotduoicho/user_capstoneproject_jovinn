@@ -2,12 +2,34 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { setMessage } from "./message";
 import ServiceService from "../services/service.service";
 const services = JSON.parse(localStorage.getItem("services"));
+const servicesImpression = JSON.parse(
+  localStorage.getItem("servicesImpression")
+);
+const servicesHistory = JSON.parse(localStorage.getItem("servicesHistory"));
 const initialState = {
-  listServices: services ? services : [],
+  listServices: services.content ? services.content : [],
+  listServicesImpression: servicesImpression ? servicesImpression : [],
+  listServicesHistory: servicesHistory ? servicesHistory : [],
   newServiceId: null,
   status: "idle",
 };
 
+export const fetchServicesImpression = createAsyncThunk(
+  "service/fetchServicesImpression",
+  async () => {
+    const data = await ServiceService.get8ServicesImpression();
+    console.log(data);
+    return data;
+  }
+);
+export const fetchServicesImpressionByCate = createAsyncThunk(
+  "service/fetchServicesImpressionByCate",
+  async (cateId) => {
+    const data = await ServiceService.get8ServicesImpressionByCate(cateId);
+    console.log(data);
+    return data;
+  }
+);
 export const fetchServices = createAsyncThunk(
   "service/fetchServices",
   async () => {
@@ -83,6 +105,36 @@ const serviceSlice = createSlice({
   name: "service",
   initialState,
   extraReducers: {
+    [fetchServicesImpression.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [fetchServicesImpression.fulfilled]: (state, { payload }) => {
+      state.listServicesImpression = payload;
+      state.status = "success";
+    },
+    [fetchServicesImpression.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [fetchServicesImpressionByCate.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [fetchServicesImpressionByCate.fulfilled]: (state, { payload }) => {
+      state.listServicesImpression = payload;
+      state.status = "success";
+    },
+    [fetchServicesImpressionByCate.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [fetchServices.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [fetchServices.fulfilled]: (state, { payload }) => {
+      state.listServices = payload;
+      state.status = "success";
+    },
+    [fetchServices.rejected]: (state, action) => {
+      state.status = "failed";
+    },
     [fetchServices.pending]: (state, action) => {
       state.status = "loading";
     },
@@ -157,6 +209,8 @@ const { reducer } = serviceSlice;
 export default reducer;
 
 export const selectAllServices = (state) => state.service.listServices;
+export const selectServicesImpression = (state) =>
+  state.service.listServicesImpression;
 // export const selectServiceDetail = (state) => state.service.serviceDetail;
 export const selectNewServiceId = (state) => state.service.newServiceId;
 export const selectServiceStatus = (state) => state.service.status;

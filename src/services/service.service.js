@@ -9,6 +9,73 @@ const getAllServices = () => {
     return response.data;
   });
 };
+const get8ServicesImpression = () => {
+  return axios.get(API_URL + "/box/top-8-impression").then((response) => {
+    localStorage.setItem("servicesImpression", JSON.stringify(response.data));
+    return response.data;
+  });
+};
+const get8ServicesImpressionByCate = (cateId) => {
+  return axios
+    .get(API_URL + "/box/top-8-impression/" + cateId)
+    .then((response) => {
+      localStorage.setItem("servicesImpression", JSON.stringify(response.data));
+      return response.data;
+    });
+};
+const getServices = (obj) => {
+  return axios.get(API_URL + "/box/search", obj).then((response) => {
+    localStorage.setItem("services", JSON.stringify(response.data));
+    return response.data;
+  });
+};
+const getServicesSearchFilter = (obj) => {
+  const search = obj.search;
+  const page = obj.page;
+  const categoryId = obj.categoryId;
+  const subCategoryId = obj.subCategoryId;
+  const minPrice = obj.minPrice;
+  const maxPrice = obj.maxPrice;
+  const ratingPoint = obj.ratingPoint;
+  const sortBy = obj.sortBy;
+  const sortDir = obj.sortDir;
+  return axios
+    .get(
+      API_URL +
+        "/box/search/" +
+        search +
+        "?page=" +
+        page +
+        "&categoryId=" +
+        categoryId +
+        "&subCategoryId=" +
+        subCategoryId +
+        "&minPrice=" +
+        minPrice +
+        "&maxPrice=" +
+        maxPrice +
+        "&ratingPoint=" +
+        ratingPoint +
+        "&sortBy=" +
+        sortBy +
+        "&sortDir=" +
+        sortDir
+    )
+    .then((response) => {
+      localStorage.setItem("services", JSON.stringify(response.data));
+      return response.data;
+    });
+};
+const getServicesHistory = () => {
+  return axios
+    .get(API_URL + "/box/list-box-history", {
+      headers: authHeader(),
+    })
+    .then((response) => {
+      localStorage.setItem("servicesHistory", JSON.stringify(response.data));
+      return response.data;
+    });
+};
 const getServiceById = (serviceId) => {
   return axios
     .get(API_URL + "/box/serviceDetail/" + serviceId)
@@ -82,6 +149,10 @@ const serviceService = {
   updateServicePackage,
   addServicePackage,
   deleteServicePackage,
+  getServices,
+  get8ServicesImpression,
+  get8ServicesImpressionByCate,
+  getServicesSearchFilter,
 };
 
 export default serviceService;

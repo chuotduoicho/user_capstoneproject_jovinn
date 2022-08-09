@@ -10,7 +10,10 @@ import Aboutus from "../../../components/guest/aboutus/Aboutus";
 import ServiceFeature from "../../../components/guest/serviceFeature/ServiceFeature";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategories } from "../../../redux/categorySlice";
-import { fetchServices } from "../../../redux/serviceSlice";
+import {
+  fetchServices,
+  fetchServicesImpression,
+} from "../../../redux/serviceSlice";
 import { fetchTopSellers } from "../../../redux/userSlice";
 import { useNavigate } from "react-router-dom";
 export default function Home() {
@@ -22,7 +25,7 @@ export default function Home() {
   useEffect(() => {
     dispatch(fetchCategories());
     dispatch(fetchTopSellers());
-    dispatch(fetchServices());
+    dispatch(fetchServicesImpression());
     if (user) navigate("/buyerHome");
   }, []);
   return (
