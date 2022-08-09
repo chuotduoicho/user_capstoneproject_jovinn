@@ -24,8 +24,13 @@ import {
 import { Divider, Avatar, Grid, Paper } from "@material-ui/core";
 import Topbar from "../../../components/guest/topbar/Topbar";
 import { useNavigate, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { selectServiceById } from "../../../redux/serviceSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchServiceDetail,
+  selectServiceById,
+  selectServiceDetail,
+} from "../../../redux/serviceSlice";
+import { useEffect } from "react";
 const style = {
   position: "absolute",
   top: "50%",
@@ -77,10 +82,13 @@ const ServiceDetail = () => {
   const [value, setValue] = useState(0);
   const { serviceId } = useParams();
   const navigate = useNavigate();
-  const serviceDetail = useSelector((state) =>
-    selectServiceById(state, serviceId)
-  );
-
+  const dispatch = useDispatch();
+  const serviceDetail = useSelector(selectServiceDetail);
+  const [listPack, setListPack] = useState([]);
+  useEffect(() => {
+    dispatch(fetchServiceDetail(serviceId));
+    setListPack(serviceDetail.packages);
+  }, []);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -90,9 +98,9 @@ const ServiceDetail = () => {
   };
   const [amount, setAmount] = useState(1);
   //modal
-  const packages = [...serviceDetail.packages].sort(
-    (a, b) => a.price - b.price
-  );
+  // const packages = [...serviceDetail.packages].sort(
+  //   (a, b) => a.price - b.price
+  // );
   console.log("service", serviceDetail);
   return (
     <div className="service_detail">
@@ -151,7 +159,7 @@ const ServiceDetail = () => {
               onChangeIndex={handleChangeIndex}
               style={{ border: "2px groove #d8d0d2" }}
             >
-              {packages.map((item, index) => {
+              {listPack.map((item, index) => {
                 return (
                   <TabPanel value={value} index={index} dir={theme.direction}>
                     <div style={{ display: "flex" }}>
