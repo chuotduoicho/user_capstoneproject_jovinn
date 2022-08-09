@@ -10,13 +10,17 @@ import Aboutus from "../../../components/guest/aboutus/Aboutus";
 import ServiceFeature from "../../../components/guest/serviceFeature/ServiceFeature";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategories } from "../../../redux/categorySlice";
-import { fetchServicesImpression } from "../../../redux/serviceSlice";
+import {
+  fetchServicesImpression,
+  fetchServicesSearchFilter,
+} from "../../../redux/serviceSlice";
 import { fetchTopSellers } from "../../../redux/userSlice";
 import { useNavigate } from "react-router-dom";
 export default function Home() {
   const { user } = useSelector((state) => state.auth);
   const [menuOpen, setMenuOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const [selected, setSelected] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
@@ -25,17 +29,32 @@ export default function Home() {
     dispatch(fetchServicesImpression());
     if (user) navigate("/buyerHome");
   }, []);
+  const handleSetfilter = (e) => {
+    if (search) {
+      const obj = {
+        categoryId: selected,
+        sortBy: "impression",
+      };
+      console.log({ search, obj });
+      dispatch(fetchServicesSearchFilter({ search, obj }));
+    }
+  };
   return (
     <div className="guest_app">
       <Topbar
         menuOpen={menuOpen}
         setMenuOpen={setMenuOpen}
         search={setSearch}
+        handleSearch={handleSetfilter}
       />
       <Menu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <div className="guest_sections">
         <Intro />
-        <ServiceFeature search={search} />
+        <ServiceFeature
+          search={search}
+          selected={selected}
+          setSelected={setSelected}
+        />
         <Topseller />
         <Aboutus />
         <Contact />

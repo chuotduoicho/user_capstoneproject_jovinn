@@ -195,12 +195,6 @@ function getSteps() {
 }
 
 export default function SellerCreateService() {
-  const { serviceId } = useParams();
-  const serviceDetail = useSelector((state) =>
-    selectServiceById(state, serviceId)
-  );
-  console.log("service", serviceDetail);
-  const currentUser = useSelector(selectCurrentUser);
   const newServiceId = useSelector(selectNewServiceId);
   console.log("new service id", newServiceId);
   // const sellerId = currentUser.seller.id;
@@ -214,13 +208,9 @@ export default function SellerCreateService() {
       toast.success(mess);
     }
   }, []);
-  const [title, setTitle] = useState(serviceId ? serviceDetail.title : "");
-  const [description, setDescription] = useState(
-    serviceId ? serviceDetail.description : ""
-  );
-  const [subCateId, setSubCateId] = useState(
-    serviceId ? serviceDetail.subcategory.id : ""
-  );
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [subCateId, setSubCateId] = useState("");
   const listCategory = useSelector(selectAllCategories);
   const [category, setCategory] = useState(listCategory[0]);
   const [check1, setCheck1] = useState(false);
@@ -238,19 +228,15 @@ export default function SellerCreateService() {
   const handleChangeSubcateId = (e) => {
     setSubCateId(e.target.value);
   };
-  const [packages, setPackages] = useState(
-    serviceId
-      ? serviceDetail.packages
-      : [
-          {
-            title: "",
-            shortDescription: "",
-            deliveryTime: "",
-            price: "",
-            contractCancelFee: "",
-          },
-        ]
-  );
+  const [packages, setPackages] = useState([
+    {
+      title: "",
+      shortDescription: "",
+      deliveryTime: "",
+      price: "",
+      contractCancelFee: "",
+    },
+  ]);
   const [packagesError, setPackagesError] = useState([
     {
       title: "",
@@ -306,18 +292,10 @@ export default function SellerCreateService() {
     setPackagesError(list2);
   }
   console.log("packages", packages);
-  const [galley1, setGallery1] = useState(
-    serviceId ? serviceDetail.gallery.imageGallery1 : null
-  );
-  const [galley2, setGallery2] = useState(
-    serviceId ? serviceDetail.gallery.imageGallery2 : null
-  );
-  const [galley3, setGallery3] = useState(
-    serviceId ? serviceDetail.gallery.imageGallery3 : null
-  );
-  const [document, setDocument] = useState(
-    serviceId ? serviceDetail.gallery.documentGallery : null
-  );
+  const [galley1, setGallery1] = useState(null);
+  const [galley2, setGallery2] = useState(null);
+  const [galley3, setGallery3] = useState(null);
+  const [document, setDocument] = useState(null);
   const handleChangeGallery1 = (value) => {
     setGallery1(value);
   };
@@ -541,41 +519,41 @@ export default function SellerCreateService() {
       });
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
-  const handleUpdateService = (e) => {
-    e.preventDefault();
-    const newService = {
-      title: title,
-      description: description,
-      impression: 2,
-      interesting: 2,
-      subCategory: {
-        id: subCateId,
-      },
-    };
-    const obj = { service: newService, serviceId };
-    dispath(updateService(obj))
-      .unwrap()
-      .then(() => {
-        console.log("update service successfull");
-        dispath(fetchServices());
-      })
-      .catch(() => {
-        console.log("add service fail");
-      });
+  // const handleUpdateService = (e) => {
+  //   e.preventDefault();
+  //   const newService = {
+  //     title: title,
+  //     description: description,
+  //     impression: 2,
+  //     interesting: 2,
+  //     subCategory: {
+  //       id: subCateId,
+  //     },
+  //   };
+  //   const obj = { service: newService, serviceId };
+  //   dispath(updateService(obj))
+  //     .unwrap()
+  //     .then(() => {
+  //       console.log("update service successfull");
+  //       dispath(fetchServices());
+  //     })
+  //     .catch(() => {
+  //       console.log("add service fail");
+  //     });
 
-    packages.map((p) => {
-      dispath(updateServicePackage(p))
-        .unwrap()
-        .then(() => {
-          console.log("update service package successfull");
-          dispath(fetchServices());
-        })
-        .catch(() => {
-          console.log("add service fail");
-        });
-    });
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
+  //   packages.map((p) => {
+  //     dispath(updateServicePackage(p))
+  //       .unwrap()
+  //       .then(() => {
+  //         console.log("update service package successfull");
+  //         dispath(fetchServices());
+  //       })
+  //       .catch(() => {
+  //         console.log("add service fail");
+  //       });
+  //   });
+  //   setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  // };
   const handleView = () => {
     navigate("/sellerHome/serviceDetail/" + newServiceId);
   };
@@ -622,36 +600,22 @@ export default function SellerCreateService() {
               </Button>
               {activeStep === steps.length - 1 ? (
                 <>
-                  {serviceId ? (
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleUpdateService}
-                      className={classes.button}
-                    >
-                      Cập nhật
-                    </Button>
-                  ) : (
-                    <>
-                      {" "}
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleCreateDeactive}
-                        className={classes.button}
-                      >
-                        Tạo mới và tạm dừng
-                      </Button>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleCreateActive}
-                        className={classes.button}
-                      >
-                        Tạo mới và mở
-                      </Button>{" "}
-                    </>
-                  )}
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleCreateDeactive}
+                    className={classes.button}
+                  >
+                    Tạo mới và tạm dừng
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleCreateActive}
+                    className={classes.button}
+                  >
+                    Tạo mới và mở
+                  </Button>
                 </>
               ) : (
                 <Button

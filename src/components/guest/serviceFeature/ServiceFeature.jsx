@@ -9,10 +9,10 @@ import {
   selectServicesImpression,
 } from "../../../redux/serviceSlice";
 import { useEffect } from "react";
-export default function ServiceFeature({ search }) {
+export default function ServiceFeature({ search, selected, setSelected }) {
   const listCategory = useSelector(selectAllCategories);
   const listService = useSelector(selectServicesImpression);
-  const [selected, setSelected] = useState("");
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
@@ -32,39 +32,26 @@ export default function ServiceFeature({ search }) {
         ))}
       </ul>
       <div className="guest_container">
-        {listService
-          .filter((val) => {
-            if (search === "") {
-              return val;
-            } else if (
-              search !== "" &&
-              (val.title.toLowerCase().includes(search.toLowerCase()) ||
-                val.description.toLowerCase().includes(search.toLowerCase()))
-            ) {
-              return val;
-            }
-          })
-          .slice(0, 8)
-          .map((d) => (
-            <div
-              className="guest_item"
-              onClick={() => navigate("/serviceDetail/" + d.id)}
-            >
-              <img
-                src={
-                  d.imageGallery1
-                    ? d.imageGallery1
-                    : "https://img6.thuthuatphanmem.vn/uploads/2022/01/28/anh-ve-co-trang-nu-trung-quoc-dep-nhat_044336041.jpg"
-                }
-                alt=""
-              />
-              <div className="guest_absolute">
-                <h3>{d.branchName}</h3>
-                <h4>{d.title}</h4>
-                <h3>{d.fromPrice} $</h3>
-              </div>
+        {listService.slice(0, 8).map((d) => (
+          <div
+            className="guest_item"
+            onClick={() => navigate("/serviceDetail/" + d.id)}
+          >
+            <img
+              src={
+                d.imageGallery1
+                  ? d.imageGallery1
+                  : "https://img6.thuthuatphanmem.vn/uploads/2022/01/28/anh-ve-co-trang-nu-trung-quoc-dep-nhat_044336041.jpg"
+              }
+              alt=""
+            />
+            <div className="guest_absolute">
+              <h3>{d.branchName}</h3>
+              <h4>{d.title}</h4>
+              <h3>{d.fromPrice} $</h3>
             </div>
-          ))}
+          </div>
+        ))}
       </div>
     </div>
   );

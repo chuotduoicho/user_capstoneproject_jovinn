@@ -40,6 +40,14 @@ export const fetchServices = createAsyncThunk(
     return data;
   }
 );
+export const fetchServicesSeller = createAsyncThunk(
+  "service/fetchServicesSeller",
+  async (obj) => {
+    const data = await ServiceService.getServicesSeller(obj);
+    console.log(data);
+    return data;
+  }
+);
 export const fetchServicesSearchFilter = createAsyncThunk(
   "service/fetchServicesSearchFilter",
   async (obj) => {
@@ -145,12 +153,22 @@ const serviceSlice = createSlice({
     [fetchServices.rejected]: (state, action) => {
       state.status = "failed";
     },
-
+    [fetchServicesSeller.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [fetchServicesSeller.fulfilled]: (state, { payload }) => {
+      state.listServices = payload;
+      state.status = "success";
+    },
+    [fetchServicesSeller.rejected]: (state, action) => {
+      state.status = "failed";
+    },
     [fetchServicesSearchFilter.pending]: (state, action) => {
       state.status = "loading";
     },
     [fetchServicesSearchFilter.fulfilled]: (state, { payload }) => {
       state.listServices = payload;
+      state.listServicesImpression = payload.content;
       state.status = "success";
     },
     [fetchServicesSearchFilter.rejected]: (state, action) => {

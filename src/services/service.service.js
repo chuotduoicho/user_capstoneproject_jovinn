@@ -33,6 +33,20 @@ const getServices = (obj) => {
       return response.data;
     });
 };
+const getServicesSeller = (obj) => {
+  const sellerId = obj.sellerId;
+  const params = obj.obj;
+  console.log("request", obj);
+  return axios
+    .get(API_URL + "/box/list-service-by-sellerId/" + sellerId, {
+      params: params,
+      headers: authHeader(),
+    })
+    .then((response) => {
+      localStorage.setItem("services", JSON.stringify(response.data));
+      return response.data;
+    });
+};
 const getServicesSearchFilter = (obj) => {
   const search = obj.search;
   const params = obj.obj;
@@ -132,6 +146,7 @@ const serviceService = {
   get8ServicesImpression,
   get8ServicesImpressionByCate,
   getServicesSearchFilter,
+  getServicesSeller,
 };
 
 export default serviceService;

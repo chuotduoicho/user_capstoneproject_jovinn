@@ -3,7 +3,12 @@ import { SearchOutlined } from "@material-ui/icons";
 import Button from "@material-ui/core/Button";
 import { Link, useNavigate } from "react-router-dom";
 import { TextField } from "@material-ui/core";
-export default function Topbar({ menuOpen, setMenuOpen, search }) {
+export default function Topbar({
+  menuOpen,
+  setMenuOpen,
+  search,
+  handleSearch,
+}) {
   const navigate = useNavigate();
   return (
     <div className={menuOpen ? "guest_topbar active" : "guest_topbar"}>
@@ -37,6 +42,7 @@ export default function Topbar({ menuOpen, setMenuOpen, search }) {
                     style={{
                       cursor: "pointer",
                     }}
+                    onClick={handleSearch}
                   />
                 </a>
               ),

@@ -24,8 +24,10 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   addServicePackage,
   deleteServicePackage,
+  fetchServiceDetail,
   fetchServices,
   selectServiceById,
+  selectServiceDetail,
   updateService,
   updateServicePackage,
 } from "../../../redux/serviceSlice";
@@ -68,15 +70,16 @@ function a11yProps(index) {
 }
 export default function SellerServiceDetail() {
   const { serviceId } = useParams();
-  const serviceDetail = useSelector((state) =>
-    selectServiceById(state, serviceId)
-  );
-  console.log("service", serviceDetail);
+  const serviceDetail = useSelector(selectServiceDetail);
+  const [listPack, setListPack] = useState([]);
   const theme = useTheme();
   const [value, setValue] = useState(0);
 
   const [selected, setSelected] = useState(false);
-
+  useEffect(() => {
+    dispatch(fetchServiceDetail(serviceId));
+    setListPack(serviceDetail.packages);
+  }, []);
   console.log(selected);
   const dispatch = useDispatch();
   const handlePauseService = () => {
@@ -136,7 +139,7 @@ export default function SellerServiceDetail() {
     serviceId ? serviceDetail.description : ""
   );
   const [subCateId, setSubCateId] = useState(
-    serviceId ? serviceDetail.subcategory.id : ""
+    serviceId ? serviceDetail.subCategoryId : ""
   );
   const listCategory = useSelector(selectAllCategories);
   const [category, setCategory] = useState(listCategory[0]);
@@ -480,7 +483,7 @@ export default function SellerServiceDetail() {
             onChangeIndex={handleChangeIndex}
             style={{ border: "2px groove #d8d0d2", width: "595px" }}
           >
-            {packages.map((item, index) => {
+            {listPack.map((item, index) => {
               return (
                 <TabPanel value={value} index={index} dir={theme.direction}>
                   <div style={{ display: "flex" }}>

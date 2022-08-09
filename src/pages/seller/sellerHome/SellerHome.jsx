@@ -14,6 +14,7 @@ import { selectAllCategories } from "../../../redux/categorySlice";
 import {
   fetchServices,
   fetchServicesByCategory,
+  fetchServicesSeller,
   selectAllServices,
 } from "../../../redux/serviceSlice";
 import { useState } from "react";
@@ -37,34 +38,29 @@ export default function SellerHome() {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
   const currentUser = useSelector(selectCurrentUser);
-  const listCategory = useSelector(selectAllCategories);
+  // const listCategory = useSelector(selectAllCategories);
   const listService = useSelector(selectAllServices);
-  const [selected, setSelected] = useState(listCategory[0].id);
+  // const [selected, setSelected] = useState(listCategory[0].id);
+  const [page, setPage] = useState(1);
   useEffect(() => {
     if (!user) {
       navigate("/auth/login");
     } else if (currentUser.joinSellingAt == null) {
       navigate("/errorPage");
     } else {
-      // dispatch(fetchServices());
-
-      dispatch(fetchServicesByCategory(selected));
+      const sellerId = currentUser.seller.id;
+      const obj = {
+        page: page,
+        status: "ACTIVE",
+      };
+      dispatch(fetchServicesSeller({ sellerId, obj }));
     }
-  }, [user, selected]);
-  let [page, setPage] = useState(1);
-  const PER_PAGE = 6;
-  const listServiceFilter = listService.filter((val) => {
-    if (val.userId.toLowerCase().includes(currentUser.id.toLowerCase())) {
-      return val;
-    }
-  });
-  const count = Math.ceil(listServiceFilter.length / PER_PAGE);
-  const _DATA = usePagination(listServiceFilter, PER_PAGE);
+  }, [user]);
 
   const handleChange = (e, p) => {
     setPage(p);
-    _DATA.jump(p);
   };
+  const list = listService.content ? listService.content : [];
   const dateJoin = ChangeFormateDate(currentUser.joinSellingAt);
   return (
     <div className="sellerHome">
@@ -125,7 +121,7 @@ export default function SellerHome() {
           </div>
         </div>
         <div className="sellerHome_right">
-          <ul className="list">
+          {/* <ul className="list">
             {listCategory.slice(0, 7).map((item) => (
               <CategoryList
                 title={item.name}
@@ -134,7 +130,7 @@ export default function SellerHome() {
                 id={item.id}
               />
             ))}
-          </ul>
+          </ul> */}
           <Link to="/sellerHome/createService">
             <Button
               variant="contained"
@@ -149,28 +145,25 @@ export default function SellerHome() {
             <Container className="service_cardGrid" maxWidth="md">
               {/* End hero unit */}
               <Grid container spacing={4}>
-                {_DATA
-                  .currentData()
-                  // .slice(0, 6)
-                  .map((item) => (
-                    <ServiceList
-                      className="service"
-                      id={item.id}
-                      image={item.gallery.imageGallery1}
-                      title={item.title}
-                      sellerId={item.sellerId}
-                      description={item.description}
-                      rating={item.impression}
-                      price={item.packages[0].price}
-                      status={item.status}
-                      firstName={item.firstName}
-                      lastName={item.lastName}
-                      avatar={item.avatar}
-                    />
-                  ))}
+                {list.map((item) => (
+                  <ServiceList
+                    className="service"
+                    id={item.id}
+                    image={item.imageGallery1}
+                    title={item.title}
+                    sellerId={item.sellerId}
+                    description={item.description}
+                    rating={item.impression}
+                    price={item.fromPrice}
+                    status={item.status}
+                    firstName={item.firstName}
+                    lastName={item.lastName}
+                    avatar={item.avatar}
+                  />
+                ))}
               </Grid>
               <Pagination
-                count={count}
+                count={listService.totalPages}
                 color="primary"
                 className="service_pagging"
                 page={page}
