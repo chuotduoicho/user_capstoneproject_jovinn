@@ -134,7 +134,7 @@ export default function ServiceDetail() {
               </p>
             </div>
           </Link>
-          <img src={serviceDetail.imageGallery1} alt=""></img>
+          <img src={serviceDetail.gallery.imageGallery1} alt=""></img>
           <h2>Mô tả</h2>
           <p>{serviceDetail.description}</p>
         </div>
@@ -214,7 +214,14 @@ export default function ServiceDetail() {
                 </TabPanel>
               );
             })}
-
+            {(listPack.length == 1 || listPack.length == 2) &&
+              Array(3 - listPack.length)
+                .fill("Không có gói này")
+                .map((val, idx) => (
+                  <>
+                    <h1>{val}</h1>
+                  </>
+                ))}
             <Dialog
               fullWidth
               maxWidth="sm"

@@ -92,8 +92,7 @@ export default function SellerServiceDetail() {
     dispatch(updateService(obj))
       .unwrap()
       .then(() => {
-        // console.log("add service successfull");
-        dispatch(fetchServices());
+        dispatch(fetchServiceDetail(serviceId));
       })
       .catch(() => {
         console.log("update service fail");
@@ -110,8 +109,7 @@ export default function SellerServiceDetail() {
     dispatch(updateService(obj))
       .unwrap()
       .then(() => {
-        // console.log("add service successfull");
-        dispatch(fetchServices());
+        dispatch(fetchServiceDetail(serviceId));
       })
       .catch(() => {
         console.log("update service fail");
@@ -206,7 +204,7 @@ export default function SellerServiceDetail() {
         .unwrap()
         .then(() => {
           setAlert("Cập nhật thành công"); // Update count to be 5 after timeout is scheduled
-          dispatch(fetchServices());
+          dispatch(fetchServiceDetail(serviceId));
           setOpenUpdateOverView(false);
           setTimeout(() => {
             setAlert(""); // count is 0 here
@@ -331,7 +329,7 @@ export default function SellerServiceDetail() {
         .unwrap()
         .then(() => {
           setAlert("Thêm gói thành công"); // Update count to be 5 after timeout is scheduled
-          dispatch(fetchServices());
+          dispatch(fetchServiceDetail(serviceId));
           setTimeout(() => {
             setAlert(""); // count is 0 here
           }, 3000);
@@ -364,7 +362,7 @@ export default function SellerServiceDetail() {
         .unwrap()
         .then(() => {
           setAlert("Cập nhật gói thành công"); // Update count to be 5 after timeout is scheduled
-          dispatch(fetchServices());
+          dispatch(fetchServiceDetail(serviceId));
           setTimeout(() => {
             setAlert(""); // count is 0 here
           }, 3000);

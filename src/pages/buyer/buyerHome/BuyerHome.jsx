@@ -14,6 +14,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Typography,
 } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -24,7 +25,6 @@ import {
   selectAllServices,
 } from "../../../redux/serviceSlice";
 import Pagination from "@material-ui/lab/Pagination";
-import Rating from "@material-ui/lab/Rating";
 import {
   fetchCurrentUser,
   fetchTopSellers,
@@ -45,7 +45,8 @@ export default function BuyerHome() {
   const [subCateId, setSubCateId] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
-  const [rating, setRating] = useState(0);
+  const [sortBy, setSortBy] = useState("impression");
+  const [sortDir, setSortDir] = useState("DESC");
   const [page, setPage] = useState(1);
 
   console.log("search", search);
@@ -75,11 +76,39 @@ export default function BuyerHome() {
       const obj = {
         categoryId: selected,
         page: page,
-        subCategoryId: subCateId,
+        // subCategoryId: subCateId,
       };
       dispatch(fetchServices(obj));
     },
     [selected]
+  );
+  useEffect(
+    (e) => {
+      if (!search) {
+        const obj = {
+          categoryId: selected,
+          page: page,
+          subCategoryId: subCateId,
+          minPrice: minPrice,
+          maxPrice: maxPrice,
+          sortBy: sortBy,
+          sortDir: sortDir,
+        };
+        dispatch(fetchServices(obj));
+      } else {
+        const obj = {
+          categoryId: selected,
+          page: page - 1,
+          subCategoryId: subCateId,
+          minPrice: minPrice,
+          maxPrice: maxPrice,
+          sortBy: sortBy,
+          sortDir: sortDir,
+        };
+        dispatch(fetchServicesSearchFilter({ search, obj }));
+      }
+    },
+    [page]
   );
   // useEffect(
   //   (e) => {
@@ -107,6 +136,8 @@ export default function BuyerHome() {
         subCategoryId: subCateId,
         minPrice: minPrice,
         maxPrice: maxPrice,
+        sortBy: sortBy,
+        sortDir: sortDir,
       };
       dispatch(fetchServices(obj));
     } else {
@@ -116,6 +147,8 @@ export default function BuyerHome() {
         subCategoryId: subCateId,
         minPrice: minPrice,
         maxPrice: maxPrice,
+        sortBy: sortBy,
+        sortDir: sortDir,
       };
       dispatch(fetchServicesSearchFilter({ search, obj }));
     }
@@ -127,6 +160,9 @@ export default function BuyerHome() {
 
       <div className="buyerHome_form">
         <div className="buyerHome_left">
+          <Typography variant="h5" style={{ width: "250px" }}>
+            {listService.message}
+          </Typography>
           <div className="listSearch">
             <h1 className="lsTitle">
               Lọc dịch vụ
@@ -174,13 +210,33 @@ export default function BuyerHome() {
                     className="lsOptionInput"
                   />
                 </div>
-                <label>Đánh giá</label>
+                <label>Sắp xếp theo:</label>
                 <div className="lsOptionItem">
-                  <Rating
-                    name="pristine"
-                    value={rating}
-                    onChange={(e) => setRating(e.target.value)}
-                  />
+                  {/* <InputLabel id="s1">Sắp xếp theo</InputLabel> */}
+                  <Select
+                    labelId="s1"
+                    id="demo-simple-select"
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    style={{ width: "100%" }}
+                  >
+                    <MenuItem value="impression">Lượt mua</MenuItem>
+                    <MenuItem value="createAt">Ngày tạo</MenuItem>
+                    <MenuItem value="fromPrice">Giá</MenuItem>
+                  </Select>
+                </div>
+                {/* <label>Tăng/giảm:</label> */}
+                <div className="lsOptionItem">
+                  <Select
+                    labelId="Tăng/Giảm"
+                    id="demo-simple-select"
+                    value={sortDir}
+                    onChange={(e) => setSortDir(e.target.value)}
+                    style={{ width: "100%" }}
+                  >
+                    <MenuItem value="ASC">Tăng dần</MenuItem>
+                    <MenuItem value="DESC">Giảm dần</MenuItem>
+                  </Select>
                 </div>
                 <div className="lsOptionItem">
                   <Button
@@ -216,14 +272,13 @@ export default function BuyerHome() {
                     id={item.id}
                     image={item.imageGallery1}
                     title={item.title}
-                    sellerId={item.sellerId}
-                    description={item.branchName}
-                    rating={item.ratingPoint}
                     price={item.fromPrice}
-                    status={item.status}
-                    firstName={item.firstName}
-                    lastName={item.lastName}
                     avatar={item.avatar}
+                    impression={item.impression}
+                    branchName={item.branchName}
+                    rankSeller={item.rankSeller}
+                    ratingPoint={item.ratingPoint}
+                    totalOrderFinish={item.totalOrderFinish}
                   />
                 ))}
               </Grid>

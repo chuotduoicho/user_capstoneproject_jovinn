@@ -9,17 +9,18 @@ import {
   Typography,
   Button,
 } from "@material-ui/core";
+import { Shop, ShoppingCart, Visibility } from "@material-ui/icons";
 export default function ServiceList({
   id,
   image,
-  description,
-  rating,
   title,
   price,
-  status,
-  firstName,
-  lastName,
   avatar,
+  impression,
+  branchName,
+  rankSeller,
+  ratingPoint,
+  totalOrderFinish,
 }) {
   const navigate = useNavigate();
   return (
@@ -50,29 +51,27 @@ export default function ServiceList({
               }
               alt="Paella dish"
             />
-            <Typography
-              gutterBottom
-              variant="h6"
-              component="h2"
-              className="name"
-            >
-              {firstName} {lastName}
-            </Typography>
+            <div className="service_introContent">
+              <Typography variant="h5" className="service_introContent_brand">
+                {branchName}
+              </Typography>
+              <Typography variant="h7" className="name">
+                {rankSeller} {ratingPoint}⭐
+              </Typography>
+              <Typography variant="h7" className="name">
+                Số đơn hoàn thành: {totalOrderFinish}
+              </Typography>
+            </div>
           </div>
-          <Typography variant="h6">{title}.</Typography>
-          <Typography className="service_cardContentDes">
-            {description}.
+          <Typography className="service_cardContentDes" variant="h3">
+            {title}
           </Typography>
         </CardContent>
-        <CardActions
-          className={
-            status === "ACTIVE" ? "service_cardAction" : "service_cardAction2"
-          }
-        >
-          <Button size="small" color="primary">
-            Chi tiết
-          </Button>
-          <p className="service_rating">Giá : {price} $</p>
+        <CardActions className={"service_cardAction"}>
+          <p className="service_rating">Giá từ: {price} $</p>
+          <Typography variant="h7" className="name">
+            Lượt mua: {totalOrderFinish} 🛒
+          </Typography>
         </CardActions>
       </Card>
     </Grid>

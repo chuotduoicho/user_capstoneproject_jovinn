@@ -28,7 +28,7 @@ const SetNewPassword = () => {
 
     console.log({ capcha, password });
     if (
-      !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,30}$/.test(
+      !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*\s]{6,30}$/.test(
         password
       )
     ) {
@@ -37,6 +37,9 @@ const SetNewPassword = () => {
       dispatch(resetPassword({ capcha, password }))
         .unwrap()
         .then(() => {
+          navigate("/auth/login", {
+            state: { alert: "Tạo mật khẩu mới thành công!" },
+          });
           setSuccessful(true);
         })
         .catch(() => {
@@ -59,12 +62,12 @@ const SetNewPassword = () => {
           label="Mật khẩu mới"
           onChange={(e) => setPassword(e.target.value)}
           error={
-            !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,30}$/.test(
+            !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*\s]{6,30}$/.test(
               password
             ) && check
           }
           helperText={
-            !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,30}$/.test(
+            !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*\s]{6,30}$/.test(
               password
             ) &&
             check &&

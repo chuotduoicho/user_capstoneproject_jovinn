@@ -1,5 +1,5 @@
 import "./login.scss";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Button, TextField } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useState, useEffect } from "react";
@@ -7,6 +7,7 @@ import { clearMessage } from "../../../redux/message";
 import { login } from "../../../redux/authSlice";
 import Link from "@material-ui/core/Link";
 import { fetchCurrentUser } from "../../../redux/userSlice";
+import { toast, ToastContainer } from "react-toastify";
 const Login = () => {
   const { user } = useSelector((state) => state.auth);
   const [successful, setSuccessful] = useState(false);
@@ -16,6 +17,8 @@ const Login = () => {
   const { message } = useSelector((state) => state.message);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { state } = useLocation();
+  const { alert } = state || {};
   useEffect(() => {
     dispatch(clearMessage());
     if (user) navigate("/buyerHome");
@@ -26,7 +29,11 @@ const Login = () => {
 
     console.log("user name password: ", { username, password });
     if (
-      !/^[^\s][a-zA-Z0-9]{4,28}[^\s]$/.test(username) ||
+      (!(
+        /^[a-zA-Z0-9]{6,30}$/.test(username) ||
+        /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(username)
+      ) &&
+        check) ||
       password.length < 6 ||
       password.length > 30
     ) {
@@ -46,8 +53,14 @@ const Login = () => {
         });
     }
   };
+  useEffect(() => {
+    if (alert) {
+      toast.success(alert);
+    }
+  }, []);
   return (
     <div className="login">
+      <ToastContainer limit={5000} position="bottom-right" />
       <Link href="/">
         <p className="logo_login">Jovinn.</p>
       </Link>
@@ -57,11 +70,19 @@ const Login = () => {
         <TextField
           className="input"
           variant="outlined"
-          label="Tên đăng nhập"
+          label="Tên đăng nhập/Email"
           onChange={(e) => setUsername(e.target.value)}
-          error={!/^[^\s][a-zA-Z0-9]{4,28}[^\s]$/.test(username) && check}
+          error={
+            !(
+              /^[a-zA-Z0-9]{6,30}$/.test(username) ||
+              /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(username)
+            ) && check
+          }
           helperText={
-            (username.length < 6 || username.length > 30) &&
+            !(
+              /^[a-zA-Z0-9]{6,30}$/.test(username) ||
+              /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(username)
+            ) &&
             check &&
             "Từ 6 đến 30 kí tự"
           }
@@ -94,6 +115,7 @@ const Login = () => {
             Đăng kí
           </Link>
         </span>
+
         {message && (
           <div
             className={successful ? "login_success" : "login_error"}
