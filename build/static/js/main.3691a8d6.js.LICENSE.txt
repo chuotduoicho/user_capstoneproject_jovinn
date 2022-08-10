@@ -4,6 +4,10 @@ object-assign
 @license MIT
 */
 
+/*!
+ * Programatically add the following
+ */
+
 /**
  * @license React
  * react-is.production.min.js

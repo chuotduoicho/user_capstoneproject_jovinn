@@ -15,6 +15,8 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  MobileStepper,
+  Paper,
   TextField,
 } from "@material-ui/core";
 import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
@@ -23,8 +25,12 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchServiceDetail,
   selectServiceDetail,
+  selectServiceStatus,
 } from "../../../redux/serviceSlice";
 import { selectWallet } from "../../../redux/userSlice";
+import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
+import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
+import { autoPlay } from "react-swipeable-views-utils";
 import { useEffect } from "react";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -58,14 +64,16 @@ function a11yProps(index) {
     "aria-controls": `full-width-tabpanel-${index}`,
   };
 }
+const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 export default function ServiceDetail() {
   const { serviceId } = useParams();
+  const status = useSelector(selectServiceStatus);
   const navigate = useNavigate();
   const [amount, setAmount] = useState(1);
   const [requirement, setRequirement] = useState("");
   const [packageId, setPackageId] = useState("");
   const [pack, setPack] = useState();
-  const [listPack, setListPack] = useState([]);
+
   const [check, setCheck] = useState(false);
   // const serviceDetail = useSelector((state) =>
   //   selectServiceById(state, serviceId)
@@ -76,14 +84,40 @@ export default function ServiceDetail() {
   const theme = useTheme();
   const [value, setValue] = useState(0);
 
+  const [listImg, setListImg] = useState([]);
+  const [listPack, setListPack] = useState([]);
   const dispatch = useDispatch();
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
   useEffect(() => {
     dispatch(fetchServiceDetail(serviceId));
-    setListPack(serviceDetail.packages);
   }, []);
+  useEffect(() => {
+    if (status == "success") {
+      if (serviceDetail.gallery.imageGallery1) {
+        setListImg((current) => [
+          ...current,
+          serviceDetail.gallery.imageGallery1,
+        ]);
+      }
+      if (serviceDetail.gallery.imageGallery2) {
+        setListImg((current) => [
+          ...current,
+          serviceDetail.gallery.imageGallery2,
+        ]);
+      }
+      if (serviceDetail.gallery.imageGallery3) {
+        setListImg((current) => [
+          ...current,
+          serviceDetail.gallery.imageGallery3,
+        ]);
+      }
+      setListPack(serviceDetail.packages);
+    } else {
+      setListImg([]);
+    }
+  }, [status]);
   const handleChangeIndex = (index) => {
     setValue(index);
   };
@@ -110,13 +144,28 @@ export default function ServiceDetail() {
     setOpen(false);
     setCheck(false);
   };
+  console.log(listImg);
+  // img
+  const [activeStep, setActiveStep] = useState(0);
+  const maxSteps = listImg.length;
 
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const handleStepChange = (step) => {
+    setActiveStep(step);
+  };
   return (
     <div className="buyer_service_detail">
       <BuyerHeader />
       <div className="service_detail2">
         <div className="detail_left">
-          <h2>{serviceDetail.title}</h2>
+          {/* <h2>{serviceDetail.title}</h2>
           <Link to={"/seller/" + serviceDetail.sellerId}>
             <div className="seller_header">
               <img
@@ -136,7 +185,97 @@ export default function ServiceDetail() {
           </Link>
           <img src={serviceDetail.gallery.imageGallery1} alt=""></img>
           <h2>Mô tả</h2>
-          <p>{serviceDetail.description}</p>
+          <p>{serviceDetail.description}</p> */}
+          <Box sx={{ maxWidth: 600, flexGrow: 1 }}>
+            <Paper
+              square
+              elevation={0}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                height: 50,
+                pl: 2,
+                bgcolor: "background.default",
+              }}
+            >
+              <h2>{serviceDetail.title}</h2>
+              <Link to={"/seller/" + serviceDetail.sellerId}>
+                <div className="seller_header">
+                  <img
+                    src={
+                      serviceDetail.avatar
+                        ? serviceDetail.avatar
+                        : "https://cdn1.iconfinder.com/data/icons/user-pictures/100/unknown-512.png"
+                    }
+                    className="avatar"
+                  />
+                  <p>
+                    {serviceDetail.firstName} {serviceDetail.lastName}|{" "}
+                    {serviceDetail.rankSeller} | Tổng số đơn:{" "}
+                    {serviceDetail.totalOrder}
+                  </p>
+                </div>
+              </Link>
+            </Paper>
+            <AutoPlaySwipeableViews
+              axis={theme.direction === "rtl" ? "x-reverse" : "x"}
+              index={activeStep}
+              onChangeIndex={handleStepChange}
+              enableMouseEvents
+            >
+              {listImg.map((step, index) => (
+                <div key={step.label}>
+                  {Math.abs(activeStep - index) <= 2 ? (
+                    <Box
+                      component="img"
+                      sx={{
+                        height: 255,
+                        display: "block",
+                        maxWidth: 600,
+                        overflow: "hidden",
+                        width: "100%",
+                      }}
+                      src={step}
+                      alt="img"
+                    />
+                  ) : null}
+                </div>
+              ))}
+            </AutoPlaySwipeableViews>
+            <MobileStepper
+              steps={maxSteps}
+              position="static"
+              activeStep={activeStep}
+              nextButton={
+                <Button
+                  size="small"
+                  onClick={handleNext}
+                  disabled={activeStep === maxSteps - 1}
+                >
+                  Sau
+                  {theme.direction === "rtl" ? (
+                    <KeyboardArrowLeft />
+                  ) : (
+                    <KeyboardArrowRight />
+                  )}
+                </Button>
+              }
+              backButton={
+                <Button
+                  size="small"
+                  onClick={handleBack}
+                  disabled={activeStep === 0}
+                >
+                  {theme.direction === "rtl" ? (
+                    <KeyboardArrowRight />
+                  ) : (
+                    <KeyboardArrowLeft />
+                  )}
+                  Trước
+                </Button>
+              }
+            />
+          </Box>
         </div>
         <div className="detail_right">
           <AppBar position="static" color="default">
