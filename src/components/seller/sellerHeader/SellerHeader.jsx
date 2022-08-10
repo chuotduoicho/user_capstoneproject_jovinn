@@ -3,6 +3,7 @@ import {
   NotificationImportantOutlined,
   ChatBubbleOutline,
   AddSharp,
+  Delete,
 } from "@material-ui/icons";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
@@ -13,20 +14,20 @@ import MenuItem from "@material-ui/core/MenuItem";
 import MenuList from "@material-ui/core/MenuList";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef, useCallback } from "react";
-import { Button, List, ListItem, ListItemText, Popover } from "@material-ui/core";
+import { Button, List, ListItem, ListItemSecondaryAction, ListItemText, Popover } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchNotifications, selectNotifications } from "../../../redux/notificationSlice";
+import { deleteNotification, fetchNotifications, readNotification, selectNotifications } from "../../../redux/notificationSlice";
 export default function SellerHeader() {
-  
+
   const [open, setOpen] = useState(false);
   const listNotification = useSelector(selectNotifications);
-  const [ notifications, setNotifications] = useState(listNotification.list);
-  const [ unread, setUnread ] = useState(listNotification.unread);
+  const [notifications, setNotifications] = useState([]);
+  const [unread, setUnread] = useState([]);
   const anchorRef = useRef(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
-  
+
   const handleIconClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -78,10 +79,13 @@ export default function SellerHeader() {
     //   setUnread(updatedNoti.unread);
     // }
     dispatch(fetchNotifications());
+    setNotifications(listNotification.list);
+    setUnread(listNotification.unread);
+    console.log("notifications", listNotification);
+
     if (prevOpen.current === true && open === false) {
       anchorRef.current.focus();
     }
-
 
     prevOpen.current = open;
   }, [open]);
@@ -127,7 +131,7 @@ export default function SellerHeader() {
             </Link>
           </div> */}
           <div className="item">
-            <NotificationImportantOutlined className="icon" onClick={handleIconClick}/>
+            <NotificationImportantOutlined className="icon" onClick={handleIconClick} />
             <div className="counter" >{unread}</div>
             <Popover
               id={id}
@@ -142,13 +146,33 @@ export default function SellerHeader() {
               <List>
                 {
                   notifications.map((item) => (
-                    <ListItem >
-                      <ListItemText
-                        // onClick={navigate(item.link)}
-                        primary={item.shortContent}
-                        secondary={item.createAt}
-                      />
-                    </ListItem>
+                      <ListItem
+                        button
+                        style={item.unread ? { background: '#B9D5E3' } : {}}
+                        onClick={(event) => {
+                          event.preventDefault();                        
+                          dispatch(readNotification(item.id));
+                          navigate(item.link);
+                          // dispatch(fetchNotifications());
+                          // setNotifications(listNotification.list);
+                          // setUnread(listNotification.unread);
+                        }}
+                      >
+                        <ListItemText
+                          primary={item.shortContent}
+                          secondary={item.createAt}
+                        />
+                        <ListItemSecondaryAction>
+                          <Delete
+                            style={{ color: 'gray' }}
+                            onClick={() => {
+                              dispatch(deleteNotification(item.id));
+                              setNotifications(
+                                notifications.filter((el) => el.id !== item.id));
+                            }}
+                          />
+                        </ListItemSecondaryAction>
+                      </ListItem>
                   ))
                 }
               </List>

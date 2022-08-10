@@ -1,15 +1,18 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import requestService from "../services/request.service";
 const requests = JSON.parse(localStorage.getItem("requests"));
+const requestDetail = JSON.parse(localStorage.getItem("postRequestDetail"));
 const initialState = requests
   ? {
       listRequests: requests,
+      postRequestDetail : requestDetail?requestDetail:{},
       listOffers: [],
       listSellersInvite: [],
       status: "idle",
     }
   : {
       listRequests: [],
+      postRequestDetail : {},
       listOffers: [],
       listSellersInvite: [],
       status: "idle",
@@ -102,6 +105,24 @@ export const applyRequest = createAsyncThunk(
     return data;
   }
 );
+
+export const fetchTargetSeller = createAsyncThunk(
+  "request/fetchTargetSeller",
+  async (targetSellerRequest) => {
+    const data = await requestService.getTargetSeller(targetSellerRequest);
+    return data;
+  }
+);
+
+export const fetchRequestDetail = createAsyncThunk(
+  "request/fetchRequestDetail",
+  async (postRequestId) => {
+    const data = await requestService.getRequestDetail(postRequestId);
+    console.log(data);
+    return data;
+  }
+);
+
 const requestSlice = createSlice({
   name: "request",
   initialState,
@@ -202,6 +223,16 @@ const requestSlice = createSlice({
     [fetchOffersBuyer.rejected]: (state, action) => {
       state.status = "failed";
     },
+    [fetchRequestDetail.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [fetchRequestDetail.fulfilled]: (state, { payload }) => {
+      state.postRequestDetail = payload;
+      state.status = "success";
+    },
+    [fetchRequestDetail.rejected]: (state, action) => {
+      state.status = "failed";
+    },
   },
 });
 
@@ -211,10 +242,7 @@ export default reducer;
 export const selectAllRequests = (state) => state.request.listRequests;
 
 export const selectRequestStatus = (state) => state.request.status;
-export const selectRequestById = (state, requestId) =>
-  state.request.listRequests.find(
-    (request) => request.postRequestId === requestId
-  );
+export const selectRequestById = (state) => state.request.postRequestDetail;
 export const selectAllOffer = (state) => state.request.listOffers;
 export const selectOfferById = (state, offerId) =>
   state.request.listOffers.find((offer) => offer.id === offerId);

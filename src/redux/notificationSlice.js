@@ -10,12 +10,30 @@ const initialState = notifications
     : {
         notifications: {},
         status: "idle"
-    }
+    };
+
 export const fetchNotifications = createAsyncThunk(
     "notify/notifications",
     async () => {
         const data = await notificationService.getAllNotification();
+        return data;
+    }
+);
+
+export const readNotification = createAsyncThunk(
+    "notify/read",
+    async (notificationId) => {
+        console.log(notificationId);
+        const data = await notificationService.readNotification(notificationId);
         console.log(data);
+        return data;
+    }
+);
+
+export const deleteNotification = createAsyncThunk(
+    "notify/delete",
+    async (notificationId) => {
+        const data = await notificationService.deleteNotification(notificationId);
         return data;
     }
 )
@@ -24,7 +42,34 @@ const notificationSlice = createSlice({
     name: "notification",
     initialState,
     extraReducers:{
-        
+        [fetchNotifications.fulfilled]: (state, { payload }) => {
+            state.notifications = payload;
+            state.status = "success";
+        },
+        [fetchNotifications.pending]: (state, action) => {
+            state.status = "loading";
+        },
+        [fetchNotifications.pending]: (state, action) => {
+            state.status = "rejected";
+        },
+        [readNotification.fulfilled]: (state, { payload }) => {
+            state.status = "success";
+        },
+        [readNotification.pending]: (state, action) => {
+            state.status = "loading";
+        },
+        [readNotification.pending]: (state, action) => {
+            state.status = "rejected";
+        },
+        [deleteNotification.fulfilled]: (state, { payload }) => {
+            state.status = "success";
+        },
+        [deleteNotification.pending]: (state, action) => {
+            state.status = "loading";
+        },
+        [deleteNotification.pending]: (state, action) => {
+            state.status = "rejected";
+        },
     }
 });
 

@@ -8,15 +8,15 @@ import {
 } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-
 import Contact from "../../../components/guest/contact/Contact";
 import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
-import { selectAllCategories } from "../../../redux/categorySlice";
+import { fetchCategories, selectAllCategories } from "../../../redux/categorySlice";
 import {
   applyRequest,
+  fetchRequestDetail,
   fetchRequestsSeller,
   selectRequestById,
 } from "../../../redux/requestSlice";
@@ -24,10 +24,11 @@ import "./sellerRequestDetail.scss";
 
 export default function SellerRequestDetail() {
   const { requestId } = useParams();
-  const requestDetail = useSelector((state) =>
-    selectRequestById(state, requestId)
-  );
+  const requestDetail = useSelector(selectRequestById);
   const listCategory = useSelector(selectAllCategories);
+  const [listSubcategory, setListSubcategory] = useState([]);
+  const [listSkills, setListSkills] = useState([]);
+  const [listMilestones, setListMilestones] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleAccept = (e) => {
@@ -44,6 +45,17 @@ export default function SellerRequestDetail() {
   };
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  useEffect(() => {
+    dispatch(fetchRequestDetail(requestId));
+    dispatch(fetchCategories());
+    setListSkills(requestDetail.skillsName);
+    setListSubcategory(listCategory
+      .find((val) => {
+        return val.id == requestDetail.categoryId;
+      })
+      .subCategories);
+    setListMilestones(requestDetail.milestoneContracts);
+  },[]);
   return (
     <div className="buyer_profile">
       <SellerHeader />
@@ -128,11 +140,8 @@ export default function SellerRequestDetail() {
               variant="outlined"
               disabled
             >
-              {listCategory
-                .find((val) => {
-                  return val.id == requestDetail.categoryId;
-                })
-                .subCategories.map((subCategory, index) => (
+              {
+                listSubcategory.map((subCategory, index) => (
                   <MenuItem key={index} value={subCategory.id}>
                     {subCategory.name}
                   </MenuItem>
@@ -157,13 +166,9 @@ export default function SellerRequestDetail() {
               <MenuItem value="EXPERT">EXPERT</MenuItem>
             </TextField>
             <div className="tags-input-container">
-              {requestDetail.skillsName.map((skill, index) => (
+              {listSkills.map((skill, index) => (
                 <div className="tag-item" key={index}>
                   <span className="text">{skill.name}</span>
-                  {/* 
-                  <span className="close" onClick={() => removeSkill(index)}>
-                    &times;
-                  </span> */}
                 </div>
               ))}
               {/* <input
@@ -196,12 +201,12 @@ export default function SellerRequestDetail() {
               label="Số giai đoạn"
               variant="outlined"
               type="number"
-              value={requestDetail.milestoneContracts.length}
+              //value={requestDetail.milestoneContracts.length}
               style={{ width: "8%", margin: "10px" }}
               disabled
             />
           </div>
-          {requestDetail.milestoneContracts.map((stage, index) => (
+          {listMilestones.map((stage, index) => (
             <div className="profession_itemStage">
               {requestDetail.milestoneContracts.length > 1 && (
                 <div className="profession_row">
@@ -274,10 +279,10 @@ export default function SellerRequestDetail() {
           <div className="profession_row">
             <Typography variant="h4">
               Tổng chi phí :{" "}
-              {requestDetail.milestoneContracts.reduce(
+              {/* {requestDetail.milestoneContracts.reduce(
                 (total, item) => total + parseInt(item.milestoneFee),
                 0
-              )}{" "}
+              )}{" "} */}
               $
             </Typography>
             <TextField
@@ -293,7 +298,7 @@ export default function SellerRequestDetail() {
               }}
               value={requestDetail.contractCancelFee}
               disabled
-              // onChange={(e) => setDescriptionBio(e.target.value)}
+            // onChange={(e) => setDescriptionBio(e.target.value)}
             />
           </div>
           <div className="profession_row">
