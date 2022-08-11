@@ -2,13 +2,31 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import requestService from "../services/request.service";
 const requests = JSON.parse(localStorage.getItem("requests"));
 const offers = JSON.parse(localStorage.getItem("offers"));
+const requestDetail = JSON.parse(localStorage.getItem("postRequestDetail"));
 const initialState = {
   listRequests: requests ? requests : [],
+  postRequestDetail: requestDetail ? requestDetail : {},
   listOffers: offers ? offers : [],
   listSellersInvite: [],
   status: "idle",
 };
 
+export const fetchTargetSeller = createAsyncThunk(
+  "request/fetchTargetSeller",
+  async (targetSellerRequest) => {
+    const data = await requestService.getTargetSeller(targetSellerRequest);
+    return data;
+  }
+);
+
+export const fetchRequestDetail = createAsyncThunk(
+  "request/fetchRequestDetail",
+  async (postRequestId) => {
+    const data = await requestService.getRequestDetail(postRequestId);
+    console.log(data);
+    return data;
+  }
+);
 export const fetchRequestsBuyer = createAsyncThunk(
   "request/fetchRequestsBuyer",
   async () => {
@@ -215,6 +233,26 @@ const requestSlice = createSlice({
     [fetchOffersBuyer.rejected]: (state, action) => {
       state.status = "failed";
     },
+    [fetchRequestDetail.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [fetchRequestDetail.fulfilled]: (state, { payload }) => {
+      state.postRequestDetail = payload;
+      state.status = "success";
+    },
+    [fetchRequestDetail.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [fetchTargetSeller.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [fetchTargetSeller.fulfilled]: (state, { payload }) => {
+      state.listSellersInvite = payload;
+      state.status = "success";
+    },
+    [fetchTargetSeller.rejected]: (state, action) => {
+      state.status = "failed";
+    },
   },
 });
 
@@ -224,10 +262,8 @@ export default reducer;
 export const selectAllRequests = (state) => state.request.listRequests;
 
 export const selectRequestStatus = (state) => state.request.status;
-export const selectRequestById = (state, requestId) =>
-  state.request.listRequests.find(
-    (request) => request.postRequestId === requestId
-  );
+export const selectRequestById = (state) => state.request.postRequestDetail;
+
 export const selectAllOffer = (state) => state.request.listOffers;
 export const selectOfferById = (state, offerId) =>
   state.request.listOffers.find((offer) => offer.id === offerId);

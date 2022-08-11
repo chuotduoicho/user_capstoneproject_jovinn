@@ -122,6 +122,27 @@ const getOffersOfSeller = () => {
     });
 };
 
+const getTargetSeller = (targetSellerRequest) => {
+  return axios
+    .post(API_URL + "/get-ten-seller-target", targetSellerRequest, {
+      headers: authHeader(),
+    })
+    .then((response) => {
+      return response.data;
+    });
+};
+
+const getRequestDetail = (postRequestId) => {
+  return axios
+    .get(API_URL + "/getPostRequestDetails/" + postRequestId, {
+      headers: authHeader(),
+    })
+    .then((response) => {
+      localStorage.setItem("postRequestDetail", JSON.stringify(response.data));
+      return response.data;
+    });
+};
+
 const requestService = {
   addRequest,
   addOffer,
@@ -134,6 +155,8 @@ const requestService = {
   getOffersOfBuyer,
   getOffersOfSeller,
   applyOffer,
+  getTargetSeller,
+  getRequestDetail,
 };
 
 export default requestService;

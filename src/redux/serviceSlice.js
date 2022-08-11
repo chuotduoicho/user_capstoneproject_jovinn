@@ -12,6 +12,7 @@ const initialState = {
   listServicesImpression: servicesImpression ? servicesImpression : [],
   listServicesHistory: servicesHistory ? servicesHistory : [],
   serviceDetail: serviceDetail ? serviceDetail : {},
+  listRating: [],
   newServiceId: null,
   status: "idle",
   statusServiceDetail: "idle",
@@ -21,6 +22,14 @@ export const fetchServicesImpression = createAsyncThunk(
   "service/fetchServicesImpression",
   async () => {
     const data = await ServiceService.get8ServicesImpression();
+    console.log(data);
+    return data;
+  }
+);
+export const fetchRating = createAsyncThunk(
+  "service/fetchRating",
+  async (serviceId) => {
+    const data = await ServiceService.getRating(serviceId);
     console.log(data);
     return data;
   }
@@ -132,6 +141,16 @@ const serviceSlice = createSlice({
       state.status = "success";
     },
     [fetchServicesImpression.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [fetchRating.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [fetchRating.fulfilled]: (state, { payload }) => {
+      state.listRating = payload;
+      state.status = "success";
+    },
+    [fetchRating.rejected]: (state, action) => {
       state.status = "failed";
     },
     [fetchServicesImpressionByCate.pending]: (state, action) => {
@@ -252,6 +271,8 @@ export const selectAllServices = (state) => state.service.listServices;
 export const selectServicesImpression = (state) =>
   state.service.listServicesImpression;
 export const selectServiceDetail = (state) => state.service.serviceDetail;
+
+export const selectListRating = (state) => state.service.listRating;
 export const selectNewServiceId = (state) => state.service.newServiceId;
 export const selectServiceStatus = (state) => state.service.status;
 export const selectServiceDetailStatus = (state) =>

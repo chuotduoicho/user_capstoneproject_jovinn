@@ -7,16 +7,13 @@ import {
   Grid,
   CardActions,
   Typography,
-  Button,
 } from "@material-ui/core";
-import { Shop, ShoppingCart, Visibility } from "@material-ui/icons";
 export default function ServiceList({
   id,
   image,
   title,
   price,
   avatar,
-  impression,
   branchName,
   rankSeller,
   ratingPoint,
@@ -37,7 +34,7 @@ export default function ServiceList({
               ? image
               : "https://img6.thuthuatphanmem.vn/uploads/2022/01/28/anh-ve-co-trang-nu-trung-quoc-dep-nhat_044336041.jpg"
           }
-          alt="Paella dish"
+          alt="Ảnh dịch vụ"
         />
         <CardContent className="service_cardContent">
           <div className="service_intro">
@@ -49,7 +46,7 @@ export default function ServiceList({
                   ? avatar
                   : "https://cdn1.iconfinder.com/data/icons/user-pictures/100/unknown-512.png"
               }
-              alt="Paella dish"
+              alt="Ảnh người bán"
             />
             <div className="service_introContent">
               <Typography variant="h5" className="service_introContent_brand">

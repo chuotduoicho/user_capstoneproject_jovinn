@@ -66,8 +66,8 @@
       }
     }
     .sellerHome_right {
-      .service {
-        width: 100%;
+      .serviceList {
+        width: 960px;
         height: auto;
       }
       .list {
@@ -76,9 +76,18 @@
         justify-content: center;
         list-style: none;
       }
-      .sellerHome_right_btn {
-        margin-left: 25px;
-        margin-top: 15px;
+
+      .sellerHome_rightbar {
+        display: flex;
+        .sellerHome_right_btn {
+          margin-left: 25px;
+          margin-right: 25px;
+          margin-top: 15px;
+          width: 180px;
+        }
+        .sellerHome_left_btn {
+          width: 180px;
+        }
       }
     }
   }

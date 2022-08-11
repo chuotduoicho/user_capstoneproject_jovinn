@@ -1,9 +1,4 @@
 import "./sellerHeader.scss";
-import {
-  NotificationImportantOutlined,
-  ChatBubbleOutline,
-  AddSharp,
-} from "@material-ui/icons";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import Grow from "@material-ui/core/Grow";
@@ -14,19 +9,54 @@ import MenuList from "@material-ui/core/MenuList";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { logout } from "../../../redux/authSlice";
-import { Button } from "@material-ui/core";
-import { useDispatch } from "react-redux";
+import {
+  Button,
+  ListItem,
+  ListItemSecondaryAction,
+  ListItemText,
+  List,
+  Popover,
+} from "@material-ui/core";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCurrentUser, selectCurrentUser } from "../../../redux/userSlice";
+import { Delete, NotificationImportantOutlined } from "@material-ui/icons";
+import {
+  deleteNotification,
+  fetchNotifications,
+  readNotification,
+  selectNotifications,
+} from "../../../redux/notificationSlice";
 export default function SellerHeader() {
+  const listNotification = useSelector(selectNotifications);
+  const currentUser = useSelector(selectCurrentUser);
   const [open, setOpen] = useState(false);
+  const [notifications, setNotifications] = useState(
+    listNotification.list ? listNotification.list : []
+  );
+  const [unread, setUnread] = useState(listNotification.unread);
   const anchorRef = useRef(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const handleIconClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleIconClose = () => {
+    setAnchorEl(null);
+  };
+  const iconOpen = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
+
   const logOut = useCallback(() => {
     dispatch(logout());
   }, [dispatch]);
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
   };
+  useEffect(() => {
+    dispatch(fetchCurrentUser());
+    dispatch(fetchNotifications());
+  }, []);
 
   // const handleLogout = (event) => {
   //   e.preventDefault();
@@ -92,23 +122,64 @@ export default function SellerHeader() {
           {/* </div> */}
         </div>
         <div className="right">
-          {/* <div className="item">
-            {" "}
-            <Link to="/sellerHome/createService">
-              <Button variant="contained" color="primary">
-                <AddSharp />
-                Tạo dịch vụ{" "}
-              </Button>{" "}
-            </Link>
-          </div> */}
-          {/* <div className="item">
-            <NotificationImportantOutlined className="icon" />
-            <div className="counter">1</div>
-          </div>
           <div className="item">
-            <ChatBubbleOutline className="icon" />
-            <div className="counter">2</div>
-          </div> */}
+            <NotificationImportantOutlined
+              className="icon"
+              onClick={handleIconClick}
+            />
+            <div className="counter">{unread}</div>
+            <Popover
+              id={id}
+              open={iconOpen}
+              anchorEl={anchorEl}
+              onClose={handleIconClose}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "center",
+              }}
+            >
+              <List>
+                {notifications.map((item) => (
+                  <ListItem
+                    button
+                    style={item.unread ? { background: "#B9D5E3" } : {}}
+                    onClick={() => {
+                      dispatch(readNotification(item.id))
+                        .unwrap()
+                        .then(() => {
+                          //dispatch(fetchNotifications());
+                          setNotifications(listNotification.list);
+                          setUnread(listNotification.unread);
+                          navigate(item.link);
+                        });
+                    }}
+                  >
+                    <ListItemText
+                      primary={item.shortContent}
+                      secondary={item.createAt}
+                    />
+                    <ListItemSecondaryAction>
+                      <Delete
+                        style={{ color: "gray" }}
+                        onClick={() => {
+                          dispatch(deleteNotification(item.id))
+                            .unwrap()
+                            .then(() => {
+                              //dispatch(fetchNotifications());
+                              setNotifications(listNotification.list);
+                              setUnread(listNotification.unread);
+                              setNotifications(
+                                notifications.filter((el) => el.id !== item.id)
+                              );
+                            });
+                        }}
+                      />
+                    </ListItemSecondaryAction>
+                  </ListItem>
+                ))}
+              </List>
+            </Popover>
+          </div>
           <Button
             ref={anchorRef}
             aria-controls={open ? "menu-list-grow" : undefined}
@@ -116,8 +187,13 @@ export default function SellerHeader() {
             onClick={handleToggle}
             className="item"
           >
+            Xin chào, {currentUser.username}
             <img
-              src="https://images.pexels.com/photos/941693/pexels-photo-941693.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
+              src={
+                currentUser.avatar
+                  ? currentUser.avatar
+                  : "https://images.pexels.com/photos/941693/pexels-photo-941693.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
+              }
               alt=""
               className="avatar"
             />

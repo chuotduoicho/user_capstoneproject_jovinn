@@ -7,7 +7,16 @@ import SellerSkill from "../../../components/seller/sellerSkill/SellerSkill";
 import SellerEducate from "../../../components/seller/sellerEducate/SellerEducate";
 import SellerCertificate from "../../../components/seller/sellerCertificate/SellerCertificate";
 import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
-import { Button, Container, Grid } from "@material-ui/core";
+import {
+  Button,
+  Container,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography,
+} from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { selectAllCategories } from "../../../redux/categorySlice";
@@ -41,6 +50,8 @@ export default function SellerHome() {
   // const listCategory = useSelector(selectAllCategories);
   const listService = useSelector(selectAllServices);
   // const [selected, setSelected] = useState(listCategory[0].id);
+  const [sortBy, setSortBy] = useState("impression");
+  const [sortDir, setSortDir] = useState("DESC");
   const [page, setPage] = useState(1);
   useEffect(() => {
     if (!user) {
@@ -50,16 +61,35 @@ export default function SellerHome() {
     } else {
       const sellerId = currentUser.seller.id;
       const obj = {
-        page: page,
         status: "ACTIVE",
       };
       dispatch(fetchServicesSeller({ sellerId, obj }));
     }
   }, [user]);
-
+  // useEffect(
+  //   (e) => {
+  //     const obj = {
+  //       page: page,
+  //       // sortBy: sortBy,
+  //       // sortDir: sortDir,
+  //     };
+  //     dispatch(fetchServices(obj));
+  //   },
+  //   [page]
+  // );
   const handleChange = (e, p) => {
     setPage(p);
   };
+  const handleChangeSortBy = (e) => {
+    // setPage(1);
+    // setSortBy(e.target.value);
+    // const obj = {
+    //   sortBy: e.target.value,
+    //   sortDir: sortDir,
+    // };
+    // dispatch(fetchServices(obj));
+  };
+
   const list = listService.content ? listService.content : [];
   const dateJoin = ChangeFormateDate(currentUser.joinSellingAt);
   return (
@@ -67,6 +97,9 @@ export default function SellerHome() {
       <SellerHeader />
       <div className="sellerHome_form">
         <div className="sellerHome_left">
+          <Typography variant="h5" style={{ width: "250px" }}>
+            {listService.message}
+          </Typography>
           <div className="sellerHome_leftCard">
             <img
               src={
@@ -74,7 +107,7 @@ export default function SellerHome() {
                   ? currentUser.avatar
                   : "https://cdn1.iconfinder.com/data/icons/user-pictures/100/unknown-512.png"
               }
-              style={{ width: "230px" }}
+              style={{ width: "230px", borderRadius: "50%" }}
               alt="avatar"
             />
             {/* <h1 className="lsTitle">Nguyễn Thế Vinh</h1> */}
@@ -101,6 +134,7 @@ export default function SellerHome() {
                     Cấp độ: {currentUser.seller.rankSeller}
                   </span>
                 </div>
+
                 <div className="sellerHome_leftCard_lsOptionItem">
                   <span className="sellerHome_leftCard_lsOptionText">
                     Tổng số order: {currentUser.seller.totalOrderFinish}
@@ -131,16 +165,36 @@ export default function SellerHome() {
               />
             ))}
           </ul> */}
-          <Link to="/sellerHome/createService">
-            <Button
-              variant="contained"
-              color="primary"
-              className="sellerHome_right_btn"
-            >
-              <AddSharp />
-              Tạo dịch vụ{" "}
-            </Button>{" "}
-          </Link>
+          <div className="sellerHome_rightbar">
+            <Link to="/sellerHome/createService">
+              <Button
+                variant="contained"
+                color="primary"
+                className="sellerHome_right_btn"
+              >
+                <AddSharp />
+                Tạo dịch vụ{" "}
+              </Button>{" "}
+            </Link>
+            <FormControl className="sellerHome_left_btn">
+              <InputLabel id="demo-simple-select-label">
+                Sắp xếp theo
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Sắp xếp theo"
+                variant="filled"
+                value={sortBy}
+                onChange={handleChangeSortBy}
+              >
+                <MenuItem value="impression">Lượt mua</MenuItem>
+                <MenuItem value="createAt">Ngày tạo</MenuItem>
+                <MenuItem value="fromPrice">Giá</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
+
           <div className="serviceList" id="intro">
             <Container className="service_cardGrid" maxWidth="md">
               {/* End hero unit */}
@@ -151,14 +205,13 @@ export default function SellerHome() {
                     id={item.id}
                     image={item.imageGallery1}
                     title={item.title}
-                    sellerId={item.sellerId}
-                    description={item.description}
-                    rating={item.impression}
                     price={item.fromPrice}
-                    status={item.status}
-                    firstName={item.firstName}
-                    lastName={item.lastName}
                     avatar={item.avatar}
+                    impression={item.impression}
+                    branchName={item.branchName}
+                    rankSeller={item.rankSeller}
+                    ratingPoint={item.ratingPoint}
+                    totalOrderFinish={item.totalOrderFinish}
                   />
                 ))}
               </Grid>

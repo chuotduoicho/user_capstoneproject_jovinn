@@ -16,8 +16,9 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  MobileStepper,
+  Paper,
 } from "@material-ui/core";
-import { Divider, Avatar, Grid, Paper } from "@material-ui/core";
 import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,8 +27,8 @@ import {
   deleteServicePackage,
   fetchServiceDetail,
   fetchServices,
-  selectServiceById,
   selectServiceDetail,
+  selectServiceDetailStatus,
   updateService,
   updateServicePackage,
 } from "../../../redux/serviceSlice";
@@ -36,6 +37,9 @@ import { selectAllCategories } from "../../../redux/categorySlice";
 import Alert from "@material-ui/lab/Alert";
 import { Add, Delete, Edit } from "@material-ui/icons";
 import PackageEdit from "../../../components/seller/sellerCreateService/package/PackageEdit";
+import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
+import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
+import { autoPlay } from "react-swipeable-views-utils";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -68,9 +72,12 @@ function a11yProps(index) {
     "aria-controls": `full-width-tabpanel-${index}`,
   };
 }
+const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 export default function SellerServiceDetail() {
   const { serviceId } = useParams();
+  const status = useSelector(selectServiceDetailStatus);
   const serviceDetail = useSelector(selectServiceDetail);
+  const [listImg, setListImg] = useState([]);
   const [listPack, setListPack] = useState([]);
   const theme = useTheme();
   const [value, setValue] = useState(0);
@@ -78,8 +85,32 @@ export default function SellerServiceDetail() {
   const [selected, setSelected] = useState(false);
   useEffect(() => {
     dispatch(fetchServiceDetail(serviceId));
-    setListPack(serviceDetail.packages);
   }, []);
+  useEffect(() => {
+    if (status == "success") {
+      if (serviceDetail.gallery.imageGallery1) {
+        setListImg((current) => [
+          ...current,
+          serviceDetail.gallery.imageGallery1,
+        ]);
+      }
+      if (serviceDetail.gallery.imageGallery2) {
+        setListImg((current) => [
+          ...current,
+          serviceDetail.gallery.imageGallery2,
+        ]);
+      }
+      if (serviceDetail.gallery.imageGallery3) {
+        setListImg((current) => [
+          ...current,
+          serviceDetail.gallery.imageGallery3,
+        ]);
+      }
+      setListPack(serviceDetail.packages);
+    } else {
+      setListImg([]);
+    }
+  }, [status]);
   console.log(selected);
   const dispatch = useDispatch();
   const handlePauseService = () => {
@@ -403,38 +434,118 @@ export default function SellerServiceDetail() {
         setAlertError("Xoá gói thất bại");
       });
   };
+
+  // img
+  const [activeStep, setActiveStep] = useState(0);
+  const maxSteps = listImg.length;
+
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const handleStepChange = (step) => {
+    setActiveStep(step);
+  };
   return (
     <div className="service_detail">
       <SellerHeader />
       <div className="service_detail2">
         <div className="detail_left">
-          <h2>{serviceDetail.title}</h2>
-          <div className="seller_header">
-            <img
-              src={
-                serviceDetail.avatar
-                  ? serviceDetail.avatar
-                  : "https://cdn1.iconfinder.com/data/icons/user-pictures/100/unknown-512.png"
+          <Box sx={{ maxWidth: 600, flexGrow: 1 }}>
+            <Paper
+              square
+              elevation={0}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                height: 50,
+                pl: 2,
+                bgcolor: "background.default",
+              }}
+            >
+              <h2>{serviceDetail.title}</h2>
+              <div className="seller_header">
+                <img
+                  src={
+                    serviceDetail.avatar
+                      ? serviceDetail.avatar
+                      : "https://cdn1.iconfinder.com/data/icons/user-pictures/100/unknown-512.png"
+                  }
+                  className="avatar"
+                />
+                <div className="seller_headerRight">
+                  <p>
+                    {serviceDetail.brandName} | {serviceDetail.rankSeller}
+                  </p>
+                  <p>Tổng số đơn: {serviceDetail.totalOrder}</p>
+                </div>
+              </div>
+            </Paper>
+            <AutoPlaySwipeableViews
+              axis={theme.direction === "rtl" ? "x-reverse" : "x"}
+              index={activeStep}
+              onChangeIndex={handleStepChange}
+              enableMouseEvents
+            >
+              {listImg.map((step, index) => (
+                <div key={step.label}>
+                  {Math.abs(activeStep - index) <= 2 ? (
+                    <Box
+                      component="img"
+                      sx={{
+                        height: 255,
+                        display: "block",
+                        maxWidth: 600,
+                        overflow: "hidden",
+                        width: "100%",
+                      }}
+                      src={step}
+                      alt="img"
+                    />
+                  ) : null}
+                </div>
+              ))}
+            </AutoPlaySwipeableViews>
+            <MobileStepper
+              steps={maxSteps}
+              position="static"
+              activeStep={activeStep}
+              nextButton={
+                <Button
+                  size="small"
+                  onClick={handleNext}
+                  disabled={activeStep === maxSteps - 1}
+                >
+                  Sau
+                  {theme.direction === "rtl" ? (
+                    <KeyboardArrowLeft />
+                  ) : (
+                    <KeyboardArrowRight />
+                  )}
+                </Button>
               }
-              alt=""
-              className="avatar"
+              backButton={
+                <Button
+                  size="small"
+                  onClick={handleBack}
+                  disabled={activeStep === 0}
+                >
+                  {theme.direction === "rtl" ? (
+                    <KeyboardArrowRight />
+                  ) : (
+                    <KeyboardArrowLeft />
+                  )}
+                  Trước
+                </Button>
+              }
             />
-            <p>
-              {serviceDetail.firstName} {serviceDetail.lastName} |{" "}
-              {serviceDetail.rankSeller} | Tổng số đơn:{" "}
-              {serviceDetail.totalOrder}
-            </p>
-          </div>
-          <img
-            src={
-              serviceDetail.gallery.imageGallery1
-                ? serviceDetail.gallery.imageGallery1
-                : "https://elements-video-cover-images-0.imgix.net/files/127924249/previewimg.jpg?auto=compress&crop=edges&fit=crop&fm=jpeg&h=800&w=1200&s=13978d17ddbcd5bafe3a492797e90465"
-            }
-            alt=""
-          ></img>
-          <h2>Mô tả về dịch vụ</h2>
-          <p>{serviceDetail.description}</p>
+          </Box>
+          <h2>Mô tả về dịch vụ</h2>{" "}
+          <p className="detail_des">{serviceDetail.description}</p>
         </div>
         <div className="detail_right">
           <ButtonGroup

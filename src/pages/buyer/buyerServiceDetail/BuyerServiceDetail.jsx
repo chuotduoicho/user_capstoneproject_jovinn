@@ -23,7 +23,9 @@ import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  fetchRating,
   fetchServiceDetail,
+  selectListRating,
   selectServiceDetail,
   selectServiceDetailStatus,
 } from "../../../redux/serviceSlice";
@@ -68,12 +70,12 @@ const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 export default function ServiceDetail() {
   const { serviceId } = useParams();
   const status = useSelector(selectServiceDetailStatus);
+  const listRating = useSelector(selectListRating);
   const navigate = useNavigate();
   const [amount, setAmount] = useState(1);
   const [requirement, setRequirement] = useState("");
   const [packageId, setPackageId] = useState("");
   const [pack, setPack] = useState();
-
   const [check, setCheck] = useState(false);
   // const serviceDetail = useSelector((state) =>
   //   selectServiceById(state, serviceId)
@@ -81,6 +83,7 @@ export default function ServiceDetail() {
   const serviceDetail = useSelector(selectServiceDetail);
   const wallet = useSelector(selectWallet);
   console.log("service", serviceDetail);
+  console.log("list Ratign", listRating);
   const theme = useTheme();
   const [value, setValue] = useState(0);
 
@@ -92,6 +95,7 @@ export default function ServiceDetail() {
   };
   useEffect(() => {
     dispatch(fetchServiceDetail(serviceId));
+    dispatch(fetchRating(serviceId));
   }, []);
   useEffect(() => {
     if (status == "success") {
@@ -258,6 +262,10 @@ export default function ServiceDetail() {
           </Box>
           <h2>Mô tả về dịch vụ</h2>{" "}
           <p className="detail_des">{serviceDetail.description}</p>
+          <h2>Bình luận về dịch vụ</h2>{" "}
+          {listRating.map((comment) => (
+            <p className="detail_des">{comment.comment}</p>
+          ))}
         </div>
         <div className="detail_right">
           <AppBar position="static" color="default">
