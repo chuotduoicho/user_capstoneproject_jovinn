@@ -28,10 +28,12 @@ import { AddAlarm, AddSharp } from "@material-ui/icons";
 import { fetchRequestsSeller } from "../../../redux/requestSlice";
 import { fetchContracts } from "../../../redux/contractSlice";
 import CategoryList from "../../../components/guest/categoryList/CategoryList";
+import { fetchNotifications, selectNotifications } from "../../../redux/notificationSlice";
 function ChangeFormateDate(oldDate) {
   return oldDate.toString().split("-").reverse().join("-");
 }
 export default function SellerHome() {
+  const listNotification = useSelector(selectNotifications);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
@@ -40,6 +42,7 @@ export default function SellerHome() {
   const listService = useSelector(selectAllServices);
   const [selected, setSelected] = useState(listCategory[0].id);
   useEffect(() => {
+    dispatch(fetchNotifications());
     if (!user) {
       navigate("/auth/login");
     } else if (currentUser.joinSellingAt == null) {
@@ -50,10 +53,11 @@ export default function SellerHome() {
       dispatch(fetchServicesByCategory(selected));
     }
   }, [user, selected]);
+
   const dateJoin = ChangeFormateDate(currentUser.joinSellingAt);
   return (
     <div className="sellerHome">
-      <SellerHeader />
+      <SellerHeader listNotification={listNotification}/>
       <div className="sellerHome_form">
         <div className="sellerHome_left">
           <div className="sellerHome_leftCard">

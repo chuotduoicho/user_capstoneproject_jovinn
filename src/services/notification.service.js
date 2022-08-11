@@ -6,7 +6,6 @@ const getAllNotification = () => {
     return axios
         .get(API_URL + "/users/notifications", { headers: authHeader() })
         .then((response) => {
-            localStorage.setItem("notifications", JSON.stringify(response.data));
             return response.data;
         });
 };

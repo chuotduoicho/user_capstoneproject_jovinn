@@ -2,18 +2,13 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import notificationService from "../services/notification.service";
 
 const notifications = JSON.parse(localStorage.getItem("notifications"));
-const initialState = notifications
-    ? {
-        notifications: notifications,
-        status: "idle"
-    }
-    : {
-        notifications: {},
+const initialState = {
+        notifications: notifications?notifications:{},
         status: "idle"
     };
 
 export const fetchNotifications = createAsyncThunk(
-    "notify/notifications",
+    "notification/notifications",
     async () => {
         const data = await notificationService.getAllNotification();
         return data;
@@ -21,7 +16,7 @@ export const fetchNotifications = createAsyncThunk(
 );
 
 export const readNotification = createAsyncThunk(
-    "notify/read",
+    "notification/read",
     async (notificationId) => {
         console.log(notificationId);
         const data = await notificationService.readNotification(notificationId);
@@ -31,7 +26,7 @@ export const readNotification = createAsyncThunk(
 );
 
 export const deleteNotification = createAsyncThunk(
-    "notify/delete",
+    "notification/delete",
     async (notificationId) => {
         const data = await notificationService.deleteNotification(notificationId);
         return data;

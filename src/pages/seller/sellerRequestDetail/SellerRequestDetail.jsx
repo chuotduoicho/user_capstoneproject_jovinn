@@ -14,6 +14,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Contact from "../../../components/guest/contact/Contact";
 import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
 import { fetchCategories, selectAllCategories } from "../../../redux/categorySlice";
+import { fetchNotifications, selectNotifications } from "../../../redux/notificationSlice";
 import {
   applyRequest,
   fetchRequestDetail,
@@ -24,6 +25,7 @@ import "./sellerRequestDetail.scss";
 
 export default function SellerRequestDetail() {
   const { requestId } = useParams();
+  const listNotification = useSelector(selectNotifications);
   const requestDetail = useSelector(selectRequestById);
   const listCategory = useSelector(selectAllCategories);
   const [listSubcategory, setListSubcategory] = useState([]);
@@ -46,8 +48,9 @@ export default function SellerRequestDetail() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   useEffect(() => {
+    
     dispatch(fetchRequestDetail(requestId));
-    dispatch(fetchCategories());
+    //dispatch(fetchCategories());
     setListSkills(requestDetail.skillsName);
     setListSubcategory(listCategory
       .find((val) => {
@@ -55,10 +58,11 @@ export default function SellerRequestDetail() {
       })
       .subCategories);
     setListMilestones(requestDetail.milestoneContracts);
-  },[]);
+  },[dispatch,requestId]);
+  
   return (
     <div className="buyer_profile">
-      <SellerHeader />
+      <SellerHeader listNotification={listNotification}/>
       <h1 className="buyer_profile_title">Chi tiết yêu cầu</h1>
       <div className="sellerHome_form">
         <div className="sellerHome_left">

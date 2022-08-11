@@ -17,12 +17,12 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { Button, List, ListItem, ListItemSecondaryAction, ListItemText, Popover } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteNotification, fetchNotifications, readNotification, selectNotifications } from "../../../redux/notificationSlice";
-export default function SellerHeader() {
+export default function SellerHeader({ listNotification }) {
 
   const [open, setOpen] = useState(false);
-  const listNotification = useSelector(selectNotifications);
-  const [notifications, setNotifications] = useState([]);
-  const [unread, setUnread] = useState([]);
+  //const listNotification = useSelector(selectNotifications);
+  const [notifications, setNotifications] = useState(listNotification.list);
+  const [unread, setUnread] = useState(listNotification.unread);
   const anchorRef = useRef(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -44,14 +44,6 @@ export default function SellerHeader() {
     setOpen((prevOpen) => !prevOpen);
   };
 
-  // const handleLogout = (event) => {
-  //   e.preventDefault();
-  //   navigate("/login");
-  // };
-  // const handleSwitch = (event) => {
-  //   e.preventDefault();
-  //   navigate("/sellerHome");
-  // };
   const handleClose = (event) => {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
       return;
@@ -67,28 +59,27 @@ export default function SellerHeader() {
     }
   }
 
-  // return focus to the button when we transitioned from !open -> open
-  const prevOpen = useRef(open);
+//  const prevOpen = useRef(open);
 
-  useEffect(() => {
-    // let eventSource = new EventSource('http://localhost:8080/api/v1/users/recieve-notify');
-    // eventSource.onmessage = () => {
-    //   dispatch(fetchNotifications());
-    //   const updatedNoti = localStorage.getItem("notifications");
-    //   setNotifications(updatedNoti.list);
-    //   setUnread(updatedNoti.unread);
-    // }
-    dispatch(fetchNotifications());
-    setNotifications(listNotification.list);
-    setUnread(listNotification.unread);
-    console.log("notifications", listNotification);
+  // useEffect(() => {
+  //   // let eventSource = new EventSource('http://localhost:8080/api/v1/users/recieve-notify');
+  //   // eventSource.onmessage = () => {
+  //   //   dispatch(fetchNotifications());
+  //   //   const updatedNoti = localStorage.getItem("notifications");
+  //   //   setNotifications(updatedNoti.list);
+  //   //   setUnread(updatedNoti.unread);
+  //   // }
+  //     dispatch(fetchNotifications());
+  //   // setNotifications(listNotification.list);
+  //   // setUnread(listNotification.unread);
+  //   // console.log("notifications", listNotification);
 
-    if (prevOpen.current === true && open === false) {
-      anchorRef.current.focus();
-    }
+  //   if (prevOpen.current === true && open === false) {
+  //     anchorRef.current.focus();
+  //   }
 
-    prevOpen.current = open;
-  }, [open]);
+  //   prevOpen.current = open;
+  // }, [open]);
   return (
     <div className="sellerHeader ">
       <div className="wrapper">
@@ -146,33 +137,41 @@ export default function SellerHeader() {
               <List>
                 {
                   notifications.map((item) => (
-                      <ListItem
-                        button
-                        style={item.unread ? { background: '#B9D5E3' } : {}}
-                        onClick={(event) => {
-                          event.preventDefault();                        
-                          dispatch(readNotification(item.id));
-                          navigate(item.link);
-                          // dispatch(fetchNotifications());
-                          // setNotifications(listNotification.list);
-                          // setUnread(listNotification.unread);
-                        }}
-                      >
-                        <ListItemText
-                          primary={item.shortContent}
-                          secondary={item.createAt}
+                    <ListItem
+                      button
+                      style={item.unread ? { background: '#B9D5E3' } : {}}
+                      onClick={() => {
+                        dispatch(readNotification(item.id))
+                          .unwrap()
+                          .then(() => {
+                            //dispatch(fetchNotifications());
+                            setNotifications(listNotification.list);
+                            setUnread(listNotification.unread);
+                            navigate(item.link);
+                          });
+                      }}
+                    >
+                      <ListItemText
+                        primary={item.shortContent}
+                        secondary={item.createAt}
+                      />
+                      <ListItemSecondaryAction>
+                        <Delete
+                          style={{ color: 'gray' }}
+                          onClick={() => {
+                            dispatch(deleteNotification(item.id))
+                              .unwrap()
+                              .then(() => {
+                                //dispatch(fetchNotifications());
+                                setNotifications(listNotification.list);
+                                setUnread(listNotification.unread);
+                                setNotifications(
+                                  notifications.filter((el) => el.id !== item.id));
+                              });
+                          }}
                         />
-                        <ListItemSecondaryAction>
-                          <Delete
-                            style={{ color: 'gray' }}
-                            onClick={() => {
-                              dispatch(deleteNotification(item.id));
-                              setNotifications(
-                                notifications.filter((el) => el.id !== item.id));
-                            }}
-                          />
-                        </ListItemSecondaryAction>
-                      </ListItem>
+                      </ListItemSecondaryAction>
+                    </ListItem>
                   ))
                 }
               </List>
