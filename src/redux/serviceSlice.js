@@ -13,10 +13,20 @@ const initialState = {
   listServicesHistory: servicesHistory ? servicesHistory : [],
   serviceDetail: serviceDetail ? serviceDetail : {},
   listRating: [],
+  listTop8Boxes: [],
   newServiceId: null,
   status: "idle",
   statusServiceDetail: "idle",
 };
+
+export const fetchTop8BoxesImpression = createAsyncThunk(
+  "service/fetchTop8BoxesImpression",
+  async () => {
+    const data = await ServiceService.get8ServicesImpression();
+    console.log(data);
+    return data;
+  }
+);
 
 export const fetchServicesImpression = createAsyncThunk(
   "service/fetchServicesImpression",
@@ -26,10 +36,10 @@ export const fetchServicesImpression = createAsyncThunk(
     return data;
   }
 );
-export const fetchRating = createAsyncThunk(
-  "service/fetchRating",
+export const fetchRatings = createAsyncThunk(
+  "service/fetchRatings",
   async (serviceId) => {
-    const data = await ServiceService.getRating(serviceId);
+    const data = await ServiceService.getRatings(serviceId);
     console.log(data);
     return data;
   }
@@ -133,6 +143,16 @@ const serviceSlice = createSlice({
   name: "service",
   initialState,
   extraReducers: {
+    [fetchTop8BoxesImpression.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [fetchTop8BoxesImpression.fulfilled]: (state, { payload }) => {
+      state.listTop8Boxes = payload;
+      state.status = "success";
+    },
+    [fetchTop8BoxesImpression.rejected]: (state, action) => {
+      state.status = "failed";
+    },
     [fetchServicesImpression.pending]: (state, action) => {
       state.status = "loading";
     },
@@ -143,14 +163,14 @@ const serviceSlice = createSlice({
     [fetchServicesImpression.rejected]: (state, action) => {
       state.status = "failed";
     },
-    [fetchRating.pending]: (state, action) => {
+    [fetchRatings.pending]: (state, action) => {
       state.status = "loading";
     },
-    [fetchRating.fulfilled]: (state, { payload }) => {
+    [fetchRatings.fulfilled]: (state, { payload }) => {
       state.listRating = payload;
       state.status = "success";
     },
-    [fetchRating.rejected]: (state, action) => {
+    [fetchRatings.rejected]: (state, action) => {
       state.status = "failed";
     },
     [fetchServicesImpressionByCate.pending]: (state, action) => {
@@ -272,10 +292,11 @@ export const selectServicesImpression = (state) =>
   state.service.listServicesImpression;
 export const selectServiceDetail = (state) => state.service.serviceDetail;
 
-export const selectListRating = (state) => state.service.listRating;
 export const selectNewServiceId = (state) => state.service.newServiceId;
 export const selectServiceStatus = (state) => state.service.status;
 export const selectServiceDetailStatus = (state) =>
   state.service.statusServiceDetail;
 export const selectServiceById = (state, serviceId) =>
   state.service.listServices.find((service) => service.id === serviceId);
+export const selectListRating = (state) => state.service.listRating;
+export const selectTop8Boxes = (state) => state.service.listTop8Boxes;

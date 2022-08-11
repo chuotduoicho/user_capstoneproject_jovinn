@@ -10,21 +10,25 @@ const getAllServices = () => {
     return response.data;
   });
 };
+
 // const API_URL = "http://jovinnserver.site/api/v1";
-const getRating = (serviceId) => {
+const getRatings = (serviceId) => {
   return axios
     .get(API_URL + "/box/rating-list/" + serviceId)
     .then((response) => {
-      localStorage.setItem("services", JSON.stringify(response.data));
       return response.data;
     });
 };
+
 const get8ServicesImpression = () => {
-  return axios.get(API_URL + "/box/top-8-impression").then((response) => {
+  return axios
+  .get(API_URL + "/box/top-8-impression")
+  .then((response) => {
     localStorage.setItem("servicesImpression", JSON.stringify(response.data));
     return response.data;
   });
 };
+
 const get8ServicesImpressionByCate = (cateId) => {
   return axios
     .get(API_URL + "/box/top-8-impression/" + cateId)
@@ -156,7 +160,7 @@ const serviceService = {
   get8ServicesImpressionByCate,
   getServicesSearchFilter,
   getServicesSeller,
-  getRating,
+  getRatings,
 };
 
 export default serviceService;

@@ -93,4 +93,45 @@
       }
     }
   }
+
+  .explain {
+    padding: 50px;
+
+    .container_1 {
+      margin-left: auto;
+      margin-right: auto;
+      width: 1200px;
+      display: flex;
+      flex: auto;
+
+      .image-left {
+        .image_1 {
+          width: 100%;
+        }
+      }
+
+      .quotes-right {
+        margin-left: 155px;
+      }
+    }
+
+    .container_2 {
+      margin-left: auto;
+      margin-right: auto;
+      width: 1200px;
+      display: flex;
+      flex: auto;
+      padding-top: 30px;
+
+      .image-left {
+        .image_1 {
+          width: 100%;
+        }
+      }
+
+      .quotes-right {
+        margin-right: 50px;
+      }
+    }
+  }
 }

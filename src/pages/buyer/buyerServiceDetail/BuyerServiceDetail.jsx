@@ -23,7 +23,7 @@ import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  fetchRating,
+  fetchRatings,
   fetchServiceDetail,
   selectListRating,
   selectServiceDetail,
@@ -95,7 +95,7 @@ export default function ServiceDetail() {
   };
   useEffect(() => {
     dispatch(fetchServiceDetail(serviceId));
-    dispatch(fetchRating(serviceId));
+    dispatch(fetchRatings(serviceId));
   }, []);
   useEffect(() => {
     if (status == "success") {

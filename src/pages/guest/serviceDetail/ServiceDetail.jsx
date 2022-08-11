@@ -14,7 +14,9 @@ import Topbar from "../../../components/guest/topbar/Topbar";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  fetchRatings,
   fetchServiceDetail,
+  selectListRating,
   selectServiceDetail,
   selectServiceDetailStatus,
 } from "../../../redux/serviceSlice";
@@ -75,12 +77,16 @@ const ServiceDetail = () => {
   const navigate = useNavigate();
   const status = useSelector(selectServiceDetailStatus);
   const dispatch = useDispatch();
+  const ratings = useSelector(selectListRating);
   const serviceDetail = useSelector(selectServiceDetail);
   const [listImg, setListImg] = useState([]);
   const [listPack, setListPack] = useState([]);
+
   useEffect(() => {
     dispatch(fetchServiceDetail(serviceId));
+    dispatch(fetchRatings(serviceId));
   }, []);
+
   useEffect(() => {
     if (status == "success") {
       if (serviceDetail.gallery.imageGallery1) {
@@ -106,6 +112,7 @@ const ServiceDetail = () => {
       setListImg([]);
     }
   }, [status]);
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -129,7 +136,9 @@ const ServiceDetail = () => {
   const handleStepChange = (step) => {
     setActiveStep(step);
   };
+
   console.log("service", serviceDetail);
+
   return (
     <div className="service_detail">
       <Topbar />
@@ -149,24 +158,19 @@ const ServiceDetail = () => {
                 }}
               >
                 <h2>{serviceDetail.title}</h2>
-                <Link to={"/seller/" + serviceDetail.sellerId}>
                   <div className="seller_header">
                     <img
                       src={
-                        serviceDetail.avatar
-                          ? serviceDetail.avatar
-                          : "https://cdn1.iconfinder.com/data/icons/user-pictures/100/unknown-512.png"
+                        serviceDetail.avatar ? serviceDetail.avatar :
+                          "https://cdn1.iconfinder.com/data/icons/user-pictures/100/unknown-512.png"
                       }
                       className="avatar"
                     />
-                    <div className="seller_headerRight">
-                      <p>
-                        {serviceDetail.brandName} | {serviceDetail.rankSeller}
-                      </p>
-                      <p>Tổng số đơn: {serviceDetail.totalOrder}</p>
-                    </div>
+                  <div>
+                    {serviceDetail.brandName} | Cấp độ người bán: {serviceDetail.rankSeller}
+                    <p>Điểm đánh giá - {serviceDetail.ratingPoint} | Đã hoàn thành - {serviceDetail.totalFinalContract}</p>
                   </div>
-                </Link>
+                </div>
               </Paper>
               <AutoPlaySwipeableViews
                 axis={theme.direction === "rtl" ? "x-reverse" : "x"}
@@ -227,8 +231,73 @@ const ServiceDetail = () => {
                 }
               />
             </Box>
-            <h2>Mô tả về dịch vụ</h2>{" "}
-            <p className="detail_des">{serviceDetail.description}</p>
+            <h2>Mô tả về hộp dịch vụ</h2>
+            <div className="description_box">{serviceDetail.description}</div>
+            <div className="seller_info">
+              <h2>Thông tin người bán</h2>
+              <div className="seller_header">
+                <img
+                  src={
+                    serviceDetail.avatar ? serviceDetail.avatar :
+                    "https://cdn1.iconfinder.com/data/icons/user-pictures/100/unknown-512.png"
+                  }
+                  alt="avatar"
+                  className="avatar_seller"
+                />
+                <div className="card_seller_info">
+                  {serviceDetail.lastName} {" "} {serviceDetail.firstName} | Cấp độ người bán: {serviceDetail.rankSeller}
+                  <p>Điểm đánh giá - {serviceDetail.ratingPoint} | Tổng số hợp đồng đã hoàn thành - {serviceDetail.totalOrder}</p>
+                    <Link to={"/seller/" + serviceDetail.sellerId}>
+                      <button>
+                        Xem chi tiết
+                      </button>
+                    </Link>
+                </div>
+              </div>
+
+              <div className="card_detail_seller_info">
+                <div className="info">
+                  <p>Đến từ - {serviceDetail.city} | Tham gia Jovinn - {serviceDetail.joinSellingAt.replaceAll("-", "/")}</p>
+                  <p>Sô điện thoại - {serviceDetail.phoneNumber} | Hòm thư liên hệ - {serviceDetail.email}</p>
+                </div>
+                <div className="description_bio">
+                  <p>
+                    {serviceDetail.descriptionBio}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="rating_box">
+              <div className="rating_header">
+                <h3>
+                  Đánh giá từ người mua ()
+                </h3>
+              </div>
+
+              {/* <div className="rating_details">
+                {ratings.map(rating =>
+                  <div class="info_ratings">
+                    <div className="card_ratings">
+                      <img
+                        src={
+                          rating.avatarBuyer ? ratings.avatarBuyer :
+                          "https://elements-video-cover-images-0.imgix.net/files/127924249/previewimg.jpg?auto=compress&crop=edges&fit=crop&fm=jpeg&h=800&w=1200&s=13978d17ddbcd5bafe3a492797e90465"
+                        }
+                        className="avatar_buyer"
+                      />
+                      <p>{rating.fullNameBuyer}
+                        <h4>Điểm đánh giá - {rating.ratingPoint}</h4>
+                      </p>
+                    </div>
+                    <div className="comment_ratings">
+                      <p>
+                        {rating.comment}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div> */}
+            </div>
           </div>
           <div className="detail_right">
             <AppBar position="static" color="default">
