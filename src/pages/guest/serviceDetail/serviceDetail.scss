@@ -37,15 +37,22 @@
           display: flex;
           margin: 10px;
           .avatar {
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             margin-right: 5px;
+            margin-right: 10px;
           }
-          p {
-            margin-top: 4px;
-            font-weight: 500;
+          .seller_headerRight {
+            p {
+              margin-top: 4px;
+              font-weight: 500;
+            }
           }
+        }
+        .detail_des {
+          border-style: groove;
+          padding: 10px;
         }
       }
       .detail_right {

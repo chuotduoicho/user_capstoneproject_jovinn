@@ -26,7 +26,6 @@ import {
   fetchServiceDetail,
   selectServiceDetail,
   selectServiceDetailStatus,
-  selectServiceStatus,
 } from "../../../redux/serviceSlice";
 import { selectWallet } from "../../../redux/userSlice";
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
@@ -166,27 +165,6 @@ export default function ServiceDetail() {
       <BuyerHeader />
       <div className="service_detail2">
         <div className="detail_left">
-          {/* <h2>{serviceDetail.title}</h2>
-          <Link to={"/seller/" + serviceDetail.sellerId}>
-            <div className="seller_header">
-              <img
-                src={
-                  serviceDetail.avatar
-                    ? serviceDetail.avatar
-                    : "https://cdn1.iconfinder.com/data/icons/user-pictures/100/unknown-512.png"
-                }
-                className="avatar"
-              />
-              <p>
-                {serviceDetail.firstName} {serviceDetail.lastName}|{" "}
-                {serviceDetail.rankSeller} | Tổng số đơn:{" "}
-                {serviceDetail.totalOrder}
-              </p>
-            </div>
-          </Link>
-          <img src={serviceDetail.gallery.imageGallery1} alt=""></img>
-          <h2>Mô tả</h2>
-          <p>{serviceDetail.description}</p> */}
           <Box sx={{ maxWidth: 600, flexGrow: 1 }}>
             <Paper
               square

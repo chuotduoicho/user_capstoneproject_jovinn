@@ -9,28 +9,19 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
-import {
-  Button,
-  FormControl,
-  FormControlLabel,
-  InputLabel,
-  MenuItem,
-  Modal,
-  Radio,
-  RadioGroup,
-  Select,
-  TextField,
-} from "@material-ui/core";
-import { Divider, Avatar, Grid, Paper } from "@material-ui/core";
+import { Button, MobileStepper, Paper, TextField } from "@material-ui/core";
 import Topbar from "../../../components/guest/topbar/Topbar";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchServiceDetail,
-  selectServiceById,
   selectServiceDetail,
+  selectServiceDetailStatus,
 } from "../../../redux/serviceSlice";
 import { useEffect } from "react";
+import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
+import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
+import { autoPlay } from "react-swipeable-views-utils";
 const style = {
   position: "absolute",
   top: "50%",
@@ -76,19 +67,45 @@ function a11yProps(index) {
     "aria-controls": `full-width-tabpanel-${index}`,
   };
 }
-
+const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 const ServiceDetail = () => {
   const theme = useTheme();
   const [value, setValue] = useState(0);
   const { serviceId } = useParams();
   const navigate = useNavigate();
+  const status = useSelector(selectServiceDetailStatus);
   const dispatch = useDispatch();
   const serviceDetail = useSelector(selectServiceDetail);
+  const [listImg, setListImg] = useState([]);
   const [listPack, setListPack] = useState([]);
   useEffect(() => {
     dispatch(fetchServiceDetail(serviceId));
-    setListPack(serviceDetail.packages);
   }, []);
+  useEffect(() => {
+    if (status == "success") {
+      if (serviceDetail.gallery.imageGallery1) {
+        setListImg((current) => [
+          ...current,
+          serviceDetail.gallery.imageGallery1,
+        ]);
+      }
+      if (serviceDetail.gallery.imageGallery2) {
+        setListImg((current) => [
+          ...current,
+          serviceDetail.gallery.imageGallery2,
+        ]);
+      }
+      if (serviceDetail.gallery.imageGallery3) {
+        setListImg((current) => [
+          ...current,
+          serviceDetail.gallery.imageGallery3,
+        ]);
+      }
+      setListPack(serviceDetail.packages);
+    } else {
+      setListImg([]);
+    }
+  }, [status]);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -97,45 +114,121 @@ const ServiceDetail = () => {
     setValue(index);
   };
   const [amount, setAmount] = useState(1);
-  //modal
-  // const packages = [...serviceDetail.packages].sort(
-  //   (a, b) => a.price - b.price
-  // );
+  // img
+  const [activeStep, setActiveStep] = useState(0);
+  const maxSteps = listImg.length;
+
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const handleStepChange = (step) => {
+    setActiveStep(step);
+  };
   console.log("service", serviceDetail);
   return (
     <div className="service_detail">
       <Topbar />
-
       <div className="sections">
         <div className="service_detail">
           <div className="detail_left">
-            <h2>{serviceDetail.title}</h2>
-            <div className="seller_header">
-              <img
-                src={
-                  serviceDetail.avatar
-                    ? serviceDetail.avatar
-                    : "https://cdn1.iconfinder.com/data/icons/user-pictures/100/unknown-512.png"
+            <Box sx={{ maxWidth: 600, flexGrow: 1 }}>
+              <Paper
+                square
+                elevation={0}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  height: 50,
+                  pl: 2,
+                  bgcolor: "background.default",
+                }}
+              >
+                <h2>{serviceDetail.title}</h2>
+                <Link to={"/seller/" + serviceDetail.sellerId}>
+                  <div className="seller_header">
+                    <img
+                      src={
+                        serviceDetail.avatar
+                          ? serviceDetail.avatar
+                          : "https://cdn1.iconfinder.com/data/icons/user-pictures/100/unknown-512.png"
+                      }
+                      className="avatar"
+                    />
+                    <div className="seller_headerRight">
+                      <p>
+                        {serviceDetail.brandName} | {serviceDetail.rankSeller}
+                      </p>
+                      <p>Tổng số đơn: {serviceDetail.totalOrder}</p>
+                    </div>
+                  </div>
+                </Link>
+              </Paper>
+              <AutoPlaySwipeableViews
+                axis={theme.direction === "rtl" ? "x-reverse" : "x"}
+                index={activeStep}
+                onChangeIndex={handleStepChange}
+                enableMouseEvents
+              >
+                {listImg.map((step, index) => (
+                  <div key={step.label}>
+                    {Math.abs(activeStep - index) <= 2 ? (
+                      <Box
+                        component="img"
+                        sx={{
+                          height: 255,
+                          display: "block",
+                          maxWidth: 600,
+                          overflow: "hidden",
+                          width: "100%",
+                        }}
+                        src={step}
+                        alt="img"
+                      />
+                    ) : null}
+                  </div>
+                ))}
+              </AutoPlaySwipeableViews>
+              <MobileStepper
+                steps={maxSteps}
+                position="static"
+                activeStep={activeStep}
+                nextButton={
+                  <Button
+                    size="small"
+                    onClick={handleNext}
+                    disabled={activeStep === maxSteps - 1}
+                  >
+                    Sau
+                    {theme.direction === "rtl" ? (
+                      <KeyboardArrowLeft />
+                    ) : (
+                      <KeyboardArrowRight />
+                    )}
+                  </Button>
                 }
-                alt="avatar"
-                className="avatar"
+                backButton={
+                  <Button
+                    size="small"
+                    onClick={handleBack}
+                    disabled={activeStep === 0}
+                  >
+                    {theme.direction === "rtl" ? (
+                      <KeyboardArrowRight />
+                    ) : (
+                      <KeyboardArrowLeft />
+                    )}
+                    Trước
+                  </Button>
+                }
               />
-              <p>
-                {serviceDetail.firstName}&nbsp;
-                {serviceDetail.lastName} | {serviceDetail.rankSeller} | Tổng số
-                đơn: {serviceDetail.totalOrder}
-              </p>
-            </div>
-            <img
-              src={
-                serviceDetail.gallery.imageGallery1
-                  ? serviceDetail.gallery.imageGallery1
-                  : "https://elements-video-cover-images-0.imgix.net/files/127924249/previewimg.jpg?auto=compress&crop=edges&fit=crop&fm=jpeg&h=800&w=1200&s=13978d17ddbcd5bafe3a492797e90465"
-              }
-              alt=""
-            ></img>
-            <h2>Mô tả</h2>
-            <p>{serviceDetail.description}</p>
+            </Box>
+            <h2>Mô tả về dịch vụ</h2>{" "}
+            <p className="detail_des">{serviceDetail.description}</p>
           </div>
           <div className="detail_right">
             <AppBar position="static" color="default">
@@ -191,20 +284,6 @@ const ServiceDetail = () => {
                       Phí hủy hợp đồng :{item.contractCancelFee}% Tổng chi phí
                     </h3>
                     <h2>Tổng giá :{item.price * amount}$</h2>
-                    {/* <Button
-                      variant="contained"
-                      color="primary"
-                      style={{
-                        marginTop: "15px",
-                        marginBottom: "15px",
-                        marginLeft: "180px",
-                      }}
-                      onClick={(e) => {
-                        navigate("/auth/login");
-                      }}
-                    >
-                      Mua
-                    </Button> */}
                   </TabPanel>
                 );
               })}
