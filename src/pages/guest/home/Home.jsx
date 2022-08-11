@@ -33,7 +33,6 @@ export default function Home() {
     if (search) {
       const obj = {
         categoryId: selected,
-        sortBy: "impression",
       };
       console.log({ search, obj });
       dispatch(fetchServicesSearchFilter({ search, obj }));
