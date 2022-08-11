@@ -21,6 +21,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import {
   changePassword,
+  fetchCurrentUser,
   selectCurrentUser,
   updateUserProfile,
   uploadFile,
@@ -58,7 +59,7 @@ export default function BuyerProfile() {
   const [file, setFile] = useState(null);
   const { message } = useSelector((state) => state.message);
   const { url } = useSelector((state) => state.url);
-  const [error, setError] = useState("");
+  const [alert, setAlert] = useState(message);
   const [check1, setCheck1] = useState(false);
   const [check2, setCheck2] = useState(false);
   const dispatch = useDispatch();
@@ -84,6 +85,7 @@ export default function BuyerProfile() {
       });
   };
   const handleUpdate = () => {
+    dispatch(clearMessage());
     const id = currentUser.id;
     setSuccessful(false);
     console.log(avatar);
@@ -116,11 +118,12 @@ export default function BuyerProfile() {
         .then(() => {
           setSuccessful(true);
           setCheck1(false);
-          toast.success(message ? message : "Cập nhật thông tin thành công!");
+          toast.success("Cập nhật thông tin thành công!");
+          dispatch(fetchCurrentUser());
         })
         .catch(() => {
           setSuccessful(false);
-          toast.error(message ? message : "Cập nhật thông tin thất bại!");
+          toast.error("Cập nhật thông tin thất bại!");
         });
     }
   };
@@ -145,13 +148,13 @@ export default function BuyerProfile() {
           setOpen(false);
           setSuccessful(true);
           setCheck2(false);
-          toast.success(message ? message : "Đổi mật khẩu thành công!");
+          toast.success("Đổi mật khẩu thành công!");
         })
         .catch(() => {
           setSuccessful(false);
           setOpen(false);
           setCheck2(false);
-          toast.error(message ? message : "Dổi mật khẩu thất bại!");
+          toast.error("Đổi mật khẩu thất bại!");
         });
     }
   };
@@ -180,7 +183,6 @@ export default function BuyerProfile() {
               return val.country == currentUser.country;
             }).cities
           );
-        setError(null);
       } catch (err) {
         console.log(err.message);
         setDataCountry([]);

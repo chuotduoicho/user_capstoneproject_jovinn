@@ -18,7 +18,6 @@ import {
   TextField,
 } from "@material-ui/core";
 import { fetchCurrentUser, selectCurrentUser } from "../../../redux/userSlice";
-import { setMessage } from "../../../redux/message";
 export default function BuyerHeader({ search, handleSearch }) {
   const currentUser = useSelector(selectCurrentUser);
   const [open, setOpen] = useState(false);
