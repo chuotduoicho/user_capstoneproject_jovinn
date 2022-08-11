@@ -14,6 +14,7 @@ const initialState = {
   serviceDetail: serviceDetail ? serviceDetail : {},
   newServiceId: null,
   status: "idle",
+  statusServiceDetail: "idle",
 };
 
 export const fetchServicesImpression = createAsyncThunk(
@@ -185,14 +186,14 @@ const serviceSlice = createSlice({
       state.status = "failed";
     },
     [fetchServiceDetail.pending]: (state, action) => {
-      state.status = "loading";
+      state.statusServiceDetail = "loading";
     },
     [fetchServiceDetail.fulfilled]: (state, { payload }) => {
       state.serviceDetail = payload;
-      state.status = "success";
+      state.statusServiceDetail = "success";
     },
     [fetchServiceDetail.rejected]: (state, action) => {
-      state.status = "failed";
+      state.statusServiceDetail = "failed";
     },
     [addService.pending]: (state, action) => {
       state.status = "loading";
@@ -253,5 +254,7 @@ export const selectServicesImpression = (state) =>
 export const selectServiceDetail = (state) => state.service.serviceDetail;
 export const selectNewServiceId = (state) => state.service.newServiceId;
 export const selectServiceStatus = (state) => state.service.status;
+export const selectServiceDetailStatus = (state) =>
+  state.service.statusServiceDetail;
 export const selectServiceById = (state, serviceId) =>
   state.service.listServices.find((service) => service.id === serviceId);

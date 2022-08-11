@@ -433,7 +433,7 @@ export default function SellerServiceDetail() {
             }
             alt=""
           ></img>
-          <h2>Mô tả</h2>
+          <h2>Mô tả về dịch vụ</h2>
           <p>{serviceDetail.description}</p>
         </div>
         <div className="detail_right">

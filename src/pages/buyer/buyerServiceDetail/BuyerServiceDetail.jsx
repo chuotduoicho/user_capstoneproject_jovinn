@@ -25,6 +25,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchServiceDetail,
   selectServiceDetail,
+  selectServiceDetailStatus,
   selectServiceStatus,
 } from "../../../redux/serviceSlice";
 import { selectWallet } from "../../../redux/userSlice";
@@ -67,7 +68,7 @@ function a11yProps(index) {
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 export default function ServiceDetail() {
   const { serviceId } = useParams();
-  const status = useSelector(selectServiceStatus);
+  const status = useSelector(selectServiceDetailStatus);
   const navigate = useNavigate();
   const [amount, setAmount] = useState(1);
   const [requirement, setRequirement] = useState("");
@@ -209,11 +210,12 @@ export default function ServiceDetail() {
                     }
                     className="avatar"
                   />
-                  <p>
-                    {serviceDetail.firstName} {serviceDetail.lastName}|{" "}
-                    {serviceDetail.rankSeller} | Tổng số đơn:{" "}
-                    {serviceDetail.totalOrder}
-                  </p>
+                  <div className="seller_headerRight">
+                    <p>
+                      {serviceDetail.brandName} | {serviceDetail.rankSeller}
+                    </p>
+                    <p>Tổng số đơn: {serviceDetail.totalOrder}</p>
+                  </div>
                 </div>
               </Link>
             </Paper>
@@ -276,6 +278,8 @@ export default function ServiceDetail() {
               }
             />
           </Box>
+          <h2>Mô tả về dịch vụ</h2>{" "}
+          <p className="detail_des">{serviceDetail.description}</p>
         </div>
         <div className="detail_right">
           <AppBar position="static" color="default">
