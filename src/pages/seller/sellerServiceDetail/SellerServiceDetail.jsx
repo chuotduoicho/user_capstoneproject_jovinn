@@ -24,9 +24,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addServicePackage,
+  deleteService,
   deleteServicePackage,
   fetchServiceDetail,
   fetchServices,
+  pauseService,
   selectServiceDetail,
   selectServiceDetailStatus,
   updateService,
@@ -40,6 +42,7 @@ import PackageEdit from "../../../components/seller/sellerCreateService/package/
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import { autoPlay } from "react-swipeable-views-utils";
+import { toast, ToastContainer } from "react-toastify";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -114,36 +117,35 @@ export default function SellerServiceDetail() {
   console.log(selected);
   const dispatch = useDispatch();
   const handlePauseService = () => {
-    const service = {
-      title: serviceDetail.title,
-      description: serviceDetail.description,
-      status: "DEACTIVE",
-    };
-    const obj = { service, serviceId };
-    dispatch(updateService(obj))
+    dispatch(pauseService(serviceId))
       .unwrap()
       .then(() => {
         dispatch(fetchServiceDetail(serviceId));
+        toast.success("Dịch vụ đã được tạm dừng!");
       })
       .catch(() => {
-        console.log("update service fail");
+        toast.error("Tạm dừng thất bại!");
       });
   };
   const handleOpenService = () => {
-    const service = {
-      title: serviceDetail.title,
-      description: serviceDetail.description,
-      status: "ACTIVE",
-    };
-    const obj = { service, serviceId };
-    console.log(obj);
-    dispatch(updateService(obj))
+    dispatch(pauseService(serviceId))
       .unwrap()
       .then(() => {
         dispatch(fetchServiceDetail(serviceId));
+        toast.success("Dịch vụ đã được mở!");
       })
       .catch(() => {
-        console.log("update service fail");
+        toast.success("Mở dịch vụ thất bại");
+      });
+  };
+  const handleDeleteService = () => {
+    dispatch(deleteService(serviceId))
+      .unwrap()
+      .then(() => {
+        toast.success("Dịch vụ đã được xóa!");
+      })
+      .catch(() => {
+        toast.error("Xóa dịch vụ thất bại");
       });
   };
   const handleChange = (event, newValue) => {
@@ -154,9 +156,7 @@ export default function SellerServiceDetail() {
     setValue(index);
   };
   const navigate = useNavigate();
-  const packages = [...serviceDetail.packages].sort(
-    (a, b) => a.price - b.price
-  );
+
   //dialog update overview
   const [openUpdateOverView, setOpenUpdateOverView] = useState(false);
   const handleCloseUpdateOverView = () => {
@@ -170,8 +170,13 @@ export default function SellerServiceDetail() {
   const [subCateId, setSubCateId] = useState(
     serviceId ? serviceDetail.subCategoryId : ""
   );
+  const [cateId, setCateId] = useState(
+    serviceId ? serviceDetail.categoryId : ""
+  );
   const listCategory = useSelector(selectAllCategories);
-  const [category, setCategory] = useState(listCategory[0]);
+  const [category, setCategory] = useState(
+    cateId ? listCategory.find((cate) => cate.id === cateId) : listCategory[0]
+  );
   const [errorTitle, setErrorTitle] = useState("");
   const [errorDescription, setErrorDescription] = useState("");
   const [errorSubcate, setErrorSubcate] = useState("");
@@ -225,27 +230,19 @@ export default function SellerServiceDetail() {
     const newService = {
       title: title,
       description: description,
-      subCategory: {
-        id: subCateId,
-      },
+      subCategoryId: subCateId,
     };
     const obj = { service: newService, serviceId };
     if (!(errorTitle != "" || (errorDescription != "" && subCateId != "")))
       dispatch(updateService(obj))
         .unwrap()
         .then(() => {
-          setAlert("Cập nhật thành công"); // Update count to be 5 after timeout is scheduled
           dispatch(fetchServiceDetail(serviceId));
           setOpenUpdateOverView(false);
-          setTimeout(() => {
-            setAlert(""); // count is 0 here
-          }, 3000);
+          toast.success("Cập nhật thành công");
         })
         .catch(() => {
-          setTimeout(() => {
-            setAlertError(""); // count is 0 here
-          }, 3000);
-          setAlertError("Cập nhật thất bại");
+          toast.error("Cập nhật thất bại");
           setOpenUpdateOverView(false);
         });
   };
@@ -359,18 +356,12 @@ export default function SellerServiceDetail() {
       dispatch(addServicePackage({ serviceId, pack }))
         .unwrap()
         .then(() => {
-          setAlert("Thêm gói thành công"); // Update count to be 5 after timeout is scheduled
+          toast.success("Tạo gói dịch vụ thành công");
           dispatch(fetchServiceDetail(serviceId));
-          setTimeout(() => {
-            setAlert(""); // count is 0 here
-          }, 3000);
           setOpenPack(false);
         })
         .catch(() => {
-          setTimeout(() => {
-            setAlertError(""); // count is 0 here
-          }, 3000);
-          setAlertError("Thêm gói thất bại");
+          toast.error("Tạo gói dịch vụ thất bại");
           setOpenPack(false);
         });
   };
@@ -392,7 +383,7 @@ export default function SellerServiceDetail() {
       dispatch(updateServicePackage({ packId, pack }))
         .unwrap()
         .then(() => {
-          setAlert("Cập nhật gói thành công"); // Update count to be 5 after timeout is scheduled
+          toast.success("Cập nhật gói thành công");
           dispatch(fetchServiceDetail(serviceId));
           setTimeout(() => {
             setAlert(""); // count is 0 here
@@ -400,10 +391,7 @@ export default function SellerServiceDetail() {
           setOpenPack(false);
         })
         .catch(() => {
-          setTimeout(() => {
-            setAlertError(""); // count is 0 here
-          }, 3000);
-          setAlertError("Cập nhật gói thất bại");
+          toast.error("Cập nhật gói thất bại");
           setOpenPack(false);
         });
   };
@@ -421,17 +409,11 @@ export default function SellerServiceDetail() {
     dispatch(deleteServicePackage(id))
       .unwrap()
       .then(() => {
-        setAlert("Xoá gói thành công"); // Update count to be 5 after timeout is scheduled
-        dispatch(fetchServices());
-        setTimeout(() => {
-          setAlert(""); // count is 0 here
-        }, 3000);
+        toast.success("Xóa gói thành công!");
+        dispatch(fetchServiceDetail(serviceId));
       })
       .catch(() => {
-        setTimeout(() => {
-          setAlertError(""); // count is 0 here
-        }, 3000);
-        setAlertError("Xoá gói thất bại");
+        toast.error("Xóa gói thất bại");
       });
   };
 
@@ -450,6 +432,7 @@ export default function SellerServiceDetail() {
   const handleStepChange = (step) => {
     setActiveStep(step);
   };
+  const packages = [...listPack].sort((a, b) => a.price - b.price);
   return (
     <div className="service_detail">
       <SellerHeader />
@@ -569,6 +552,12 @@ export default function SellerServiceDetail() {
                 Mở
               </Button>
             )}
+            <Button
+              onClick={handleDeleteService}
+              style={{ backgroundColor: "red" }}
+            >
+              Xóa
+            </Button>
           </ButtonGroup>
           {alert && <Alert severity="success">{alert}</Alert>}
           {alertError && <Alert severity="error">{alertError}</Alert>}
@@ -592,7 +581,7 @@ export default function SellerServiceDetail() {
             onChangeIndex={handleChangeIndex}
             style={{ border: "2px groove #d8d0d2", width: "595px" }}
           >
-            {listPack.map((item, index) => {
+            {packages.map((item, index) => {
               return (
                 <TabPanel value={value} index={index} dir={theme.direction}>
                   <div style={{ display: "flex" }}>
@@ -623,7 +612,7 @@ export default function SellerServiceDetail() {
                     <Edit />
                     Chỉnh sửa
                   </Button>
-                  {packages.length == index + 1 && packages.length > 1 && (
+                  {listPack.length == index + 1 && listPack.length > 1 && (
                     <Button
                       variant="outlined"
                       color="secondary"
@@ -631,7 +620,7 @@ export default function SellerServiceDetail() {
                     >
                       <Delete />
                       Xóa gói
-                      {packages.length == 2 ? " nâng cao" : " cao cấp"}
+                      {listPack.length == 2 ? " nâng cao" : " cao cấp"}
                     </Button>
                   )}
                   <Dialog
@@ -662,8 +651,8 @@ export default function SellerServiceDetail() {
                 </TabPanel>
               );
             })}
-            {(packages.length == 1 || packages.length == 2) &&
-              Array(3 - packages.length)
+            {(listPack.length == 1 || listPack.length == 2) &&
+              Array(3 - listPack.length)
                 .fill("Không có gói này")
                 .map((val, idx) => (
                   <>
@@ -673,11 +662,17 @@ export default function SellerServiceDetail() {
                       color="primary"
                       onClick={() => {
                         setOpenPack(true);
+                        setPackId("");
+                        setTitlePackage("");
+                        setShortDescription("");
+                        setDeliveryTime("");
+                        setPrice("");
+                        setContractCancelFee("");
                       }}
                     >
                       <Add />
-                      {packages.length == 1 && " Tạo gói nâng cao"}
-                      {packages.length == 2 && " Tạo gói cao cấp"}
+                      {listPack.length == 1 && " Tạo gói nâng cao"}
+                      {listPack.length == 2 && " Tạo gói cao cấp"}
                     </Button>
                   </>
                 ))}
@@ -699,6 +694,7 @@ export default function SellerServiceDetail() {
                   titleDf={title}
                   descriptionDf={description}
                   subCateIdDf={subCateId}
+                  cateIdDf={cateId}
                   listCategory={listCategory}
                   category={category}
                   setCategory={handleChangeCategory}
@@ -776,6 +772,7 @@ export default function SellerServiceDetail() {
           </SwipeableViews>
         </div>
       </div>
+      <ToastContainer limit={2000} position="bottom-right" />
       <div className="sections">
         <Contact />
       </div>

@@ -14,6 +14,7 @@ export default function Overview({
   titleDf,
   descriptionDf,
   subCateIdDf,
+  cateIdDf,
   listCategory,
   category,
   setCategory,
@@ -22,6 +23,7 @@ export default function Overview({
   console.log("title", titleDf);
   console.log("description", descriptionDf);
   console.log("subCateId", subCateIdDf);
+  console.log("cateIdDf", cateIdDf);
   return (
     <div>
       <form

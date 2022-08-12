@@ -111,6 +111,22 @@ const updateService = (obj) => {
       return response.data;
     });
 };
+const pauseService = (serviceId) => {
+  return axios
+    .put(API_URL + "/box/update-status/" + serviceId, null, {
+      headers: authHeader(),
+    })
+    .then((response) => {
+      return response.data;
+    });
+};
+const deleteService = (obj) => {
+  return axios
+    .delete(API_URL + "/box/delete-service/" + obj, { headers: authHeader() })
+    .then((response) => {
+      return response.data;
+    });
+};
 const updateServicePackage = (obj) => {
   console.log("package", obj);
   const packageId = obj.packId;
@@ -157,6 +173,8 @@ const serviceService = {
   getServicesSearchFilter,
   getServicesSeller,
   getRating,
+  pauseService,
+  deleteService,
 };
 
 export default serviceService;

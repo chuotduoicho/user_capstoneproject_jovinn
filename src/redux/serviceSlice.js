@@ -102,6 +102,15 @@ export const updateService = createAsyncThunk(
     return data;
   }
 );
+export const pauseService = createAsyncThunk(
+  "service/pauseService",
+  async (obj) => {
+    console.log(obj);
+    const data = await ServiceService.pauseService(obj);
+    console.log(data);
+    return data;
+  }
+);
 export const updateServicePackage = createAsyncThunk(
   "service/updateServicePackage",
   async (obj) => {
@@ -125,6 +134,15 @@ export const deleteServicePackage = createAsyncThunk(
   async (obj) => {
     console.log(obj);
     const data = await ServiceService.deleteServicePackage(obj);
+    console.log(data);
+    return data;
+  }
+);
+export const deleteService = createAsyncThunk(
+  "service/deleteService",
+  async (obj) => {
+    console.log(obj);
+    const data = await ServiceService.deleteService(obj);
     console.log(data);
     return data;
   }
@@ -234,6 +252,16 @@ const serviceSlice = createSlice({
     [updateService.rejected]: (state, action) => {
       state.status = "failed";
     },
+    [pauseService.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [pauseService.fulfilled]: (state, { payload }) => {
+      // state.newServiceId = payload.id;
+      state.status = "success";
+    },
+    [pauseService.rejected]: (state, action) => {
+      state.status = "failed";
+    },
     [updateServicePackage.pending]: (state, action) => {
       state.status = "loading";
     },
@@ -259,6 +287,15 @@ const serviceSlice = createSlice({
       state.status = "success";
     },
     [deleteServicePackage.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [deleteService.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [deleteService.fulfilled]: (state, { payload }) => {
+      state.status = "success";
+    },
+    [deleteService.rejected]: (state, action) => {
       state.status = "failed";
     },
   },
