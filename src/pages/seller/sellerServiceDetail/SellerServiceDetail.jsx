@@ -139,6 +139,7 @@ export default function SellerServiceDetail() {
       });
   };
   const handleDeleteService = () => {
+    setOpenDeleteService(false);
     dispatch(deleteService(serviceId))
       .unwrap()
       .then(() => {
@@ -416,6 +417,15 @@ export default function SellerServiceDetail() {
         toast.error("Xóa gói thất bại");
       });
   };
+  //delete service
+  const [openDeleteService, setOpenDeleteService] = useState(false);
+  const handleClickOpenDeleteService = () => {
+    setOpenDeleteService(true);
+  };
+
+  const handleCloseDeleteService = () => {
+    setOpenDeleteService(false);
+  };
 
   // img
   const [activeStep, setActiveStep] = useState(0);
@@ -553,7 +563,7 @@ export default function SellerServiceDetail() {
               </Button>
             )}
             <Button
-              onClick={handleDeleteService}
+              onClick={handleClickOpenDeleteService}
               style={{ backgroundColor: "red" }}
             >
               Xóa
@@ -765,6 +775,31 @@ export default function SellerServiceDetail() {
                 )}
 
                 <Button onClick={handleClosePack} color="primary">
+                  Hủy
+                </Button>
+              </DialogActions>
+            </Dialog>
+            <Dialog
+              open={openDeleteService}
+              onClose={handleCloseDeleteService}
+              aria-labelledby="responsive-dialog-title"
+            >
+              <DialogTitle id="responsive-dialog-title">
+                {"Bạn có muốn xóa dịch vụ này?"}
+              </DialogTitle>
+              <DialogActions>
+                <Button
+                  onClick={handleDeleteService}
+                  color="secondary"
+                  variant="outlined"
+                >
+                  Xóa
+                </Button>
+                <Button
+                  onClick={handleCloseDeleteService}
+                  color="default"
+                  variant="outlined"
+                >
                   Hủy
                 </Button>
               </DialogActions>
