@@ -110,6 +110,13 @@ export default function SellerServiceDetail() {
         ]);
       }
       setListPack(serviceDetail.packages);
+      setTitle(serviceDetail.title);
+      setDescription(serviceDetail.description);
+      setCateId(serviceDetail.categoryId);
+      setSubCateId(serviceDetail.subCategoryId);
+      setCategory(
+        listCategory.find((cate) => cate.id === serviceDetail.categoryId)
+      );
     } else {
       setListImg([]);
     }
