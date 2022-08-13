@@ -10,9 +10,14 @@ import { Add, Delete } from "@material-ui/icons";
 import { fetchCurrentUser, joinSeller } from "../../../redux/userSlice";
 import Alert from "@material-ui/lab/Alert";
 import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
-
+import TreeView from "@material-ui/lab/TreeView";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import TreeItem from "@material-ui/lab/TreeItem";
+import { selectAllCategories } from "../../../redux/categorySlice";
 export default function SellerProfession() {
   // const currentUser = useSelector(selectCurrentUser);
+  const listCategory = useSelector(selectAllCategories);
   const [descriptionBio, setDescriptionBio] = useState("");
   const [checkError, setCheckError] = useState(false);
   const [brandName, setBrandName] = useState("");
@@ -34,6 +39,11 @@ export default function SellerProfession() {
     if (!value.trim()) return;
     setSkills([...skills, { name: value }]);
     e.target.value = "";
+  }
+  function handleChooseSkill(value) {
+    if (!value.trim()) return;
+    setSkills([...skills, { name: value }]);
+    value = "";
   }
 
   function removeSkill(index) {
@@ -256,20 +266,61 @@ export default function SellerProfession() {
           {" "}
           {/* <h2>Kĩ năng</h2> */}
           <div className="tags-input-container">
-            {skills.map((skill, index) => (
-              <div className="tag-item" key={index}>
-                <span className="text">{skill.name}</span>
-                <span className="close" onClick={() => removeSkill(index)}>
-                  &times;
-                </span>
-              </div>
-            ))}
-            <input
-              onKeyDown={handleKeyDown}
-              type="text"
-              className="tags-input"
-              placeholder="Nhập kĩ năng"
-            />
+            <TreeView
+              defaultCollapseIcon={<ExpandMoreIcon />}
+              defaultExpandIcon={<ChevronRightIcon />}
+              multiSelect
+            >
+              {/* <TreeItem nodeId="asd" label="Applications">
+                <TreeItem nodeId="asdasd" label="Calendar" />
+                <TreeItem nodeId="3sdf" label="Chrome" />
+                <TreeItem nodeId="4asd" label="Webstorm" />
+              </TreeItem>
+              <TreeItem nodeId="5sad" label="Documents">
+                <TreeItem nodeId="6sdf" label="Material-UI">
+                  <TreeItem nodeId="sdf7" label="src">
+                    <TreeItem nodeId="sdf8" label="index.js" />
+                    <TreeItem nodeId="91sdf" label="tree-view.js" />
+                  </TreeItem>
+                </TreeItem>
+              </TreeItem> */}
+              {listCategory.map((cate, index) => (
+                <TreeItem nodeId={cate.id} label={cate.name}>
+                  {cate.subCategories.map((subCate) => {
+                    return (
+                      <TreeItem nodeId={subCate.id} label={subCate.name}>
+                        {subCate.skillMetaData.map((skill) => {
+                          return (
+                            <TreeItem
+                              nodeId={skill.id}
+                              label={skill.name}
+                              onClick={() => handleChooseSkill(skill.name)}
+                            />
+                          );
+                        })}
+                      </TreeItem>
+                    );
+                  })}
+                </TreeItem>
+              ))}
+            </TreeView>
+            <div style={{ width: "80%" }}>
+              {skills.map((skill, index) => (
+                <div className="tag-item" key={index}>
+                  <span className="text">{skill.name}</span>
+                  <span className="close" onClick={() => removeSkill(index)}>
+                    &times;
+                  </span>
+                </div>
+              ))}
+              <input
+                // onKeyDown={handleKeyDown}
+                type="text"
+                className="tags-input"
+                placeholder="Hãy chọn kĩ năng"
+                disabled
+              />
+            </div>
           </div>
         </div>
         <div
