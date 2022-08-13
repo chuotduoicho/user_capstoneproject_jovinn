@@ -21,6 +21,12 @@ import {
   Avatar,
   FormControl,
   LinearProgress,
+  useTheme,
+  InputLabel,
+  Select,
+  OutlinedInput,
+  Box,
+  Chip,
 } from "@material-ui/core";
 import { Close, CloudUpload, AddSharp, RemoveSharp } from "@material-ui/icons";
 import Alert from "@material-ui/lab/Alert";
@@ -29,15 +35,23 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
 import Contact from "../../../components/guest/contact/Contact";
-import { selectAllCategories } from "../../../redux/categorySlice";
+import {
+  fetchSkills,
+  selectAllCategories,
+  selectAllSkills,
+} from "../../../redux/categorySlice";
 import { addRequest, fetchRequestsBuyer } from "../../../redux/requestSlice";
-
+import TreeView from "@material-ui/lab/TreeView";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import TreeItem from "@material-ui/lab/TreeItem";
 import {
   selectCurrentUser,
   selectTopSellers,
   uploadFile,
 } from "../../../redux/userSlice";
 import "./buyerCreateRequest.scss";
+import { useEffect } from "react";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -50,6 +64,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function BuyerCreateRequest() {
+  const listSkills = useSelector(selectAllSkills);
   const topSeller = useSelector(selectTopSellers);
   const listCategory = useSelector(selectAllCategories);
   const [cateId, setCateId] = useState(listCategory[0].id);
@@ -58,11 +73,23 @@ export default function BuyerCreateRequest() {
   const [jobTitle, setJobTitle] = useState("");
   const [description, setDescription] = useState("");
   const [skills, setSkills] = useState([]);
+  const [personName, setPersonName] = useState([]);
   const [inviteUsers, setInviteUsers] = useState([]);
   const [stages, setStages] = useState([
     { startDate: "", endDate: "", description: "", milestoneFee: "0.00" },
   ]);
   const [cancleFee, setCancleFee] = useState(0);
+
+  const dispatch = useDispatch();
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [check, setCheck] = useState(false);
+  const maxDate = new Date();
+  maxDate.setHours(0, 0, 0, 0);
+  maxDate.setDate(maxDate.getDate());
+  const [file, setFile] = useState();
+  const [loading, setLoading] = useState(false);
+  const currentUser = useSelector(selectCurrentUser);
   const request = {
     categoryId: cateId,
     subCategoryId: subCateId,
@@ -75,16 +102,6 @@ export default function BuyerCreateRequest() {
     invitedUsers: inviteUsers,
     attachFile: file,
   };
-  const dispatch = useDispatch();
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const [check, setCheck] = useState(false);
-  const maxDate = new Date();
-  maxDate.setHours(0, 0, 0, 0);
-  maxDate.setDate(maxDate.getDate());
-  const [file, setFile] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const currentUser = useSelector(selectCurrentUser);
   const handleUploadFile = async (e) => {
     setLoading(true);
     setFile(e.target.files[0]);
@@ -250,11 +267,72 @@ export default function BuyerCreateRequest() {
     setSkills([...skills, value]);
     e.target.value = "";
   }
+  function handleChooseSkill(value) {
+    if (!value.trim()) return;
+    setSkills([...skills, value]);
+    value = "";
+  }
 
   function removeSkill(index) {
     setSkills(skills.filter((el, i) => i !== index));
   }
 
+  //skill
+  const names = [
+    "Oliver Hansen",
+    "Van Henry",
+    "April Tucker",
+    "Ralph Hubbard",
+    "Omar Alexander",
+    "Carlos Abbott",
+    "Miriam Wagner",
+    "Bradley Wilkerson",
+    "Virginia Andrews",
+    "Kelly Snyder",
+    "Kelly Snyder 1",
+    "Kelly Snyder 2",
+    "Kelly Snyder3 ",
+    "Kelly Snyder 4",
+    "Kelly Snyder 5",
+    "Kelly Snyder 6",
+    "Kelly Snyder 7",
+    "Kelly Snyder 98",
+    "Kelly Snyder9",
+  ];
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250,
+      },
+    },
+  };
+  function getStyles(name, personName, theme) {
+    return {
+      fontWeight:
+        personName.indexOf(name) === -1
+          ? theme.typography.fontWeightRegular
+          : theme.typography.fontWeightMedium,
+    };
+  }
+  const theme = useTheme();
+
+  console.log("list skill ", personName);
+  const handleChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setSkills(
+      // On autofill we get a stringified value.
+      typeof value === "string" ? value.split(",") : value
+    );
+  };
+  useEffect(() => {
+    dispatch(fetchSkills);
+  }, []);
+  console.log(listSkills);
   return (
     <div className="buyer_profile">
       <BuyerHeader />
@@ -263,83 +341,10 @@ export default function BuyerCreateRequest() {
         {" "}
         <div className="profession_row">
           <TextField
-            id="outlined-select-currency"
-            select
-            label="Chọn danh mục"
-            value={cateId}
-            onChange={(e) => setCateId(e.target.value)}
-            style={{ width: "30%", margin: "10px" }}
-            variant="outlined"
-          >
-            {listCategory.map((category, index) => (
-              <MenuItem key={index} value={category.id}>
-                {category.name}
-              </MenuItem>
-            ))}
-          </TextField>
-          <TextField
-            id="outlined-select-currency"
-            select
-            label="Chọn danh mục con"
-            value={subCateId}
-            onChange={(e) => setSubCateId(e.target.value)}
-            style={{ width: "30%", margin: "10px" }}
-            variant="outlined"
-            error={!subCateId && check}
-            helperText={!subCateId && check && "Chưa chọn danh mục con!"}
-          >
-            {listCategory
-              .find((val) => {
-                return val.id == cateId;
-              })
-              .subCategories.map((subCategory, index) => (
-                <MenuItem key={index} value={subCategory.id}>
-                  {subCategory.name}
-                </MenuItem>
-              ))}
-          </TextField>
-        </div>
-        <div className="profession_row">
-          <TextField
-            id="outlined-select-currency"
-            select
-            label="Trình độ người bán"
-            defaultValue="BEGINNER"
-            name="level"
-            onChange={(e) => setRecruitLevel(e.target.value)}
-            style={{ width: "23%", margin: "10px" }}
-            variant="outlined"
-          >
-            <MenuItem value="BEGINNER">BEGINNER</MenuItem>
-            <MenuItem value="ADVANCED">ADVANCED</MenuItem>
-            <MenuItem value="COMPETENT">COMPETENT</MenuItem>
-            <MenuItem value="PROFICIENT">PROFICIENT</MenuItem>
-            <MenuItem value="EXPERT">EXPERT</MenuItem>
-          </TextField>
-          <div className="tags-input-container">
-            {skills.map((skill, index) => (
-              <div className="tag-item" key={index}>
-                <span className="text">{skill}</span>
-
-                <span className="close" onClick={() => removeSkill(index)}>
-                  &times;
-                </span>
-              </div>
-            ))}
-            <input
-              onKeyDown={handleKeyDown}
-              type="text"
-              className="tags-input"
-              placeholder="Nhập kĩ năng"
-            />
-          </div>
-        </div>
-        <div className="profession_row">
-          <TextField
             id="outlined-basic"
             label="Tiêu đề"
             variant="outlined"
-            style={{ width: "62%" }}
+            style={{ width: "96%" }}
             onChange={(e) => setJobTitle(e.target.value)}
             error={
               !/^[^\s][a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{3,48}[^\s]$/.test(
@@ -362,7 +367,7 @@ export default function BuyerCreateRequest() {
             variant="outlined"
             multiline
             rows={6}
-            style={{ width: "62%" }}
+            style={{ width: "96%" }}
             onChange={(e) => setDescription(e.target.value)}
             error={
               !/^[^\s][a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]{28,498}[^\s]$/.test(
@@ -379,29 +384,165 @@ export default function BuyerCreateRequest() {
           />
         </div>
         <div className="profession_row">
-          {" "}
-          <FormControl className="request_form_control">
-            <input
-              accept="image/*,.doc,.docx,.xlsx,.xls,.csv,.pdf,text/plain"
-              className="request_form_input"
-              id="request-input-file"
+          <TextField
+            id="outlined-select-currency"
+            select
+            label="Chọn danh mục"
+            value={cateId}
+            onChange={(e) => setCateId(e.target.value)}
+            style={{ width: "47%", margin: "10px" }}
+            variant="outlined"
+          >
+            {listCategory.map((category, index) => (
+              <MenuItem key={index} value={category.id}>
+                {category.name}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField
+            id="outlined-select-currency"
+            select
+            label="Chọn danh mục con"
+            value={subCateId}
+            onChange={(e) => setSubCateId(e.target.value)}
+            style={{ width: "47%", margin: "10px" }}
+            variant="outlined"
+            error={!subCateId && check}
+            helperText={!subCateId && check && "Chưa chọn danh mục con!"}
+          >
+            {listCategory
+              .find((val) => {
+                return val.id == cateId;
+              })
+              .subCategories.map((subCategory, index) => (
+                <MenuItem key={index} value={subCategory.id}>
+                  {subCategory.name}
+                </MenuItem>
+              ))}
+          </TextField>
+        </div>
+        <div className="profession_row">
+          {/* <div className="tags-input-container"> */}
+          {/* <TreeView
+              defaultCollapseIcon={<ExpandMoreIcon />}
+              defaultExpandIcon={<ChevronRightIcon />}
+              multiSelect
+            >
+              {listCategory.map((cate, index) => (
+                <TreeItem nodeId={cate.id} label={cate.name}>
+                  {cate.subCategories.map((subCate) => {
+                    return (
+                      <TreeItem nodeId={subCate.id} label={subCate.name}>
+                        {subCate.skillMetaData.map((skill) => {
+                          return (
+                            <TreeItem
+                              nodeId={skill.id}
+                              label={skill.name}
+                              onClick={() => handleChooseSkill(skill.name)}
+                            />
+                          );
+                        })}
+                      </TreeItem>
+                    );
+                  })}
+                </TreeItem>
+              ))}
+            </TreeView>
+            <div style={{ width: "80%" }}>
+              {skills.map((skill, index) => (
+                <div className="tag-item" key={index}>
+                  <span className="text">{skill}</span>
+                  <span className="close" onClick={() => removeSkill(index)}>
+                    &times;
+                  </span>
+                </div>
+              ))}
+              <input
+                // onKeyDown={handleKeyDown}
+                type="text"
+                className="tags-input"
+                placeholder="Hãy chọn kĩ năng"
+                disabled
+              />
+            </div> */}
+          <FormControl style={{ width: "96%" }}>
+            <InputLabel id="demo-multiple-chip-label">Kỹ năng</InputLabel>
+            <Select
+              labelId="demo-multiple-chip-label"
+              id="demo-multiple-chip"
+              value={skills}
               multiple
-              type="file"
-              onChange={handleUploadFile}
-              hidden
-            />
-            <label htmlFor="request-input-file">
-              <Button
-                variant="contained"
-                color="primary"
-                component="span"
-                startIcon={<CloudUpload />}
-              >
-                {file ? file.name : "FILE ĐÍNH KÈM"}
-              </Button>
-            </label>{" "}
-            {loading && <LinearProgress />}
+              onChange={handleChange}
+              input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+              renderValue={(selected) => (
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                  {selected.map((value) => (
+                    <Chip key={value} label={value} />
+                  ))}
+                </Box>
+              )}
+              MenuProps={MenuProps}
+            >
+              {listSkills.map((skill, index) => (
+                <MenuItem
+                  key={index}
+                  value={skill.name}
+                  style={getStyles(skill.name, skills, theme)}
+                >
+                  {skill.name}
+                </MenuItem>
+              ))}
+            </Select>
           </FormControl>
+          {/* </div> */}
+        </div>
+        <div className="profession_row">
+          {" "}
+          <TextField
+            id="outlined-select-currency"
+            select
+            label="Trình độ người bán"
+            defaultValue="BEGINNER"
+            name="level"
+            onChange={(e) => setRecruitLevel(e.target.value)}
+            style={{ width: "47%", margin: "10px" }}
+            variant="outlined"
+          >
+            <MenuItem value="BEGINNER">BEGINNER</MenuItem>
+            <MenuItem value="ADVANCED">ADVANCED</MenuItem>
+            <MenuItem value="COMPETENT">COMPETENT</MenuItem>
+            <MenuItem value="PROFICIENT">PROFICIENT</MenuItem>
+            <MenuItem value="EXPERT">EXPERT</MenuItem>
+          </TextField>
+          {/* <FormControl
+            className="request_form_control"
+            style={{ width: "30%", margin: "10px" }}
+          > */}
+          <input
+            accept="image/*,.doc,.docx,.xlsx,.xls,.csv,.pdf,text/plain"
+            className="request_form_input"
+            id="request-input-file"
+            multiple
+            type="file"
+            onChange={handleUploadFile}
+            hidden
+          />
+          <label
+            htmlFor="request-input-file"
+            // style={{ width: "30%", margin: "10px" }}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              component="span"
+              style={{ width: "47%", margin: "10px", height: "55px" }}
+              startIcon={<CloudUpload />}
+            >
+              {file ? file.name : "FILE ĐÍNH KÈM"}
+            </Button>
+          </label>{" "}
+          {loading && <LinearProgress />}
+          {/* </FormControl> */}
         </div>
         <div className="profession_row">
           {" "}
@@ -414,7 +555,7 @@ export default function BuyerCreateRequest() {
             variant="outlined"
             type="number"
             value={stages.length}
-            style={{ width: "8%", margin: "10px" }}
+            style={{ width: "13%", margin: "10px" }}
             disabled
           />
           <Button style={{ height: "70px" }} onClick={handleStageAdd}>
@@ -435,7 +576,7 @@ export default function BuyerCreateRequest() {
                 InputLabelProps={{
                   shrink: true,
                 }}
-                style={{ width: "30%", margin: "10px" }}
+                style={{ width: "47%", margin: "10px" }}
                 name="startDate"
                 onChange={(e) => handleStageChange(e, index)}
                 error={
@@ -460,7 +601,7 @@ export default function BuyerCreateRequest() {
                 InputLabelProps={{
                   shrink: true,
                 }}
-                style={{ width: "30%", margin: "10px" }}
+                style={{ width: "47%", margin: "10px" }}
                 name="endDate"
                 onChange={(e) => handleStageChange(e, index)}
                 error={
@@ -485,8 +626,8 @@ export default function BuyerCreateRequest() {
                 label="Sản phẩm bàn giao"
                 variant="outlined"
                 multiline
-                rows={3}
-                style={{ width: "62%" }}
+                rows={4}
+                style={{ width: "96%" }}
                 name="description"
                 onChange={(e) => handleStageChange(e, index)}
                 error={
@@ -510,7 +651,7 @@ export default function BuyerCreateRequest() {
                 label="Chi phí"
                 variant="outlined"
                 type="number"
-                // value={stage.milestoneFee}
+                value={stage.milestoneFee}
                 style={{ width: "30%", margin: "10px" }}
                 inputProps={{
                   maxLength: 10,
@@ -543,10 +684,9 @@ export default function BuyerCreateRequest() {
         <div className="profession_row">
           <Typography variant="h4">
             Tổng chi phí :{" "}
-            {stages.reduce(
-              (total, item) => total + parseInt(item.milestoneFee),
-              0
-            )}{" "}
+            {stages
+              .reduce((total, item) => total + parseInt(item.milestoneFee), 0)
+              .toLocaleString()}{" "}
             $
           </Typography>
           <TextField
@@ -560,12 +700,14 @@ export default function BuyerCreateRequest() {
               endAdornment: (
                 <InputAdornment position="end">
                   % Tổng chi phí (={" "}
-                  {(stages.reduce(
-                    (total, item) => total + parseFloat(item.milestoneFee),
-                    0
-                  ) *
-                    cancleFee) /
-                    100}
+                  {(
+                    (stages.reduce(
+                      (total, item) => total + parseFloat(item.milestoneFee),
+                      0
+                    ) *
+                      cancleFee) /
+                    100
+                  ).toLocaleString()}
                   $)
                 </InputAdornment>
               ),

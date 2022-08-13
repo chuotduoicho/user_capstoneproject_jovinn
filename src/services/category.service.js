@@ -9,6 +9,12 @@ const getAllCategories = () => {
     return response.data;
   });
 };
-const categoryService = { getAllCategories };
+const getAllSkills = () => {
+  return axios.get(API_URL + "/skill/meta-data-list").then((response) => {
+    localStorage.setItem("skills", JSON.stringify(response.data));
+    return response.data;
+  });
+};
+const categoryService = { getAllCategories, getAllSkills };
 
 export default categoryService;
