@@ -1,8 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Contact from "../../../components/guest/contact/Contact";
 import "./sellerProfession.scss";
 import { ToastContainer, toast } from "react-toastify";
-import { Button, Container, TextField } from "@material-ui/core";
+import {
+  Box,
+  Button,
+  Chip,
+  Container,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  TextField,
+  useTheme,
+} from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 
 import { useNavigate } from "react-router-dom";
@@ -10,12 +22,13 @@ import { Add, Delete } from "@material-ui/icons";
 import { fetchCurrentUser, joinSeller } from "../../../redux/userSlice";
 import Alert from "@material-ui/lab/Alert";
 import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
-import TreeView from "@material-ui/lab/TreeView";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import TreeItem from "@material-ui/lab/TreeItem";
-import { selectAllCategories } from "../../../redux/categorySlice";
+import {
+  fetchSkills,
+  selectAllCategories,
+  selectAllSkills,
+} from "../../../redux/categorySlice";
 export default function SellerProfession() {
+  const listSkills = useSelector(selectAllSkills);
   // const currentUser = useSelector(selectCurrentUser);
   const listCategory = useSelector(selectAllCategories);
   const [descriptionBio, setDescriptionBio] = useState("");
@@ -215,6 +228,62 @@ export default function SellerProfession() {
       });
     }
   };
+  //skill
+  const names = [
+    "Oliver Hansen",
+    "Van Henry",
+    "April Tucker",
+    "Ralph Hubbard",
+    "Omar Alexander",
+    "Carlos Abbott",
+    "Miriam Wagner",
+    "Bradley Wilkerson",
+    "Virginia Andrews",
+    "Kelly Snyder",
+    "Kelly Snyder 1",
+    "Kelly Snyder 2",
+    "Kelly Snyder3 ",
+    "Kelly Snyder 4",
+    "Kelly Snyder 5",
+    "Kelly Snyder 6",
+    "Kelly Snyder 7",
+    "Kelly Snyder 98",
+    "Kelly Snyder9",
+  ];
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250,
+      },
+    },
+  };
+  function getStyles(name, personName, theme) {
+    return {
+      fontWeight:
+        personName.indexOf(name) === -1
+          ? theme.typography.fontWeightRegular
+          : theme.typography.fontWeightMedium,
+    };
+  }
+  const theme = useTheme();
+
+  const handleChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setSkills(
+      // On autofill we get a stringified value.
+      typeof value === "string" ? { name: value.split(",") } : { name: value }
+    );
+  };
+  useEffect(() => {
+    dispatch(fetchSkills());
+  }, []);
+  console.log(listSkills);
+  console.log(skills);
   return (
     <div className="buyer_profile">
       <BuyerHeader />
@@ -261,29 +330,47 @@ export default function SellerProfession() {
             }
           />
         </div>
-        {/* <div className="profession_row"></div> */}
+        <div className="profession_row">
+          {" "}
+          <FormControl style={{ width: "96%" }}>
+            <InputLabel id="demo-multiple-chip-label">Kỹ năng</InputLabel>
+            <Select
+              labelId="demo-multiple-chip-label"
+              id="demo-multiple-chip"
+              value={skills}
+              multiple
+              onChange={handleChange}
+              input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+              renderValue={(selected) => (
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                  {selected.map((value) => (
+                    <Chip key={value} label={value} />
+                  ))}
+                </Box>
+              )}
+              MenuProps={MenuProps}
+            >
+              {listSkills.map((skill, index) => (
+                <MenuItem
+                  key={index}
+                  value={skill.name}
+                  // style={getStyles(skill.name, skills, theme)}
+                >
+                  {skill.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </div>
         <div className="profession_row">
           {" "}
           {/* <h2>Kĩ năng</h2> */}
-          <div className="tags-input-container">
+          {/* <div className="tags-input-container">
             <TreeView
               defaultCollapseIcon={<ExpandMoreIcon />}
               defaultExpandIcon={<ChevronRightIcon />}
               multiSelect
             >
-              {/* <TreeItem nodeId="asd" label="Applications">
-                <TreeItem nodeId="asdasd" label="Calendar" />
-                <TreeItem nodeId="3sdf" label="Chrome" />
-                <TreeItem nodeId="4asd" label="Webstorm" />
-              </TreeItem>
-              <TreeItem nodeId="5sad" label="Documents">
-                <TreeItem nodeId="6sdf" label="Material-UI">
-                  <TreeItem nodeId="sdf7" label="src">
-                    <TreeItem nodeId="sdf8" label="index.js" />
-                    <TreeItem nodeId="91sdf" label="tree-view.js" />
-                  </TreeItem>
-                </TreeItem>
-              </TreeItem> */}
               {listCategory.map((cate, index) => (
                 <TreeItem nodeId={cate.id} label={cate.name}>
                   {cate.subCategories.map((subCate) => {
@@ -321,7 +408,7 @@ export default function SellerProfession() {
                 disabled
               />
             </div>
-          </div>
+          </div> */}
         </div>
         <div
           className="profession_row"
