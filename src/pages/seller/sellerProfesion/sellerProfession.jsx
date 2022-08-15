@@ -134,10 +134,11 @@ export default function SellerProfession() {
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
+  const myArray = skills.map((str, index) => ({ name: str }));
   const info = {
     descriptionBio: descriptionBio,
     brandName: brandName,
-    skills: skills,
+    skills: myArray,
     educations: edus,
     certificates: certificates,
   };
@@ -274,10 +275,14 @@ export default function SellerProfession() {
     const {
       target: { value },
     } = event;
+    console.log("value", value);
+
+    console.log("value", myArray);
     setSkills(
       // On autofill we get a stringified value.
-      typeof value === "string" ? { name: value.split(",") } : { name: value }
+      typeof value === "string" ? value.split(",") : value
     );
+    // setSkills([...skills, { name: value }]);
   };
   useEffect(() => {
     dispatch(fetchSkills());

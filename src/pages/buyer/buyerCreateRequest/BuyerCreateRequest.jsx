@@ -428,7 +428,7 @@ export default function BuyerCreateRequest() {
               ))}
           </TextField>
         </div>
-        <div className="profession_row">
+        {/* <div className="profession_row">
           <pre>{JSON.stringify(selecte)}</pre>
           <MultiSelect
             options={options}
@@ -436,7 +436,7 @@ export default function BuyerCreateRequest() {
             onChange={setSelecte}
             labelledBy={"Chọn kĩ năng"}
           />
-        </div>
+        </div> */}
         <div className="profession_row">
           <FormControl style={{ width: "96%" }}>
             <InputLabel id="demo-multiple-chip-label">Kỹ năng</InputLabel>
