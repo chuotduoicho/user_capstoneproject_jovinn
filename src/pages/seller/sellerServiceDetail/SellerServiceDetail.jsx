@@ -202,32 +202,32 @@ export default function SellerServiceDetail() {
     setSubCateId(e.target.value);
   };
   useEffect(() => {
-    if (title.length > 0 && errorTitle) {
+    if (title && errorTitle) {
       setErrorTitle("");
     }
   }, [title, errorTitle]);
   useEffect(() => {
-    if (description.length > 0 && errorDescription) {
+    if (description && errorDescription) {
       setErrorDescription("");
     }
   }, [description, errorDescription]);
   useEffect(() => {
-    if (subCateId.length > 0 && errorSubcate) {
+    if (subCateId && errorSubcate) {
       setErrorSubcate("");
     }
   }, [subCateId, errorSubcate]);
   useEffect(() => {
-    if (title.length == 0) {
+    if (!title) {
       setErrorTitle("Không được để trống");
     }
   }, [title]);
   useEffect(() => {
-    if (description.length == 0) {
+    if (!description) {
       setErrorDescription("Không được để trống");
     }
   }, [description]);
   useEffect(() => {
-    if (subCateId.length == 0) {
+    if (!subCateId) {
       setErrorSubcate("Không được để trống");
     }
   }, [subCateId]);
