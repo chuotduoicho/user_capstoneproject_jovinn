@@ -35,27 +35,19 @@ const updateSkill = (obj) => {
 };
 const updateEducation = (obj) => {
   console.log(obj);
-  const id = obj.id;
+  const id = obj.eduid;
   const edus = obj.edus;
-  return axios.put(
-    API_URL + "/seller-details/education/" + id,
-    {
-      edus,
-    },
-    { headers: authHeader() }
-  );
+  return axios.put(API_URL + "/seller-details/education/" + id, edus, {
+    headers: authHeader(),
+  });
 };
 const updateCertificate = (obj) => {
   console.log(obj);
-  const id = obj.id;
-  const cers = obj.certificates;
-  return axios.put(
-    API_URL + "/seller-details/certificate/" + id,
-    {
-      cers,
-    },
-    { headers: authHeader() }
-  );
+  const id = obj.cerid;
+  const cers = obj.cers;
+  return axios.put(API_URL + "/seller-details/certificate/" + id, cers, {
+    headers: authHeader(),
+  });
 };
 const addSkills = (skills) => {
   console.log(skills);

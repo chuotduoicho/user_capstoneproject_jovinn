@@ -2,6 +2,7 @@ import { Button, ButtonGroup, TextareaAutosize } from "@material-ui/core";
 import React from "react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 import {
   fetchCurrentUser,
   updateDescriptionBio,
@@ -23,9 +24,10 @@ export default function SellerIntro({ description, brandName }) {
       .then(() => {
         dispatch(fetchCurrentUser());
         setEditStatus(false);
+        toast.success("Chỉnh sửa giới thiệu thành công!");
       })
       .catch(() => {
-        console.log("update error");
+        toast.error("Chỉnh sửa giới thiệu thất bại!");
       });
   };
   return (

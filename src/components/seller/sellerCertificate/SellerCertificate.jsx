@@ -19,14 +19,17 @@ import React from "react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useHref, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
   addCertificates,
   deleteCer,
   fetchCurrentUser,
+  updateCertificate,
 } from "../../../redux/userSlice";
 import "./sellerCertificate.scss";
 export default function SellerCertificate({ certificates, id }) {
   const [editStatus, setEditStatus] = useState(false);
+  const [cerid, setCerid] = useState("");
   const [title, setTitle] = useState("");
   const [name, setName] = useState("");
   const [linkCer, setLinkCer] = useState("");
@@ -39,8 +42,12 @@ export default function SellerCertificate({ certificates, id }) {
   };
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
+  const [openUpdate, setOpenUpdate] = useState(false);
   const handleClose = () => {
     setOpen(false);
+  };
+  const handleCloseUpdate = () => {
+    setOpenUpdate(false);
   };
   const handleAddCer = () => {
     const cers = { title, name, linkCer, userId: id };
@@ -49,9 +56,28 @@ export default function SellerCertificate({ certificates, id }) {
       .then(() => {
         dispatch(fetchCurrentUser());
         setOpen(false);
+        toast.success("Thêm chứng chỉ thành công!");
       })
 
-      .catch(() => {});
+      .catch(() => {
+        setOpen(false);
+        toast.error("Thêm chứng chỉ thất bại!");
+      });
+  };
+  const handleUpdateCer = () => {
+    const cers = { title, name, linkCer, userId: id };
+    dispatch(updateCertificate({ cerid, cers }))
+      .unwrap()
+      .then(() => {
+        dispatch(fetchCurrentUser());
+        setOpenUpdate(false);
+        toast.success("Cập nhật chứng chỉ thành công!");
+      })
+
+      .catch(() => {
+        setOpenUpdate(false);
+        toast.error("Cập nhật chứng chỉ thất bại!");
+      });
   };
   const handleCerRemove = (id) => {
     setOpenDelete(false);
@@ -59,8 +85,11 @@ export default function SellerCertificate({ certificates, id }) {
       .unwrap()
       .then(() => {
         dispatch(fetchCurrentUser());
+        toast.success("Xóa chứng chỉ thành công!");
       })
-      .catch(() => {});
+      .catch(() => {
+        toast.error("Xóa chứng chỉ thất bại!");
+      });
   };
   const [openDelete, setOpenDelete] = React.useState(false);
   const handleClickOpenDelete = () => {
@@ -112,7 +141,17 @@ export default function SellerCertificate({ certificates, id }) {
                           </TableCell>
                           {editStatus && (
                             <TableCell align="right">
-                              <EditOutlined color="primary" />
+                              <EditOutlined
+                                color="primary"
+                                style={{ cursor: "pointer" }}
+                                onClick={() => {
+                                  setOpenUpdate(true);
+                                  setTitle(item.title);
+                                  setName(item.name);
+                                  setLinkCer(item.linkCer);
+                                  setCerid(item.id);
+                                }}
+                              />
                               <DeleteOutline
                                 color="secondary"
                                 style={{ cursor: "pointer" }}
@@ -163,6 +202,7 @@ export default function SellerCertificate({ certificates, id }) {
                   <Button onClick={handleNotEdit}>Xong</Button>
                 </ButtonGroup>
               )}
+              {/* add certificate */}
               <Dialog
                 fullWidth
                 maxWidth="sm"
@@ -203,6 +243,54 @@ export default function SellerCertificate({ certificates, id }) {
                     Thêm
                   </Button>
                   <Button onClick={handleClose} color="primary">
+                    Đóng
+                  </Button>
+                </DialogActions>
+              </Dialog>
+              {/* update certificate */}
+              <Dialog
+                fullWidth
+                maxWidth="sm"
+                open={openUpdate}
+                onClose={handleCloseUpdate}
+                aria-labelledby="max-width-dialog-title"
+              >
+                <DialogTitle id="max-width-dialog-title">
+                  Chỉnh sửa chứng chỉ
+                </DialogTitle>
+                <DialogContent>
+                  {" "}
+                  <TextField
+                    id="outlined-basic"
+                    label="Tiêu đề"
+                    variant="outlined"
+                    defaultValue={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                  />
+                  <TextField
+                    id="outlined-basic"
+                    label="Tên chứng chỉ"
+                    variant="outlined"
+                    defaultValue={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                  <TextField
+                    id="outlined-basic"
+                    label="Link"
+                    variant="outlined"
+                    defaultValue={linkCer}
+                    onChange={(e) => setLinkCer(e.target.value)}
+                  />
+                </DialogContent>
+                <DialogActions>
+                  <Button
+                    onClick={handleUpdateCer}
+                    color="primary"
+                    variant="contained"
+                  >
+                    Cập nhật
+                  </Button>
+                  <Button onClick={handleCloseUpdate} color="primary">
                     Đóng
                   </Button>
                 </DialogActions>

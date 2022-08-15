@@ -39,6 +39,7 @@ import { fetchRequestsSeller } from "../../../redux/requestSlice";
 import { fetchContracts } from "../../../redux/contractSlice";
 import CategoryList from "../../../components/guest/categoryList/CategoryList";
 import usePagination from "../../../Pagination";
+import { ToastContainer } from "react-toastify";
 function ChangeFormateDate(oldDate) {
   return oldDate.toString().split("-").reverse().join("-");
 }
@@ -247,7 +248,7 @@ export default function SellerHome() {
           id={currentUser.id}
         />
       </div>
-
+      <ToastContainer limit={3000} position="bottom-right" />
       <div className="sections">
         <Contact />
       </div>

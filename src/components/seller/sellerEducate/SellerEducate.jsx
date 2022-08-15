@@ -14,12 +14,27 @@ import {
   TableRow,
   TextField,
 } from "@material-ui/core";
-import { Delete, Edit, EditOutlined, Remove } from "@material-ui/icons";
+import { Delete, Edit, EditOutlined, Remove, Today } from "@material-ui/icons";
 import React from "react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addEdus, deleteEdu, fetchCurrentUser } from "../../../redux/userSlice";
+import { toast } from "react-toastify";
+import {
+  addEdus,
+  deleteEdu,
+  fetchCurrentUser,
+  updateEducation,
+} from "../../../redux/userSlice";
 import "./sellerEducate.scss";
+function format2(date) {
+  date = new Date(date);
+
+  var day = ("0" + date.getDate()).slice(-2);
+  var month = ("0" + (date.getMonth() + 1)).slice(-2);
+  var year = date.getFullYear();
+
+  return year + "-" + month + "-" + day;
+}
 function format(date) {
   date = new Date(date);
 
@@ -34,6 +49,7 @@ export default function SellerEducate({ educations, id }) {
   const dispatch = useDispatch();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [eduid, setEduid] = useState("");
   const [title, setTitle] = useState("");
   const [universityName, setUniversityName] = useState("");
   const [major, setMajor] = useState("");
@@ -51,13 +67,19 @@ export default function SellerEducate({ educations, id }) {
       .unwrap()
       .then(() => {
         dispatch(fetchCurrentUser());
+        toast.success("Xóa học vấn thành công!");
       })
-
-      .catch(() => {});
+      .catch(() => {
+        toast.error("Xóa học vấn thất  bại!");
+      });
   };
   const [open, setOpen] = useState(false);
+  const [openUpdate, setOpenUpdate] = useState(false);
   const handleClose = () => {
     setOpen(false);
+  };
+  const handleCloseUpdate = () => {
+    setOpenUpdate(false);
   };
   const handleAddEdu = () => {
     const edus = {
@@ -74,9 +96,34 @@ export default function SellerEducate({ educations, id }) {
       .then(() => {
         dispatch(fetchCurrentUser());
         setOpen(false);
+        toast.success("Thêm học vấn thành công!");
       })
-
-      .catch(() => {});
+      .catch(() => {
+        setOpen(false);
+        toast.error("Thêm học vấn thất bại!");
+      });
+  };
+  const handleUpdateEdu = () => {
+    const edus = {
+      title,
+      universityName,
+      major,
+      fromDate,
+      toDate,
+      userId: id,
+      country: "Vietnam",
+    };
+    dispatch(updateEducation({ eduid, edus }))
+      .unwrap()
+      .then(() => {
+        dispatch(fetchCurrentUser());
+        setOpenUpdate(false);
+        toast.success("Cập nhật học vấn thành công!");
+      })
+      .catch(() => {
+        setOpenUpdate(false);
+        toast.error("Cập nhật học vấn thất bại!");
+      });
   };
   const [openDelete, setOpenDelete] = React.useState(false);
   const handleClickOpenDelete = () => {
@@ -135,7 +182,19 @@ export default function SellerEducate({ educations, id }) {
                           </TableCell>
                           {editStatus && (
                             <TableCell align="right">
-                              <EditOutlined color="primary" />
+                              <EditOutlined
+                                color="primary"
+                                style={{ cursor: "pointer" }}
+                                onClick={() => {
+                                  setOpenUpdate(true);
+                                  setTitle(item.title);
+                                  setUniversityName(item.universityName);
+                                  setMajor(item.major);
+                                  setToDate(item.toDate);
+                                  setFromDate(item.fromDate);
+                                  setEduid(item.id);
+                                }}
+                              />
                               <Delete
                                 color="secondary"
                                 style={{ cursor: "pointer" }}
@@ -185,6 +244,7 @@ export default function SellerEducate({ educations, id }) {
                   <Button onClick={handleNotEdit}>Xong</Button>
                 </ButtonGroup>
               )}
+              {/* add educations */}
               <Dialog
                 fullWidth
                 maxWidth="sm"
@@ -245,6 +305,76 @@ export default function SellerEducate({ educations, id }) {
                     Thêm
                   </Button>
                   <Button onClick={handleClose} color="primary">
+                    Đóng
+                  </Button>
+                </DialogActions>
+              </Dialog>
+              {/* update edutcation */}
+              <Dialog
+                fullWidth
+                maxWidth="sm"
+                open={openUpdate}
+                onClose={handleCloseUpdate}
+                aria-labelledby="max-width-dialog-title"
+              >
+                <DialogTitle id="max-width-dialog-title">
+                  Chỉnh sửa học vấn
+                </DialogTitle>
+                <DialogContent>
+                  {" "}
+                  <TextField
+                    id="outlined-basic"
+                    label="Tiêu đề"
+                    variant="outlined"
+                    defaultValue={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                  />
+                  <TextField
+                    id="outlined-basic"
+                    label="Trường"
+                    variant="outlined"
+                    defaultValue={universityName}
+                    onChange={(e) => setUniversityName(e.target.value)}
+                  />
+                  <TextField
+                    id="outlined-basic"
+                    label="Ngành"
+                    variant="outlined"
+                    defaultValue={major}
+                    onChange={(e) => setMajor(e.target.value)}
+                  />
+                  <TextField
+                    id="outlined-basic"
+                    label="Năm bắt đầu "
+                    variant="outlined"
+                    type="date"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    defaultValue={format2(toDate)}
+                    onChange={(e) => setToDate(e.target.value)}
+                  />
+                  <TextField
+                    id="outlined-basic"
+                    label="Năm tốt nghiệp "
+                    variant="outlined"
+                    type="date"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    defaultValue={format2(fromDate)}
+                    onChange={(e) => setFromDate(e.target.value)}
+                  />
+                </DialogContent>
+                <DialogActions>
+                  <Button
+                    onClick={handleUpdateEdu}
+                    color="primary"
+                    variant="contained"
+                  >
+                    Cập nhật
+                  </Button>
+                  <Button onClick={handleCloseUpdate} color="primary">
                     Đóng
                   </Button>
                 </DialogActions>
