@@ -1,24 +1,11 @@
 import {
-  AppBar,
   Button,
   Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  IconButton,
   MenuItem,
   TextField,
   makeStyles,
-  Toolbar,
   Typography,
-  List,
-  ListItem,
   InputAdornment,
-  ListItemText,
-  ListItemAvatar,
-  Avatar,
   FormControl,
   InputLabel,
   Select,
@@ -28,11 +15,11 @@ import {
   useTheme,
   LinearProgress,
 } from "@material-ui/core";
-import { Close, CloudUpload, AddSharp, RemoveSharp } from "@material-ui/icons";
-import Alert from "@material-ui/lab/Alert";
-import React, { useEffect, useState } from "react";
+import { CloudUpload, AddSharp, RemoveSharp } from "@material-ui/icons";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
 import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
 import Contact from "../../../components/guest/contact/Contact";
 import {
@@ -65,7 +52,15 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
   },
 }));
+function format2(date) {
+  date = new Date(date);
 
+  var day = ("0" + date.getDate()).slice(-2);
+  var month = ("0" + (date.getMonth() + 1)).slice(-2);
+  var year = date.getFullYear();
+
+  return year + "-" + month + "-" + day;
+}
 export default function BuyerCreateRequest() {
   const { requestId } = useParams();
   const requestDetail = useSelector((state) =>
@@ -92,20 +87,9 @@ export default function BuyerCreateRequest() {
   const [loading, setLoading] = useState(false);
   const [stages, setStages] = useState(requestDetail.milestoneContracts);
   const [cancleFee, setCancleFee] = useState(requestDetail.contractCancelFee);
-  const request = {
-    categoryId: cateId,
-    subCategoryId: subCateId,
-    recruitLevel: recruitLevel,
-    skillsName: skills,
-    jobTitle: jobTitle,
-    shortRequirement: description,
-    milestoneContracts: stages,
-    contractCancelFee: cancleFee,
-    invitedUsers: inviteUsers,
-  };
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  console.log("request", request);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [isEdit, setIsEdit] = useState(false);
@@ -117,11 +101,22 @@ export default function BuyerCreateRequest() {
     dispatch(fetchRequestDetail(requestId));
     dispatch(fetchSkills());
   }, []);
-  // useEffect(() => {
-  //   if (requestDetailStatus == "success") {
-  //     setSkills(requestDetail.skillsName);
-  //   }
-  // }, [requestDetailStatus]);
+  console.log(requestDetailStatus, "requestDetailStatus");
+  useEffect(() => {
+    if (requestDetailStatus == "success") {
+      setCateId(requestDetail.categoryId);
+      setSubCateId(requestDetail.subcategoryId);
+      setRecruitLevel(requestDetail.recruitLevel);
+      setJobTitle(requestDetail.jobTitle);
+      setDescription(requestDetail.description);
+      var names = requestDetail.skillsName.map(function (item) {
+        return item["name"];
+      });
+      setSkills(names);
+      setStages(requestDetail.milestoneContracts);
+      setCancleFee(requestDetail.cancleFee);
+    }
+  }, [requestDetailStatus]);
   // ssssssss
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -147,6 +142,18 @@ export default function BuyerCreateRequest() {
   };
   const handleUpdate = () => {
     setError("");
+    const request = {
+      categoryId: cateId,
+      subCategoryId: subCateId,
+      recruitLevel: recruitLevel,
+      skillsName: skills,
+      jobTitle: jobTitle,
+      shortRequirement: description,
+      milestoneContracts: stages,
+      contractCancelFee: cancleFee,
+      invitedUsers: inviteUsers,
+    };
+    console.log(request);
     let check1 = false;
     let check2 = true;
     let check3 = true;
@@ -193,60 +200,19 @@ export default function BuyerCreateRequest() {
       dispatch(updateRequest({ request, requestId }))
         .unwrap()
         .then(() => {
-          dispatch(fetchRequestsBuyer());
-          setSuccess("Cập nhật yêu cầu thành công!");
+          dispatch(fetchRequestDetail(requestId));
+          toast.success("Cập nhật yêu cầu thành công! ");
+          setIsEdit(false);
         })
         .catch(() => {
-          setError("Cập nhật yêu cầu thất bại!");
+          toast.error("Cập nhật yêu cầu thất bại! ");
         });
     }
   };
 
-  const handleClose = (e) => {
-    e.preventDefault();
-    dispatch(updateRequest(request, requestId))
-      .unwrap()
-      .then(() => {
-        dispatch(fetchRequestsBuyer());
-        setSuccess("Tạo yêu cầu thành công!");
-      })
-      .catch(() => {
-        setError("Tạo yêu cầu thất bại!");
-      });
-    setOpen(false);
-  };
-
-  const [fullScreenOpen, setFullScreenOpen] = useState(false);
-  const handleFullScreenOpen = () => {
-    setFullScreenOpen(true);
-  };
-  const handleFullScreenClose = (e) => {
-    e.preventDefault();
-    dispatch(addRequest(request))
-      .unwrap()
-      .then(() => {
-        setSuccess("Tạo yêu cầu thành công!");
-      })
-      .catch(() => {
-        setError("Tạo yêu cầu thất bại!");
-      });
-    setFullScreenOpen(false);
-    setOpen(false);
-  };
-
   const handleStageChange = (e, index) => {
     const { name, value } = e.target;
-    console.log(name, value);
-    const list = [];
-    stages.map((stage) =>
-      list.push({
-        startDate: stage.startDate,
-        endDate: stage.endDate,
-        description: stage.description,
-        milestoneFee: stage.milestoneFee,
-      })
-    );
-    console.log(list[index][name]);
+    const list = [...stages];
     list[index][name] = value;
     setStages(list);
   };
@@ -267,18 +233,6 @@ export default function BuyerCreateRequest() {
   };
 
   console.log("inviteUsers", inviteUsers);
-
-  function handleKeyDown(e) {
-    if (e.key !== "Enter") return;
-    const value = e.target.value;
-    if (!value.trim()) return;
-    setSkills([...skills, value]);
-    e.target.value = "";
-  }
-
-  function removeSkill(index) {
-    setSkills(skills.filter((el, i) => i !== index));
-  }
 
   //skill
   const ITEM_HEIGHT = 48;
@@ -321,7 +275,7 @@ export default function BuyerCreateRequest() {
             variant="outlined"
             style={{ width: "96%" }}
             defaultValue={jobTitle}
-            disabled
+            disabled={!isEdit}
             onChange={(e) => setJobTitle(e.target.value)}
             error={
               !/^[a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_\s]{5,50}$/.test(
@@ -346,7 +300,7 @@ export default function BuyerCreateRequest() {
             rows={6}
             style={{ width: "96%" }}
             defaultValue={description}
-            disabled
+            disabled={!isEdit}
             onChange={(e) => setDescription(e.target.value)}
             error={
               !/^[a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_\s]{30,500}$/.test(
@@ -368,7 +322,7 @@ export default function BuyerCreateRequest() {
             select
             label="Chọn danh mục"
             defaultValue={cateId}
-            disabled
+            disabled={!isEdit}
             onChange={(e) => setCateId(e.target.value)}
             style={{ width: "47%", margin: "10px" }}
             variant="outlined"
@@ -384,7 +338,7 @@ export default function BuyerCreateRequest() {
             select
             label="Chọn danh mục con"
             defaultValue={subCateId}
-            disabled
+            disabled={!isEdit}
             onChange={(e) => setSubCateId(e.target.value)}
             style={{ width: "47%", margin: "10px" }}
             variant="outlined"
@@ -409,7 +363,7 @@ export default function BuyerCreateRequest() {
               labelId="demo-multiple-chip-label"
               id="demo-multiple-chip"
               value={skills}
-              disabled
+              disabled={!isEdit}
               multiple
               onChange={handleChange}
               input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
@@ -442,7 +396,7 @@ export default function BuyerCreateRequest() {
             select
             label="Trình độ người bán"
             defaultValue={recruitLevel}
-            disabled
+            disabled={!isEdit}
             name="level"
             onChange={(e) => setRecruitLevel(e.target.value)}
             style={{ width: "47%", margin: "10px" }}
@@ -486,7 +440,11 @@ export default function BuyerCreateRequest() {
         </div>
         <div className="profession_row">
           {" "}
-          <Button style={{ height: "70px" }} onClick={handleStageRemove}>
+          <Button
+            style={{ height: "70px" }}
+            onClick={handleStageRemove}
+            disabled={!isEdit}
+          >
             <RemoveSharp />
           </Button>
           <TextField
@@ -498,7 +456,11 @@ export default function BuyerCreateRequest() {
             style={{ width: "13%", margin: "10px" }}
             disabled
           />
-          <Button style={{ height: "70px" }} onClick={handleStageAdd}>
+          <Button
+            style={{ height: "70px" }}
+            onClick={handleStageAdd}
+            disabled={!isEdit}
+          >
             <AddSharp />
           </Button>
         </div>
@@ -518,6 +480,8 @@ export default function BuyerCreateRequest() {
                 }}
                 style={{ width: "47%", margin: "10px" }}
                 name="startDate"
+                defaultValue={format2(stage.startDate)}
+                disabled={!isEdit}
                 onChange={(e) => handleStageChange(e, index)}
                 error={
                   (new Date(stage.startDate) < maxDate ||
@@ -543,6 +507,8 @@ export default function BuyerCreateRequest() {
                 }}
                 style={{ width: "47%", margin: "10px" }}
                 name="endDate"
+                defaultValue={format2(stage.endDate)}
+                disabled={!isEdit}
                 onChange={(e) => handleStageChange(e, index)}
                 error={
                   (new Date(stage.endDate) < maxDate ||
@@ -570,7 +536,7 @@ export default function BuyerCreateRequest() {
                 style={{ width: "96%" }}
                 name="description"
                 defaultValue={stage.description}
-                disabled
+                disabled={!isEdit}
                 onChange={(e) => handleStageChange(e, index)}
                 error={
                   !/^[a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_\s]{30,500}$/.test(
@@ -594,7 +560,7 @@ export default function BuyerCreateRequest() {
                 variant="outlined"
                 type="number"
                 defaultValue={stage.milestoneFee}
-                disabled
+                disabled={!isEdit}
                 style={{ width: "30%", margin: "10px" }}
                 inputProps={{
                   maxLength: 10,
@@ -656,7 +622,7 @@ export default function BuyerCreateRequest() {
               ),
             }}
             defaultValue={cancleFee}
-            disabled
+            disabled={!isEdit}
             onChange={(e) => setCancleFee(e.target.value)}
             error={(cancleFee < 0 || cancleFee > 100 || !cancleFee) && check}
             helperText={
@@ -668,14 +634,36 @@ export default function BuyerCreateRequest() {
         </div>
         <div className="profession_row">
           {" "}
-          <Button
-            variant="contained"
-            color="primary"
-            className="form_right_row_btn"
-            onClick={handleUpdate}
-          >
-            Cập nhật
-          </Button>
+          {isEdit ? (
+            <>
+              {" "}
+              <Button
+                variant="contained"
+                color="primary"
+                className="form_right_row_btn"
+                onClick={handleUpdate}
+              >
+                Cập nhật
+              </Button>
+              <Button
+                variant="contained"
+                color="default"
+                className="form_right_row_btn"
+                onClick={() => setIsEdit(false)}
+              >
+                Hủy
+              </Button>
+            </>
+          ) : (
+            <Button
+              variant="contained"
+              color="primary"
+              className="form_right_row_btn"
+              onClick={() => setIsEdit(true)}
+            >
+              Chỉnh sửa
+            </Button>
+          )}
         </div>
         <div
           className="profession_row"
@@ -699,9 +687,8 @@ export default function BuyerCreateRequest() {
             Xem danh sách đề nghị
           </Button>
         </div>
-        {error !== "" && <Alert severity="error">{error}</Alert>}
-        {success !== "" && <Alert severity="success">{success}</Alert>}
       </Container>
+      <ToastContainer limit={3000} position="bottom-right" />
       <div className="sections_profile">
         <Contact />
       </div>
