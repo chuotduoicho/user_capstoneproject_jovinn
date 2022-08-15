@@ -8,6 +8,7 @@ const initialState = {
   postRequestDetail: requestDetail ? requestDetail : {},
   listOffers: offers ? offers : [],
   listSellersInvite: [],
+  statusRequestDetail: "idle",
   status: "idle",
 };
 
@@ -234,14 +235,14 @@ const requestSlice = createSlice({
       state.status = "failed";
     },
     [fetchRequestDetail.pending]: (state, action) => {
-      state.status = "loading";
+      state.statusRequestDetail = "loading";
     },
     [fetchRequestDetail.fulfilled]: (state, { payload }) => {
       state.postRequestDetail = payload;
-      state.status = "success";
+      state.statusRequestDetail = "success";
     },
     [fetchRequestDetail.rejected]: (state, action) => {
-      state.status = "failed";
+      state.statusRequestDetail = "failed";
     },
     [fetchTargetSeller.pending]: (state, action) => {
       state.status = "loading";
@@ -260,7 +261,8 @@ const { reducer } = requestSlice;
 export default reducer;
 
 export const selectAllRequests = (state) => state.request.listRequests;
-
+export const selectRequestDetailStatus = (state) =>
+  state.request.statusRequestDetail;
 export const selectRequestStatus = (state) => state.request.status;
 export const selectRequestById = (state) => state.request.postRequestDetail;
 

@@ -134,7 +134,7 @@ const getTargetSeller = (targetSellerRequest) => {
 
 const getRequestDetail = (postRequestId) => {
   return axios
-    .get(API_URL + "/getPostRequestDetails/" + postRequestId, {
+    .get(API_URL + "/postRequest/details/" + postRequestId, {
       headers: authHeader(),
     })
     .then((response) => {

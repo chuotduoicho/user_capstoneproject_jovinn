@@ -20,23 +20,40 @@ import {
   ListItemAvatar,
   Avatar,
   FormControl,
+  InputLabel,
+  Select,
+  OutlinedInput,
+  Box,
+  Chip,
+  useTheme,
+  LinearProgress,
 } from "@material-ui/core";
 import { Close, CloudUpload, AddSharp, RemoveSharp } from "@material-ui/icons";
 import Alert from "@material-ui/lab/Alert";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
 import Contact from "../../../components/guest/contact/Contact";
-import { selectAllCategories } from "../../../redux/categorySlice";
+import {
+  fetchSkills,
+  selectAllCategories,
+  selectAllSkills,
+} from "../../../redux/categorySlice";
 import {
   addRequest,
+  fetchRequestDetail,
   fetchRequestsBuyer,
   selectRequestById,
+  selectRequestDetailStatus,
   updateRequest,
 } from "../../../redux/requestSlice";
 
-import { selectTopSellers } from "../../../redux/userSlice";
+import {
+  selectCurrentUser,
+  selectTopSellers,
+  uploadFile,
+} from "../../../redux/userSlice";
 import "./buyerRequestDetail.scss";
 
 const useStyles = makeStyles((theme) => ({
@@ -54,7 +71,9 @@ export default function BuyerCreateRequest() {
   const requestDetail = useSelector((state) =>
     selectRequestById(state, requestId)
   );
-  console.log("requestDetail", requestDetail);
+  const requestDetailStatus = useSelector(selectRequestDetailStatus);
+  const listSkills = useSelector(selectAllSkills);
+  const currentUser = useSelector(selectCurrentUser);
   const topSeller = useSelector(selectTopSellers);
   const listCategory = useSelector(selectAllCategories);
   const [cateId, setCateId] = useState(requestDetail.categoryId);
@@ -64,13 +83,14 @@ export default function BuyerCreateRequest() {
   const [description, setDescription] = useState(
     requestDetail.shortRequirement
   );
-  const skillsName = [];
-  const addskill = requestDetail.skillsName.map((s) => skillsName.push(s.name));
-  const [skills, setSkills] = useState(skillsName);
-  console.log("skills", skills);
+  var names = requestDetail.skillsName.map(function (item) {
+    return item["name"];
+  });
+  const [skills, setSkills] = useState(names);
   const [inviteUsers, setInviteUsers] = useState([]);
+  const [file, setFile] = useState();
+  const [loading, setLoading] = useState(false);
   const [stages, setStages] = useState(requestDetail.milestoneContracts);
-
   const [cancleFee, setCancleFee] = useState(requestDetail.contractCancelFee);
   const request = {
     categoryId: cateId,
@@ -88,10 +108,43 @@ export default function BuyerCreateRequest() {
   console.log("request", request);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [isEdit, setIsEdit] = useState(false);
+  const [check, setCheck] = useState(false);
+  const maxDate = new Date();
+  maxDate.setHours(0, 0, 0, 0);
+  maxDate.setDate(maxDate.getDate());
+  useEffect(() => {
+    dispatch(fetchRequestDetail(requestId));
+    dispatch(fetchSkills());
+  }, []);
+  // useEffect(() => {
+  //   if (requestDetailStatus == "success") {
+  //     setSkills(requestDetail.skillsName);
+  //   }
+  // }, [requestDetailStatus]);
   // ssssssss
   const classes = useStyles();
   const [open, setOpen] = useState(false);
 
+  const handleUploadFile = async (e) => {
+    setLoading(true);
+    setFile(e.target.files[0]);
+    console.log(e.target.files[0].name);
+    const formData = new FormData();
+    formData.append("file", e.target.files[0]);
+    formData.append("id", currentUser.id);
+    formData.append("type", "BOX");
+
+    dispatch(uploadFile(formData))
+      .unwrap()
+      .then(() => {
+        setLoading(false);
+        // toast.success("Ảnh 1 tải lên thành công");
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
   const handleUpdate = () => {
     setError("");
     let check1 = false;
@@ -227,20 +280,97 @@ export default function BuyerCreateRequest() {
     setSkills(skills.filter((el, i) => i !== index));
   }
 
+  //skill
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250,
+      },
+    },
+  };
+  function getStyles(name, personName, theme) {
+    return {
+      fontWeight:
+        personName.indexOf(name) === -1
+          ? theme.typography.fontWeightRegular
+          : theme.typography.fontWeightMedium,
+    };
+  }
+  const theme = useTheme();
+  const handleChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setSkills(
+      // On autofill we get a stringified value.
+      typeof value === "string" ? value.split(",") : value
+    );
+  };
   return (
     <div className="buyer_profile">
       <BuyerHeader />
       <h1 className="buyer_profile_title">Chi tiết yêu cầu</h1>
       <Container maxWidth="lg" className="profession_form">
-        {" "}
+        <div className="profession_row">
+          <TextField
+            id="outlined-basic"
+            label="Tiêu đề"
+            variant="outlined"
+            style={{ width: "96%" }}
+            defaultValue={jobTitle}
+            disabled
+            onChange={(e) => setJobTitle(e.target.value)}
+            error={
+              !/^[a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_\s]{5,50}$/.test(
+                jobTitle
+              ) && check
+            }
+            helperText={
+              !/^[a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_\s]{5,50}$/.test(
+                jobTitle
+              ) &&
+              check &&
+              "Từ 5 đến 50 kí tự không được bắt đầu với khoảng trắng"
+            }
+          />
+        </div>
+        <div className="profession_row">
+          <TextField
+            id="outlined-basic"
+            label="Mô tả"
+            variant="outlined"
+            multiline
+            rows={6}
+            style={{ width: "96%" }}
+            defaultValue={description}
+            disabled
+            onChange={(e) => setDescription(e.target.value)}
+            error={
+              !/^[a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_\s]{30,500}$/.test(
+                description
+              ) && check
+            }
+            helperText={
+              !/^[a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_\s]{30,500}$/.test(
+                description
+              ) &&
+              check &&
+              "Từ 30 đến 500 kí tự không được bắt đầu với khoảng trắng"
+            }
+          />
+        </div>{" "}
         <div className="profession_row">
           <TextField
             id="outlined-select-currency"
             select
             label="Chọn danh mục"
-            value={cateId}
+            defaultValue={cateId}
+            disabled
             onChange={(e) => setCateId(e.target.value)}
-            style={{ width: "30%", margin: "10px" }}
+            style={{ width: "47%", margin: "10px" }}
             variant="outlined"
           >
             {listCategory.map((category, index) => (
@@ -253,10 +383,13 @@ export default function BuyerCreateRequest() {
             id="outlined-select-currency"
             select
             label="Chọn danh mục con"
-            value={subCateId}
+            defaultValue={subCateId}
+            disabled
             onChange={(e) => setSubCateId(e.target.value)}
-            style={{ width: "30%", margin: "10px" }}
+            style={{ width: "47%", margin: "10px" }}
             variant="outlined"
+            error={!subCateId && check}
+            helperText={!subCateId && check && "Chưa chọn danh mục con!"}
           >
             {listCategory
               .find((val) => {
@@ -270,14 +403,49 @@ export default function BuyerCreateRequest() {
           </TextField>
         </div>
         <div className="profession_row">
+          <FormControl style={{ width: "96%" }}>
+            <InputLabel id="demo-multiple-chip-label">Kỹ năng</InputLabel>
+            <Select
+              labelId="demo-multiple-chip-label"
+              id="demo-multiple-chip"
+              value={skills}
+              disabled
+              multiple
+              onChange={handleChange}
+              input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+              renderValue={(selected) => (
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                  {selected.map((value) => (
+                    <Chip key={value} label={value} />
+                  ))}
+                </Box>
+              )}
+              MenuProps={MenuProps}
+            >
+              {listSkills.map((skill, index) => (
+                <MenuItem
+                  key={index}
+                  value={skill.name}
+                  style={getStyles(skill.name, skills, theme)}
+                >
+                  {skill.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          {/* </div> */}
+        </div>
+        <div className="profession_row">
+          {" "}
           <TextField
             id="outlined-select-currency"
             select
             label="Trình độ người bán"
             defaultValue={recruitLevel}
+            disabled
             name="level"
             onChange={(e) => setRecruitLevel(e.target.value)}
-            style={{ width: "23%", margin: "10px" }}
+            style={{ width: "47%", margin: "10px" }}
             variant="outlined"
           >
             <MenuItem value="BEGINNER">BEGINNER</MenuItem>
@@ -286,68 +454,35 @@ export default function BuyerCreateRequest() {
             <MenuItem value="PROFICIENT">PROFICIENT</MenuItem>
             <MenuItem value="EXPERT">EXPERT</MenuItem>
           </TextField>
-          <div className="tags-input-container">
-            {skills.map((skill, index) => (
-              <div className="tag-item" key={index}>
-                <span className="text">{skill.name}</span>
-
-                <span className="close" onClick={() => removeSkill(index)}>
-                  &times;
-                </span>
-              </div>
-            ))}
-            <input
-              onKeyDown={handleKeyDown}
-              type="text"
-              className="tags-input"
-              placeholder="Nhập kĩ năng"
-            />
-          </div>
-        </div>
-        <div className="profession_row">
-          <TextField
-            id="outlined-basic"
-            label="Tiêu đề"
-            variant="outlined"
-            defaultValue={jobTitle}
-            style={{ width: "62%" }}
-            onChange={(e) => setJobTitle(e.target.value)}
+          {/* <FormControl
+            className="request_form_control"
+            style={{ width: "30%", margin: "10px" }}
+          > */}
+          <input
+            accept="image/*,.doc,.docx,.xlsx,.xls,.csv,.pdf,text/plain"
+            className="request_form_input"
+            id="request-input-file"
+            multiple
+            type="file"
+            onChange={handleUploadFile}
+            hidden
           />
-        </div>
-        <div className="profession_row">
-          <TextField
-            id="outlined-basic"
-            label="Mô tả"
-            variant="outlined"
-            multiline
-            rows={6}
-            style={{ width: "62%" }}
-            defaultValue={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </div>
-        <div className="profession_row">
-          {" "}
-          <FormControl className="request_form_control">
-            <input
-              accept="image/*,.doc,.docx,.xlsx,.xls,.csv,.pdf,text/plain"
-              className="request_form_input"
-              id="request-input-file"
-              multiple
-              type="file"
-              hidden
-            />
-            <label htmlFor="request-input-file">
-              <Button
-                variant="contained"
-                color="primary"
-                component="span"
-                startIcon={<CloudUpload />}
-              >
-                FILE ĐÍNH KÈM
-              </Button>
-            </label>{" "}
-          </FormControl>
+          <label
+            htmlFor="request-input-file"
+            // style={{ width: "30%", margin: "10px" }}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              component="span"
+              style={{ width: "47%", margin: "10px", height: "55px" }}
+              startIcon={<CloudUpload />}
+            >
+              {file ? file.name : "FILE ĐÍNH KÈM"}
+            </Button>
+          </label>{" "}
+          {loading && <LinearProgress />}
+          {/* </FormControl> */}
         </div>
         <div className="profession_row">
           {" "}
@@ -360,7 +495,7 @@ export default function BuyerCreateRequest() {
             variant="outlined"
             type="number"
             value={stages.length}
-            style={{ width: "8%", margin: "10px" }}
+            style={{ width: "13%", margin: "10px" }}
             disabled
           />
           <Button style={{ height: "70px" }} onClick={handleStageAdd}>
@@ -381,10 +516,22 @@ export default function BuyerCreateRequest() {
                 InputLabelProps={{
                   shrink: true,
                 }}
-                style={{ width: "30%", margin: "10px" }}
+                style={{ width: "47%", margin: "10px" }}
                 name="startDate"
-                defaultValue={stage.startDate}
                 onChange={(e) => handleStageChange(e, index)}
+                error={
+                  (new Date(stage.startDate) < maxDate ||
+                    stage.startDate > stage.endDate ||
+                    !stage.startDate) &&
+                  check
+                }
+                helperText={
+                  (new Date(stage.startDate) < maxDate ||
+                    stage.startDate > stage.endDate ||
+                    !stage.startDate) &&
+                  check &&
+                  "Phải từ ngày hiện tại trở đi và trước ngày kết thúc"
+                }
               />
               <TextField
                 id="outlined-basic"
@@ -394,10 +541,22 @@ export default function BuyerCreateRequest() {
                 InputLabelProps={{
                   shrink: true,
                 }}
-                style={{ width: "30%", margin: "10px" }}
+                style={{ width: "47%", margin: "10px" }}
                 name="endDate"
-                defaultValue={stage.endDate}
                 onChange={(e) => handleStageChange(e, index)}
+                error={
+                  (new Date(stage.endDate) < maxDate ||
+                    stage.startDate > stage.endDate ||
+                    !stage.endDate) &&
+                  check
+                }
+                helperText={
+                  (new Date(stage.endDate) < maxDate ||
+                    stage.startDate > stage.endDate ||
+                    !stage.endDate) &&
+                  check &&
+                  "Phải từ ngày hiện tại trở đi và sau ngày bắt đàu"
+                }
               />
             </div>
             <div className="profession_row">
@@ -407,11 +566,24 @@ export default function BuyerCreateRequest() {
                 label="Sản phẩm bàn giao"
                 variant="outlined"
                 multiline
-                rows={3}
-                style={{ width: "62%" }}
+                rows={4}
+                style={{ width: "96%" }}
                 name="description"
                 defaultValue={stage.description}
+                disabled
                 onChange={(e) => handleStageChange(e, index)}
+                error={
+                  !/^[a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_\s]{30,500}$/.test(
+                    stage.description
+                  ) && check
+                }
+                helperText={
+                  !/^[a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_\s]{30,500}$/.test(
+                    stage.description
+                  ) &&
+                  check &&
+                  "Từ 30 đến 500 kí tự không được bắt đầu với khoảng trắng"
+                }
               />
             </div>
             <div className="profession_row">
@@ -421,16 +593,33 @@ export default function BuyerCreateRequest() {
                 label="Chi phí"
                 variant="outlined"
                 type="number"
-                style={{ width: "30%", margin: "10px" }}
-                inputProps={{ min: 0 }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">$</InputAdornment>
-                  ),
-                }}
-                name="milestoneFee"
                 defaultValue={stage.milestoneFee}
+                disabled
+                style={{ width: "30%", margin: "10px" }}
+                inputProps={{
+                  maxLength: 10,
+                  step: "0.01",
+                }}
+                // InputProps={{
+                //   endAdornment: (
+                //     <InputAdornment position="end">$</InputAdornment>
+                //   ),
+                // }}
+                name="milestoneFee"
                 onChange={(e) => handleStageChange(e, index)}
+                error={
+                  (stage.milestoneFee < 1 ||
+                    stage.milestoneFee.length > 10 ||
+                    stage.milestoneFee == "") &&
+                  check
+                }
+                helperText={
+                  (stage.milestoneFee < 1 ||
+                    stage.milestoneFee.length > 10 ||
+                    stage.milestoneFee == "") &&
+                  check &&
+                  "Tối thiểu là 1$ , tối đa 10 chữ số"
+                }
               />
             </div>
           </div>
@@ -438,10 +627,9 @@ export default function BuyerCreateRequest() {
         <div className="profession_row">
           <Typography variant="h4">
             Tổng chi phí :{" "}
-            {stages.reduce(
-              (total, item) => total + parseInt(item.milestoneFee),
-              0
-            )}{" "}
+            {stages
+              .reduce((total, item) => total + parseInt(item.milestoneFee), 0)
+              .toLocaleString()}{" "}
             $
           </Typography>
           <TextField
@@ -455,18 +643,27 @@ export default function BuyerCreateRequest() {
               endAdornment: (
                 <InputAdornment position="end">
                   % Tổng chi phí (={" "}
-                  {(stages.reduce(
-                    (total, item) => total + parseInt(item.milestoneFee),
-                    0
-                  ) *
-                    cancleFee) /
-                    100}
+                  {(
+                    (stages.reduce(
+                      (total, item) => total + parseFloat(item.milestoneFee),
+                      0
+                    ) *
+                      cancleFee) /
+                    100
+                  ).toLocaleString()}
                   $)
                 </InputAdornment>
               ),
             }}
-            defaultValue={requestDetail.contractCancelFee}
+            defaultValue={cancleFee}
+            disabled
             onChange={(e) => setCancleFee(e.target.value)}
+            error={(cancleFee < 0 || cancleFee > 100 || !cancleFee) && check}
+            helperText={
+              (cancleFee < 0 || cancleFee > 100 || !cancleFee) &&
+              check &&
+              "Tối thiểu là 0% , tối đa là 100%"
+            }
           />
         </div>
         <div className="profession_row">
@@ -504,95 +701,6 @@ export default function BuyerCreateRequest() {
         </div>
         {error !== "" && <Alert severity="error">{error}</Alert>}
         {success !== "" && <Alert severity="success">{success}</Alert>}
-        {/* <Dialog open={open} onClose={handleClose}>
-          <DialogTitle id="dialod-title">
-            {"Bạn có muốn gửi lời đến người bán không?"}
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Yêu cầu đã được tạo thành công!Hãy gửi lời mời đến những người bán
-              tiềm năng chúng tôi tìm được.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose}>Không</Button>
-            <Button onClick={handleFullScreenOpen} color="primary">
-              Có
-            </Button>
-            <Dialog
-              fullScreen
-              open={fullScreenOpen}
-              onClose={handleFullScreenClose}
-            >
-              <AppBar className={classes.appBar}>
-                <Toolbar>
-                  <IconButton
-                    edge="start"
-                    color="inherit"
-                    onClick={handleFullScreenClose}
-                    aria-label="close"
-                  >
-                    <Close />
-                  </IconButton>
-                  <Typography variant="h6" className={classes.title}>
-                    Người bán tiềm năng
-                  </Typography>
-                  <Button color="inherit" onClick={handleFullScreenClose}>
-                    Hoàn thành
-                  </Button>
-                </Toolbar>
-              </AppBar>
-              <List
-                style={{
-                  width: "50%",
-                  margin: "0 auto",
-                  border: " 2px solid rgb(238, 225, 225)",
-                }}
-              >
-                {topSeller.map((item, index) => {
-                  return (
-                    <ListItem button key={index}>
-                      <ListItemAvatar>
-                        <Avatar alt="buyer image" src={item.user.avatar} />
-                      </ListItemAvatar>
-                      <ListItemText
-                        primary={item.user.firstName + " " + item.user.lastName}
-                        secondary={item.skills.map((skill) => skill.name)}
-                      />
-
-                      {inviteUsers.find((i) => i.id === item.user.id) ? (
-                        <Button
-                          variant="outlined"
-                          color="default"
-                          onClick={() =>
-                            setInviteUsers(
-                              inviteUsers.filter((el) => el.id !== item.user.id)
-                            )
-                          }
-                        >
-                          Hoàn tác
-                        </Button>
-                      ) : (
-                        <Button
-                          variant="outlined"
-                          color="secondary"
-                          onClick={() =>
-                            setInviteUsers([
-                              ...inviteUsers,
-                              { id: item.user.id },
-                            ])
-                          }
-                        >
-                          Mời
-                        </Button>
-                      )}
-                    </ListItem>
-                  );
-                })}
-              </List>
-            </Dialog>
-          </DialogActions>
-        </Dialog> */}
       </Container>
       <div className="sections_profile">
         <Contact />
