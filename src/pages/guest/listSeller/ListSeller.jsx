@@ -32,6 +32,7 @@ import {
   selectAllSellersInvite,
 } from "../../../redux/requestSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { acceptRequestBuyer } from "../../../redux/contractSlice";
 function createData(description, subCate, skills, price, cancleFee) {
   return { description, subCate, skills, price, cancleFee };
 }
@@ -266,6 +267,10 @@ export default function ListSeller() {
   useEffect(() => {
     dispatch(fetchSellerInvite(requestId));
   }, []);
+  const handleAccept = (value) => {
+    const sellerId = value;
+    dispatch(acceptRequestBuyer({ requestId, sellerId }));
+  };
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -384,6 +389,13 @@ export default function ListSeller() {
                             onClick={() => navigate("/seller/" + row.id)}
                           >
                             Chi tiết
+                          </Button>
+                          <Button
+                            variant="outlined"
+                            color="primary"
+                            onClick={() => handleAccept(row.id)}
+                          >
+                            Duyệt
                           </Button>
                         </TableCell>
                       </TableRow>

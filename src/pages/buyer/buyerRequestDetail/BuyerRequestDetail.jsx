@@ -63,9 +63,7 @@ function format2(date) {
 }
 export default function BuyerCreateRequest() {
   const { requestId } = useParams();
-  const requestDetail = useSelector((state) =>
-    selectRequestById(state, requestId)
-  );
+  const requestDetail = useSelector(selectRequestById);
   const requestDetailStatus = useSelector(selectRequestDetailStatus);
   const listSkills = useSelector(selectAllSkills);
   const currentUser = useSelector(selectCurrentUser);

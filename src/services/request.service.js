@@ -38,7 +38,7 @@ const updateRequest = (obj) => {
   const requestId = obj.requestId;
   const request = obj.request;
   return axios
-    .put(API_URL + "/postRequest/updatePostRequest/" + requestId, request, {
+    .put(API_URL + "/postRequest/update/" + requestId, request, {
       headers: authHeader(),
     })
     .then((response) => {
@@ -73,7 +73,7 @@ const getAllRequests = () => {
 };
 const getAllSellerInvite = (requestId) => {
   return axios
-    .get(API_URL + "/postRequest/getListSellerApply/" + requestId, {
+    .get(API_URL + "/postRequest/get-list-seller-apply/" + requestId, {
       headers: authHeader(),
     })
     .then((response) => {

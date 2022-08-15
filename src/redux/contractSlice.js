@@ -4,7 +4,9 @@ import contractService from "../services/contract.service";
 const contracts = JSON.parse(localStorage.getItem("contracts"));
 const initialState = {
   listContracts: contracts ? contracts : [],
+  contractDetail: {},
   newContractId: null,
+  statusContractDetail: "idle",
   status: "idle",
 };
 
@@ -15,10 +17,26 @@ export const fetchContracts = createAsyncThunk(
     return data;
   }
 );
+export const fetchContractDetail = createAsyncThunk(
+  "contract/fetchContractDetail",
+  async (obj) => {
+    const data = await contractService.getContractDetail(obj);
+    return data;
+  }
+);
 export const fetchListContracts = createAsyncThunk(
   "contract/fetchListContracts",
   async () => {
     const data = await contractService.getContracts();
+    return data;
+  }
+);
+export const deleveryMilestone = createAsyncThunk(
+  "contract/deleveryMilestone",
+  async (order) => {
+    console.log(order);
+    const data = await contractService.delevery(order);
+    console.log(data);
     return data;
   }
 );
@@ -36,6 +54,15 @@ export const acceptOrder = createAsyncThunk(
   async (orderId) => {
     console.log(orderId);
     const data = await contractService.acceptOrder(orderId);
+    console.log(data);
+    return data;
+  }
+);
+export const acceptRequestBuyer = createAsyncThunk(
+  "contract/acceptRequestBuyer",
+  async (obj) => {
+    console.log(obj);
+    const data = await contractService.acceptRequestBuyer(obj);
     console.log(data);
     return data;
   }
@@ -100,6 +127,15 @@ export const deleteComment = createAsyncThunk(
     return data;
   }
 );
+export const flagContract = createAsyncThunk(
+  "contract/flagContract",
+  async (id) => {
+    console.log(id);
+    const data = await contractService.flagContract(id);
+    console.log(data);
+    return data;
+  }
+);
 const contractSlice = createSlice({
   name: "contract",
   initialState,
@@ -114,6 +150,16 @@ const contractSlice = createSlice({
     [fetchContracts.rejected]: (state, action) => {
       state.status = "failed";
     },
+    [fetchContractDetail.pending]: (state, action) => {
+      state.statusContractDetail = "loading";
+    },
+    [fetchContractDetail.fulfilled]: (state, { payload }) => {
+      state.contractDetail = payload;
+      state.statusContractDetail = "success";
+    },
+    [fetchContractDetail.rejected]: (state, action) => {
+      state.statusContractDetail = "failed";
+    },
     [fetchListContracts.pending]: (state, action) => {
       state.status = "loading";
     },
@@ -122,6 +168,15 @@ const contractSlice = createSlice({
       state.status = "success";
     },
     [fetchListContracts.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [deleveryMilestone.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [deleveryMilestone.fulfilled]: (state, { payload }) => {
+      state.status = "success";
+    },
+    [deleveryMilestone.rejected]: (state, action) => {
       state.status = "failed";
     },
     [addContract.pending]: (state, action) => {
@@ -150,6 +205,15 @@ const contractSlice = createSlice({
       state.status = "success";
     },
     [acceptOrder.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [acceptRequestBuyer.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [acceptRequestBuyer.fulfilled]: (state, { payload }) => {
+      state.status = "success";
+    },
+    [acceptRequestBuyer.rejected]: (state, action) => {
       state.status = "failed";
     },
     [acceptDeleveryContract.pending]: (state, action) => {
@@ -206,12 +270,22 @@ const contractSlice = createSlice({
     [deleteComment.rejected]: (state, action) => {
       state.status = "failed";
     },
+    [flagContract.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [flagContract.fulfilled]: (state, { payload }) => {
+      state.status = "success";
+    },
+    [flagContract.rejected]: (state, action) => {
+      state.status = "failed";
+    },
   },
 });
 
 const { reducer } = contractSlice;
 export default reducer;
 export const selectAllContracts = (state) => state.contract.listContracts;
+export const selectContractDetail = (state) => state.contract.contractDetail;
 export const selectOrders = (state) =>
   state.contract.listContracts.filter((val) => {
     if (val.contractStatus == null) return val;
@@ -221,6 +295,8 @@ export const selectContracts = (state) =>
     if (val.orderStatus == "TO_CONTRACT") return val;
   });
 export const selectContractStatus = (state) => state.contract.status;
+export const selectContractDetailStatus = (state) =>
+  state.contract.statusContractDetail;
 export const selectContractBuyerById = (state, contractId) =>
   state.contract.listContracts.find((contract) => contract.id === contractId);
 export const selectContractSellerById = (state, contractId) =>

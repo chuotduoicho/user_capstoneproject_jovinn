@@ -8,7 +8,7 @@ import {
 } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -17,17 +17,47 @@ import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
 import { selectAllCategories } from "../../../redux/categorySlice";
 import {
   applyRequest,
+  fetchRequestDetail,
   fetchRequestsSeller,
   selectRequestById,
+  selectRequestDetailStatus,
 } from "../../../redux/requestSlice";
 import "./sellerRequestDetail.scss";
+function format2(date) {
+  date = new Date(date);
 
+  var day = ("0" + date.getDate()).slice(-2);
+  var month = ("0" + (date.getMonth() + 1)).slice(-2);
+  var year = date.getFullYear();
+
+  return year + "-" + month + "-" + day;
+}
 export default function SellerRequestDetail() {
   const { requestId } = useParams();
-  const requestDetail = useSelector((state) =>
-    selectRequestById(state, requestId)
-  );
+  const requestDetail = useSelector(selectRequestById);
+  const requestDetailStatus = useSelector(selectRequestDetailStatus);
   const listCategory = useSelector(selectAllCategories);
+  const [skills, setSkills] = useState([]);
+  const [listSubcate, setListSubcate] = useState([]);
+  const [stages, setStages] = useState([]);
+  useEffect(() => {
+    dispatch(fetchRequestDetail(requestId));
+  }, []);
+  useEffect(() => {
+    if (requestDetailStatus == "success") {
+      setListSubcate(
+        listCategory.find((val) => {
+          return val.id == requestDetail.categoryId;
+        }).subCategories
+      );
+      var names = requestDetail.skillsName.map(function (item) {
+        return item["name"];
+      });
+      setSkills(names);
+      setStages(requestDetail.milestoneContracts);
+    }
+  }, [requestDetailStatus]);
+  console.log("requestDetail", requestDetail);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleAccept = (e) => {
@@ -78,11 +108,11 @@ export default function SellerRequestDetail() {
                     🌏 Quốc gia: Việt Nam
                   </span>
                 </div> */}
-                <div className="sellerHome_leftCard_lsOptionItem">
+                {/* <div className="sellerHome_leftCard_lsOptionItem">
                   <span className="sellerHome_leftCard_lsOptionText">
                     Địa chỉ: {requestDetail.city}
                   </span>
-                </div>
+                </div> */}
                 {/* <div className="sellerHome_leftCard_lsOptionItem">
                   <span className="sellerHome_leftCard_lsOptionText">
                     Tham gia từ : 01/01/2020
@@ -128,15 +158,11 @@ export default function SellerRequestDetail() {
               variant="outlined"
               disabled
             >
-              {listCategory
-                .find((val) => {
-                  return val.id == requestDetail.categoryId;
-                })
-                .subCategories.map((subCategory, index) => (
-                  <MenuItem key={index} value={subCategory.id}>
-                    {subCategory.name}
-                  </MenuItem>
-                ))}
+              {listSubcate.map((subCategory, index) => (
+                <MenuItem key={index} value={subCategory.id}>
+                  {subCategory.name}
+                </MenuItem>
+              ))}
             </TextField>
           </div>
           <div className="profession_row">
@@ -157,9 +183,9 @@ export default function SellerRequestDetail() {
               <MenuItem value="EXPERT">EXPERT</MenuItem>
             </TextField>
             <div className="tags-input-container">
-              {requestDetail.skillsName.map((skill, index) => (
+              {skills.map((skill, index) => (
                 <div className="tag-item" key={index}>
-                  <span className="text">{skill.name}</span>
+                  <span className="text">{skill}</span>
                   {/* 
                   <span className="close" onClick={() => removeSkill(index)}>
                     &times;
@@ -196,14 +222,14 @@ export default function SellerRequestDetail() {
               label="Số giai đoạn"
               variant="outlined"
               type="number"
-              value={requestDetail.milestoneContracts.length}
+              value={stages.length}
               style={{ width: "8%", margin: "10px" }}
               disabled
             />
           </div>
-          {requestDetail.milestoneContracts.map((stage, index) => (
+          {stages.map((stage, index) => (
             <div className="profession_itemStage">
-              {requestDetail.milestoneContracts.length > 1 && (
+              {stages.length > 1 && (
                 <div className="profession_row">
                   <h3>Giai đoạn {index + 1}</h3>
                 </div>
@@ -274,7 +300,7 @@ export default function SellerRequestDetail() {
           <div className="profession_row">
             <Typography variant="h4">
               Tổng chi phí :{" "}
-              {requestDetail.milestoneContracts.reduce(
+              {stages.reduce(
                 (total, item) => total + parseInt(item.milestoneFee),
                 0
               )}{" "}
