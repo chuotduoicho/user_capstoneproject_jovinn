@@ -78,14 +78,15 @@ export default function BuyerCreateRequest() {
   const [description, setDescription] = useState(
     requestDetail.shortRequirement
   );
-  var names = requestDetail.skillsName.map(function (item) {
-    return item["name"];
-  });
-  const [skills, setSkills] = useState(names);
+  // var names = requestDetail.skillsName.map(function (item) {
+  //   return item["name"];
+  // });
+  const [skills, setSkills] = useState([]);
   const [inviteUsers, setInviteUsers] = useState([]);
+  const [listSubcate, setListSubcate] = useState([]);
   const [file, setFile] = useState();
   const [loading, setLoading] = useState(false);
-  const [stages, setStages] = useState(requestDetail.milestoneContracts);
+  const [stages, setStages] = useState([]);
   const [cancleFee, setCancleFee] = useState(requestDetail.contractCancelFee);
 
   const dispatch = useDispatch();
@@ -106,6 +107,11 @@ export default function BuyerCreateRequest() {
     if (requestDetailStatus == "success") {
       setCateId(requestDetail.categoryId);
       setSubCateId(requestDetail.subcategoryId);
+      setListSubcate(
+        listCategory.find((val) => {
+          return val.id == requestDetail.categoryId;
+        }).subCategories
+      );
       setRecruitLevel(requestDetail.recruitLevel);
       setJobTitle(requestDetail.jobTitle);
       setDescription(requestDetail.description);
@@ -345,15 +351,11 @@ export default function BuyerCreateRequest() {
             error={!subCateId && check}
             helperText={!subCateId && check && "Chưa chọn danh mục con!"}
           >
-            {listCategory
-              .find((val) => {
-                return val.id == cateId;
-              })
-              .subCategories.map((subCategory, index) => (
-                <MenuItem key={index} value={subCategory.id}>
-                  {subCategory.name}
-                </MenuItem>
-              ))}
+            {listSubcate.map((subCategory, index) => (
+              <MenuItem key={index} value={subCategory.id}>
+                {subCategory.name}
+              </MenuItem>
+            ))}
           </TextField>
         </div>
         <div className="profession_row">

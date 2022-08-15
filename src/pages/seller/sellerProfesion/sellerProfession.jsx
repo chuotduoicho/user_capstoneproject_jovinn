@@ -367,54 +367,6 @@ export default function SellerProfession() {
             </Select>
           </FormControl>
         </div>
-        <div className="profession_row">
-          {" "}
-          {/* <h2>Kĩ năng</h2> */}
-          {/* <div className="tags-input-container">
-            <TreeView
-              defaultCollapseIcon={<ExpandMoreIcon />}
-              defaultExpandIcon={<ChevronRightIcon />}
-              multiSelect
-            >
-              {listCategory.map((cate, index) => (
-                <TreeItem nodeId={cate.id} label={cate.name}>
-                  {cate.subCategories.map((subCate) => {
-                    return (
-                      <TreeItem nodeId={subCate.id} label={subCate.name}>
-                        {subCate.skillMetaData.map((skill) => {
-                          return (
-                            <TreeItem
-                              nodeId={skill.id}
-                              label={skill.name}
-                              onClick={() => handleChooseSkill(skill.name)}
-                            />
-                          );
-                        })}
-                      </TreeItem>
-                    );
-                  })}
-                </TreeItem>
-              ))}
-            </TreeView>
-            <div style={{ width: "80%" }}>
-              {skills.map((skill, index) => (
-                <div className="tag-item" key={index}>
-                  <span className="text">{skill.name}</span>
-                  <span className="close" onClick={() => removeSkill(index)}>
-                    &times;
-                  </span>
-                </div>
-              ))}
-              <input
-                // onKeyDown={handleKeyDown}
-                type="text"
-                className="tags-input"
-                placeholder="Hãy chọn kĩ năng"
-                disabled
-              />
-            </div>
-          </div> */}
-        </div>
         <div
           className="profession_row"
           style={{ border: "2px solid  rgb(238, 225, 225)" }}
