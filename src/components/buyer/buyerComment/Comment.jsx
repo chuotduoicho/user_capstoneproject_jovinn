@@ -8,11 +8,7 @@ import {
   Button,
   Chip,
 } from "@material-ui/core";
-import {
-  addComment,
-  fetchContractDetail,
-  fetchListContracts,
-} from "../../../redux/contractSlice";
+import { addComment, fetchContractDetail } from "../../../redux/contractSlice";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import moment from "moment";

@@ -41,7 +41,6 @@ import {
   selectAllSkills,
 } from "../../../redux/categorySlice";
 import { addRequest, fetchRequestsBuyer } from "../../../redux/requestSlice";
-import { MultiSelect } from "react-multi-select-component";
 import {
   selectCurrentUser,
   selectTopSellers,
@@ -87,6 +86,7 @@ export default function BuyerCreateRequest() {
   const [file, setFile] = useState();
   const [loading, setLoading] = useState(false);
   const currentUser = useSelector(selectCurrentUser);
+  const { url } = useSelector((state) => state.url);
   const request = {
     categoryId: cateId,
     subCategoryId: subCateId,
@@ -97,8 +97,9 @@ export default function BuyerCreateRequest() {
     milestoneContracts: stages,
     contractCancelFee: cancleFee,
     invitedUsers: inviteUsers,
-    attachFile: file,
+    attachFile: url,
   };
+
   const handleUploadFile = async (e) => {
     setLoading(true);
     setFile(e.target.files[0]);
