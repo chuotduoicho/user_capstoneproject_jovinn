@@ -84,7 +84,6 @@ export default function SellerContractDetail() {
       .unwrap()
       .then(() => {
         toast.success("Bàn giao thành công!");
-        dispatch(uploadDeleveryContract(contractId));
         setOpenDelevery(false);
       })
       .catch(() => {
@@ -98,24 +97,13 @@ export default function SellerContractDetail() {
       .unwrap()
       .then(() => {
         toast.success("Chấp nhận đề nghị thành công!");
-        dispatch(uploadDeleveryContract(contractId));
+        dispatch(fetchContractDetail(contractId));
       })
       .catch(() => {
         toast.error("Chấp nhận đề nghị thất bại!");
       });
   };
-  const handleCancleOffer = (value) => {
-    const extraOfferId = value;
-    dispatch(cancleExtra({ contractId, extraOfferId }))
-      .unwrap()
-      .then(() => {
-        toast.success("Từ chối đề nghị thành công!");
-        dispatch(uploadDeleveryContract(contractId));
-      })
-      .catch(() => {
-        toast.error("Từ chối đề nghị thất bại!");
-      });
-  };
+
   const handleOpen = (e) => {
     setFile(e.target.files[0]);
     const formData = new FormData();
@@ -307,23 +295,13 @@ export default function SellerContractDetail() {
                         <TableCell align="right">{item.extraPrice}</TableCell>
                         <TableCell align="right">
                           {item.opened ? (
-                            <>
-                              {" "}
-                              <Button
-                                variant="outlined"
-                                color="primary"
-                                onClick={() => handleAcceptOffer(item.id)}
-                              >
-                                Chấp nhận
-                              </Button>
-                              <Button
-                                variant="outlined"
-                                color="secondary"
-                                onClick={() => handleCancleOffer(item.id)}
-                              >
-                                Từ chối
-                              </Button>
-                            </>
+                            <Button
+                              variant="outlined"
+                              color="primary"
+                              onClick={() => handleAcceptOffer(item.id)}
+                            >
+                              Chấp nhận
+                            </Button>
                           ) : (
                             <Chip label="Đã đóng" />
                           )}
