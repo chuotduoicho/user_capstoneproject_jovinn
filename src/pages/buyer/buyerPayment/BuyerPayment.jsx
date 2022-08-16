@@ -65,36 +65,46 @@ export default function BuyerPayment() {
       <BuyerHeader />
       <h1 className="buyer_profile_title">Hóa đơn thanh toán</h1>
       <Container maxWidth="lg" className="profession_form">
-        <div className="paymentRow">
-          <h3>Mã gói hàng :{order.packageId}</h3>
-          <h3></h3>
+        <div className="paymentRow_Title">
+          <h2>Mã gói hàng : {order.packageId} </h2>
         </div>
-        <div className="paymentRow">
-          <h4>Tiêu đề: {pack.title}</h4>
-          {/* <div>
-            <p>✔️ Sản phẩm bàn giao 1</p>
-          </div> */}
+        <div className="paymentRow_Content">
+          <h3>Tiêu đề:</h3>
+          <p>{pack.title}</p>
         </div>
-        <div className="paymentRow">
-          <h4>Mô tả gói dịch vụ : {pack.shortDescription} </h4>
+        <div className="paymentRow_Content">
+          <h3>Mô tả gói dịch vụ:</h3>
+          <p>{pack.shortDescription}</p>
         </div>
-        <div className="paymentRow">
-          <h4>Yêu cầu : {order.requirement} </h4>
+        <div className="paymentRow_Content">
+          <h3>Yêu cầu:</h3>
+          <p>{order.requirement}</p>
         </div>
-        <div className="paymentRow">
-          <h4>Thời gian bàn giao: {pack.deliveryTime}</h4>
+        <div className="paymentRow_ContentLast">
+          <h3>Thời gian bàn giao:</h3>
+          <p>{pack.deliveryTime} ngày</p>
         </div>
-        <div className="paymentRow">
-          <h4>Giá : {pack.price}$</h4>
-        </div>{" "}
-        <div className="paymentRow">
-          {" "}
-          <h4>Số lượng:{order.quantity}</h4>
+        <div className="paymentRow_payment">
+          <h4>Giá : </h4>
+          <p> {pack.price}$</p>
         </div>
-        <div className="paymentRow">
-          {" "}
-          <h2>Tổng giá:{order.quantity * pack.price} $</h2>
+        <div className="paymentRow_payment">
+          <h4>Số lượng : </h4>
+          <p>{order.quantity}</p>
         </div>
+        <div className="paymentRow_payment">
+          <h4>Tổng giá:</h4>
+          <p>{order.quantity * pack.price} $</p>
+        </div>
+        <div className="paymentRow_paymentLast">
+          <h4>Phí hủy hợp đồng:</h4>
+          <p>
+            {" "}
+            {pack.contractCancelFee}% ( =
+            {(pack.contractCancelFee * order.quantity * pack.price) / 100} $ )
+          </p>
+        </div>
+
         <div className="paymentRow" style={{ justifyContent: "center" }}>
           <Button
             variant="contained"
