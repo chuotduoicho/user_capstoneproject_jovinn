@@ -273,9 +273,6 @@ export default function BuyerContractDetail() {
         <div className="paymentRow">
           <Comment comments={listComment} contractId={contractId} />
         </div>{" "}
-        {/* <div className="paymentRow">
-          <h2>Bình luận: {contractDetail.comments}</h2>
-        </div>{" "} */}
         <Dialog
           fullWidth={fullWidth}
           maxWidth={maxWidth}

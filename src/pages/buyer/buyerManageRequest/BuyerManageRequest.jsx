@@ -23,8 +23,11 @@ import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { Button } from "@material-ui/core";
 import { Link, useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { selectAllRequests } from "../../../redux/requestSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchRequestsBuyer,
+  selectAllRequests,
+} from "../../../redux/requestSlice";
 import { selectAllCategories } from "../../../redux/categorySlice";
 import Alert from "@material-ui/lab/Alert";
 import { toast, ToastContainer } from "react-toastify";
@@ -203,9 +206,7 @@ const EnhancedTableToolbar = (props) => {
         </Tooltip>
       ) : (
         <Tooltip title="Filter list">
-          <IconButton aria-label="filter list">
-            {/* <FilterListIcon /> */}
-          </IconButton>
+          <IconButton aria-label="filter list"></IconButton>
         </Tooltip>
       )}
     </Toolbar>
@@ -253,10 +254,12 @@ export default function BuyerManageRequest() {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const { state } = useLocation();
   const { alert } = state || {};
+  const dispatch = useDispatch();
   useEffect(() => {
     if (alert) {
       toast.success(alert);
     }
+    dispatch(fetchRequestsBuyer());
   }, []);
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";

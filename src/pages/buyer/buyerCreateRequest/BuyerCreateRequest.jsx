@@ -40,7 +40,13 @@ import {
   selectAllCategories,
   selectAllSkills,
 } from "../../../redux/categorySlice";
-import { addRequest, fetchRequestsBuyer } from "../../../redux/requestSlice";
+import {
+  addRequest,
+  fetchRequestsBuyer,
+  fetchSellerInvite,
+  fetchTargetSeller,
+  selectAllSellersInvite,
+} from "../../../redux/requestSlice";
 import {
   selectCurrentUser,
   selectTopSellers,
@@ -61,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function BuyerCreateRequest() {
   const listSkills = useSelector(selectAllSkills);
-  const topSeller = useSelector(selectTopSellers);
+  const topSeller = useSelector(selectAllSellersInvite);
   const listCategory = useSelector(selectAllCategories);
   const [cateId, setCateId] = useState(listCategory[0].id);
   const [subCateId, setSubCateId] = useState("");
@@ -208,6 +214,12 @@ export default function BuyerCreateRequest() {
 
   const [fullScreenOpen, setFullScreenOpen] = useState(false);
   const handleFullScreenOpen = () => {
+    const filterSeller = {
+      subCategoryId: subCateId,
+      RankSeller: recruitLevel,
+      skillName: skills,
+    };
+    dispatch(fetchTargetSeller(filterSeller));
     setFullScreenOpen(true);
   };
   const navigate = useNavigate();
@@ -753,6 +765,8 @@ export default function BuyerCreateRequest() {
                   border: " 2px solid rgb(238, 225, 225)",
                 }}
               >
+                {topSeller.length == 0 &&
+                  "Không tìm thấy người bán phù hợp với yêu cầu của bạn!"}
                 {topSeller.map((item, index) => {
                   return (
                     <ListItem button key={index}>

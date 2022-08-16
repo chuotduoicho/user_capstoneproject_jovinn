@@ -284,5 +284,3 @@ export const selectOfferById = (state, offerId) =>
   state.request.listOffers.find((offer) => offer.id === offerId);
 export const selectAllSellersInvite = (state) =>
   state.request.listSellersInvite;
-export const selectSellersById = (state, sellerId) =>
-  state.request.listSellersInvite.find((seller) => (seller.id = sellerId));

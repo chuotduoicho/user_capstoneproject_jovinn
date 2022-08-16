@@ -124,7 +124,7 @@ const getOffersOfSeller = () => {
 
 const getTargetSeller = (targetSellerRequest) => {
   return axios
-    .post(API_URL + "/get-ten-seller-target", targetSellerRequest, {
+    .post(API_URL + "/postRequest/get-ten-seller-target", targetSellerRequest, {
       headers: authHeader(),
     })
     .then((response) => {
@@ -138,7 +138,6 @@ const getRequestDetail = (postRequestId) => {
       headers: authHeader(),
     })
     .then((response) => {
-      localStorage.setItem("postRequestDetail", JSON.stringify(response.data));
       return response.data;
     });
 };

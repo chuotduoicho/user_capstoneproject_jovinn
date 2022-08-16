@@ -90,17 +90,24 @@ export default function BuyerCreateRequest() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [success, setSuccess] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [check, setCheck] = useState(false);
   const maxDate = new Date();
   maxDate.setHours(0, 0, 0, 0);
   maxDate.setDate(maxDate.getDate());
   useEffect(() => {
-    dispatch(fetchRequestDetail(requestId));
+    dispatch(fetchRequestDetail(requestId))
+      .unwrap()
+      .then(() => {
+        setSuccess(true);
+      })
+      .catch(() => {
+        setSuccess(false);
+      });
     dispatch(fetchSkills());
   }, []);
-  console.log(requestDetailStatus, "requestDetailStatus");
+
   useEffect(() => {
     if (requestDetailStatus == "success") {
       setCateId(requestDetail.categoryId);
@@ -112,13 +119,13 @@ export default function BuyerCreateRequest() {
       );
       setRecruitLevel(requestDetail.recruitLevel);
       setJobTitle(requestDetail.jobTitle);
-      setDescription(requestDetail.description);
+      setDescription(requestDetail.shortRequirement);
       var names = requestDetail.skillsName.map(function (item) {
         return item["name"];
       });
       setSkills(names);
       setStages(requestDetail.milestoneContracts);
-      setCancleFee(requestDetail.cancleFee);
+      setCancleFee(requestDetail.contractCancelFee);
     }
   }, [requestDetailStatus]);
   // ssssssss
@@ -278,7 +285,7 @@ export default function BuyerCreateRequest() {
             label="Tiêu đề"
             variant="outlined"
             style={{ width: "96%" }}
-            defaultValue={jobTitle}
+            value={jobTitle}
             disabled={!isEdit}
             onChange={(e) => setJobTitle(e.target.value)}
             error={
@@ -303,7 +310,7 @@ export default function BuyerCreateRequest() {
             multiline
             rows={6}
             style={{ width: "96%" }}
-            defaultValue={description}
+            value={description}
             disabled={!isEdit}
             onChange={(e) => setDescription(e.target.value)}
             error={
@@ -325,7 +332,7 @@ export default function BuyerCreateRequest() {
             id="outlined-select-currency"
             select
             label="Chọn danh mục"
-            defaultValue={cateId}
+            value={cateId}
             disabled={!isEdit}
             onChange={(e) => setCateId(e.target.value)}
             style={{ width: "47%", margin: "10px" }}
@@ -341,7 +348,7 @@ export default function BuyerCreateRequest() {
             id="outlined-select-currency"
             select
             label="Chọn danh mục con"
-            defaultValue={subCateId}
+            value={subCateId}
             disabled={!isEdit}
             onChange={(e) => setSubCateId(e.target.value)}
             style={{ width: "47%", margin: "10px" }}
@@ -395,7 +402,7 @@ export default function BuyerCreateRequest() {
             id="outlined-select-currency"
             select
             label="Trình độ người bán"
-            defaultValue={recruitLevel}
+            value={recruitLevel}
             disabled={!isEdit}
             name="level"
             onChange={(e) => setRecruitLevel(e.target.value)}
@@ -617,7 +624,7 @@ export default function BuyerCreateRequest() {
                 </InputAdornment>
               ),
             }}
-            defaultValue={cancleFee}
+            value={cancleFee}
             disabled={!isEdit}
             onChange={(e) => setCancleFee(e.target.value)}
             error={(cancleFee < 0 || cancleFee > 100 || !cancleFee) && check}
@@ -651,14 +658,25 @@ export default function BuyerCreateRequest() {
               </Button>
             </>
           ) : (
-            <Button
-              variant="contained"
-              color="primary"
-              className="form_right_row_btn"
-              onClick={() => setIsEdit(true)}
-            >
-              Chỉnh sửa
-            </Button>
+            <>
+              <Button
+                variant="contained"
+                color="default"
+                className="form_right_row_btn"
+                onClick={() => navigate(-1)}
+                style={{ marginRight: "10px" }}
+              >
+                Quay lại
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                className="form_right_row_btn"
+                onClick={() => setIsEdit(true)}
+              >
+                Chỉnh sửa
+              </Button>
+            </>
           )}
         </div>
         <div

@@ -64,7 +64,6 @@ export default function BuyerHome() {
         page: page,
       };
       dispatch(fetchServices(obj));
-      dispatch(fetchRequestsBuyer());
       dispatch(fetchWallet());
     }
   }, [user]);
