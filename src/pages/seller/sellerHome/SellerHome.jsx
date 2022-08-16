@@ -41,7 +41,7 @@ import CategoryList from "../../../components/guest/categoryList/CategoryList";
 import usePagination from "../../../Pagination";
 import { ToastContainer } from "react-toastify";
 function ChangeFormateDate(oldDate) {
-  return oldDate.toString().split("-").reverse().join("-");
+  return oldDate.toString().split("-").reverse().join("/");
 }
 export default function SellerHome() {
   const dispatch = useDispatch();
@@ -108,7 +108,7 @@ export default function SellerHome() {
                   ? currentUser.avatar
                   : "https://cdn1.iconfinder.com/data/icons/user-pictures/100/unknown-512.png"
               }
-              style={{ width: "230px", borderRadius: "50%" }}
+              style={{ width: "230px", objectFit: "cover", height: "175px" }}
               alt="avatar"
             />
             {/* <h1 className="lsTitle">Nguyễn Thế Vinh</h1> */}
@@ -143,7 +143,7 @@ export default function SellerHome() {
                 </div>
                 <div className="sellerHome_leftCard_lsOptionItem">
                   <span className="sellerHome_leftCard_lsOptionText">
-                    Thành phố: {currentUser.country}
+                    Thành phố: {currentUser.city}
                   </span>
                 </div>
                 <div className="sellerHome_leftCard_lsOptionItem">
@@ -197,7 +197,7 @@ export default function SellerHome() {
           </div>
 
           <div className="serviceList" id="intro">
-            <Container className="service_cardGrid" maxWidth="md">
+            <Container className="service_cardGrid" maxWidth="1500px">
               {/* End hero unit */}
               <Grid container spacing={4}>
                 {list.map((item) => (
@@ -227,26 +227,28 @@ export default function SellerHome() {
           </div>
         </div>{" "}
       </div>
-      <div style={{ display: "flex" }}>
-        <SellerIntro
-          description={currentUser.seller.descriptionBio}
-          brandName={
-            currentUser.seller.brandName
-              ? currentUser.seller.brandName
-              : "JOVINN"
-          }
-        />
-        <SellerSkill skills={currentUser.seller.skills} id={currentUser.id} />
-      </div>
-      <div style={{ display: "flex" }}>
-        <SellerEducate
-          educations={currentUser.seller.educations}
-          id={currentUser.id}
-        />
-        <SellerCertificate
-          certificates={currentUser.seller.certificates}
-          id={currentUser.id}
-        />
+      <div className="sellerHome_info_professional">
+        <div style={{ display: "flex" }}>
+          <SellerIntro
+            description={currentUser.seller.descriptionBio}
+            brandName={
+              currentUser.seller.brandName
+                ? currentUser.seller.brandName
+                : "JOVINN"
+            }
+          />
+          <SellerSkill skills={currentUser.seller.skills} id={currentUser.id} />
+        </div>
+        <div style={{ display: "flex" }}>
+          <SellerEducate
+            educations={currentUser.seller.educations}
+            id={currentUser.id}
+          />
+          <SellerCertificate
+            certificates={currentUser.seller.certificates}
+            id={currentUser.id}
+          />
+        </div>
       </div>
       <ToastContainer limit={3000} position="bottom-right" />
       <div className="sections">

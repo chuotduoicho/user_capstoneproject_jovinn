@@ -41,13 +41,13 @@ export default function SellerIntro({ description, brandName }) {
           <h1 className="sellerIntro_title">Giới thiệu</h1>
           <div className="sellerIntro_item">
             <div className="sellerIntro_details">
-              <TextareaAutosize
+              <input
                 aria-label="minimum height"
                 minRows={10}
                 placeholder="Nhập phần giới thiệu của bạn"
                 defaultValue={descriptionBio}
                 onChange={(e) => setDescriptionBio(e.target.value)}
-                style={{ width: 600 }}
+                style={{ width: 650, height: 195 }}
                 disabled={!editStatus}
               />
               {editStatus && (

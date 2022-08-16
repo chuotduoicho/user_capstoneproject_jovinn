@@ -214,7 +214,7 @@ export default function SellerHeader({ search, handleSearch }) {
             onClick={handleToggle}
             className="item"
           >
-            Xin chào, {currentUser.username}
+            Xin chào, {currentUser.firstName} {currentUser.lastName}
             <img
               src={
                 currentUser.avatar
@@ -225,6 +225,12 @@ export default function SellerHeader({ search, handleSearch }) {
               className="avatar"
             />
           </Button>
+
+          <Link className="button_case" to="/buyerHome" style={{ textDecoration: "none" }}>
+              <span className="button_switch">
+                Trở thành người mua
+              </span>
+          </Link>
 
           <Popper
             open={open}
@@ -256,11 +262,12 @@ export default function SellerHeader({ search, handleSearch }) {
                           Thông tin cá nhân
                         </MenuItem>
                       </Link>
-                      <Link to="/buyerHome" style={{ textDecoration: "none" }}>
+
+                      {/* <Link to="/buyerHome" style={{ textDecoration: "none" }}>
                         <MenuItem style={{ color: "black" }}>
                           Trở thành người mua
                         </MenuItem>
-                      </Link>
+                      </Link> */}
 
                       <Link
                         to="/sellerHome/manageWallet"
