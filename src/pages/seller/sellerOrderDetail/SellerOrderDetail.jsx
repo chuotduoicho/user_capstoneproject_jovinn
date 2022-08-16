@@ -7,15 +7,16 @@ import {
   DialogActions,
   DialogTitle,
 } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Contact from "../../../components/guest/contact/Contact";
 import "./sellerOrderDetail.scss";
 import { useDispatch, useSelector } from "react-redux";
 import {
   acceptOrder,
+  fetchContractDetail,
   fetchContracts,
   rejectOrder,
-  selectContractSellerById,
+  selectContractDetail,
   selectContractStatus,
 } from "../../../redux/contractSlice";
 import { useNavigate, useParams } from "react-router-dom";
@@ -24,9 +25,10 @@ import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
 
 export default function SellerOrderDetail() {
   const { orderId } = useParams();
-  const contractDetail = useSelector((state) =>
-    selectContractSellerById(state, orderId)
-  );
+  const contractDetail = useSelector(selectContractDetail);
+  useEffect(() => {
+    dispatch(fetchContractDetail(orderId));
+  }, []);
   const status = useSelector(selectContractStatus);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -74,10 +76,7 @@ export default function SellerOrderDetail() {
       <Container maxWidth="lg" className="profession_form">
         <div className="paymentRow_Title">
           <h2>Mã đơn hàng : {contractDetail.contractCode} </h2>
-          <Chip
-            label={contractDetail.deliveryStatus}
-            className="chip_pending"
-          />
+          <Chip label={contractDetail.orderStatus} className="chip_pending" />
         </div>
         <div className="paymentRow_Content">
           <h3>Yêu cầu:</h3>
@@ -102,8 +101,12 @@ export default function SellerOrderDetail() {
         <div className="paymentRow_paymentLast">
           <h4>Phí hủy hợp đồng : </h4>
           <p>
-            {contractDetail.quantity}% ( =
-            {(contractDetail.totalPrice * contractDetail.quantity) / 100} $ )
+            {contractDetail.contractCancelFee}% ( =
+            {(contractDetail.totalPrice *
+              contractDetail.quantity *
+              contractDetail.contractCancelFee) /
+              100}{" "}
+            $ )
           </p>
         </div>
         <div className="paymentRow">

@@ -62,8 +62,8 @@ export default function BuyerContractDetail() {
   useEffect(() => {
     if (contractDetailStatus == "success") {
       setListComment(contractDetail.comments);
-      setListStage(contractDetail.postRequest.milestoneContracts);
-      console.log(contractDetail.postRequest.milestoneContracts);
+      if (contractDetail.postRequest)
+        setListStage(contractDetail.postRequest.milestoneContracts);
     }
   }, [contractDetailStatus]);
 
@@ -159,93 +159,95 @@ export default function BuyerContractDetail() {
           <h3>Ngày hoàn thành dự kiến:</h3>
           <p>{contractDetail.expectCompleteDate}</p>
         </div>
-        <div className="paymentRow_ContentLast">
-          <TableContainer component={Paper}>
-            <Table
-              sx={{ minWidth: 850 }}
-              size="small"
-              aria-label="a dense table"
-            >
-              <TableHead>
-                <TableRow>
-                  <TableCell>Số thứ tự</TableCell>
-                  <TableCell align="right">Mô tả</TableCell>
-                  <TableCell align="right">Chi phí</TableCell>
-                  <TableCell align="right">Trạng thái</TableCell>
-                  <TableCell align="right"></TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {listStage.map((item, index) => {
-                  return (
-                    <TableRow
-                      sx={{
-                        "&:last-child td, &:last-child th": { border: 0 },
-                      }}
-                    >
-                      <TableCell component="th" scope="row">
-                        Giai đoạn {index + 1}
-                      </TableCell>
-                      <TableCell align="right"> {item.description}</TableCell>
-                      <TableCell align="right">{item.milestoneFee}</TableCell>
-                      <TableCell align="right">{item.status}</TableCell>
-                      <TableCell align="right">
-                        <Button
-                          color="primary"
-                          variant="outlined"
-                          onClick={() => {
-                            setOpenDelevery(true);
-                            setMilestoneId(item.id);
-                          }}
-                        >
-                          Bàn giao
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-              <Dialog
-                fullWidth
-                maxWidth="sm"
-                open={openDelevery}
-                onClose={handleCloseDelevery}
-                aria-labelledby="responsive-dialog-title"
+        {contractDetail.postRequest && (
+          <div className="paymentRow_ContentLast">
+            <TableContainer component={Paper}>
+              <Table
+                sx={{ minWidth: 850 }}
+                size="small"
+                aria-label="a dense table"
               >
-                <DialogTitle id="responsive-dialog-title">
-                  {"Nhập mô tả bàn giao"}
-                </DialogTitle>
-                <DialogContent>
-                  <TextField
-                    id="outlined-basic"
-                    label="Mô tả bàn giao"
-                    variant="outlined"
-                    multiline
-                    rows={5}
-                    style={{ width: "100%" }}
-                    onChange={(e) => setDescriptionDelevery(e.target.value)}
-                  />
-                </DialogContent>
-                <DialogActions>
-                  <Button
-                    onClick={handleDelevery}
-                    color="primary"
-                    variant="outlined"
-                  >
-                    Xác nhận
-                  </Button>
-                  <Button
-                    onClick={handleCloseDelevery}
-                    color="default"
-                    variant="outlined"
-                  >
-                    Hủy
-                  </Button>
-                </DialogActions>
-              </Dialog>
-            </Table>
-          </TableContainer>
-        </div>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Số thứ tự</TableCell>
+                    <TableCell align="right">Mô tả</TableCell>
+                    <TableCell align="right">Chi phí</TableCell>
+                    <TableCell align="right">Trạng thái</TableCell>
+                    <TableCell align="right"></TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {listStage.map((item, index) => {
+                    return (
+                      <TableRow
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
+                      >
+                        <TableCell component="th" scope="row">
+                          Giai đoạn {index + 1}
+                        </TableCell>
+                        <TableCell align="right"> {item.description}</TableCell>
+                        <TableCell align="right">{item.milestoneFee}</TableCell>
+                        <TableCell align="right">{item.status}</TableCell>
+                        <TableCell align="right">
+                          <Button
+                            color="primary"
+                            variant="outlined"
+                            onClick={() => {
+                              setOpenDelevery(true);
+                              setMilestoneId(item.id);
+                            }}
+                          >
+                            Bàn giao
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+                <Dialog
+                  fullWidth
+                  maxWidth="sm"
+                  open={openDelevery}
+                  onClose={handleCloseDelevery}
+                  aria-labelledby="responsive-dialog-title"
+                >
+                  <DialogTitle id="responsive-dialog-title">
+                    {"Nhập mô tả bàn giao"}
+                  </DialogTitle>
+                  <DialogContent>
+                    <TextField
+                      id="outlined-basic"
+                      label="Mô tả bàn giao"
+                      variant="outlined"
+                      multiline
+                      rows={5}
+                      style={{ width: "100%" }}
+                      onChange={(e) => setDescriptionDelevery(e.target.value)}
+                    />
+                  </DialogContent>
+                  <DialogActions>
+                    <Button
+                      onClick={handleDelevery}
+                      color="primary"
+                      variant="outlined"
+                    >
+                      Xác nhận
+                    </Button>
+                    <Button
+                      onClick={handleCloseDelevery}
+                      color="default"
+                      variant="outlined"
+                    >
+                      Hủy
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+              </Table>
+            </TableContainer>
+          </div>
+        )}
         <div className="paymentRow_payment">
           <h4>Số lượng : </h4>
           <p>{contractDetail.quantity}</p>

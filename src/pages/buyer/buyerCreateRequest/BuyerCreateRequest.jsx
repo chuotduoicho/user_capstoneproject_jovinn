@@ -43,15 +43,10 @@ import {
 import {
   addRequest,
   fetchRequestsBuyer,
-  fetchSellerInvite,
   fetchTargetSeller,
   selectAllSellersInvite,
 } from "../../../redux/requestSlice";
-import {
-  selectCurrentUser,
-  selectTopSellers,
-  uploadFile,
-} from "../../../redux/userSlice";
+import { selectCurrentUser, uploadFile } from "../../../redux/userSlice";
 import "./buyerCreateRequest.scss";
 import { useEffect } from "react";
 
@@ -78,7 +73,7 @@ export default function BuyerCreateRequest() {
   const [personName, setPersonName] = useState([]);
   const [inviteUsers, setInviteUsers] = useState([]);
   const [stages, setStages] = useState([
-    { startDate: "", endDate: "", description: "", milestoneFee: "0.00" },
+    { startDate: "", endDate: "", description: "", milestoneFee: "" },
   ]);
   const [cancleFee, setCancleFee] = useState(0);
 
@@ -141,32 +136,32 @@ export default function BuyerCreateRequest() {
         !stage.startDate
       ) {
         check3 = false;
-        setError("Chưa nhập ngày bắt đầu của giai đoạn " + parseInt(index + 1));
+        // setError("Chưa nhập ngày bắt đầu của giai đoạn " + parseInt(index + 1));
       } else if (
         new Date(stage.endDate) < maxDate ||
         stage.startDate > stage.endDate ||
         !stage.endDate
       ) {
         check3 = false;
-        setError(
-          "Chưa nhập ngày kết thúc của giai đoạn " + parseInt(index + 1)
-        );
+        // setError(
+        //   "Chưa nhập ngày kết thúc của giai đoạn " + parseInt(index + 1)
+        // );
       } else if (
         !/^[a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_\s]{30,500}$/.test(
           stage.description
         )
       ) {
         check3 = false;
-        setError(
-          "Chưa nhập sản phẩm bàn giao của giai đoạn " + parseInt(index + 1)
-        );
+        // setError(
+        //   "Chưa nhập sản phẩm bàn giao của giai đoạn " + parseInt(index + 1)
+        // );
       } else if (
         stage.milestoneFee < 1 ||
         stage.milestoneFee.length > 10 ||
         stage.milestoneFee == ""
       ) {
         check3 = false;
-        setError("Chưa nhập chi phí của giai đoạn " + parseInt(index + 1));
+        // setError("Chưa nhập chi phí của giai đoạn " + parseInt(index + 1));
       }
     });
     if (
@@ -182,7 +177,7 @@ export default function BuyerCreateRequest() {
       !cancleFee ||
       skills.length == 0
     ) {
-      setError("Chưa nhập kĩ năng!");
+      // setError("Chưa nhập kĩ năng!");
     } else {
       check1 = true;
     }
@@ -334,10 +329,13 @@ export default function BuyerCreateRequest() {
     const {
       target: { value },
     } = event;
-    setSkills(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
+    console.log(value);
+    if (value.length <= 5) {
+      setSkills(
+        // On autofill we get a stringified value.
+        typeof value === "string" ? value.split(",") : value
+      );
+    }
   };
   useEffect(() => {
     dispatch(fetchSkills());
@@ -376,7 +374,7 @@ export default function BuyerCreateRequest() {
                 jobTitle
               ) &&
               check &&
-              "Từ 5 đến 50 kí tự không được bắt đầu với khoảng trắng"
+              "Từ 5 đến 50 kí tự!"
             }
           />
         </div>
@@ -399,7 +397,7 @@ export default function BuyerCreateRequest() {
                 description
               ) &&
               check &&
-              "Từ 30 đến 500 kí tự không được bắt đầu với khoảng trắng"
+              "Từ 30 đến 500 kí tự !"
             }
           />
         </div>
@@ -452,12 +450,16 @@ export default function BuyerCreateRequest() {
         </div> */}
         <div className="profession_row">
           <FormControl style={{ width: "96%" }}>
-            <InputLabel id="demo-multiple-chip-label">Kỹ năng</InputLabel>
+            <InputLabel id="demo-multiple-chip-label">
+              Kỹ năng (Tối đa là 5)
+            </InputLabel>
             <Select
               labelId="demo-multiple-chip-label"
               id="demo-multiple-chip"
               value={skills}
               multiple
+              error={skills.length == 0 && check}
+              helperText={skills.length == 0 && check && "Chưa chọn kỹ năng!"}
               onChange={handleChange}
               input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
               renderValue={(selected) => (
@@ -626,7 +628,7 @@ export default function BuyerCreateRequest() {
                     stage.description
                   ) &&
                   check &&
-                  "Từ 30 đến 500 kí tự không được bắt đầu với khoảng trắng"
+                  "Từ 30 đến 500 kí tự !"
                 }
               />
             </div>
@@ -637,11 +639,12 @@ export default function BuyerCreateRequest() {
                 label="Chi phí"
                 variant="outlined"
                 type="number"
-                value={stage.milestoneFee}
+                value={stage.milestoneFee.toLocaleString()}
                 style={{ width: "30%", margin: "10px" }}
                 inputProps={{
                   maxLength: 10,
                   step: "0.01",
+                  lang: "en-US",
                 }}
                 // InputProps={{
                 //   endAdornment: (
@@ -661,7 +664,7 @@ export default function BuyerCreateRequest() {
                     stage.milestoneFee.length > 10 ||
                     stage.milestoneFee == "") &&
                   check &&
-                  "Tối thiểu là 1$ , tối đa 10 chữ số"
+                  "Tối thiểu là 1$ ,độ dài tối đa 10"
                 }
               />
             </div>
@@ -671,7 +674,7 @@ export default function BuyerCreateRequest() {
           <Typography variant="h4">
             Tổng chi phí :{" "}
             {stages
-              .reduce((total, item) => total + parseInt(item.milestoneFee), 0)
+              .reduce((total, item) => total + parseFloat(item.milestoneFee), 0)
               .toLocaleString()}{" "}
             $
           </Typography>

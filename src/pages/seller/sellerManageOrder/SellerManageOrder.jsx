@@ -342,9 +342,7 @@ export default function SellerManageOrder() {
                         <TableCell align="right">
                           {row.expectCompleteDate}
                         </TableCell>{" "}
-                        <TableCell align="right">
-                          {row.deliveryStatus}
-                        </TableCell>{" "}
+                        <TableCell align="right">{row.orderStatus}</TableCell>{" "}
                         <TableCell align="right">
                           <Link to={row.id}>
                             <Button variant="outlined" color="primary">
