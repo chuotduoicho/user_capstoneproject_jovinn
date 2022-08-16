@@ -1,9 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import commentService from "../services/comment.service";
 import contractService from "../services/contract.service";
-const contracts = JSON.parse(localStorage.getItem("contracts"));
 const initialState = {
-  listContracts: contracts ? contracts : [],
+  listContracts: [],
   contractDetail: {},
   newContractId: null,
   statusContractDetail: "idle",

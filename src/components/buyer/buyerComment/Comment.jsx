@@ -8,7 +8,11 @@ import {
   Button,
   Chip,
 } from "@material-ui/core";
-import { addComment, fetchListContracts } from "../../../redux/contractSlice";
+import {
+  addComment,
+  fetchContractDetail,
+  fetchListContracts,
+} from "../../../redux/contractSlice";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import moment from "moment";
@@ -24,7 +28,7 @@ export default function Comment({ comments, contractId }) {
     dispatch(addComment(obj))
       .unwrap()
       .then(() => {
-        dispatch(fetchListContracts());
+        dispatch(fetchContractDetail(contractId));
         setText("");
       })
       .catch(() => {
@@ -32,12 +36,15 @@ export default function Comment({ comments, contractId }) {
       });
   };
   console.log("commet", comments);
+  const listComment = [...comments].sort(
+    (a, b) => new Date(b.createAt).getTime() - new Date(a.createAt).getTime()
+  );
   return (
     <div style={{ padding: 14 }}>
       {" "}
       <h1>Bình luận</h1>
       <Paper style={{ padding: "40px 20px", width: "1170px" }}>
-        {comments.map((item, index) => (
+        {listComment.map((item, index) => (
           <Grid container wrap="nowrap" spacing={2}>
             <Grid item>
               <Avatar alt="Remy Sharp" src={imgLink} />
@@ -62,29 +69,6 @@ export default function Comment({ comments, contractId }) {
             </Grid>
           </Grid>
         ))}
-
-        {/* <Grid container wrap="nowrap" spacing={2}>
-          <Grid item>
-            <Avatar alt="Remy Sharp" src={imgLink} />
-          </Grid>
-          <Grid justifyContent="left" item xs zeroMinWidth>
-            <h4 style={{ margin: 0, textAlign: "left" }}>Michel Michel</h4>
-            <p style={{ textAlign: "left" }}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean
-              luctus ut est sed faucibus. Duis bibendum ac ex vehicula laoreet.
-              Suspendisse congue vulputate lobortis. Pellentesque at interdum
-              tortor. Quisque arcu quam, malesuada vel mauris et, posuere
-              sagittis ipsum. Aliquam ultricies a ligula nec faucibus. In elit
-              metus, efficitur lobortis nisi quis, molestie porttitor metus.
-              Pellentesque et neque risus. Aliquam vulputate, mauris vitae
-              tincidunt interdum, mauris mi vehicula urna, nec feugiat quam
-              lectus vitae ex.{" "}
-            </p>
-            <p style={{ textAlign: "left", color: "gray" }}>
-              posted 1 minute ago
-            </p>
-          </Grid>
-        </Grid> */}
       </Paper>
       <TextField
         id="outlined-basic"

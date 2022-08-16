@@ -34,6 +34,7 @@ import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import { autoPlay } from "react-swipeable-views-utils";
 import { useEffect } from "react";
+import CommentService from "../../../components/guest/commentService/CommentService";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -262,10 +263,10 @@ export default function ServiceDetail() {
           </Box>
           <h2>Mô tả về dịch vụ</h2>{" "}
           <p className="detail_des">{serviceDetail.description}</p>
-          <h2>Bình luận về dịch vụ</h2>{" "}
-          {listRating.map((comment) => (
+          <h2>Bình luận về dịch vụ</h2> <CommentService comments={listRating} />
+          {/* {listRating.map((comment) => (
             <p className="detail_des">{comment.comment}</p>
-          ))}
+          ))} */}
         </div>
         <div className="detail_right">
           <AppBar position="static" color="default">

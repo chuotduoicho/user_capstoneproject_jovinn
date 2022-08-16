@@ -8,6 +8,13 @@ import {
   DialogContent,
   DialogTitle,
   TextField,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
 } from "@material-ui/core";
 import React, { useState } from "react";
 import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
@@ -22,20 +29,25 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { CloudUpload, StarBorder } from "@material-ui/icons";
 import {
+  deleveryMilestone,
+  fetchContractDetail,
   selectContractBuyerById,
+  selectContractDetail,
+  selectContractDetailStatus,
   selectContractStatus,
   uploadDeleveryContract,
 } from "../../../redux/contractSlice";
 import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
 import Alert from "@material-ui/lab/Alert";
 import Comment from "../../../components/buyer/buyerComment/Comment";
+import { useEffect } from "react";
+import { toast, ToastContainer } from "react-toastify";
 
 export default function SellerContractDetail() {
   const { contractId } = useParams();
   const currentUser = useSelector(selectCurrentUser);
-  const contractDetail = useSelector((state) =>
-    selectContractBuyerById(state, contractId)
-  );
+  const contractDetail = useSelector(selectContractDetail);
+  const contractDetailStatus = useSelector(selectContractDetailStatus);
   const status = useSelector(selectContractStatus);
   console.log("contractDetail", contractDetail);
   const [open, setOpen] = useState(false);
@@ -44,9 +56,39 @@ export default function SellerContractDetail() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [file, setFile] = useState(null);
+  const [descriptionDelevery, setDescriptionDelevery] = useState("");
+  const [milstoneId, setMilestoneId] = useState("");
+  const [listComment, setListComment] = useState([]);
+  const [listStage, setListStage] = useState([]);
   const handleRating = () => {};
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  useEffect(() => {
+    dispatch(fetchContractDetail(contractId));
+  }, []);
+  useEffect(() => {
+    if (contractDetailStatus == "success") {
+      setListComment(contractDetail.comments);
+      setListStage(contractDetail.postRequest.milestoneContracts);
+      console.log(contractDetail.postRequest.milestoneContracts);
+    }
+  }, [contractDetailStatus]);
+  const handleDelevery = () => {
+    const delevery = {
+      milestoneId: milstoneId,
+      description: descriptionDelevery,
+    };
+    dispatch(deleveryMilestone({ contractId, delevery }))
+      .unwrap()
+      .then(() => {
+        toast.success("Bàn giao thành công!");
+        setOpenDelevery(false);
+      })
+      .catch(() => {
+        toast.error("Bàn giao thất bại!");
+        setOpenDelevery(false);
+      });
+  };
   const handleOpen = (e) => {
     setFile(e.target.files[0]);
     const formData = new FormData();
@@ -70,6 +112,14 @@ export default function SellerContractDetail() {
   };
   const handleClose = () => {
     setOpen(false);
+  };
+  const [openDelevery, setOpenDelevery] = useState(false);
+  const handleClickOpenDelevery = () => {
+    setOpenDelevery(true);
+  };
+
+  const handleCloseDelevery = () => {
+    setOpenDelevery(false);
   };
   return (
     <div className="buyer_profile">
@@ -95,6 +145,93 @@ export default function SellerContractDetail() {
           <h3>Ngày hoàn thành dự kiến:</h3>
           <p>{contractDetail.expectCompleteDate}</p>
         </div>
+        <div className="paymentRow_ContentLast">
+          <TableContainer component={Paper}>
+            <Table
+              sx={{ minWidth: 850 }}
+              size="small"
+              aria-label="a dense table"
+            >
+              <TableHead>
+                <TableRow>
+                  <TableCell>Số thứ tự</TableCell>
+                  <TableCell align="right">Mô tả</TableCell>
+                  <TableCell align="right">Chi phí</TableCell>
+                  <TableCell align="right">Trạng thái</TableCell>
+                  <TableCell align="right"></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {listStage.map((item, index) => {
+                  return (
+                    <TableRow
+                      sx={{
+                        "&:last-child td, &:last-child th": { border: 0 },
+                      }}
+                    >
+                      <TableCell component="th" scope="row">
+                        Giai đoạn {index + 1}
+                      </TableCell>
+                      <TableCell align="right"> {item.description}</TableCell>
+                      <TableCell align="right">{item.milestoneFee}</TableCell>
+                      <TableCell align="right">{item.status}</TableCell>
+                      <TableCell align="right">
+                        <Button
+                          color="primary"
+                          variant="outlined"
+                          onClick={() => {
+                            setOpenDelevery(true);
+                            setMilestoneId(item.id);
+                          }}
+                        >
+                          Bàn giao
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+              <Dialog
+                fullWidth
+                maxWidth="sm"
+                open={openDelevery}
+                onClose={handleCloseDelevery}
+                aria-labelledby="responsive-dialog-title"
+              >
+                <DialogTitle id="responsive-dialog-title">
+                  {"Nhập mô tả bàn giao"}
+                </DialogTitle>
+                <DialogContent>
+                  <TextField
+                    id="outlined-basic"
+                    label="Mô tả bàn giao"
+                    variant="outlined"
+                    multiline
+                    rows={5}
+                    style={{ width: "100%" }}
+                    onChange={(e) => setDescriptionDelevery(e.target.value)}
+                  />
+                </DialogContent>
+                <DialogActions>
+                  <Button
+                    onClick={handleDelevery}
+                    color="primary"
+                    variant="outlined"
+                  >
+                    Xác nhận
+                  </Button>
+                  <Button
+                    onClick={handleCloseDelevery}
+                    color="default"
+                    variant="outlined"
+                  >
+                    Hủy
+                  </Button>
+                </DialogActions>
+              </Dialog>
+            </Table>
+          </TableContainer>
+        </div>
         <div className="paymentRow_payment">
           <h4>Số lượng : </h4>
           <p>{contractDetail.quantity}</p>
@@ -110,20 +247,6 @@ export default function SellerContractDetail() {
             {(contractDetail.totalPrice * contractDetail.quantity) / 100} $ )
           </p>
         </div>
-        {/* <div className="paymentRow">
-          <h4>
-            Phí hủy hợp đồng: {contractDetail.contractCancelFee}% (= 100$)
-          </h4>
-        </div>
-        <div className="paymentRow">
-          <h2>Tổng chi phí: {contractDetail.totalPrice}$</h2>
-        </div>{" "}
-        <div className="paymentRow">
-          <h2>Các đề nghị phát sinh: {contractDetail.extraOffers}</h2>
-        </div>{" "}
-        <div className="paymentRow">
-          <h2>Trạng thái bàn giao: {contractDetail.deliveryStatus}</h2>
-        </div>{" "} */}
         <div className="paymentRow">
           <Button
             variant="contained"
@@ -160,9 +283,10 @@ export default function SellerContractDetail() {
         {error !== "" && <Alert severity="error">{error}</Alert>}
         {success !== "" && <Alert severity="success">{success}</Alert>}
         <div className="paymentRow">
-          <Comment comments={contractDetail.comments} contractId={contractId} />
+          <Comment comments={listComment} contractId={contractId} />
         </div>{" "}
       </Container>
+      <ToastContainer limit={3000} position="bottom-right" />
       <div className="sections_profile">
         <Contact />
       </div>

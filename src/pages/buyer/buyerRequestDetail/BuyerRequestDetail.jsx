@@ -408,10 +408,6 @@ export default function BuyerCreateRequest() {
             <MenuItem value="PROFICIENT">PROFICIENT</MenuItem>
             <MenuItem value="EXPERT">EXPERT</MenuItem>
           </TextField>
-          {/* <FormControl
-            className="request_form_control"
-            style={{ width: "30%", margin: "10px" }}
-          > */}
           <input
             accept="image/*,.doc,.docx,.xlsx,.xls,.csv,.pdf,text/plain"
             className="request_form_input"

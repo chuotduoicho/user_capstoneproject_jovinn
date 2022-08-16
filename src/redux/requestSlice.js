@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import requestService from "../services/request.service";
+import { setMessage } from "./message";
 const requests = JSON.parse(localStorage.getItem("requests"));
 const offers = JSON.parse(localStorage.getItem("offers"));
 const requestDetail = JSON.parse(localStorage.getItem("postRequestDetail"));
@@ -109,11 +110,23 @@ export const updateRequest = createAsyncThunk(
 );
 export const applyRequest = createAsyncThunk(
   "request/applyRequest",
-  async (requesId) => {
-    console.log(requesId);
-    const data = await requestService.applyRequest(requesId);
-    console.log(data);
-    return data;
+  async (requesId, thunkAPI) => {
+    try {
+      console.log(requesId);
+      const data = await requestService.applyRequest(requesId);
+      console.log(data);
+      thunkAPI.dispatch(setMessage(data.message));
+      return data;
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      thunkAPI.dispatch(setMessage(message));
+      return thunkAPI.rejectWithValue();
+    }
   }
 );
 export const applyOffer = createAsyncThunk(

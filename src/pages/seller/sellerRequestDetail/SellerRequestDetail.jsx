@@ -6,6 +6,7 @@ import {
   InputAdornment,
   Typography,
 } from "@material-ui/core";
+import { CloudUpload } from "@material-ui/icons";
 import Alert from "@material-ui/lab/Alert";
 
 import React, { useEffect, useState } from "react";
@@ -35,6 +36,7 @@ function format2(date) {
 export default function SellerRequestDetail() {
   const { requestId } = useParams();
   const requestDetail = useSelector(selectRequestById);
+  const { message } = useSelector((state) => state.message);
   const requestDetailStatus = useSelector(selectRequestDetailStatus);
   const listCategory = useSelector(selectAllCategories);
   const [skills, setSkills] = useState([]);
@@ -135,11 +137,39 @@ export default function SellerRequestDetail() {
           {" "}
           <div className="profession_row">
             <TextField
+              id="outlined-basic"
+              label="Tiêu đề"
+              variant="outlined"
+              style={{ width: "100%" }}
+              defaultValue={requestDetail.jobTitle}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              disabled
+            />
+          </div>
+          <div className="profession_row">
+            <TextField
+              id="outlined-basic"
+              label="Mô tả"
+              variant="outlined"
+              multiline
+              rows={6}
+              style={{ width: "100%" }}
+              defaultValue={requestDetail.shortRequirement}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              disabled
+            />
+          </div>
+          <div className="profession_row">
+            <TextField
               id="outlined-select-currency"
               select
               label="Chọn danh mục"
               value={requestDetail.categoryId}
-              style={{ width: "30%", margin: "10px" }}
+              style={{ width: "48%", margin: "11px" }}
               variant="outlined"
               disabled
             >
@@ -154,7 +184,7 @@ export default function SellerRequestDetail() {
               select
               label="Chọn danh mục con"
               value={requestDetail.subcategoryId}
-              style={{ width: "30%", margin: "10px" }}
+              style={{ width: "48%", margin: "11px" }}
               variant="outlined"
               disabled
             >
@@ -166,13 +196,22 @@ export default function SellerRequestDetail() {
             </TextField>
           </div>
           <div className="profession_row">
+            <div className="tags-input-container">
+              {skills.map((skill, index) => (
+                <div className="tag-item" key={index}>
+                  <span className="text">{skill}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="profession_row">
             <TextField
               id="outlined-select-currency"
               select
               label="Trình độ người bán"
               defaultValue={requestDetail.recruitLevel}
               name="level"
-              style={{ width: "23%", margin: "10px" }}
+              style={{ width: "47%", margin: "10px" }}
               variant="outlined"
               disabled
             >
@@ -182,38 +221,17 @@ export default function SellerRequestDetail() {
               <MenuItem value="PROFICIENT">PROFICIENT</MenuItem>
               <MenuItem value="EXPERT">EXPERT</MenuItem>
             </TextField>
-            <div className="tags-input-container">
-              {skills.map((skill, index) => (
-                <div className="tag-item" key={index}>
-                  <span className="text">{skill}</span>
-                  {/* 
-                  <span className="close" onClick={() => removeSkill(index)}>
-                    &times;
-                  </span> */}
-                </div>
-              ))}
-              {/* <input
-                onKeyDown={handleKeyDown}
-                type="text"
-                className="tags-input"
-                placeholder="Nhập kĩ năng"
-              /> */}
-            </div>
-          </div>
-          <div className="profession_row">
-            <TextField
-              id="outlined-basic"
-              label="Mô tả"
-              variant="outlined"
-              multiline
-              rows={3}
-              style={{ width: "62%" }}
-              defaultValue={requestDetail.shortRequirement}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              disabled
-            />
+            <Button
+              variant="contained"
+              color="primary"
+              component="span"
+              style={{ width: "47%", margin: "10px", height: "55px" }}
+              startIcon={<CloudUpload />}
+            >
+              {requestDetail.attachFile
+                ? requestDetail.attachFile
+                : "Không có file"}
+            </Button>
           </div>
           <div className="profession_row">
             {" "}
@@ -244,7 +262,7 @@ export default function SellerRequestDetail() {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  style={{ width: "30%", margin: "10px" }}
+                  style={{ width: "47%", margin: "10px" }}
                   name="dateFrom"
                   value={stage.startDate}
                   disabled
@@ -257,7 +275,7 @@ export default function SellerRequestDetail() {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  style={{ width: "30%", margin: "10px" }}
+                  style={{ width: "47%", margin: "10px" }}
                   name="dateTo"
                   value={stage.endDate}
                   disabled
@@ -271,7 +289,7 @@ export default function SellerRequestDetail() {
                   variant="outlined"
                   multiline
                   rows={3}
-                  style={{ width: "62%" }}
+                  style={{ width: "96%" }}
                   name="product"
                   value={stage.description}
                   disabled
@@ -314,7 +332,18 @@ export default function SellerRequestDetail() {
               style={{ width: "30%", margin: "10px" }}
               InputProps={{
                 endAdornment: (
-                  <InputAdornment position="end">% Tổng chi phí</InputAdornment>
+                  <InputAdornment position="end">
+                    % Tổng chi phí (={" "}
+                    {(
+                      (stages.reduce(
+                        (total, item) => total + parseFloat(item.milestoneFee),
+                        0
+                      ) *
+                        requestDetail.contractCancelFee) /
+                      100
+                    ).toLocaleString()}
+                    $)
+                  </InputAdornment>
                 ),
               }}
               value={requestDetail.contractCancelFee}
@@ -342,7 +371,7 @@ export default function SellerRequestDetail() {
               Tạo đề nghị
             </Button>
           </div>
-          {error !== "" && <Alert severity="error">{error}</Alert>}
+          {error !== "" && <Alert severity="error">{message}</Alert>}
           {success !== "" && <Alert severity="success">{success}</Alert>}
         </Container>
       </div>

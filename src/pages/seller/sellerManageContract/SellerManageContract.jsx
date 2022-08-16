@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Contact from "../../../components/guest/contact/Contact";
 import "./sellerManageContract.scss";
 import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
@@ -23,10 +23,10 @@ import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentUser } from "../../../redux/userSlice";
 import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
-import { selectContracts } from "../../../redux/contractSlice";
+import { fetchContracts, selectContracts } from "../../../redux/contractSlice";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -248,7 +248,10 @@ export default function SellerManageContract() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchContracts());
+  }, []);
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
