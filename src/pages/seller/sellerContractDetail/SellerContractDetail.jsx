@@ -29,6 +29,8 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { CloudUpload, StarBorder } from "@material-ui/icons";
 import {
+  acceptExtra,
+  cancleExtra,
   deleveryMilestone,
   fetchContractDetail,
   selectContractBuyerById,
@@ -82,11 +84,36 @@ export default function SellerContractDetail() {
       .unwrap()
       .then(() => {
         toast.success("Bàn giao thành công!");
+        dispatch(uploadDeleveryContract(contractId));
         setOpenDelevery(false);
       })
       .catch(() => {
         toast.error("Bàn giao thất bại!");
         setOpenDelevery(false);
+      });
+  };
+  const handleAcceptOffer = (value) => {
+    const extraOfferId = value;
+    dispatch(acceptExtra({ contractId, extraOfferId }))
+      .unwrap()
+      .then(() => {
+        toast.success("Chấp nhận đề nghị thành công!");
+        dispatch(uploadDeleveryContract(contractId));
+      })
+      .catch(() => {
+        toast.error("Chấp nhận đề nghị thất bại!");
+      });
+  };
+  const handleCancleOffer = (value) => {
+    const extraOfferId = value;
+    dispatch(cancleExtra({ contractId, extraOfferId }))
+      .unwrap()
+      .then(() => {
+        toast.success("Từ chối đề nghị thành công!");
+        dispatch(uploadDeleveryContract(contractId));
+      })
+      .catch(() => {
+        toast.error("Từ chối đề nghị thất bại!");
       });
   };
   const handleOpen = (e) => {
@@ -129,13 +156,17 @@ export default function SellerContractDetail() {
         <div className="paymentRow_Title">
           <h2>Mã hợp đồng : {contractDetail.contractCode} </h2>
           <Chip
-            label={contractDetail.deliveryStatus}
+            label={contractDetail.contractStatus}
             className="chip_pending"
           />
         </div>
         <div className="paymentRow_Content">
           <h3>Yêu cầu:</h3>
           <p>{contractDetail.requirement}</p>
+        </div>
+        <div className="paymentRow_Content">
+          <h3>Trạng thái bàn giao:</h3>
+          <p>{contractDetail.deliveryStatus}</p>
         </div>
         <div className="paymentRow_Content">
           <h3>Tổng thời gian bàn giao:</h3>
@@ -147,6 +178,7 @@ export default function SellerContractDetail() {
         </div>
         {contractDetail.postRequest && (
           <div className="paymentRow_ContentLast">
+            <h3>Giai đoạn bàn giao:</h3>
             <TableContainer component={Paper}>
               <Table
                 sx={{ minWidth: 850 }}
@@ -177,16 +209,20 @@ export default function SellerContractDetail() {
                         <TableCell align="right">{item.milestoneFee}</TableCell>
                         <TableCell align="right">{item.status}</TableCell>
                         <TableCell align="right">
-                          <Button
-                            color="primary"
-                            variant="outlined"
-                            onClick={() => {
-                              setOpenDelevery(true);
-                              setMilestoneId(item.id);
-                            }}
-                          >
-                            Bàn giao
-                          </Button>
+                          {item.status == "COMPLETE" ? (
+                            <Chip label="Đã hoàn thành" />
+                          ) : (
+                            <Button
+                              color="primary"
+                              variant="outlined"
+                              onClick={() => {
+                                setOpenDelevery(true);
+                                setMilestoneId(item.id);
+                              }}
+                            >
+                              Bàn giao
+                            </Button>
+                          )}
                         </TableCell>
                       </TableRow>
                     );
@@ -230,6 +266,72 @@ export default function SellerContractDetail() {
                     </Button>
                   </DialogActions>
                 </Dialog>
+              </Table>
+            </TableContainer>
+          </div>
+        )}
+        {contractDetail.extraOffers && (
+          <div className="paymentRow_ContentLast">
+            <h3>Đề nghị:</h3>
+            <TableContainer component={Paper}>
+              <Table
+                sx={{ minWidth: 850 }}
+                size="small"
+                aria-label="a dense table"
+              >
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Tiêu đề</TableCell>
+                    <TableCell align="right">Mô tả</TableCell>
+                    <TableCell align="right">Số ngày</TableCell>
+                    <TableCell align="right">Chi phí</TableCell>
+                    <TableCell align="right"></TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {contractDetail.extraOffers.map((item, index) => {
+                    return (
+                      <TableRow
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
+                      >
+                        <TableCell component="th" scope="row">
+                          {item.title}
+                        </TableCell>
+                        <TableCell align="right">
+                          {" "}
+                          {item.shortDescription}
+                        </TableCell>
+                        <TableCell align="right">{item.additionTime}</TableCell>
+                        <TableCell align="right">{item.extraPrice}</TableCell>
+                        <TableCell align="right">
+                          {item.opened ? (
+                            <>
+                              {" "}
+                              <Button
+                                variant="outlined"
+                                color="primary"
+                                onClick={() => handleAcceptOffer(item.id)}
+                              >
+                                Chấp nhận
+                              </Button>
+                              <Button
+                                variant="outlined"
+                                color="secondary"
+                                onClick={() => handleCancleOffer(item.id)}
+                              >
+                                Từ chối
+                              </Button>
+                            </>
+                          ) : (
+                            <Chip label="Đã đóng" />
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
               </Table>
             </TableContainer>
           </div>

@@ -156,7 +156,8 @@ export default function SellerEducate({ educations, id }) {
                       <TableCell align="right">Trường</TableCell>
                       <TableCell align="right">Ngành</TableCell>
                       {/* <TableCell align="right">Quốc gia</TableCell> */}
-                      <TableCell align="right">Năm</TableCell>
+                      <TableCell align="right">Ngày bắt đầu</TableCell>
+                      <TableCell align="right">Ngày kết thúc</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -178,7 +179,11 @@ export default function SellerEducate({ educations, id }) {
                           {/* <TableCell align="right"> {item.country}</TableCell> */}
                           <TableCell align="right">
                             {" "}
-                            {format(item.yearOfGraduation)}
+                            {format(item.toDate)}
+                          </TableCell>
+                          <TableCell align="right">
+                            {" "}
+                            {format(item.fromDate)}
                           </TableCell>
                           {editStatus && (
                             <TableCell align="right">

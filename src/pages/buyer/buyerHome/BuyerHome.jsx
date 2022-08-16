@@ -252,7 +252,7 @@ export default function BuyerHome() {
         </div>
         <div className="buyerHome_right">
           <ul className="list">
-            {listCategory.slice(0, 7).map((item) => (
+            {listCategory.map((item) => (
               <CategoryList
                 title={item.name}
                 active={selected === item.id}

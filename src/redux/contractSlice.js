@@ -39,6 +39,51 @@ export const deleveryMilestone = createAsyncThunk(
     return data;
   }
 );
+export const deleveryMilestoneUpdate = createAsyncThunk(
+  "contract/deleveryMilestoneUpdate",
+  async (order) => {
+    console.log(order);
+    const data = await contractService.deleveryUpdate(order);
+    console.log(data);
+    return data;
+  }
+);
+export const deleveryMilestoneAccept = createAsyncThunk(
+  "contract/deleveryMilestoneAccept",
+  async (order) => {
+    console.log(order);
+    const data = await contractService.acceptDeleveryMilestone(order);
+    console.log(data);
+    return data;
+  }
+);
+export const addExtraOffer = createAsyncThunk(
+  "contract/addExtraOffer",
+  async (obj) => {
+    console.log(obj);
+    const data = await contractService.addExtraOffer(obj);
+    console.log(data);
+    return data;
+  }
+);
+export const acceptExtra = createAsyncThunk(
+  "contract/acceptExtra",
+  async (obj) => {
+    console.log(obj);
+    const data = await contractService.acceptExtra(obj);
+    console.log(data);
+    return data;
+  }
+);
+export const cancleExtra = createAsyncThunk(
+  "contract/cancleExtra",
+  async (obj) => {
+    console.log(obj);
+    const data = await contractService.cancleExtra(obj);
+    console.log(data);
+    return data;
+  }
+);
 export const addContract = createAsyncThunk(
   "contract/addContract",
   async (order) => {
@@ -176,6 +221,51 @@ const contractSlice = createSlice({
       state.status = "success";
     },
     [deleveryMilestone.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [deleveryMilestoneUpdate.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [deleveryMilestoneUpdate.fulfilled]: (state, { payload }) => {
+      state.status = "success";
+    },
+    [deleveryMilestoneUpdate.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [deleveryMilestoneAccept.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [deleveryMilestoneAccept.fulfilled]: (state, { payload }) => {
+      state.status = "success";
+    },
+    [deleveryMilestoneAccept.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [addExtraOffer.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [addExtraOffer.fulfilled]: (state, { payload }) => {
+      state.status = "success";
+    },
+    [addExtraOffer.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [acceptExtra.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [acceptExtra.fulfilled]: (state, { payload }) => {
+      state.status = "success";
+    },
+    [acceptExtra.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [cancleExtra.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [cancleExtra.fulfilled]: (state, { payload }) => {
+      state.status = "success";
+    },
+    [cancleExtra.rejected]: (state, action) => {
       state.status = "failed";
     },
     [addContract.pending]: (state, action) => {

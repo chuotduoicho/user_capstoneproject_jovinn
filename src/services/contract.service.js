@@ -10,6 +10,17 @@ const addContract = (order) => {
       return response.data;
     });
 };
+const addExtraOffer = (obj) => {
+  const contractId = obj.contractId;
+  const offer = obj.offer;
+  return axios
+    .post(API_URL + "/contract/extra-offer/" + contractId, offer, {
+      headers: authHeader(),
+    })
+    .then((response) => {
+      return response.data;
+    });
+};
 const delevery = (obj) => {
   const contractId = obj.contractId;
   const delevery = obj.delevery;
@@ -21,6 +32,17 @@ const delevery = (obj) => {
         headers: authHeader(),
       }
     )
+    .then((response) => {
+      return response.data;
+    });
+};
+const deleveryUpdate = (obj) => {
+  const contractId = obj.contractId;
+  const delevery = obj.delevery;
+  return axios
+    .put(API_URL + "/contract/delivery/" + contractId, delevery, {
+      headers: authHeader(),
+    })
     .then((response) => {
       return response.data;
     });
@@ -50,6 +72,44 @@ const getContracts = () => {
       return response.data;
     });
 };
+const acceptExtra = (obj) => {
+  const contractId = obj.contractId;
+  const extraOfferId = obj.extraOfferId;
+  return axios
+    .put(
+      API_URL +
+        "/contract/extra-offer/accept/" +
+        contractId +
+        "/" +
+        extraOfferId,
+      null,
+      {
+        headers: authHeader(),
+      }
+    )
+    .then((response) => {
+      return response.data;
+    });
+};
+const cancleExtra = (obj) => {
+  const contractId = obj.contractId;
+  const extraOfferId = obj.extraOfferId;
+  return axios
+    .put(
+      API_URL +
+        "/contract/extra-offer/cancel/" +
+        contractId +
+        "/" +
+        extraOfferId,
+      null,
+      {
+        headers: authHeader(),
+      }
+    )
+    .then((response) => {
+      return response.data;
+    });
+};
 const acceptOrder = (orderId) => {
   return axios
     .put(API_URL + "/contract/seller/accept/" + orderId, null, {
@@ -75,6 +135,25 @@ const acceptDeleveryContract = (orderId) => {
     .put(API_URL + "/contract/delivery-accept/" + orderId, null, {
       headers: authHeader(),
     })
+    .then((response) => {
+      return response.data;
+    });
+};
+const acceptDeleveryMilestone = (obj) => {
+  const contractId = obj.contractId;
+  const milestoneId = obj.milestoneId;
+  return axios
+    .put(
+      API_URL +
+        "/contract/delivery-accept-milestone/" +
+        contractId +
+        "/" +
+        milestoneId,
+      null,
+      {
+        headers: authHeader(),
+      }
+    )
     .then((response) => {
       return response.data;
     });
@@ -124,7 +203,12 @@ const contractService = {
   acceptRequestBuyer,
   getContractDetail,
   delevery,
+  deleveryUpdate,
+  acceptDeleveryMilestone,
   flagContract,
+  addExtraOffer,
+  acceptExtra,
+  cancleExtra,
 };
 
 export default contractService;

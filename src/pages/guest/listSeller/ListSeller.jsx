@@ -23,7 +23,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
-import { Button } from "@material-ui/core";
+import { Button, Chip } from "@material-ui/core";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   fetchOffersBuyer,
@@ -374,7 +374,9 @@ export default function ListSeller() {
                         </TableCell>
                         <TableCell align="right">{row.user.email}</TableCell>
                         <TableCell align="right">
-                          {row.skills.map((skill) => skill.name + " ")}{" "}
+                          {row.skills.map((skill) => (
+                            <Chip label={skill.name} />
+                          ))}{" "}
                         </TableCell>
 
                         <TableCell align="right">
