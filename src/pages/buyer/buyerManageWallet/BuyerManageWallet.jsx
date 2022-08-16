@@ -16,13 +16,11 @@ import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
-import Checkbox from "@material-ui/core/Checkbox";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
-import FilterListIcon from "@material-ui/icons/FilterList";
 import {
   Button,
   ButtonGroup,
@@ -33,13 +31,7 @@ import {
   InputAdornment,
   TextField,
 } from "@material-ui/core";
-import {
-  Link,
-  useLocation,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AccountBalanceWallet, ArrowUpward } from "@material-ui/icons";
 import Checkout from "../../../components/payment/Checkout";
 import { useDispatch, useSelector } from "react-redux";
@@ -52,25 +44,10 @@ import {
 } from "../../../redux/userSlice";
 import { clearMessage } from "../../../redux/message";
 import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
+import { toast, ToastContainer } from "react-toastify";
 function createData(description, subCate, skills, price, cancleFee) {
   return { description, subCate, skills, price, cancleFee };
 }
-
-const rows = [
-  createData("Mô tả ngắn abcdsssssssssss", "Kinh doanh tự do", "HTML", 67, 4.3),
-  createData("Donut", "Kinh doanh tự dosdsd", "JS", 51, 4.9),
-  createData("Eclair", "Kinh doanh tự dsdsdao", "JS", 24, 6.0),
-  createData("Frozen yoghurt", "Kinh doanh tự áddo", "HTML", 24, 4.0),
-  createData("Gingerbread", "Kinh doanh tựád do", "CSS", 49, 3.9),
-  createData("Honeycomb", "Kinh doanh tự do", "HTML", 87, 6.5),
-  createData("Ice cream ", "Kinh doanh tự do", "JS", 37, 4.3),
-  createData("Jelly Bean", "Kinh doanh tự do", "CSS", 94, 0.0),
-  createData("KitKat", "Kinh doanh tự do", "HTML", 65, 7.0),
-  createData("Lollipop", "Kinh doanh tự do", "HTML", 98, 0.0),
-  createData("Marshmallow", "Kinh doanh tự do", "CSS", 81, 2.0),
-  createData("Nougat", "Kinh doanh tự do", "CSS", 9, 37.0),
-  createData("Oreo", "Kinh doanh tự do", "CSS", 63, 4.0),
-];
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -100,28 +77,28 @@ function stableSort(array, comparator) {
 
 const headCells = [
   {
-    id: "description",
+    id: "paymentCode",
     numeric: false,
     disablePadding: false,
-    label: "Id",
+    label: "Mã giao dịch",
   },
   {
-    id: "subCate",
-    numeric: true,
-    disablePadding: false,
-    label: "Mã chuyển tiền",
-  },
-  {
-    id: "price",
-    numeric: true,
-    disablePadding: false,
-    label: "Nội dung",
-  },
-  {
-    id: "cancleFee",
+    id: "amount",
     numeric: true,
     disablePadding: false,
     label: "Số tiền giao dịch",
+  },
+  {
+    id: "type",
+    numeric: true,
+    disablePadding: false,
+    label: "Hình thức",
+  },
+  {
+    id: "createAt",
+    numeric: true,
+    disablePadding: false,
+    label: "Thời gian",
   },
 ];
 
@@ -291,8 +268,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 export default function BuyerManageWallet() {
   const wallet = useSelector(selectWallet);
-  const rows = useSelector(selectWalletTransactions);
-
+  const list = useSelector(selectWalletTransactions);
+  const [search, setSearch] = useState("");
+  const rows = list.filter((val) => val.description.includes(search));
   const param = useLocation().search;
   console.log(wallet);
   const { message } = useSelector((state) => state.message);
@@ -398,22 +376,23 @@ export default function BuyerManageWallet() {
     if (message) navigate(`//${message.slice(8)}`);
   }, [dispatch, message]);
   useEffect(() => {
+    dispatch(fetchWallet());
     if (param) {
       dispatch(topupSuccess(param))
         .unwrap()
         .then(() => {
           dispatch(fetchWallet());
-          setSuccess("thafnh ocng bại!");
+          toast.success("Nạp tiền thành công!");
         })
         .catch(() => {
-          setError("thất bại!");
+          toast.error("Nạp tiền thất bại!");
         });
     }
   }, []);
   return (
     <div className="buyer_profile">
       {location.pathname == "/buyerhome/manageWallet" ? (
-        <BuyerHeader />
+        <BuyerHeader search={setSearch} />
       ) : (
         <SellerHeader />
       )}
@@ -460,21 +439,13 @@ export default function BuyerManageWallet() {
                         selected={isItemSelected}
                       >
                         <TableCell component="th" id={labelId} scope="row">
-                          {row.description}
+                          {row.paymentCode}
                         </TableCell>
-                        <TableCell align="right">{row.subCate}</TableCell>
-                        <TableCell align="right">{row.skills}</TableCell>
-                        <TableCell align="right">{row.price} $</TableCell>
+                        <TableCell align="right">{row.amount}$</TableCell>
                         <TableCell align="right">
-                          {row.cancleFee} %
-                        </TableCell>{" "}
-                        <TableCell align="right">
-                          <Link to="test">
-                            <Button variant="outlined" color="primary">
-                              Chi tiết
-                            </Button>
-                          </Link>
+                          {row.type == "CHARGE" && "Nạp tiền"}
                         </TableCell>
+                        <TableCell align="right">{row.createAt}</TableCell>{" "}
                       </TableRow>
                     );
                   })}
@@ -552,6 +523,7 @@ export default function BuyerManageWallet() {
           </Button>
         </DialogActions>
       </Dialog>
+      <ToastContainer limit={3000} position="bottom-right" />
       <div className="sections_profile">
         <Contact />
       </div>

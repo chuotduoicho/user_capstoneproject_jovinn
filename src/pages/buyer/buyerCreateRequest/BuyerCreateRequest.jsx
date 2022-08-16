@@ -99,6 +99,7 @@ export default function BuyerCreateRequest() {
     contractCancelFee: cancleFee,
     invitedUsers: inviteUsers,
     attachFile: url,
+    status: "OPEN",
   };
 
   const handleUploadFile = async (e) => {
@@ -211,7 +212,7 @@ export default function BuyerCreateRequest() {
   const handleFullScreenOpen = () => {
     const filterSeller = {
       subCategoryId: subCateId,
-      RankSeller: recruitLevel,
+      rankSeller: recruitLevel,
       skillName: skills,
     };
     dispatch(fetchTargetSeller(filterSeller));
@@ -253,7 +254,7 @@ export default function BuyerCreateRequest() {
   const handleStageAdd = () => {
     setStages([
       ...stages,
-      { startDate: "", endDate: "", description: "", milestoneFee: "0.00" },
+      { startDate: "", endDate: "", description: "", milestoneFee: "" },
     ]);
   };
 
@@ -774,20 +775,22 @@ export default function BuyerCreateRequest() {
                   return (
                     <ListItem button key={index}>
                       <ListItemAvatar>
-                        <Avatar alt="buyer image" src={item.user.avatar} />
+                        <Avatar alt="buyer image" src={item.avatar} />
                       </ListItemAvatar>
                       <ListItemText
-                        primary={item.user.firstName + " " + item.user.lastName}
-                        secondary={item.skills.map((skill) => skill.name)}
+                        primary={item.fullName}
+                        secondary={item.skillName}
+
+                        // secondary={item.skills.map((skill) => skill.name)}
                       />
 
-                      {inviteUsers.find((i) => i.id === item.user.id) ? (
+                      {inviteUsers.find((i) => i.id === item.userId) ? (
                         <Button
                           variant="outlined"
                           color="default"
                           onClick={() =>
                             setInviteUsers(
-                              inviteUsers.filter((el) => el.id !== item.user.id)
+                              inviteUsers.filter((el) => el.id !== item.userId)
                             )
                           }
                         >
@@ -800,7 +803,7 @@ export default function BuyerCreateRequest() {
                           onClick={() =>
                             setInviteUsers([
                               ...inviteUsers,
-                              { id: item.user.id },
+                              { id: item.userId },
                             ])
                           }
                         >

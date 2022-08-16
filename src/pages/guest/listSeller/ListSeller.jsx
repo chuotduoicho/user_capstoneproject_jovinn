@@ -252,8 +252,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 export default function ListSeller() {
-  const rows = useSelector(selectAllSellersInvite);
-  console.log("list Offer", rows);
+  const list = useSelector(selectAllSellersInvite);
+  const [search, setSearch] = useState("");
+  const rows = list.filter((val) => val.user.lastName.includes(search));
   const { requestId } = useParams();
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
@@ -326,7 +327,7 @@ export default function ListSeller() {
 
   return (
     <div className="buyer_profile">
-      <BuyerHeader />
+      <BuyerHeader search={setSearch} />
       <div className={classes.root}>
         <Paper className={classes.paper}>
           <EnhancedTableToolbar numSelected={selected.length} />
@@ -363,12 +364,6 @@ export default function ListSeller() {
                         key={row.name}
                         selected={isItemSelected}
                       >
-                        {/* <TableCell padding="checkbox">
-                          <Checkbox
-                            checked={isItemSelected}
-                            inputProps={{ "aria-labelledby": labelId }}
-                          />
-                        </TableCell> */}
                         <TableCell
                           component="th"
                           id={labelId}

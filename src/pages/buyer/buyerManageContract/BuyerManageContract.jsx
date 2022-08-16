@@ -244,7 +244,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 export default function BuyerManageContract() {
   const currentUser = useSelector(selectCurrentUser);
-  const listContract = useSelector(selectAllContracts);
+  const list = useSelector(selectAllContracts);
+  const [search, setSearch] = useState("");
+  const listContract = list.filter((val) => val.contractCode.includes(search));
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
@@ -300,7 +302,7 @@ export default function BuyerManageContract() {
 
   return (
     <div className="buyer_profile">
-      <BuyerHeader />
+      <BuyerHeader search={setSearch} />
       <div className={classes.root}>
         <Paper className={classes.paper}>
           <EnhancedTableToolbar numSelected={selected.length} />

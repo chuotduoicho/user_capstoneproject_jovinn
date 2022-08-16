@@ -270,8 +270,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 export default function BuyerManageOffer() {
-  const rows = useSelector(selectAllOffer);
-  console.log("list Offer", rows);
+  const list = useSelector(selectAllOffer);
+  const [search, setSearch] = useState("");
+  const rows = list.filter((val) => val.descriptionBio.includes(search));
   const { requestId } = useParams();
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
@@ -339,7 +340,7 @@ export default function BuyerManageOffer() {
 
   return (
     <div className="buyer_profile">
-      <BuyerHeader />
+      <BuyerHeader search={setSearch} />
       <div className={classes.root}>
         <Paper className={classes.paper}>
           <EnhancedTableToolbar numSelected={selected.length} />

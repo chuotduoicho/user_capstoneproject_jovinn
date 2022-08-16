@@ -16,17 +16,22 @@ import {
   ListItemText,
   List,
   Popover,
+  TextField,
 } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCurrentUser, selectCurrentUser } from "../../../redux/userSlice";
-import { Delete, NotificationImportantOutlined } from "@material-ui/icons";
+import {
+  Delete,
+  NotificationImportantOutlined,
+  SearchOutlined,
+} from "@material-ui/icons";
 import {
   deleteNotification,
   fetchNotifications,
   readNotification,
   selectNotifications,
 } from "../../../redux/notificationSlice";
-export default function SellerHeader() {
+export default function SellerHeader({ search, handleSearch }) {
   const listNotification = useSelector(selectNotifications);
   const currentUser = useSelector(selectCurrentUser);
   const [open, setOpen] = useState(false);
@@ -97,6 +102,28 @@ export default function SellerHeader() {
           <p className="logo" onClick={() => navigate("/sellerHome")}>
             Jovinn.
           </p>
+          <TextField
+            placeholder="Tìm kiếm dịch vụ ..."
+            variant="outlined"
+            InputProps={{
+              endAdornment: (
+                <a>
+                  <SearchOutlined
+                    style={{
+                      cursor: "pointer",
+                    }}
+                    onClick={handleSearch}
+                  />
+                </a>
+              ),
+            }}
+            style={{
+              width: "500px",
+              borderRadius: "4px",
+            }}
+            onChange={(e) => search(e.target.value)}
+            size="small"
+          />
           <ButtonGroup
             variant="text"
             color="primary"

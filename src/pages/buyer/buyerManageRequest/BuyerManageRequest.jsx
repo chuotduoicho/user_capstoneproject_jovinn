@@ -242,7 +242,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 export default function BuyerManageRequest() {
-  const listRequest = useSelector(selectAllRequests);
+  const list = useSelector(selectAllRequests);
+  const [search, setSearch] = useState("");
+  const listRequest = list.filter((val) => val.jobTitle.includes(search));
   const listCategories = useSelector(selectAllCategories);
 
   const classes = useStyles();
@@ -253,6 +255,7 @@ export default function BuyerManageRequest() {
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const { state } = useLocation();
+
   const { alert } = state || {};
   const dispatch = useDispatch();
   useEffect(() => {
@@ -295,7 +298,7 @@ export default function BuyerManageRequest() {
 
   return (
     <div className="buyer_profile">
-      <BuyerHeader />
+      <BuyerHeader search={setSearch} />
       <div className={classes.root}>
         <Paper className={classes.paper}>
           <EnhancedTableToolbar numSelected={selected.length} />

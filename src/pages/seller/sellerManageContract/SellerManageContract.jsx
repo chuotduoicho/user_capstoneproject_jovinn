@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Contact from "../../../components/guest/contact/Contact";
 import "./sellerManageContract.scss";
 import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
@@ -239,8 +239,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 export default function SellerManageContract() {
   const currentUser = useSelector(selectCurrentUser);
-  const listContract = useSelector(selectContracts);
-  console.log("listContract", listContract);
+  const list = useSelector(selectContracts);
+  const [search, setSearch] = useState("");
+  const listContract = list.filter((val) => val.contractCode.includes(search));
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
@@ -288,7 +289,7 @@ export default function SellerManageContract() {
 
   return (
     <div className="buyer_profile">
-      <SellerHeader />
+      <SellerHeader search={setSearch} />
       <div className={classes.root}>
         <Paper className={classes.paper}>
           <EnhancedTableToolbar numSelected={selected.length} />

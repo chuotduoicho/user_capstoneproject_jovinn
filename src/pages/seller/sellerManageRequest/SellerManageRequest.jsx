@@ -88,16 +88,10 @@ const headCells = [
     label: "Danh mục con",
   },
   {
-    id: "milestoneContracts",
-    numeric: true,
-    disablePadding: false,
-    label: "Số giai đoạn",
-  },
-  {
     id: "budget",
     numeric: true,
     disablePadding: false,
-    label: "Tổng chi phí (g)",
+    label: "Tổng chi phí",
   },
   {
     id: "contractCancelFee",
@@ -247,7 +241,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 export default function SellerManageRequest() {
-  const listRequest = useSelector(selectAllRequests);
+  const list = useSelector(selectAllRequests);
+  const [search, setSearch] = useState("");
+  const listRequest = list.filter((val) => val.jobTitle.includes(search));
   const listCategories = useSelector(selectAllCategories);
   const { user } = useSelector((state) => state.auth);
   const currentUser = useSelector(selectCurrentUser);
@@ -299,7 +295,7 @@ export default function SellerManageRequest() {
 
   return (
     <div className="buyer_profile">
-      <SellerHeader />
+      <SellerHeader search={setSearch} />
       <ul className="list">
         {listCategories.map((item) => (
           <CategoryList
@@ -361,9 +357,6 @@ export default function SellerManageRequest() {
                                 (subCate) => subCate.id == row.subcategoryId
                               ).name
                           }
-                        </TableCell>
-                        <TableCell align="right">
-                          {row.milestoneContracts.length}
                         </TableCell>
                         <TableCell align="right">{row.budget} $</TableCell>
                         <TableCell align="right">
