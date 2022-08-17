@@ -33,7 +33,6 @@ function ChangeFormateDate(oldDate) {
   return oldDate.toString().split("-").reverse().join("-");
 }
 export default function SellerHome() {
-  const listNotification = useSelector(selectNotifications);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
@@ -57,7 +56,7 @@ export default function SellerHome() {
   const dateJoin = ChangeFormateDate(currentUser.joinSellingAt);
   return (
     <div className="sellerHome">
-      <SellerHeader listNotification={listNotification}/>
+      <SellerHeader />
       <div className="sellerHome_form">
         <div className="sellerHome_left">
           <div className="sellerHome_leftCard">

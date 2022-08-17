@@ -16,17 +16,42 @@ import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { Button, List, ListItem, ListItemSecondaryAction, ListItemText, Popover } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteNotification, fetchNotifications, readNotification, selectNotifications } from "../../../redux/notificationSlice";
-export default function SellerHeader({ listNotification }) {
+import { deleteNotification, fetchNotifications, readNotification, selectNotifications, selectNotificationStatus } from "../../../redux/notificationSlice";
+export default function SellerHeader() {
 
   const [open, setOpen] = useState(false);
-  //const listNotification = useSelector(selectNotifications);
-  const [notifications, setNotifications] = useState(listNotification.list);
+  const listNotification = useSelector(selectNotifications);
+  const notificationStatus = useSelector(selectNotificationStatus);
+  const [notifications, setNotifications] = useState([]);
   const [unread, setUnread] = useState(listNotification.unread);
   const anchorRef = useRef(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
+
+  useEffect(() => {
+    dispatch(fetchNotifications);
+  }, []);
+
+  useEffect(() => {
+    if (!!window.EventSource) {
+      var eventSource = new EventSource('http://localhost:8080/api/v1/users/recieve-notify');
+    };
+    eventSource.onmessage = () => updateNotiList();
+  }, []);
+
+  const updateNotiList = () => {
+    dispatch(fetchNotifications);
+    setUnread(listNotification.unread);
+    setNotifications(listNotification.list);
+  };
+
+  useEffect(() => {
+    if (notificationStatus == "success") {
+      setUnread(listNotification.unread);
+      setNotifications(listNotification.list);
+    }
+  }, [notificationStatus]);
 
   const handleIconClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -59,27 +84,6 @@ export default function SellerHeader({ listNotification }) {
     }
   }
 
-//  const prevOpen = useRef(open);
-
-  // useEffect(() => {
-  //   // let eventSource = new EventSource('http://localhost:8080/api/v1/users/recieve-notify');
-  //   // eventSource.onmessage = () => {
-  //   //   dispatch(fetchNotifications());
-  //   //   const updatedNoti = localStorage.getItem("notifications");
-  //   //   setNotifications(updatedNoti.list);
-  //   //   setUnread(updatedNoti.unread);
-  //   // }
-  //     dispatch(fetchNotifications());
-  //   // setNotifications(listNotification.list);
-  //   // setUnread(listNotification.unread);
-  //   // console.log("notifications", listNotification);
-
-  //   if (prevOpen.current === true && open === false) {
-  //     anchorRef.current.focus();
-  //   }
-
-  //   prevOpen.current = open;
-  // }, [open]);
   return (
     <div className="sellerHeader ">
       <div className="wrapper">
@@ -112,15 +116,6 @@ export default function SellerHeader({ listNotification }) {
           {/* </div> */}
         </div>
         <div className="right">
-          {/* <div className="item">
-            {" "}
-            <Link to="/sellerHome/createService">
-              <Button variant="contained" color="primary">
-                <AddSharp />
-                Tạo dịch vụ{" "}
-              </Button>{" "}
-            </Link>
-          </div> */}
           <div className="item">
             <NotificationImportantOutlined className="icon" onClick={handleIconClick} />
             <div className="counter" >{unread}</div>

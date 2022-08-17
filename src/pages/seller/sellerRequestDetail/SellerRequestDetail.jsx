@@ -25,7 +25,6 @@ import "./sellerRequestDetail.scss";
 
 export default function SellerRequestDetail() {
   const { requestId } = useParams();
-  const listNotification = useSelector(selectNotifications);
   const requestDetail = useSelector(selectRequestById);
   const listCategory = useSelector(selectAllCategories);
   const [listSubcategory, setListSubcategory] = useState([]);
@@ -52,17 +51,18 @@ export default function SellerRequestDetail() {
     dispatch(fetchRequestDetail(requestId));
     //dispatch(fetchCategories());
     setListSkills(requestDetail.skillsName);
+    console.log("detail", requestDetail);
     setListSubcategory(listCategory
       .find((val) => {
         return val.id == requestDetail.categoryId;
       })
       .subCategories);
     setListMilestones(requestDetail.milestoneContracts);
-  },[dispatch,requestId]);
+  },[requestId]);
   
   return (
     <div className="buyer_profile">
-      <SellerHeader listNotification={listNotification}/>
+      <SellerHeader />
       <h1 className="buyer_profile_title">Chi tiết yêu cầu</h1>
       <div className="sellerHome_form">
         <div className="sellerHome_left">

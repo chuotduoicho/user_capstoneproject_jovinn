@@ -1,3 +1,4 @@
+import './messaging_init_in_sw';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import SendMail from "./pages/auth/forgotPassword/sendMail/SendMail";
 import SetNewPassword from "./pages/auth/forgotPassword/setNewPassword/SetNewPassword";

@@ -8,6 +8,7 @@ const initialState = requests
       postRequestDetail : requestDetail?requestDetail:{},
       listOffers: [],
       listSellersInvite: [],
+      requestDetailStatus: "idle",
       status: "idle",
     }
   : {
@@ -15,6 +16,7 @@ const initialState = requests
       postRequestDetail : {},
       listOffers: [],
       listSellersInvite: [],
+      requestDetailStatus: "idle",
       status: "idle",
     };
 export const fetchRequestsBuyer = createAsyncThunk(
@@ -224,14 +226,14 @@ const requestSlice = createSlice({
       state.status = "failed";
     },
     [fetchRequestDetail.pending]: (state, action) => {
-      state.status = "loading";
+      state.requestDetailStatus = "loading";
     },
     [fetchRequestDetail.fulfilled]: (state, { payload }) => {
       state.postRequestDetail = payload;
-      state.status = "success";
+      state.requestDetailStatus = "success";
     },
     [fetchRequestDetail.rejected]: (state, action) => {
-      state.status = "failed";
+      state.requestDetailStatus = "failed";
     },
   },
 });
@@ -250,3 +252,4 @@ export const selectAllSellersInvite = (state) =>
   state.request.listSellersInvite;
 export const selectSellersById = (state, sellerId) =>
   state.request.listSellersInvite.find((seller) => (seller.id = sellerId));
+export const selectRequestDetailStatus = (state) => state.request.requestDetailStatus;

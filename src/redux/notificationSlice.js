@@ -11,6 +11,7 @@ export const fetchNotifications = createAsyncThunk(
     "notification/notifications",
     async () => {
         const data = await notificationService.getAllNotification();
+        console.log(data);
         return data;
     }
 );
@@ -71,3 +72,4 @@ const notificationSlice = createSlice({
 const { reducer } = notificationSlice;
 export default reducer;
 export const selectNotifications = (state) => state.notification.notifications;
+export const selectNotificationStatus = (state) => state.notification.status;
