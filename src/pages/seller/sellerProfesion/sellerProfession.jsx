@@ -230,27 +230,7 @@ export default function SellerProfession() {
     }
   };
   //skill
-  const names = [
-    "Oliver Hansen",
-    "Van Henry",
-    "April Tucker",
-    "Ralph Hubbard",
-    "Omar Alexander",
-    "Carlos Abbott",
-    "Miriam Wagner",
-    "Bradley Wilkerson",
-    "Virginia Andrews",
-    "Kelly Snyder",
-    "Kelly Snyder 1",
-    "Kelly Snyder 2",
-    "Kelly Snyder3 ",
-    "Kelly Snyder 4",
-    "Kelly Snyder 5",
-    "Kelly Snyder 6",
-    "Kelly Snyder 7",
-    "Kelly Snyder 98",
-    "Kelly Snyder9",
-  ];
+
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
   const MenuProps = {
