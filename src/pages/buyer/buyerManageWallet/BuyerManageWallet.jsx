@@ -394,7 +394,7 @@ export default function BuyerManageWallet() {
       {location.pathname == "/buyerhome/manageWallet" ? (
         <BuyerHeader search={setSearch} />
       ) : (
-        <SellerHeader />
+        <SellerHeader search={setSearch} />
       )}
 
       <h1 className="wallet_title">Quản lý ví</h1>

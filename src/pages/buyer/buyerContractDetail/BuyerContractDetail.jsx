@@ -283,7 +283,7 @@ export default function BuyerContractDetail() {
         </div>
         {contractDetail.extraOffers && (
           <div className="paymentRow_ContentLast">
-            <h3>Đề nghị:</h3>
+            <h3>Đề nghị bổ sung:</h3>
             <TableContainer component={Paper}>
               <Table
                 sx={{ minWidth: 850 }}
