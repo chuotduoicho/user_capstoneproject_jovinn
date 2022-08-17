@@ -55,6 +55,10 @@ function TabPanel(props) {
   );
 }
 
+function ChangeFormateDate(oldDate) {
+  return oldDate.toString().split("-").reverse().join("/");
+}
+
 TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.any.isRequired,
@@ -165,6 +169,7 @@ export default function ServiceDetail() {
   const handleStepChange = (step) => {
     setActiveStep(step);
   };
+
   return (
     <div className="buyer_service_detail">
       <BuyerHeader />
@@ -194,10 +199,8 @@ export default function ServiceDetail() {
                     className="avatar"
                   />
                   <div className="seller_headerRight">
-                    <p>
-                      {serviceDetail.brandName} | {serviceDetail.rankSeller}
-                    </p>
-                    <p>Tổng số đơn: {serviceDetail.totalOrder}</p>
+                    {serviceDetail.brandName} | Cấp độ người bán: {serviceDetail.rankSeller}
+                    <p>Điểm đánh giá - {serviceDetail.ratingPoint} | Đã hoàn thành - {serviceDetail.totalFinalContract}</p>
                   </div>
                 </div>
               </Link>
@@ -261,12 +264,50 @@ export default function ServiceDetail() {
               }
             />
           </Box>
-          <h2>Mô tả về dịch vụ</h2>{" "}
-          <p className="detail_des">{serviceDetail.description}</p>
-          <h2>Bình luận về dịch vụ</h2> <CommentService comments={listRating} />
-          {/* {listRating.map((comment) => (
-            <p className="detail_des">{comment.comment}</p>
-          ))} */}
+          <h2 className="padding-card">Mô tả về hộp dịch vụ</h2>
+          <div className="description_box">{serviceDetail.description}</div>
+          <div className="seller_info">
+            <h2 className="padding-card">Thông tin người bán</h2>
+            <div className="seller_header">
+              <img
+                src={
+                  serviceDetail.avatar ? serviceDetail.avatar :
+                  "https://cdn1.iconfinder.com/data/icons/user-pictures/100/unknown-512.png"
+                }
+                alt="avatar"
+                className="avatar_seller"
+              />
+              <div className="card_seller_info">
+                {serviceDetail.lastName} {" "} {serviceDetail.firstName} | Cấp độ người bán: {serviceDetail.rankSeller}
+                <p>Điểm đánh giá - {serviceDetail.ratingPoint} | Tổng số hợp đồng đã hoàn thành - {serviceDetail.totalOrder}</p>
+                  <Link to={"/seller/" + serviceDetail.sellerId}>
+                    <button>
+                      Xem chi tiết
+                    </button>
+                  </Link>
+              </div>
+            </div>
+
+            <div className="card_detail_seller_info">
+              <div className="info">
+                <p>Đến từ - {serviceDetail.city} | Tham gia Jovinn - {ChangeFormateDate(serviceDetail.joinSellingAt)}</p>
+                <p>Hòm thư liên hệ - {serviceDetail.email}</p>
+              </div>
+              <div className="description_bio">
+                <p>
+                  {serviceDetail.descriptionBio}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="rating_box">
+            <div className="rating_header">
+              <h3>
+                Đánh giá từ người mua
+              </h3>
+              <CommentService ratings={listRating} />
+            </div>
+          </div>
         </div>
         <div className="detail_right">
           <AppBar position="static" color="default">

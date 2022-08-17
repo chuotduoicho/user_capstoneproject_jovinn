@@ -4,6 +4,107 @@
   .buyer_profile_title {
     text-align: center;
   }
+
+  .sections_profile_change {
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    max-width: 100rem;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 70px;
+    padding-left: 30px;
+    padding-bottom: 150px;
+
+    .form {
+      display: flex;
+      margin-top: 50px;
+      width: 800px;
+      // float: left;
+      margin-left: 50px;
+      .form_left {
+        margin-right: 10px;
+        .image {
+          height: 200px;
+          width: 200px;
+          margin-right: 100px;
+          float: left;
+        }
+      }
+      .form_right {
+        margin-right: 50px;
+        .form_right_row_password {
+          flex-direction: column;
+        }
+        .form_right_row {
+          display: flex;
+          margin-top: 20px;
+          .login_error {
+            color: rgb(15, 14, 14);
+            padding-top: 15px;
+            padding-bottom: 15px;
+            background-color: #d99fb2;
+            border-radius: 12px;
+            text-align: center;
+          }
+          .login_success {
+            color: rgb(15, 14, 14);
+            padding-top: 15px;
+            padding-bottom: 15px;
+            background-color: #4a9b79;
+            border-radius: 12px;
+            text-align: center;
+          }
+          .form_right_row_btn {
+            margin-left: 20px;
+            width: 150px;
+          }
+          .form_right_row_input {
+            margin-left: 20px;
+            width: 250px;
+            .form_right_row_input_radio {
+              display: inline;
+            }
+          }
+          .form_right_row_input_country {
+            margin-left: 20px;
+            width: 33%;
+          }
+          .form_right_row_input_adress {
+            margin-left: 20px;
+            width: 67%;
+          }
+        }
+        .text_field {
+          margin-top: 15px;
+          width: 500px;
+        }
+        .btn_group {
+          display: flex;
+          .btn {
+            margin-top: 35px;
+            margin-right: 15px;
+            width: 200px;
+          }
+        }
+      }
+      .form_right2 {
+        margin-left: 100px;
+        .form_control {
+          margin-top: 12px;
+          width: 300px;
+        }
+        .text_field {
+          margin-top: 15px;
+          width: 300px;
+        }
+      }
+    }
+  }
+
   .sections_profile {
     width: 100%;
     height: calc(100vh - 70px);

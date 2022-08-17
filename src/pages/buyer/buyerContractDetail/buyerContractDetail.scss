@@ -11,6 +11,7 @@
     text-align: center;
     border: 2px solid #6a50ca;
     padding-top: 15px;
+
     .paymentRow {
       display: flex;
       margin-bottom: 20px;
@@ -18,6 +19,21 @@
         height: 50px;
         width: 200px;
         margin-right: 50px;
+      }
+
+      .container_message {
+        border: 2px solid #dedede;
+        border-radius: 5px;
+        padding: 10px;
+        margin: 10px 0;
+
+        .img_avatar {
+          max-width: 60px;
+          object-fit: cover;
+          width: 100%;
+          margin-right: 20px;
+          border-radius: 50%;
+        }
       }
     }
     .paymentRow_Title {

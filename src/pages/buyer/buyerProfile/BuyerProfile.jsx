@@ -199,7 +199,7 @@ export default function BuyerProfile() {
         <SellerHeader />
       )}
       <h1 className="buyer_profile_title">Thông tin cá nhân</h1>
-      <div className="sections_profile">
+      <div className="sections_profile_change">
         <Container maxWidth="sm" className="form">
           <div className="form_left">
             <Avatar
@@ -504,9 +504,9 @@ export default function BuyerProfile() {
             </DialogActions>
           </Dialog>
         </Container>
-        <ToastContainer position="bottom-right" autoClose={2000} />
-        <Contact />
       </div>
+      <ToastContainer position="bottom-right" autoClose={2000} />
+      <Contact />
     </div>
   );
 }

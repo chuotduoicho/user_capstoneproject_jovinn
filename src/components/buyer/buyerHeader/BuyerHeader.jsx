@@ -33,19 +33,9 @@ export default function BuyerHeader({ search, handleSearch }) {
     dispatch(fetchCurrentUser());
   }, []);
   const handleJoinSeller = () => {
-    if (currentUser.phoneNumber == null) {
-      setText("Bạn cần cập nhật đủ thông tin cơ bản để trở thành người bán");
-      setOpenDialog(true);
-    } else if (currentUser.gender == null) {
-      setText("Bạn cần cập nhật đủ thông tin cơ bản để trở thành người bán");
-      setOpenDialog(true);
-    } else if (currentUser.birthDate == null) {
-      setText("Bạn cần cập nhật đủ thông tin cơ bản để trở thành người bán");
-      setOpenDialog(true);
-    } else if (currentUser.city == null) {
-      setText("Bạn cần cập nhật đủ thông tin cơ bản để trở thành người bán");
-      setOpenDialog(true);
-    } else if (currentUser.country == null) {
+    if (currentUser.phoneNumber == null || currentUser.gender == null ||
+       currentUser.birthDate == null || currentUser.city == null ||
+       currentUser.country == null) {
       setText("Bạn cần cập nhật đủ thông tin cơ bản để trở thành người bán");
       setOpenDialog(true);
     } else if (currentUser.joinSellingAt) {
@@ -121,7 +111,7 @@ export default function BuyerHeader({ search, handleSearch }) {
             onClick={handleToggle}
             className="item"
           >
-            Xin chào, {currentUser.username}
+            Xin chào, {currentUser.firstName} {currentUser.lastName}
             <img
               src={
                 currentUser.avatar
@@ -132,6 +122,14 @@ export default function BuyerHeader({ search, handleSearch }) {
               className="avatar"
             />
           </Button>
+
+          <button className="button_case"
+            style={{ color: "black" }}
+            onClick={handleJoinSeller}>
+              <span className="button_switch">
+                Trở thành người bán
+              </span>
+          </button>
 
           <Popper
             open={open}
@@ -164,12 +162,12 @@ export default function BuyerHeader({ search, handleSearch }) {
                         </MenuItem>
                       </Link>
 
-                      <MenuItem
+                      {/* <MenuItem
                         style={{ color: "black" }}
                         onClick={handleJoinSeller}
                       >
                         Trở thành người bán
-                      </MenuItem>
+                      </MenuItem> */}
 
                       <Link
                         to="/buyerhome/createRequest"

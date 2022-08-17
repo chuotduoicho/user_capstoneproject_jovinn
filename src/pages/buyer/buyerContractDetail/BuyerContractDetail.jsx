@@ -266,6 +266,22 @@ export default function BuyerContractDetail() {
             </TableContainer>
           </div>
         )}
+
+        <div className="paymentRow_payment">
+          <h4>Số lượng : </h4>
+          <p>{contractDetail.quantity}</p>
+        </div>
+        <div className="paymentRow_payment">
+          <h4>Tổng chi phí : </h4>
+          <p>{contractDetail.totalPrice} $</p>
+        </div>
+        <div className="paymentRow_paymentLast">
+          <h4>Phí hủy hợp đồng : </h4>
+          <p>
+            {contractDetail.quantity}% ( =
+            {(contractDetail.totalPrice * contractDetail.quantity) / 100} $ )
+          </p>
+        </div>
         {contractDetail.extraOffers.filter((val) => val.opened).length > 0 && (
           <div className="paymentRow_ContentLast">
             <h3>Đề nghị:</h3>
@@ -323,21 +339,6 @@ export default function BuyerContractDetail() {
             </TableContainer>
           </div>
         )}
-        <div className="paymentRow_payment">
-          <h4>Số lượng : </h4>
-          <p>{contractDetail.quantity}</p>
-        </div>
-        <div className="paymentRow_payment">
-          <h4>Tổng chi phí : </h4>
-          <p>{contractDetail.totalPrice} $</p>
-        </div>
-        <div className="paymentRow_paymentLast">
-          <h4>Phí hủy hợp đồng : </h4>
-          <p>
-            {contractDetail.quantity}% ( =
-            {(contractDetail.totalPrice * contractDetail.quantity) / 100} $ )
-          </p>
-        </div>
         <div className="paymentRow">
           {contractDetail.contractStatus !== "COMPLETE" && (
             <Button variant="contained" color="primary" onClick={handleOpen}>
