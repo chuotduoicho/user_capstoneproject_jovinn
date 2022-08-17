@@ -192,6 +192,15 @@ const flagContract = (orderId) => {
       return response.data;
     });
 };
+const getAvatar = (contractId) => {
+  return axios
+    .get(API_URL + "/contract/avatar/" + contractId, {
+      headers: authHeader(),
+    })
+    .then((response) => {
+      return response.data;
+    });
+};
 const contractService = {
   addContract,
   getAllContracts,
@@ -209,6 +218,7 @@ const contractService = {
   addExtraOffer,
   acceptExtra,
   cancleExtra,
+  getAvatar,
 };
 
 export default contractService;

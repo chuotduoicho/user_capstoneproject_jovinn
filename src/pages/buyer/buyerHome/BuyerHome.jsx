@@ -263,7 +263,7 @@ export default function BuyerHome() {
           </ul>
 
           <div className="serviceList" id="intro">
-            <Container className="service_cardGrid" maxWidth="md">
+            <Container className="service_cardGrid" maxWidth="1500px">
               <Grid container spacing={4}>
                 {list.map((item) => (
                   <ServiceList

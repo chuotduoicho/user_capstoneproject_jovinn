@@ -4,9 +4,16 @@
   .buyerHome_form {
     display: flex;
     flex-direction: row;
+    width: 100%;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    max-width: 100rem;
+    margin-left: auto;
+    margin-right: auto;
+
     .buyerHome_left {
-      margin-top: 50px;
-      margin-left: 50px;
+      // margin-top: 50px;
+      // margin-left: 50px;
       .listSearch {
         flex: 1;
         background-color: bisque;

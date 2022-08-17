@@ -1,5 +1,5 @@
 .top {
-  padding: 20px;
+  padding: 20px 0px;
   display: flex;
   gap: 20px;
   height: 300px;
@@ -35,6 +35,7 @@
       }
 
       .details {
+        width: 655px;
         .itemTitle {
           margin-bottom: 10px;
           color: #555;

@@ -91,9 +91,10 @@
         .avatar {
           width: 40px;
           height: 40px;
+          margin-left: 10px;
           border-radius: 50%;
+          object-fit: cover;
           margin-right: 5px;
-          margin-left: 5px;
         }
 
         .counter {
@@ -111,6 +112,42 @@
           top: 7px;
           right: -5px;
         }
+      }
+
+      .button_case {
+        background-image: linear-gradient(135deg, #008aff, #86d472);
+        border-radius: 6px;
+        box-sizing: border-box;
+        color: #ffffff;
+        display: block;
+        height: 50px;
+        font-size: 15px;
+        font-weight: 600;
+        padding: 4px;
+        position: relative;
+        text-decoration: none;
+        width: 7em;
+        z-index: 2;
+      }
+
+      .button_case:hover {
+        color: #fff;
+      }
+
+      .button_case .button_switch {
+        align-items: center;
+        background: #155674;
+        border-radius: 6px;
+        color: #ffffff;
+        display: flex;
+        justify-content: center;
+        height: 100%;
+        transition: background 0.5s ease;
+        width: 100%;
+      }
+
+      .button_case:hover .button_switch {
+        background: transparent;
       }
     }
   }

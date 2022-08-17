@@ -5,6 +5,8 @@ const initialState = {
   listContracts: [],
   contractDetail: {},
   newContractId: null,
+  avatarBuyer: null,
+  avatarSeller: null,
   statusContractDetail: "idle",
   status: "idle",
 };
@@ -180,6 +182,12 @@ export const flagContract = createAsyncThunk(
     return data;
   }
 );
+export const getAvatar = createAsyncThunk("contract/getAvatar", async (id) => {
+  console.log(id);
+  const data = await contractService.getAvatar(id);
+  console.log(data);
+  return data;
+});
 const contractSlice = createSlice({
   name: "contract",
   initialState,
@@ -368,6 +376,17 @@ const contractSlice = createSlice({
     [flagContract.rejected]: (state, action) => {
       state.status = "failed";
     },
+    [getAvatar.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [getAvatar.fulfilled]: (state, { payload }) => {
+      state.avatarBuyer = payload.avatarBuyer;
+      state.avatarSeller = payload.avatarSeller;
+      state.status = "success";
+    },
+    [getAvatar.rejected]: (state, action) => {
+      state.status = "failed";
+    },
   },
 });
 
@@ -390,3 +409,5 @@ export const selectContractBuyerById = (state, contractId) =>
   state.contract.listContracts.find((contract) => contract.id === contractId);
 export const selectContractSellerById = (state, contractId) =>
   state.contract.listContracts.find((contract) => contract.id === contractId);
+export const selectAvatarBuyer = (state) => state.contract.avatarBuyer;
+export const selectAvatarSeller = (state) => state.contract.avatarSeller;

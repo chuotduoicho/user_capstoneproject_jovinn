@@ -21,7 +21,7 @@ export default function ServiceList({
 }) {
   const navigate = useNavigate();
   return (
-    <Grid item xs={12} sm={6} md={4} height="415">
+    <Grid item xs={12} sm={6} md={3} height="415">
       <Card
         className="service_card"
         onClick={() => navigate("serviceDetail/" + id)}
