@@ -25,6 +25,7 @@ import {
   addComment,
   addExtraOffer,
   addRating,
+  cancleExtra,
   deleveryMilestone,
   deleveryMilestoneAccept,
   fetchContractDetail,
@@ -152,6 +153,18 @@ export default function BuyerContractDetail() {
   const handleCloseExtra = () => {
     setOpenExtra(false);
   };
+  const handleCancleOffer = (value) => {
+    const extraOfferId = value;
+    dispatch(cancleExtra({ contractId, extraOfferId }))
+      .unwrap()
+      .then(() => {
+        dispatch(fetchContractDetail(contractId));
+        toast.success("Hủy bỏ đề nghị thành công!");
+      })
+      .catch(() => {
+        toast.error("Hủy bỏ đề nghị thất bại!");
+      });
+  };
   //delevery
   const handleAcceptDeleveryMilestone = (value) => {
     const milestoneId = value;
@@ -253,6 +266,7 @@ export default function BuyerContractDetail() {
             </TableContainer>
           </div>
         )}
+
         <div className="paymentRow_payment">
           <h4>Số lượng : </h4>
           <p>{contractDetail.quantity}</p>
@@ -268,7 +282,7 @@ export default function BuyerContractDetail() {
             {(contractDetail.totalPrice * contractDetail.quantity) / 100} $ )
           </p>
         </div>
-        {contractDetail.extraOffers && (
+        {contractDetail.extraOffers.filter((val) => val.opened).length > 0 && (
           <div className="paymentRow_ContentLast">
             <h3>Đề nghị:</h3>
             <TableContainer component={Paper}>
@@ -283,28 +297,43 @@ export default function BuyerContractDetail() {
                     <TableCell align="right">Mô tả</TableCell>
                     <TableCell align="right">Số ngày</TableCell>
                     <TableCell align="right">Chi phí</TableCell>
+                    <TableCell align="right"></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {contractDetail.extraOffers.map((item, index) => {
-                    return (
-                      <TableRow
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          {item.title}
-                        </TableCell>
-                        <TableCell align="right">
-                          {" "}
-                          {item.shortDescription}
-                        </TableCell>
-                        <TableCell align="right">{item.additionTime}</TableCell>
-                        <TableCell align="right">{item.extraPrice}</TableCell>
-                      </TableRow>
-                    );
-                  })}
+                  {contractDetail.extraOffers
+                    .filter((val) => val.opened)
+                    .map((item, index) => {
+                      return (
+                        <TableRow
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            {item.title}
+                          </TableCell>
+                          <TableCell align="right">
+                            {" "}
+                            {item.shortDescription}
+                          </TableCell>
+                          <TableCell align="right">
+                            {item.additionTime}
+                          </TableCell>
+                          <TableCell align="right">{item.extraPrice}</TableCell>
+                          <TableCell align="right">
+                            {" "}
+                            <Button
+                              variant="outlined"
+                              color="secondary"
+                              onClick={() => handleCancleOffer(item.id)}
+                            >
+                              Hủy bỏ
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                 </TableBody>
               </Table>
             </TableContainer>
