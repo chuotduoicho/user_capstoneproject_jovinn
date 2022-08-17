@@ -30,15 +30,19 @@ import {
   fetchNotifications,
   readNotification,
   selectNotifications,
+  selectNumber,
 } from "../../../redux/notificationSlice";
+import moment from "moment";
 export default function SellerHeader({ search, handleSearch }) {
   const listNotification = useSelector(selectNotifications);
+  const list = [...listNotification].sort(
+    (a, b) => new Date(b.createAt).getTime() - new Date(a.createAt).getTime()
+  );
+
+  const number = useSelector(selectNumber);
   const currentUser = useSelector(selectCurrentUser);
   const [open, setOpen] = useState(false);
-  const [notifications, setNotifications] = useState(
-    listNotification.list ? listNotification.list : []
-  );
-  const [unread, setUnread] = useState(listNotification.unread);
+  // const [unread, setUnread] = useState(listNotification.unread);
   const anchorRef = useRef(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -60,7 +64,9 @@ export default function SellerHeader({ search, handleSearch }) {
   };
   useEffect(() => {
     dispatch(fetchCurrentUser());
-    dispatch(fetchNotifications());
+    setInterval(() => {
+      dispatch(fetchNotifications());
+    }, 3000);
   }, []);
 
   // const handleLogout = (event) => {
@@ -118,7 +124,7 @@ export default function SellerHeader({ search, handleSearch }) {
               ),
             }}
             style={{
-              width: "500px",
+              width: "400px",
               borderRadius: "4px",
             }}
             onChange={(e) => search(e.target.value)}
@@ -154,7 +160,7 @@ export default function SellerHeader({ search, handleSearch }) {
               className="icon"
               onClick={handleIconClick}
             />
-            <div className="counter">{unread}</div>
+            <div className="counter">{number}</div>
             <Popover
               id={id}
               open={iconOpen}
@@ -166,7 +172,7 @@ export default function SellerHeader({ search, handleSearch }) {
               }}
             >
               <List>
-                {notifications.map((item) => (
+                {list.map((item) => (
                   <ListItem
                     button
                     style={item.unread ? { background: "#B9D5E3" } : {}}
@@ -174,30 +180,23 @@ export default function SellerHeader({ search, handleSearch }) {
                       dispatch(readNotification(item.id))
                         .unwrap()
                         .then(() => {
-                          //dispatch(fetchNotifications());
-                          setNotifications(listNotification.list);
-                          setUnread(listNotification.unread);
-                          navigate(item.link);
+                          dispatch(fetchNotifications());
                         });
+                      navigate("/sellerHome/" + item.link);
                     }}
                   >
                     <ListItemText
                       primary={item.shortContent}
-                      secondary={item.createAt}
+                      secondary={moment(item.createAt).fromNow()}
                     />
                     <ListItemSecondaryAction>
                       <Delete
-                        style={{ color: "gray" }}
+                        style={{ color: "gray", cursor: "pointer" }}
                         onClick={() => {
                           dispatch(deleteNotification(item.id))
                             .unwrap()
                             .then(() => {
-                              //dispatch(fetchNotifications());
-                              setNotifications(listNotification.list);
-                              setUnread(listNotification.unread);
-                              setNotifications(
-                                notifications.filter((el) => el.id !== item.id)
-                              );
+                              dispatch(fetchNotifications());
                             });
                         }}
                       />
@@ -226,10 +225,12 @@ export default function SellerHeader({ search, handleSearch }) {
             />
           </Button>
 
-          <Link className="button_case" to="/buyerHome" style={{ textDecoration: "none" }}>
-              <span className="button_switch">
-                Trở thành người mua
-              </span>
+          <Link
+            className="button_case"
+            to="/buyerHome"
+            style={{ textDecoration: "none" }}
+          >
+            <span className="button_switch">Trở thành người mua</span>
           </Link>
 
           <Popper

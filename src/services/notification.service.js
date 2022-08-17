@@ -12,7 +12,7 @@ const getAllNotification = () => {
 
 const readNotification = (notificationId) => {
   return axios
-    .put(API_URL + "/users/read-noti/" + notificationId, {
+    .put(API_URL + "/users/read-noti/" + notificationId, null, {
       headers: authHeader(),
     })
     .then((response) => {

@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import notificationService from "../services/notification.service";
-
-const notifications = JSON.parse(localStorage.getItem("notifications"));
+import { setMessage } from "./message";
 const initialState = {
-  notifications: notifications ? notifications : {},
+  notifications: [],
+  number: null,
   status: "idle",
 };
 
@@ -17,11 +17,23 @@ export const fetchNotifications = createAsyncThunk(
 
 export const readNotification = createAsyncThunk(
   "notification/read",
-  async (notificationId) => {
-    console.log(notificationId);
-    const data = await notificationService.readNotification(notificationId);
-    console.log(data);
-    return data;
+  async (notificationId, thunkAPI) => {
+    try {
+      console.log(notificationId);
+      const data = await notificationService.readNotification(notificationId);
+      console.log(data);
+      thunkAPI.dispatch(setMessage(data.data.message));
+      return data;
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      thunkAPI.dispatch(setMessage(message));
+      return thunkAPI.rejectWithValue();
+    }
   }
 );
 
@@ -38,7 +50,8 @@ const notificationSlice = createSlice({
   initialState,
   extraReducers: {
     [fetchNotifications.fulfilled]: (state, { payload }) => {
-      state.notifications = payload;
+      state.notifications = payload.list;
+      state.number = payload.unread;
       state.status = "success";
     },
     [fetchNotifications.pending]: (state, action) => {
@@ -71,3 +84,4 @@ const notificationSlice = createSlice({
 const { reducer } = notificationSlice;
 export default reducer;
 export const selectNotifications = (state) => state.notification.notifications;
+export const selectNumber = (state) => state.notification.number;

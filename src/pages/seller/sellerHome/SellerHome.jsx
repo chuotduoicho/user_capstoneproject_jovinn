@@ -51,8 +51,10 @@ export default function SellerHome() {
   // const listCategory = useSelector(selectAllCategories);
   const listService = useSelector(selectAllServices);
   // const [selected, setSelected] = useState(listCategory[0].id);
+  const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("impression");
   const [sortDir, setSortDir] = useState("DESC");
+  const [status, setStatus] = useState("ACTIVE");
   const [page, setPage] = useState(1);
   useEffect(() => {
     if (!user) {
@@ -67,17 +69,17 @@ export default function SellerHome() {
       dispatch(fetchServicesSeller({ sellerId, obj }));
     }
   }, [user]);
-  // useEffect(
-  //   (e) => {
-  //     const obj = {
-  //       page: page,
-  //       // sortBy: sortBy,
-  //       // sortDir: sortDir,
-  //     };
-  //     dispatch(fetchServices(obj));
-  //   },
-  //   [page]
-  // );
+  useEffect(
+    (e) => {
+      const sellerId = currentUser.seller.id;
+      const obj = {
+        status: status,
+      };
+      dispatch(fetchServicesSeller({ sellerId, obj }));
+    },
+    [status]
+  );
+  const handleSetfilter = (e) => {};
   const handleChange = (e, p) => {
     setPage(p);
   };
@@ -95,7 +97,7 @@ export default function SellerHome() {
   const dateJoin = ChangeFormateDate(currentUser.joinSellingAt);
   return (
     <div className="sellerHome">
-      <SellerHeader />
+      <SellerHeader search={setSearch} handleSearch={handleSetfilter} />
       <div className="sellerHome_form">
         <div className="sellerHome_left">
           <Typography variant="h5" style={{ width: "250px" }}>
@@ -178,6 +180,20 @@ export default function SellerHome() {
               </Button>{" "}
             </Link>
             <FormControl className="sellerHome_left_btn">
+              <InputLabel id="demo-simple-select-label">Trạng thái</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Sắp xếp theo"
+                variant="filled"
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+              >
+                <MenuItem value="ACTIVE">Mở</MenuItem>
+                <MenuItem value="DEACTIVE">Đóng</MenuItem>
+              </Select>
+            </FormControl>
+            {/* <FormControl className="sellerHome_left_btn">
               <InputLabel id="demo-simple-select-label">
                 Sắp xếp theo
               </InputLabel>
@@ -193,28 +209,30 @@ export default function SellerHome() {
                 <MenuItem value="createAt">Ngày tạo</MenuItem>
                 <MenuItem value="fromPrice">Giá</MenuItem>
               </Select>
-            </FormControl>
+            </FormControl> */}
           </div>
 
           <div className="serviceList" id="intro">
             <Container className="service_cardGrid" maxWidth="1500px">
               {/* End hero unit */}
               <Grid container spacing={4}>
-                {list.map((item) => (
-                  <ServiceList
-                    className="service"
-                    id={item.id}
-                    image={item.imageGallery1}
-                    title={item.title}
-                    price={item.fromPrice}
-                    avatar={item.avatar}
-                    impression={item.impression}
-                    branchName={item.branchName}
-                    rankSeller={item.rankSeller}
-                    ratingPoint={item.ratingPoint}
-                    totalOrderFinish={item.totalOrderFinish}
-                  />
-                ))}
+                {list
+                  .filter((val) => val.title.includes(search))
+                  .map((item) => (
+                    <ServiceList
+                      className="service"
+                      id={item.id}
+                      image={item.imageGallery1}
+                      title={item.title}
+                      price={item.fromPrice}
+                      avatar={item.avatar}
+                      impression={item.impression}
+                      branchName={item.branchName}
+                      rankSeller={item.rankSeller}
+                      ratingPoint={item.ratingPoint}
+                      totalOrderFinish={item.totalOrderFinish}
+                    />
+                  ))}
               </Grid>
               <Pagination
                 count={listService.totalPages}
