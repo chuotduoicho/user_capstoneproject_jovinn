@@ -266,7 +266,7 @@ export default function BuyerContractDetail() {
             </TableContainer>
           </div>
         )}
-        {contractDetail.extraOffers.filter((val) => val.opened).length > 0 && (
+        {contractDetail.extraOffers && (
           <div className="paymentRow_ContentLast">
             <h3>Đề nghị:</h3>
             <TableContainer component={Paper}>
