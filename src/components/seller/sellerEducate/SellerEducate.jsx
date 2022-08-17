@@ -266,18 +266,21 @@ export default function SellerEducate({ educations, id }) {
                     id="outlined-basic"
                     label="Tiêu đề"
                     variant="outlined"
+                    style={{ width: "100%", marginBottom: "10px" }}
                     onChange={(e) => setTitle(e.target.value)}
                   />
                   <TextField
                     id="outlined-basic"
                     label="Trường"
                     variant="outlined"
+                    style={{ width: "100%", marginBottom: "10px" }}
                     onChange={(e) => setUniversityName(e.target.value)}
                   />
                   <TextField
                     id="outlined-basic"
                     label="Ngành"
                     variant="outlined"
+                    style={{ width: "100%", marginBottom: "10px" }}
                     onChange={(e) => setMajor(e.target.value)}
                   />
                   <TextField
@@ -288,6 +291,7 @@ export default function SellerEducate({ educations, id }) {
                     InputLabelProps={{
                       shrink: true,
                     }}
+                    style={{ width: "48%", marginRight: "2%" }}
                     onChange={(e) => setToDate(e.target.value)}
                   />
                   <TextField
@@ -298,6 +302,7 @@ export default function SellerEducate({ educations, id }) {
                     InputLabelProps={{
                       shrink: true,
                     }}
+                    style={{ width: "48%", marginLeft: "2%" }}
                     onChange={(e) => setFromDate(e.target.value)}
                   />
                 </DialogContent>
@@ -332,6 +337,7 @@ export default function SellerEducate({ educations, id }) {
                     label="Tiêu đề"
                     variant="outlined"
                     defaultValue={title}
+                    style={{ width: "100%", marginBottom: "10px" }}
                     onChange={(e) => setTitle(e.target.value)}
                   />
                   <TextField
@@ -339,6 +345,7 @@ export default function SellerEducate({ educations, id }) {
                     label="Trường"
                     variant="outlined"
                     defaultValue={universityName}
+                    style={{ width: "100%", marginBottom: "10px" }}
                     onChange={(e) => setUniversityName(e.target.value)}
                   />
                   <TextField
@@ -346,6 +353,7 @@ export default function SellerEducate({ educations, id }) {
                     label="Ngành"
                     variant="outlined"
                     defaultValue={major}
+                    style={{ width: "100%", marginBottom: "10px" }}
                     onChange={(e) => setMajor(e.target.value)}
                   />
                   <TextField
@@ -356,6 +364,7 @@ export default function SellerEducate({ educations, id }) {
                     InputLabelProps={{
                       shrink: true,
                     }}
+                    style={{ width: "48%", marginRight: "2%" }}
                     defaultValue={format2(toDate)}
                     onChange={(e) => setToDate(e.target.value)}
                   />
@@ -367,6 +376,7 @@ export default function SellerEducate({ educations, id }) {
                     InputLabelProps={{
                       shrink: true,
                     }}
+                    style={{ width: "48%", marginLeft: "2%" }}
                     defaultValue={format2(fromDate)}
                     onChange={(e) => setFromDate(e.target.value)}
                   />

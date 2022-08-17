@@ -219,18 +219,21 @@ export default function SellerCertificate({ certificates, id }) {
                     id="outlined-basic"
                     label="Tiêu đề"
                     variant="outlined"
+                    style={{ width: "100%", marginBottom: "10px" }}
                     onChange={(e) => setTitle(e.target.value)}
                   />
                   <TextField
                     id="outlined-basic"
                     label="Tên chứng chỉ"
                     variant="outlined"
+                    style={{ width: "100%", marginBottom: "10px" }}
                     onChange={(e) => setName(e.target.value)}
                   />
                   <TextField
                     id="outlined-basic"
                     label="Link"
                     variant="outlined"
+                    style={{ width: "100%", marginBottom: "10px" }}
                     onChange={(e) => setLinkCer(e.target.value)}
                   />
                 </DialogContent>
@@ -264,6 +267,7 @@ export default function SellerCertificate({ certificates, id }) {
                     id="outlined-basic"
                     label="Tiêu đề"
                     variant="outlined"
+                    style={{ width: "100%", marginBottom: "10px" }}
                     defaultValue={title}
                     onChange={(e) => setTitle(e.target.value)}
                   />
@@ -271,6 +275,7 @@ export default function SellerCertificate({ certificates, id }) {
                     id="outlined-basic"
                     label="Tên chứng chỉ"
                     variant="outlined"
+                    style={{ width: "100%", marginBottom: "10px" }}
                     defaultValue={name}
                     onChange={(e) => setName(e.target.value)}
                   />
@@ -278,6 +283,7 @@ export default function SellerCertificate({ certificates, id }) {
                     id="outlined-basic"
                     label="Link"
                     variant="outlined"
+                    style={{ width: "100%", marginBottom: "10px" }}
                     defaultValue={linkCer}
                     onChange={(e) => setLinkCer(e.target.value)}
                   />
