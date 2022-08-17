@@ -10,7 +10,9 @@ import {
 import {
   addComment,
   fetchContractDetail,
+  fetComments,
   getAvatar,
+  selectAllComment,
   selectAvatarBuyer,
   selectAvatarSeller,
 } from "../../../redux/contractSlice";
@@ -23,10 +25,14 @@ const imgLink =
 export default function Comment({ comments, contractId }) {
   const avatarBuyer = useSelector(selectAvatarBuyer);
   const avatarSeller = useSelector(selectAvatarSeller);
+  const comment = useSelector(selectAllComment);
   const [text, setText] = useState("");
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getAvatar(contractId));
+    setInterval(() => {
+      dispatch(fetComments(contractId));
+    }, 3000);
   }, []);
   const handleComment = () => {
     console.log("text", text);
@@ -43,7 +49,7 @@ export default function Comment({ comments, contractId }) {
   };
 
   console.log("commet", comments);
-  const listComment = [...comments].sort(
+  const listComment = [...comment].sort(
     (a, b) => new Date(b.createAt).getTime() - new Date(a.createAt).getTime()
   );
 

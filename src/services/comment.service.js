@@ -43,11 +43,17 @@ const addRating = (obj) => {
       return response.data;
     });
 };
+const listComment = (obj) => {
+  return axios.get(API_URL + "/contract/comments/" + obj).then((response) => {
+    return response.data;
+  });
+};
 const commentService = {
   addComment,
   updateComment,
   deleteComment,
   addRating,
+  listComment,
 };
 
 export default commentService;

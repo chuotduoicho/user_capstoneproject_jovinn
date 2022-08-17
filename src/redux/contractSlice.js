@@ -3,6 +3,7 @@ import commentService from "../services/comment.service";
 import contractService from "../services/contract.service";
 const initialState = {
   listContracts: [],
+  listComment: [],
   contractDetail: {},
   newContractId: null,
   avatarBuyer: null,
@@ -10,7 +11,13 @@ const initialState = {
   statusContractDetail: "idle",
   status: "idle",
 };
-
+export const fetComments = createAsyncThunk(
+  "contract/fetComments",
+  async (obj) => {
+    const data = await commentService.listComment(obj);
+    return data;
+  }
+);
 export const fetchContracts = createAsyncThunk(
   "contract/fetchContracts",
   async () => {
@@ -192,6 +199,16 @@ const contractSlice = createSlice({
   name: "contract",
   initialState,
   extraReducers: {
+    [fetComments.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [fetComments.fulfilled]: (state, { payload }) => {
+      state.listComment = payload;
+      state.status = "success";
+    },
+    [fetComments.rejected]: (state, action) => {
+      state.status = "failed";
+    },
     [fetchContracts.pending]: (state, action) => {
       state.status = "loading";
     },
@@ -393,6 +410,7 @@ const contractSlice = createSlice({
 const { reducer } = contractSlice;
 export default reducer;
 export const selectAllContracts = (state) => state.contract.listContracts;
+export const selectAllComment = (state) => state.contract.listComment;
 export const selectContractDetail = (state) => state.contract.contractDetail;
 export const selectOrders = (state) =>
   state.contract.listContracts.filter((val) => {
