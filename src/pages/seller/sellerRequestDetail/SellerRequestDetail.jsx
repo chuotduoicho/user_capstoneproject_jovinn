@@ -141,7 +141,7 @@ export default function SellerRequestDetail() {
               label="Tiêu đề"
               variant="outlined"
               style={{ width: "100%" }}
-              defaultValue={requestDetail.jobTitle}
+              value={requestDetail.jobTitle}
               InputLabelProps={{
                 shrink: true,
               }}
@@ -156,7 +156,7 @@ export default function SellerRequestDetail() {
               multiline
               rows={6}
               style={{ width: "100%" }}
-              defaultValue={requestDetail.shortRequirement}
+              value={requestDetail.shortRequirement}
               InputLabelProps={{
                 shrink: true,
               }}
@@ -209,7 +209,7 @@ export default function SellerRequestDetail() {
               id="outlined-select-currency"
               select
               label="Trình độ người bán"
-              defaultValue={requestDetail.recruitLevel}
+              value={requestDetail.recruitLevel}
               name="level"
               style={{ width: "47%", margin: "10px" }}
               variant="outlined"
