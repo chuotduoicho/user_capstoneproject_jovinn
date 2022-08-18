@@ -9,6 +9,7 @@ const initialState = {
   postRequestDetail: requestDetail ? requestDetail : {},
   listOffers: offers ? offers : [],
   listSellersInvite: [],
+  listSellersApply: [],
   statusRequestDetail: "idle",
   status: "idle",
 };
@@ -221,7 +222,7 @@ const requestSlice = createSlice({
       state.status = "loading";
     },
     [fetchSellerInvite.fulfilled]: (state, { payload }) => {
-      state.listSellersInvite = payload.sellersApply;
+      state.listSellersApply = payload.sellersApply;
       state.status = "success";
     },
     [fetchSellerInvite.rejected]: (state, action) => {
@@ -284,3 +285,4 @@ export const selectOfferById = (state, offerId) =>
   state.request.listOffers.find((offer) => offer.id === offerId);
 export const selectAllSellersInvite = (state) =>
   state.request.listSellersInvite;
+export const selectAllSellersAplly = (state) => state.request.listSellersApply;

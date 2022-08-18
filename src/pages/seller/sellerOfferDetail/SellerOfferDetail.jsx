@@ -70,6 +70,7 @@ export default function SellerOfferDetail() {
             multiline
             rows={6}
             style={{ width: "62%" }}
+            disabled
             defaultValue={offerDetail.descriptionBio}
             onChange={(e) => setDescription(e.target.value)}
           />
@@ -83,6 +84,7 @@ export default function SellerOfferDetail() {
             label="Số ngày giao"
             type="number"
             InputProps={{ inputProps: { min: 0 } }}
+            disabled
             onChange={(e) => setTotalDeliveryTime(e.target.value)}
             defaultValue={offerDetail.totalDeliveryTime}
             required
@@ -92,6 +94,7 @@ export default function SellerOfferDetail() {
             label="Chi phí ($)"
             type="number"
             InputProps={{ inputProps: { min: 0 } }}
+            disabled
             onChange={(e) => setOfferPrice(e.target.value)}
             defaultValue={offerDetail.offerPrice}
             required
@@ -103,6 +106,7 @@ export default function SellerOfferDetail() {
             label="Phí hủy hợp đồng"
             variant="outlined"
             type="number"
+            disabled
             style={{ width: "30%", margin: "10px" }}
             inputProps={{ min: 0 }}
             InputProps={{
@@ -118,14 +122,14 @@ export default function SellerOfferDetail() {
           <h3>Trạng thái: {offerDetail.offerRequestStatus}</h3>
         </div>
         <div className="profession_row">
-          <Button
+          {/* <Button
             variant="contained"
             color="primary"
             className="form_right_row_btn"
             onClick={updateOffer}
           >
             Cập nhật
-          </Button>
+          </Button> */}
           <Button
             variant="contained"
             color="default"

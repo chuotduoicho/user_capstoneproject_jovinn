@@ -75,12 +75,12 @@ export default function BuyerContractDetail() {
     dispatch(addRating({ contractId, obj }))
       .unwrap()
       .then(() => {
-        setSuccess("Xác nhận bàn giao thành công!");
+        toast.success("Đánh giá thành công!");
         navigate("/buyerHome/manageContract");
         setOpen(false);
       })
       .catch(() => {
-        setError("Xác nhận bàn giao thất bại!");
+        toast.error("Đánh giá thất bại!");
       });
   };
 
@@ -89,6 +89,7 @@ export default function BuyerContractDetail() {
       .unwrap()
       .then(() => {
         toast.success("Gắn cờ thành công!");
+        dispatch(fetchContractDetail(contractId));
         // setOpenDelevery(false);
       })
       .catch(() => {
@@ -101,6 +102,7 @@ export default function BuyerContractDetail() {
       .unwrap()
       .then(() => {
         toast.success("Xác nhận bàn giao thành công!");
+        dispatch(fetchContractDetail(contractId));
         setOpen(true);
       })
       .catch(() => {
@@ -178,6 +180,9 @@ export default function BuyerContractDetail() {
         toast.error("Xác nhận bàn thất bại!");
       });
   };
+  const deliveryNotMilstone = contractDetail.delivery
+    ? contractDetail.delivery.find((val) => val.milestoneId == null)
+    : null;
   return (
     <div className="buyer_profile">
       <BuyerHeader />
@@ -200,8 +205,23 @@ export default function BuyerContractDetail() {
           <p>{contractDetail.requirement}</p>
         </div>
         <div className="paymentRow_Content">
-          <h3>Trạng thái bàn giao:</h3>
-          <p>{contractDetail.deliveryStatus}</p>
+          <h3>Chi tiết bàn giao:</h3>
+          {deliveryNotMilstone ? (
+            <div>
+              <p>{deliveryNotMilstone.description}</p>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() =>
+                  navigate(`//${deliveryNotMilstone.file.slice(8)}`)
+                }
+              >
+                Xem file bàn giao
+              </Button>
+            </div>
+          ) : (
+            <p>Đang chờ tải lên bàn giao từ người bán</p>
+          )}
         </div>
         <div className="paymentRow_Content">
           <h3>Tổng thời gian bàn giao:</h3>
@@ -339,18 +359,44 @@ export default function BuyerContractDetail() {
           </div>
         )}
         <div className="paymentRow">
-          {contractDetail.contractStatus !== "COMPLETE" && (
-            <Button variant="contained" color="primary" onClick={handleOpen}>
-              Xác nhận bàn giao
+          {contractDetail.contractStatus !== "COMPLETE" ? (
+            <>
+              {contractDetail.deliveryStatus == "SENDING" ? (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleOpen}
+                >
+                  Xác nhận bàn giao
+                </Button>
+              ) : (
+                <Button
+                  variant="outlined"
+                  disabled
+                  style={{ color: "gray", borderColor: "gray" }}
+                >
+                  Đang chờ tải lên bàn giao
+                </Button>
+              )}
+
+              <Button
+                variant="contained"
+                color="primary"
+                style={{ marginLeft: "10px" }}
+                onClick={() => setOpenExtra(true)}
+              >
+                Thêm đề nghị
+              </Button>
+            </>
+          ) : (
+            <Button
+              variant="outlined"
+              disabled
+              style={{ color: "green", borderColor: "green" }}
+            >
+              Đã xác nhận bàn giao
             </Button>
           )}
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => setOpenExtra(true)}
-          >
-            Thêm đề nghị
-          </Button>
         </div>
         {error !== "" && <Alert severity="error">{error}</Alert>}
         {success !== "" && <Alert severity="success">{success}</Alert>}

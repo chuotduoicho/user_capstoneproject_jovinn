@@ -30,9 +30,10 @@ export default function Comment({ comments, contractId }) {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getAvatar(contractId));
-    setInterval(() => {
-      dispatch(fetComments(contractId));
-    }, 3000);
+    // setInterval(() => {
+    //   dispatch(fetComments(contractId));
+    // }, 3000);
+    dispatch(fetComments(contractId));
   }, []);
   const handleComment = () => {
     console.log("text", text);
@@ -49,9 +50,9 @@ export default function Comment({ comments, contractId }) {
   };
 
   console.log("commet", comments);
-  const listComment = [...comment].sort(
-    (a, b) => new Date(b.createAt).getTime() - new Date(a.createAt).getTime()
-  );
+  // const listComment = [...comment].sort(
+  //   (a, b) => new Date(a.createAt).getTime() - new Date(b.createAt).getTime()
+  // );
 
   return (
     <div style={{ padding: 14 }}>
@@ -61,11 +62,13 @@ export default function Comment({ comments, contractId }) {
         style={{
           padding: "40px 20px",
           width: "1170px",
-          height: 700,
-          overflowY: "auto",
+          height: 300,
+          overflowX: "auto",
+          // display: "flex",
+          // flexDirection: "column",
         }}
       >
-        {listComment.map((item, index) => (
+        {comment.map((item, index) => (
           // <div className="container_message" style={item.type == "SELLER" ? {backgroundColor: "#f1f1f1"} : {backgroundColor: "#ddd;"}}>
           //   <Avatar alt="Remy Sharp" src={imgLink} className="img_avatar"
           //     style={item.type == "SELLER" ? {float: "left"} : {float: "right"}} />
@@ -89,23 +92,14 @@ export default function Comment({ comments, contractId }) {
           //   </Grid>
           //   <p>{item.text}</p>
           // </div>
-          <Grid
-            container
-            wrap="nowrap"
-            spacing={2}
-            style={
-              item.type == "SELLER"
-                ? { marginLeft: "900px" }
-                : { marginLeft: "0px" }
-            }
-          >
+          <Grid container wrap="nowrap" spacing={2}>
             <Grid item>
               <Avatar
                 alt="avatar"
                 src={item.type == "SELLER" ? avatarSeller : avatarBuyer}
               />
             </Grid>
-            <Grid justifyContent="left" item xs>
+            <Grid item xs>
               <h4 style={{ margin: 0, textAlign: "left", display: "flex" }}>
                 <p style={{ marginTop: "5px", marginRight: "5px" }}>
                   {item.name}
@@ -119,9 +113,9 @@ export default function Comment({ comments, contractId }) {
                 />
               </h4>
               <p style={{ textAlign: "left" }}>{item.text}</p>
-              <p style={{ textAlign: "left", color: "gray" }}>
+              {/* <p style={{ textAlign: "left", color: "gray" }}>
                 {moment(item.createAt).fromNow()}
-              </p>
+              </p> */}
             </Grid>
           </Grid>
         ))}

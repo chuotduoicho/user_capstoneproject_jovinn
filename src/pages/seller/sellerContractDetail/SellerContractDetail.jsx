@@ -15,6 +15,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  LinearProgress,
 } from "@material-ui/core";
 import React, { useState } from "react";
 import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
@@ -51,6 +52,7 @@ export default function SellerContractDetail() {
   const contractDetail = useSelector(selectContractDetail);
   const contractDetailStatus = useSelector(selectContractDetailStatus);
   const status = useSelector(selectContractStatus);
+  const { url } = useSelector((state) => state.url);
   console.log("contractDetail", contractDetail);
   const [open, setOpen] = useState(false);
   const [fullWidth, setFullWidth] = useState(true);
@@ -62,6 +64,7 @@ export default function SellerContractDetail() {
   const [milstoneId, setMilestoneId] = useState("");
   const [listComment, setListComment] = useState([]);
   const [listStage, setListStage] = useState([]);
+  const [loading, setLoading] = useState(false);
   const handleRating = () => {};
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -75,9 +78,29 @@ export default function SellerContractDetail() {
         setListStage(contractDetail.postRequest.milestoneContracts);
     }
   }, [contractDetailStatus]);
+  const handleUploadFile = async (e) => {
+    setLoading(true);
+    setFile(e.target.files[0]);
+    console.log(e.target.files[0].name);
+    const formData = new FormData();
+    formData.append("file", e.target.files[0]);
+    formData.append("id", currentUser.id);
+    formData.append("type", "DELIVERY");
+
+    dispatch(uploadFile(formData))
+      .unwrap()
+      .then(() => {
+        setLoading(false);
+        toast.success("Ảnh 1 tải lên thành công");
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
   const handleDelevery = () => {
     const delevery = {
       milestoneId: milstoneId,
+      file: url,
       description: descriptionDelevery,
     };
     dispatch(deleveryMilestone({ contractId, delevery }))
@@ -85,10 +108,29 @@ export default function SellerContractDetail() {
       .then(() => {
         toast.success("Bàn giao thành công!");
         setOpenDelevery(false);
+        dispatch(fetchContractDetail(contractId));
       })
       .catch(() => {
         toast.error("Bàn giao thất bại!");
         setOpenDelevery(false);
+      });
+  };
+  const handleDeleveryNotMileStone = () => {
+    const delevery = {
+      milestoneId: milstoneId,
+      file: url,
+      description: descriptionDelevery,
+    };
+    dispatch(uploadDeleveryContract({ contractId, delevery }))
+      .unwrap()
+      .then(() => {
+        toast.success("Bàn giao thành công!");
+        setOpenDeleveryNotMileStone(false);
+        dispatch(fetchContractDetail(contractId));
+      })
+      .catch(() => {
+        toast.error("Bàn giao thất bại!");
+        setOpenDeleveryNotMileStone(false);
       });
   };
   const handleAcceptOffer = (value) => {
@@ -104,38 +146,42 @@ export default function SellerContractDetail() {
       });
   };
 
-  const handleOpen = (e) => {
-    setFile(e.target.files[0]);
-    const formData = new FormData();
-    formData.append("file", e.target.files[0]);
-    formData.append("id", currentUser.id);
-    formData.append("type", "DELIVERY");
-    dispatch(uploadFile(formData))
-      .unwrap()
-      .then(() => {
-        dispatch(uploadDeleveryContract(contractId))
-          .unwrap()
-          .then(() => {
-            setSuccess("Tải lên bàn giao thành công!");
-            setOpen(true);
-          })
-          .catch(() => {
-            setError("Tải lên bàn giao thất bại!");
-          });
-      })
-      .catch(() => {});
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
+  // const handleOpen = (e) => {
+  //   setFile(e.target.files[0]);
+  //   const formData = new FormData();
+  //   formData.append("file", e.target.files[0]);
+  //   formData.append("id", currentUser.id);
+  //   formData.append("type", "DELIVERY");
+  //   dispatch(uploadFile(formData))
+  //     .unwrap()
+  //     .then(() => {
+  //       dispatch(uploadDeleveryContract(contractId))
+  //         .unwrap()
+  //         .then(() => {
+  //           setSuccess("Tải lên bàn giao thành công!");
+  //           setOpen(true);
+  //         })
+  //         .catch(() => {
+  //           setError("Tải lên bàn giao thất bại!");
+  //         });
+  //     })
+  //     .catch(() => {});
+  // };
+
   const [openDelevery, setOpenDelevery] = useState(false);
-  const handleClickOpenDelevery = () => {
-    setOpenDelevery(true);
-  };
 
   const handleCloseDelevery = () => {
     setOpenDelevery(false);
   };
+  const [openDeleveryNotMileStone, setOpenDeleveryNotMileStone] =
+    useState(false);
+
+  const handleCloseDeleveryNotMileStone = () => {
+    setOpenDeleveryNotMileStone(false);
+  };
+  const deliveryNotMilstone = contractDetail.delivery
+    ? contractDetail.delivery.find((val) => val.milestoneId == null)
+    : null;
   return (
     <div className="buyer_profile">
       <SellerHeader />
@@ -153,8 +199,23 @@ export default function SellerContractDetail() {
           <p>{contractDetail.requirement}</p>
         </div>
         <div className="paymentRow_Content">
-          <h3>Trạng thái bàn giao:</h3>
-          <p>{contractDetail.deliveryStatus}</p>
+          <h3>Chi tiết bàn giao:</h3>
+          {deliveryNotMilstone ? (
+            <div>
+              <p>{deliveryNotMilstone.description}</p>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() =>
+                  navigate(`//${deliveryNotMilstone.file.slice(8)}`)
+                }
+              >
+                Xem file bàn giao
+              </Button>
+            </div>
+          ) : (
+            <p>Đang chờ tải lên bàn giao </p>
+          )}
         </div>
         <div className="paymentRow_Content">
           <h3>Tổng thời gian bàn giao:</h3>
@@ -242,6 +303,34 @@ export default function SellerContractDetail() {
                     {"Nhập mô tả bàn giao"}
                   </DialogTitle>
                   <DialogContent>
+                    <input
+                      accept="image/*,.doc,.docx,.xlsx,.xls,.csv,.pdf,text/plain"
+                      className="request_form_input"
+                      id="request-input-file"
+                      multiple
+                      type="file"
+                      onChange={handleUploadFile}
+                      hidden
+                    />
+                    <label
+                      htmlFor="request-input-file"
+                      // style={{ width: "30%", margin: "10px" }}
+                    >
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        component="span"
+                        style={{
+                          width: "100%",
+                          marginBottom: "10px",
+                          height: "55px",
+                        }}
+                        startIcon={<CloudUpload />}
+                      >
+                        {file ? file.name : "FILE ĐÍNH KÈM"}
+                      </Button>
+                    </label>{" "}
+                    {loading && <LinearProgress />}
                     <TextField
                       id="outlined-basic"
                       label="Mô tả bàn giao"
@@ -337,28 +426,102 @@ export default function SellerContractDetail() {
           >
             Quay lại
           </Button>
-          <label htmlFor="file1">
+          {contractDetail.contractStatus == "COMPLETE" ? (
             <Button
-              variant="contained"
-              color="primary"
-              component="span"
-              startIcon={<CloudUpload />}
+              variant="outlined"
+              disabled
+              style={{ color: "green", borderColor: "green" }}
             >
-              Tải lên bàn giao
+              Đã tải lên bàn giao
             </Button>
-          </label>
-          <input
-            type="file"
-            id="file1"
-            onChange={handleOpen}
-            style={{ display: "none" }}
-          />
-          <img
-            src={file ? URL.createObjectURL(file) : ""}
-            alt=""
-            style={{ width: "100px" }}
-          />
+          ) : (
+            <>
+              {deliveryNotMilstone ? (
+                <Button
+                  variant="outlined"
+                  disabled
+                  style={{ color: "gray", borderColor: "gray" }}
+                >
+                  Đang chờ xác nhận bàn giao
+                </Button>
+              ) : (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => setOpenDeleveryNotMileStone(true)}
+                >
+                  Tải lên bàn giao
+                </Button>
+              )}
+            </>
+          )}
         </div>
+        <Dialog
+          fullWidth
+          maxWidth="sm"
+          open={openDeleveryNotMileStone}
+          onClose={handleCloseDeleveryNotMileStone}
+          aria-labelledby="responsive-dialog-title"
+        >
+          <DialogTitle id="responsive-dialog-title">
+            {"Nhập mô tả bàn giao"}
+          </DialogTitle>
+          <DialogContent>
+            <input
+              accept="image/*,.doc,.docx,.xlsx,.xls,.csv,.pdf,text/plain"
+              className="request_form_input"
+              id="request-input-file"
+              multiple
+              type="file"
+              onChange={handleUploadFile}
+              hidden
+            />
+            <label
+              htmlFor="request-input-file"
+              // style={{ width: "30%", margin: "10px" }}
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                component="span"
+                style={{
+                  width: "100%",
+                  marginBottom: "10px",
+                  height: "55px",
+                }}
+                startIcon={<CloudUpload />}
+              >
+                {file ? file.name : "FILE ĐÍNH KÈM"}
+              </Button>
+            </label>{" "}
+            {loading && <LinearProgress />}
+            <TextField
+              id="outlined-basic"
+              label="Mô tả bàn giao"
+              variant="outlined"
+              multiline
+              rows={5}
+              style={{ width: "100%" }}
+              onChange={(e) => setDescriptionDelevery(e.target.value)}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={handleDeleveryNotMileStone}
+              color="primary"
+              variant="outlined"
+            >
+              Xác nhận
+            </Button>
+            <Button
+              onClick={handleCloseDeleveryNotMileStone}
+              color="default"
+              variant="outlined"
+            >
+              Hủy
+            </Button>
+          </DialogActions>
+        </Dialog>
         {status == "loading" && (
           <CircularProgress style={{ margin: "0 auto" }} />
         )}

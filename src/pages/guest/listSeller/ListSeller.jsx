@@ -29,10 +29,12 @@ import {
   fetchOffersBuyer,
   fetchSellerInvite,
   selectAllOffer,
+  selectAllSellersAplly,
   selectAllSellersInvite,
 } from "../../../redux/requestSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { acceptRequestBuyer } from "../../../redux/contractSlice";
+import { toast, ToastContainer } from "react-toastify";
 function createData(description, subCate, skills, price, cancleFee) {
   return { description, subCate, skills, price, cancleFee };
 }
@@ -252,7 +254,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 export default function ListSeller() {
-  const list = useSelector(selectAllSellersInvite);
+  const list = useSelector(selectAllSellersAplly);
   const [search, setSearch] = useState("");
   const rows = list.filter((val) => val.user.lastName.includes(search));
   const { requestId } = useParams();
@@ -270,7 +272,18 @@ export default function ListSeller() {
   }, []);
   const handleAccept = (value) => {
     const sellerId = value;
-    dispatch(acceptRequestBuyer({ requestId, sellerId }));
+    dispatch(acceptRequestBuyer({ requestId, sellerId }))
+      .unwrap()
+      .then(() => {
+        toast.success("Duyệt thành công!");
+        navigate("/buyerHome/manageContract", {
+          state: { alert: "Duyệt thành công" },
+        });
+      })
+      .catch(() => {
+        toast.error("Duyệt thất bại!");
+        // setOpenDelevery(false);
+      });
   };
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -421,6 +434,7 @@ export default function ListSeller() {
           label="Dày đặc"
         />
       </div>
+      <ToastContainer limit={3000} position="bottom-right" />
       <div className="sections_profile">
         <Contact />
       </div>

@@ -158,18 +158,13 @@ const acceptDeleveryMilestone = (obj) => {
       return response.data;
     });
 };
-const uploadDeleveryContract = (orderId) => {
+const uploadDeleveryContract = (obj) => {
+  const contractId = obj.contractId;
+  const delevery = obj.delevery;
   return axios
-    .post(
-      API_URL + "/contract/delivery/" + orderId,
-      {
-        file: "dsfsdfsdf",
-        description: "sadsafsdfdds",
-      },
-      {
-        headers: authHeader(),
-      }
-    )
+    .post(API_URL + "/contract/delivery/" + contractId, delevery, {
+      headers: authHeader(),
+    })
     .then((response) => {
       return response.data;
     });

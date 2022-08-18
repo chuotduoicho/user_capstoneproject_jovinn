@@ -91,7 +91,7 @@ const headCells = [
     label: "Ngày bàn giao(dự kiến)",
   },
   {
-    id: "deliveryStatus",
+    id: "contractStatus",
     numeric: true,
     disablePadding: false,
     label: "Trạng thái",
@@ -350,7 +350,7 @@ export default function BuyerManageContract() {
                           {row.expectCompleteDate}
                         </TableCell>{" "}
                         <TableCell align="right">
-                          {row.deliveryStatus}
+                          {row.contractStatus}
                         </TableCell>{" "}
                         <TableCell align="right">
                           <Link to={row.id}>
