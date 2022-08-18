@@ -92,31 +92,79 @@ export default function Comment({ comments, contractId }) {
           //   </Grid>
           //   <p>{item.text}</p>
           // </div>
+
           <Grid container wrap="nowrap" spacing={2}>
-            <Grid item>
-              <Avatar
-                alt="avatar"
-                src={item.type == "SELLER" ? avatarSeller : avatarBuyer}
-              />
-            </Grid>
-            <Grid item xs>
-              <h4 style={{ margin: 0, textAlign: "left", display: "flex" }}>
-                <p style={{ marginTop: "5px", marginRight: "5px" }}>
-                  {item.name}
-                </p>
-                <Chip
-                  label={item.type}
-                  style={{
-                    background: item.type == "BUYER" ? "#ba000d" : "#5e35b1",
-                    color: "white",
-                  }}
-                />
-              </h4>
-              <p style={{ textAlign: "left" }}>{item.text}</p>
-              {/* <p style={{ textAlign: "left", color: "gray" }}>
+            {item.type == "BUYER" ? (
+              <>
+                {" "}
+                <Grid item>
+                  <Avatar
+                    alt="avatar"
+                    src={item.type == "SELLER" ? avatarSeller : avatarBuyer}
+                  />
+                </Grid>
+                <Grid item xs>
+                  <h4
+                    style={{
+                      margin: 0,
+                      justifyContent: "left",
+                      display: "flex",
+                    }}
+                  >
+                    <p style={{ marginTop: "5px", marginRight: "5px" }}>
+                      {item.name}
+                    </p>
+                    <Chip
+                      label={item.type}
+                      style={{
+                        background:
+                          item.type == "BUYER" ? "#ba000d" : "#5e35b1",
+                        color: "white",
+                      }}
+                    />
+                  </h4>
+                  <p style={{ textAlign: "left" }}>{item.text}</p>
+                  {/* <p style={{ textAlign: "left", color: "gray" }}>
                 {moment(item.createAt).fromNow()}
               </p> */}
-            </Grid>
+                </Grid>
+              </>
+            ) : (
+              <>
+                {" "}
+                <Grid item xs>
+                  <h4
+                    style={{
+                      margin: 0,
+                      justifyContent: "right",
+                      display: "flex",
+                    }}
+                  >
+                    <Chip
+                      label={item.type}
+                      style={{
+                        background:
+                          item.type == "BUYER" ? "#ba000d" : "#5e35b1",
+                        color: "white",
+                      }}
+                    />
+                    <p style={{ marginTop: "5px", marginRight: "5px" }}>
+                      {item.name}
+                    </p>
+                  </h4>
+                  <p style={{ textAlign: "right" }}>{item.text}</p>
+                  {/* <p style={{ textAlign: "left", color: "gray" }}>
+                {moment(item.createAt).fromNow()}
+              </p> */}
+                </Grid>
+                <Grid item>
+                  <Avatar
+                    alt="avatar"
+                    src={item.type == "SELLER" ? avatarSeller : avatarBuyer}
+                  />
+                </Grid>
+              </>
+            )}
           </Grid>
         ))}
       </Paper>
