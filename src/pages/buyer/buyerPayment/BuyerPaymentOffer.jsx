@@ -66,18 +66,25 @@ export default function BuyerPaymentOffer() {
       <BuyerHeader />
       <h1 className="buyer_profile_title">Hóa đơn thanh toán</h1>
       <Container maxWidth="lg" className="profession_form">
-        <div className="paymentRow">
-          <h4>Mô tả yêu cầu : {offerDetail.descriptionBio} </h4>
+        <div className="paymentRow_Content">
+          <h3>Mô tả yêu cầu :</h3>
+          <p>{offerDetail.descriptionBio}</p>
         </div>
-        <div className="paymentRow">
-          <h4>Thời gian bàn giao: {offerDetail.totalDeliveryTime}</h4>
+        <div className="paymentRow_Content">
+          <h3>Thời gian bàn giao:</h3>
+          <p>{offerDetail.totalDeliveryTime}</p>
         </div>
-        <div className="paymentRow">
-          <h4>Giá : {offerDetail.offerPrice}$</h4>
-        </div>{" "}
-        <div className="paymentRow">
-          {" "}
-          <h4>Trạng thái: {offerDetail.offerRequestStatus}</h4>
+        <div className="paymentRow_Content">
+          <h3>Giá :</h3>
+          <p>{offerDetail.offerPrice}$</p>
+        </div>
+        <div className="paymentRow_ContentLast">
+          <h3>Phí hủy hợp đồng:</h3>
+          <p>
+            {" "}
+            {offerDetail.cancelFee}% ( =
+            {(offerDetail.cancelFee * offerDetail.offerPrice) / 100} $ )
+          </p>
         </div>
         <div className="paymentRow" style={{ justifyContent: "center" }}>
           <Button

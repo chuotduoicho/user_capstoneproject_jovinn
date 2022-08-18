@@ -740,7 +740,8 @@ export default function BuyerCreateRequest() {
               Có
             </Button>
             <Dialog
-              fullScreen
+              fullWidth
+              maxWidth="sm"
               open={fullScreenOpen}
               onClose={handleFullScreenClose}
             >

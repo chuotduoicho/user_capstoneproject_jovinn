@@ -134,11 +134,11 @@ export default function SellerRequestDetail() {
                     🌏 Quốc gia: Việt Nam
                   </span>
                 </div> */}
-                <div className="sellerHome_leftCard_lsOptionItem">
+                {/* <div className="sellerHome_leftCard_lsOptionItem">
                   <span className="sellerHome_leftCard_lsOptionText">
                     Địa chỉ: {requestDetail.city}
                   </span>
-                </div>
+                </div> */}
                 {/* <div className="sellerHome_leftCard_lsOptionItem">
                   <span className="sellerHome_leftCard_lsOptionText">
                     Tham gia từ : 01/01/2020
