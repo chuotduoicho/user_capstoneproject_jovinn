@@ -4,6 +4,7 @@ import {
   MenuItem,
   TextField,
   InputAdornment,
+  makeStyles,
 } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 
@@ -17,7 +18,13 @@ import { selectAllCategories } from "../../../redux/categorySlice";
 import { selectOfferById } from "../../../redux/requestSlice";
 import { selectWallet } from "../../../redux/userSlice";
 import "./buyerOfferDetail.scss";
-
+const useStyles = makeStyles((theme) => ({
+  disabledInput: {
+    "& .MuiInputBase-root.Mui-disabled": {
+      color: "black",
+    },
+  },
+}));
 export default function BuyerOfferDetail() {
   const { offerId } = useParams();
   const offerDetail = useSelector((state) => selectOfferById(state, offerId));
@@ -27,6 +34,7 @@ export default function BuyerOfferDetail() {
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const classes = useStyles();
   const acceptOffer = () => {
     if (offerDetail.offerPrice > wallet.withdraw) {
       alert("Không đủ tiền để chấp nhận đề nghị này!");
@@ -49,6 +57,7 @@ export default function BuyerOfferDetail() {
             multiline
             rows={6}
             style={{ width: "62%" }}
+            className={classes.disabledInput}
             defaultValue={offerDetail.descriptionBio}
           />
         </div>
@@ -61,6 +70,7 @@ export default function BuyerOfferDetail() {
             label="Số ngày giao"
             type="number"
             InputProps={{ inputProps: { min: 0 } }}
+            className={classes.disabledInput}
             defaultValue={offerDetail.totalDeliveryTime}
             required
           />
@@ -69,6 +79,7 @@ export default function BuyerOfferDetail() {
             label="Chi phí ($)"
             type="number"
             InputProps={{ inputProps: { min: 0 } }}
+            className={classes.disabledInput}
             defaultValue={offerDetail.offerPrice}
             required
           />
@@ -80,6 +91,7 @@ export default function BuyerOfferDetail() {
             variant="outlined"
             type="number"
             style={{ width: "30%", margin: "10px" }}
+            className={classes.disabledInput}
             inputProps={{ min: 0 }}
             InputProps={{
               endAdornment: (

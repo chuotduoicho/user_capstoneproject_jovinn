@@ -25,7 +25,7 @@ const updateComment = (id, text) => {
 };
 const deleteComment = (id) => {
   return axios
-    .delete(API_URL + "/comment/", id, { headers: authHeader() })
+    .delete(API_URL + "/comment/" + id, { headers: authHeader() })
     .then((response) => {
       return response.data;
     });

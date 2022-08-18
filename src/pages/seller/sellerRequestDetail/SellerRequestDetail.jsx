@@ -5,6 +5,7 @@ import {
   TextField,
   InputAdornment,
   Typography,
+  makeStyles,
 } from "@material-ui/core";
 import { CloudUpload } from "@material-ui/icons";
 import Alert from "@material-ui/lab/Alert";
@@ -24,6 +25,20 @@ import {
   selectRequestDetailStatus,
 } from "../../../redux/requestSlice";
 import "./sellerRequestDetail.scss";
+const useStyles = makeStyles((theme) => ({
+  appBar: {
+    position: "relative",
+  },
+  title: {
+    marginLeft: theme.spacing(2),
+    flex: 1,
+  },
+  disabledInput: {
+    "& .MuiInputBase-root.Mui-disabled": {
+      color: "black",
+    },
+  },
+}));
 function format2(date) {
   date = new Date(date);
 
@@ -39,9 +54,14 @@ export default function SellerRequestDetail() {
   const { message } = useSelector((state) => state.message);
   const requestDetailStatus = useSelector(selectRequestDetailStatus);
   const listCategory = useSelector(selectAllCategories);
+  const [cateId, setCateId] = useState("");
+  const [subCateId, setSubCateId] = useState("");
+  const [recruitLevel, setRecruitLevel] = useState("");
+  const [cancleFee, setCancleFee] = useState("");
   const [skills, setSkills] = useState([]);
   const [listSubcate, setListSubcate] = useState([]);
   const [stages, setStages] = useState([]);
+  const classes = useStyles();
   useEffect(() => {
     dispatch(fetchRequestDetail(requestId));
   }, []);
@@ -57,6 +77,10 @@ export default function SellerRequestDetail() {
       });
       setSkills(names);
       setStages(requestDetail.milestoneContracts);
+      setCancleFee(requestDetail.contractCancelFee);
+      setCateId(requestDetail.categoryId);
+      setSubCateId(requestDetail.subcategoryId);
+      setRecruitLevel(requestDetail.recruitLevel);
     }
   }, [requestDetailStatus]);
   console.log("requestDetail", requestDetail);
@@ -110,11 +134,11 @@ export default function SellerRequestDetail() {
                     🌏 Quốc gia: Việt Nam
                   </span>
                 </div> */}
-                {/* <div className="sellerHome_leftCard_lsOptionItem">
+                <div className="sellerHome_leftCard_lsOptionItem">
                   <span className="sellerHome_leftCard_lsOptionText">
                     Địa chỉ: {requestDetail.city}
                   </span>
-                </div> */}
+                </div>
                 {/* <div className="sellerHome_leftCard_lsOptionItem">
                   <span className="sellerHome_leftCard_lsOptionText">
                     Tham gia từ : 01/01/2020
@@ -142,6 +166,7 @@ export default function SellerRequestDetail() {
               variant="outlined"
               style={{ width: "100%" }}
               value={requestDetail.jobTitle}
+              className={classes.disabledInput}
               InputLabelProps={{
                 shrink: true,
               }}
@@ -157,6 +182,7 @@ export default function SellerRequestDetail() {
               rows={6}
               style={{ width: "100%" }}
               value={requestDetail.shortRequirement}
+              className={classes.disabledInput}
               InputLabelProps={{
                 shrink: true,
               }}
@@ -168,7 +194,8 @@ export default function SellerRequestDetail() {
               id="outlined-select-currency"
               select
               label="Chọn danh mục"
-              value={requestDetail.categoryId}
+              value={cateId}
+              className={classes.disabledInput}
               style={{ width: "48%", margin: "11px" }}
               variant="outlined"
               disabled
@@ -183,7 +210,8 @@ export default function SellerRequestDetail() {
               id="outlined-select-currency"
               select
               label="Chọn danh mục con"
-              value={requestDetail.subcategoryId}
+              value={subCateId}
+              className={classes.disabledInput}
               style={{ width: "48%", margin: "11px" }}
               variant="outlined"
               disabled
@@ -209,7 +237,8 @@ export default function SellerRequestDetail() {
               id="outlined-select-currency"
               select
               label="Trình độ người bán"
-              value={requestDetail.recruitLevel}
+              value={recruitLevel}
+              className={classes.disabledInput}
               name="level"
               style={{ width: "47%", margin: "10px" }}
               variant="outlined"
@@ -241,6 +270,7 @@ export default function SellerRequestDetail() {
               variant="outlined"
               type="number"
               value={stages.length}
+              className={classes.disabledInput}
               style={{ width: "8%", margin: "10px" }}
               disabled
             />
@@ -262,6 +292,7 @@ export default function SellerRequestDetail() {
                   InputLabelProps={{
                     shrink: true,
                   }}
+                  className={classes.disabledInput}
                   style={{ width: "47%", margin: "10px" }}
                   name="dateFrom"
                   value={stage.startDate}
@@ -275,6 +306,7 @@ export default function SellerRequestDetail() {
                   InputLabelProps={{
                     shrink: true,
                   }}
+                  className={classes.disabledInput}
                   style={{ width: "47%", margin: "10px" }}
                   name="dateTo"
                   value={stage.endDate}
@@ -290,6 +322,7 @@ export default function SellerRequestDetail() {
                   multiline
                   rows={3}
                   style={{ width: "96%" }}
+                  className={classes.disabledInput}
                   name="product"
                   value={stage.description}
                   disabled
@@ -303,6 +336,7 @@ export default function SellerRequestDetail() {
                   variant="outlined"
                   type="number"
                   style={{ width: "30%", margin: "10px" }}
+                  className={classes.disabledInput}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">$</InputAdornment>
@@ -330,6 +364,8 @@ export default function SellerRequestDetail() {
               variant="outlined"
               type="number"
               style={{ width: "30%", margin: "10px" }}
+              className={classes.disabledInput}
+              disabled
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -346,8 +382,8 @@ export default function SellerRequestDetail() {
                   </InputAdornment>
                 ),
               }}
-              value={requestDetail.contractCancelFee}
-              disabled
+              value={cancleFee}
+
               // onChange={(e) => setDescriptionBio(e.target.value)}
             />
           </div>

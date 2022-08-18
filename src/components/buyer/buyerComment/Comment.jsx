@@ -9,6 +9,7 @@ import {
 } from "@material-ui/core";
 import {
   addComment,
+  deleteComment,
   fetchContractDetail,
   fetComments,
   getAvatar,
@@ -19,6 +20,7 @@ import {
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
+import { DeleteOutline, EditOutlined } from "@material-ui/icons";
 const imgLink =
   "https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260";
 
@@ -41,7 +43,26 @@ export default function Comment({ comments, contractId }) {
     dispatch(addComment(obj))
       .unwrap()
       .then(() => {
-        dispatch(fetchContractDetail(contractId));
+        setText("");
+      })
+      .catch(() => {
+        // setError("Tải lên bàn giao thất bại!");
+      });
+  };
+  const handleUpdateComment = (value) => {
+    dispatch(deleteComment(value))
+      .unwrap()
+      .then(() => {
+        setText("");
+      })
+      .catch(() => {
+        // setError("Tải lên bàn giao thất bại!");
+      });
+  };
+  const handleDeleteComment = (value) => {
+    dispatch(deleteComment(value))
+      .unwrap()
+      .then(() => {
         setText("");
       })
       .catch(() => {
@@ -114,13 +135,29 @@ export default function Comment({ comments, contractId }) {
                     <p style={{ marginTop: "5px", marginRight: "5px" }}>
                       {item.name}
                     </p>
-                    <Chip
+
+                    <p
+                      style={{
+                        textAlign: "left",
+                        fontSize: "12px",
+                        marginTop: "8px",
+                        color: "#ba000d",
+                      }}
+                    >
+                      - {item.type}
+                    </p>
+                    {/* <Chip
                       label={item.type}
                       style={{
                         background:
                           item.type == "BUYER" ? "#ba000d" : "#5e35b1",
                         color: "white",
                       }}
+                    /> */}
+                    <EditOutlined style={{ cursor: "pointer" }} />
+                    <DeleteOutline
+                      style={{ cursor: "pointer" }}
+                      onClick={() => handleDeleteComment(item.id)}
                     />
                   </h4>
                   <p style={{ textAlign: "left" }}>{item.text}</p>
@@ -140,14 +177,24 @@ export default function Comment({ comments, contractId }) {
                       display: "flex",
                     }}
                   >
-                    <Chip
+                    <p
+                      style={{
+                        textAlign: "left",
+                        fontSize: "12px",
+                        marginTop: "8px",
+                        color: "#5e35b1",
+                      }}
+                    >
+                      {item.type} -
+                    </p>
+                    {/* <Chip
                       label={item.type}
                       style={{
                         background:
                           item.type == "BUYER" ? "#ba000d" : "#5e35b1",
                         color: "white",
                       }}
-                    />
+                    /> */}
                     <p style={{ marginTop: "5px", marginRight: "5px" }}>
                       {item.name}
                     </p>

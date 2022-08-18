@@ -41,7 +41,15 @@ import Alert from "@material-ui/lab/Alert";
 import Comment from "../../../components/buyer/buyerComment/Comment";
 import { useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
+function format(date) {
+  date = new Date(date);
 
+  var day = ("0" + date.getDate()).slice(-2);
+  var month = ("0" + (date.getMonth() + 1)).slice(-2);
+  var year = date.getFullYear();
+
+  return day + "-" + month + "-" + year;
+}
 export default function BuyerContractDetail() {
   const { contractId } = useParams();
   const contractDetail = useSelector(selectContractDetail);
@@ -196,7 +204,11 @@ export default function BuyerContractDetail() {
             <Flag onClick={handleFlag} style={{ cursor: "pointer" }} />
           )}
           <Chip
-            label={contractDetail.contractStatus}
+            label={
+              contractDetail.contractStatus == "COMPLETE"
+                ? "Đã hoàn thành"
+                : "Đang xử lí"
+            }
             className="chip_pending"
           />
         </div>
@@ -229,7 +241,7 @@ export default function BuyerContractDetail() {
         </div>
         <div className="paymentRow_ContentLast">
           <h3>Ngày hoàn thành dự kiến:</h3>
-          <p>{contractDetail.expectCompleteDate}</p>
+          <p>{format(contractDetail.expectCompleteDate)}</p>
         </div>
         {contractDetail.postRequest && (
           <div className="paymentRow_ContentLast">

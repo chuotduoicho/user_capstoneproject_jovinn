@@ -230,7 +230,7 @@ export default function SellerHeader({ search, handleSearch }) {
             to="/buyerHome"
             style={{ textDecoration: "none" }}
           >
-            <span className="button_switch">Trở thành người mua</span>
+            <span className="button_switch">Chuyển người mua</span>
           </Link>
 
           <Popper

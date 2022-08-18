@@ -45,7 +45,15 @@ import Alert from "@material-ui/lab/Alert";
 import Comment from "../../../components/buyer/buyerComment/Comment";
 import { useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
+function format(date) {
+  date = new Date(date);
 
+  var day = ("0" + date.getDate()).slice(-2);
+  var month = ("0" + (date.getMonth() + 1)).slice(-2);
+  var year = date.getFullYear();
+
+  return day + "-" + month + "-" + year;
+}
 export default function SellerContractDetail() {
   const { contractId } = useParams();
   const currentUser = useSelector(selectCurrentUser);
@@ -190,7 +198,11 @@ export default function SellerContractDetail() {
         <div className="paymentRow_Title">
           <h2>Mã hợp đồng : {contractDetail.contractCode} </h2>
           <Chip
-            label={contractDetail.contractStatus}
+            label={
+              contractDetail.contractStatus == "COMPLETE"
+                ? "Đã hoàn thành"
+                : "Đang xử lí"
+            }
             className="chip_pending"
           />
         </div>
@@ -223,7 +235,7 @@ export default function SellerContractDetail() {
         </div>
         <div className="paymentRow_ContentLast">
           <h3>Ngày hoàn thành dự kiến:</h3>
-          <p>{contractDetail.expectCompleteDate}</p>
+          <p>{format(contractDetail.expectCompleteDate)}</p>
         </div>
         <div className="paymentRow_payment">
           <h4>Số lượng : </h4>
@@ -338,6 +350,15 @@ export default function SellerContractDetail() {
                       multiline
                       rows={5}
                       style={{ width: "100%" }}
+                      error={
+                        descriptionDelevery.length < 1 ||
+                        descriptionDelevery.length > 255
+                      }
+                      helperText={
+                        (descriptionDelevery.length < 1 ||
+                          descriptionDelevery.length > 255) &&
+                        "Không được để trống và tối đa 255 kí tự "
+                      }
                       onChange={(e) => setDescriptionDelevery(e.target.value)}
                     />
                   </DialogContent>
@@ -502,6 +523,15 @@ export default function SellerContractDetail() {
               multiline
               rows={5}
               style={{ width: "100%" }}
+              error={
+                descriptionDelevery.length < 1 ||
+                descriptionDelevery.length > 255
+              }
+              helperText={
+                (descriptionDelevery.length < 1 ||
+                  descriptionDelevery.length > 255) &&
+                "Không được để trống và tối đa 255 kí tự "
+              }
               onChange={(e) => setDescriptionDelevery(e.target.value)}
             />
           </DialogContent>

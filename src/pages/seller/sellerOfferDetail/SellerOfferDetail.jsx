@@ -3,6 +3,7 @@ import {
   Container,
   TextField,
   InputAdornment,
+  makeStyles,
 } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 
@@ -13,7 +14,13 @@ import Contact from "../../../components/guest/contact/Contact";
 import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
 import { selectOfferById } from "../../../redux/requestSlice";
 import "./sellerOfferDetail.scss";
-
+const useStyles = makeStyles((theme) => ({
+  disabledInput: {
+    "& .MuiInputBase-root.Mui-disabled": {
+      color: "black",
+    },
+  },
+}));
 export default function SellerOfferDetail() {
   const { offerId } = useParams();
   const offerDetail = useSelector((state) => selectOfferById(state, offerId));
@@ -22,6 +29,7 @@ export default function SellerOfferDetail() {
   const [totalDeliveryTime, setTotalDeliveryTime] = useState(0);
   const [offerPrice, setOfferPrice] = useState(0);
   const [cancleFee, setCancleFee] = useState(0);
+  const classes = useStyles();
   const offer = {
     descriptionBio: description,
     totalDeliveryTime: totalDeliveryTime,
@@ -71,6 +79,7 @@ export default function SellerOfferDetail() {
             rows={6}
             style={{ width: "62%" }}
             disabled
+            className={classes.disabledInput}
             defaultValue={offerDetail.descriptionBio}
             onChange={(e) => setDescription(e.target.value)}
           />
@@ -85,6 +94,7 @@ export default function SellerOfferDetail() {
             type="number"
             InputProps={{ inputProps: { min: 0 } }}
             disabled
+            className={classes.disabledInput}
             onChange={(e) => setTotalDeliveryTime(e.target.value)}
             defaultValue={offerDetail.totalDeliveryTime}
             required
@@ -95,6 +105,7 @@ export default function SellerOfferDetail() {
             type="number"
             InputProps={{ inputProps: { min: 0 } }}
             disabled
+            className={classes.disabledInput}
             onChange={(e) => setOfferPrice(e.target.value)}
             defaultValue={offerDetail.offerPrice}
             required
@@ -107,6 +118,7 @@ export default function SellerOfferDetail() {
             variant="outlined"
             type="number"
             disabled
+            className={classes.disabledInput}
             style={{ width: "30%", margin: "10px" }}
             inputProps={{ min: 0 }}
             InputProps={{
@@ -135,7 +147,7 @@ export default function SellerOfferDetail() {
             color="default"
             className="form_right_row_btn"
             style={{ marginLeft: "20px" }}
-            onClick={() => navigate(-1)}
+            onClick={() => navigate("/sellerHome/manageOffer")}
           >
             Quay lại
           </Button>

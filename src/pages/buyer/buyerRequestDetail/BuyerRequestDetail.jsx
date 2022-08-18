@@ -51,6 +51,11 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(2),
     flex: 1,
   },
+  disabledInput: {
+    "& .MuiInputBase-root.Mui-disabled": {
+      color: "black",
+    },
+  },
 }));
 function format2(date) {
   date = new Date(date);
@@ -69,13 +74,11 @@ export default function BuyerCreateRequest() {
   const currentUser = useSelector(selectCurrentUser);
   const topSeller = useSelector(selectTopSellers);
   const listCategory = useSelector(selectAllCategories);
-  const [cateId, setCateId] = useState(requestDetail.categoryId);
-  const [subCateId, setSubCateId] = useState(requestDetail.subcategoryId);
-  const [recruitLevel, setRecruitLevel] = useState(requestDetail.recruitLevel);
-  const [jobTitle, setJobTitle] = useState(requestDetail.jobTitle);
-  const [description, setDescription] = useState(
-    requestDetail.shortRequirement
-  );
+  const [cateId, setCateId] = useState("");
+  const [subCateId, setSubCateId] = useState("");
+  const [recruitLevel, setRecruitLevel] = useState("");
+  const [jobTitle, setJobTitle] = useState("");
+  const [description, setDescription] = useState("");
   // var names = requestDetail.skillsName.map(function (item) {
   //   return item["name"];
   // });
@@ -85,7 +88,7 @@ export default function BuyerCreateRequest() {
   const [file, setFile] = useState();
   const [loading, setLoading] = useState(false);
   const [stages, setStages] = useState([]);
-  const [cancleFee, setCancleFee] = useState(requestDetail.contractCancelFee);
+  const [cancleFee, setCancleFee] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -284,9 +287,10 @@ export default function BuyerCreateRequest() {
             id="outlined-basic"
             label="Tiêu đề"
             variant="outlined"
+            disabled={!isEdit}
             style={{ width: "96%" }}
             value={jobTitle}
-            disabled={!isEdit}
+            className={classes.disabledInput}
             onChange={(e) => setJobTitle(e.target.value)}
             error={
               !/^[a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_\s]{5,50}$/.test(
@@ -310,6 +314,7 @@ export default function BuyerCreateRequest() {
             multiline
             rows={6}
             style={{ width: "96%" }}
+            className={classes.disabledInput}
             value={description}
             disabled={!isEdit}
             onChange={(e) => setDescription(e.target.value)}
@@ -333,6 +338,7 @@ export default function BuyerCreateRequest() {
             select
             label="Chọn danh mục"
             value={cateId}
+            className={classes.disabledInput}
             disabled={!isEdit}
             onChange={(e) => setCateId(e.target.value)}
             style={{ width: "47%", margin: "10px" }}
@@ -350,6 +356,7 @@ export default function BuyerCreateRequest() {
             label="Chọn danh mục con"
             value={subCateId}
             disabled={!isEdit}
+            className={classes.disabledInput}
             onChange={(e) => setSubCateId(e.target.value)}
             style={{ width: "47%", margin: "10px" }}
             variant="outlined"
@@ -371,6 +378,7 @@ export default function BuyerCreateRequest() {
               id="demo-multiple-chip"
               value={skills}
               disabled={!isEdit}
+              className={classes.disabledInput}
               multiple
               onChange={handleChange}
               input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
@@ -405,6 +413,7 @@ export default function BuyerCreateRequest() {
             value={recruitLevel}
             disabled={!isEdit}
             name="level"
+            className={classes.disabledInput}
             onChange={(e) => setRecruitLevel(e.target.value)}
             style={{ width: "47%", margin: "10px" }}
             variant="outlined"
@@ -456,6 +465,7 @@ export default function BuyerCreateRequest() {
             variant="outlined"
             type="number"
             value={stages.length}
+            className={classes.disabledInput}
             style={{ width: "13%", margin: "10px" }}
             disabled
           />
@@ -481,6 +491,7 @@ export default function BuyerCreateRequest() {
                 InputLabelProps={{
                   shrink: true,
                 }}
+                className={classes.disabledInput}
                 style={{ width: "47%", margin: "10px" }}
                 name="startDate"
                 defaultValue={format2(stage.startDate)}
@@ -508,6 +519,7 @@ export default function BuyerCreateRequest() {
                 InputLabelProps={{
                   shrink: true,
                 }}
+                className={classes.disabledInput}
                 style={{ width: "47%", margin: "10px" }}
                 name="endDate"
                 defaultValue={format2(stage.endDate)}
@@ -538,6 +550,7 @@ export default function BuyerCreateRequest() {
                 rows={4}
                 style={{ width: "96%" }}
                 name="description"
+                className={classes.disabledInput}
                 defaultValue={stage.description}
                 disabled={!isEdit}
                 onChange={(e) => handleStageChange(e, index)}
@@ -564,6 +577,7 @@ export default function BuyerCreateRequest() {
                 type="number"
                 defaultValue={stage.milestoneFee}
                 disabled={!isEdit}
+                className={classes.disabledInput}
                 style={{ width: "30%", margin: "10px" }}
                 inputProps={{
                   maxLength: 10,
@@ -608,6 +622,7 @@ export default function BuyerCreateRequest() {
             type="number"
             style={{ width: "30%", margin: "10px" }}
             inputProps={{ min: 0 }}
+            className={classes.disabledInput}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -663,7 +678,7 @@ export default function BuyerCreateRequest() {
                 variant="contained"
                 color="default"
                 className="form_right_row_btn"
-                onClick={() => navigate(-1)}
+                onClick={() => navigate("/buyerHome/manageRequest")}
                 style={{ marginRight: "10px" }}
               >
                 Quay lại
