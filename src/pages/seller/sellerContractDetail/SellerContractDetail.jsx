@@ -28,11 +28,12 @@ import {
   uploadFile,
 } from "../../../redux/userSlice";
 import { useNavigate, useParams } from "react-router-dom";
-import { CloudUpload, StarBorder } from "@material-ui/icons";
+import { CloudUpload, EditRounded, StarBorder } from "@material-ui/icons";
 import {
   acceptExtra,
   cancleExtra,
   deleveryMilestone,
+  deleveryMilestoneUpdate,
   fetchContractDetail,
   selectContractBuyerById,
   selectContractDetail,
@@ -123,6 +124,24 @@ export default function SellerContractDetail() {
         setOpenDelevery(false);
       });
   };
+  const handleDeleveryUpdate = () => {
+    const delevery = {
+      milestoneId: milstoneId,
+      file: url,
+      description: descriptionDelevery,
+    };
+    dispatch(deleveryMilestoneUpdate({ contractId, delevery }))
+      .unwrap()
+      .then(() => {
+        toast.success("Sửa thành công!");
+        setOpenDeleveryUpdate(false);
+        dispatch(fetchContractDetail(contractId));
+      })
+      .catch(() => {
+        toast.error("Sửa thất bại!");
+        setOpenDeleveryUpdate(false);
+      });
+  };
   const handleDeleveryNotMileStone = () => {
     const delevery = {
       milestoneId: milstoneId,
@@ -154,32 +173,15 @@ export default function SellerContractDetail() {
       });
   };
 
-  // const handleOpen = (e) => {
-  //   setFile(e.target.files[0]);
-  //   const formData = new FormData();
-  //   formData.append("file", e.target.files[0]);
-  //   formData.append("id", currentUser.id);
-  //   formData.append("type", "DELIVERY");
-  //   dispatch(uploadFile(formData))
-  //     .unwrap()
-  //     .then(() => {
-  //       dispatch(uploadDeleveryContract(contractId))
-  //         .unwrap()
-  //         .then(() => {
-  //           setSuccess("Tải lên bàn giao thành công!");
-  //           setOpen(true);
-  //         })
-  //         .catch(() => {
-  //           setError("Tải lên bàn giao thất bại!");
-  //         });
-  //     })
-  //     .catch(() => {});
-  // };
-
   const [openDelevery, setOpenDelevery] = useState(false);
 
   const handleCloseDelevery = () => {
     setOpenDelevery(false);
+  };
+  const [openDeleveryUpdate, setOpenDeleveryUpdate] = useState(false);
+
+  const handleCloseDeleveryUpdate = () => {
+    setOpenDeleveryUpdate(false);
   };
   const [openDeleveryNotMileStone, setOpenDeleveryNotMileStone] =
     useState(false);
@@ -224,6 +226,15 @@ export default function SellerContractDetail() {
               >
                 Xem file bàn giao
               </Button>
+              <EditRounded
+                style={{
+                  cursor: "pointer",
+                }}
+                onClick={(e) => {
+                  setOpenDeleveryUpdate(true);
+                  setDescriptionDelevery(deliveryNotMilstone.description);
+                }}
+              />
             </div>
           ) : (
             <p>Đang chờ tải lên bàn giao </p>
@@ -253,57 +264,153 @@ export default function SellerContractDetail() {
           </p>
         </div>
         {contractDetail.postRequest && (
-          <div className="paymentRow_ContentLast">
-            <h3>Giai đoạn bàn giao:</h3>
-            <TableContainer component={Paper}>
-              <Table
-                sx={{ minWidth: 850 }}
-                size="small"
-                aria-label="a dense table"
-              >
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Số thứ tự</TableCell>
-                    <TableCell align="right">Mô tả</TableCell>
-                    <TableCell align="right">Chi phí</TableCell>
-                    <TableCell align="right">Trạng thái</TableCell>
-                    <TableCell align="right"></TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {listStage.map((item, index) => {
-                    return (
-                      <TableRow
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          Giai đoạn {index + 1}
-                        </TableCell>
-                        <TableCell align="right"> {item.description}</TableCell>
-                        <TableCell align="right">{item.milestoneFee}</TableCell>
-                        <TableCell align="right">{item.status}</TableCell>
-                        <TableCell align="right">
-                          {item.status == "COMPLETE" ? (
-                            <Chip label="Đã hoàn thành" />
-                          ) : (
-                            <Button
-                              color="primary"
-                              variant="outlined"
-                              onClick={() => {
-                                setOpenDelevery(true);
-                                setMilestoneId(item.id);
-                              }}
-                            >
-                              Bàn giao
-                            </Button>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
+          <>
+            <div className="paymentRow_Content">
+              <h2>Nội dung yêu cầu</h2>
+            </div>
+            <div className="paymentRow_Content">
+              {" "}
+              <h3>Tiêu đề:</h3>
+              <p>{contractDetail.postRequest.jobTitle} </p>
+            </div>
+            <div className="paymentRow_Content">
+              {" "}
+              <h3>Mô tả:</h3>
+              <p>{contractDetail.postRequest.shortRequirement} </p>
+            </div>
+            <div className="paymentRow_Content">
+              {" "}
+              <h3>File đính kèm:</h3>
+              <p>
+                {contractDetail.postRequest.attachFile ? (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() =>
+                      navigate(`//${deliveryNotMilstone.file.slice(8)}`)
+                    }
+                  >
+                    Xem file
+                  </Button>
+                ) : (
+                  "Không có"
+                )}{" "}
+              </p>
+            </div>
+            <div className="paymentRow_Content">
+              {" "}
+              <h3>Cấp độ người bán yêu cầu:</h3>
+              <p>{contractDetail.postRequest.recruitLevel} </p>
+            </div>
+            <div className="paymentRow_Content">
+              <TableContainer component={Paper}>
+                <Table
+                  sx={{ minWidth: 850 }}
+                  size="small"
+                  aria-label="a dense table"
+                >
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Số thứ tự</TableCell>
+                      <TableCell align="right">Mô tả</TableCell>
+                      <TableCell align="right">Ngày bắt đầu</TableCell>
+                      <TableCell align="right">Ngày kết thúc</TableCell>
+                      <TableCell align="right">Chi phí</TableCell>
+                      <TableCell align="right">Trạng thái</TableCell>
+                      <TableCell align="right">File</TableCell>
+                      <TableCell align="right">Chi tiết bàn giao</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {listStage.map((item, index) => {
+                      return (
+                        <TableRow
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            Giai đoạn {index + 1}
+                          </TableCell>
+                          <TableCell
+                            align="right"
+                            // style={{ maxWidth: "200px" }}
+                          >
+                            {" "}
+                            {item.description}
+                          </TableCell>
+                          <TableCell align="right">{item.startDate}</TableCell>
+                          <TableCell align="right">{item.endDate}</TableCell>
+                          <TableCell align="right">
+                            {item.milestoneFee}$
+                          </TableCell>
+                          <TableCell align="right">
+                            {" "}
+                            {item.status == "COMPLETE" ? (
+                              <Chip label="Đã hoàn thành" />
+                            ) : (
+                              <Button
+                                color="primary"
+                                variant="outlined"
+                                onClick={() => {
+                                  setOpenDelevery(true);
+                                  setMilestoneId(item.id);
+                                }}
+                              >
+                                Bàn giao
+                              </Button>
+                            )}
+                          </TableCell>
+                          <TableCell align="right">
+                            {" "}
+                            {contractDetail.delivery.find(
+                              (val) => val.milestoneId === item.id
+                            ) ? (
+                              contractDetail.delivery.find(
+                                (val) => val.milestoneId === item.id
+                              ).file ? (
+                                <Button
+                                  variant="contained"
+                                  color="primary"
+                                  onClick={() =>
+                                    navigate(
+                                      `//${contractDetail.delivery
+                                        .find(
+                                          (val) => val.milestoneId === item.id
+                                        )
+                                        .file.slice(8)}`
+                                    )
+                                  }
+                                >
+                                  Xem file
+                                </Button>
+                              ) : (
+                                "Không có"
+                              )
+                            ) : (
+                              "đang chờ"
+                            )}
+                          </TableCell>
+                          <TableCell align="right">
+                            {contractDetail.delivery.find(
+                              (val) => val.milestoneId === item.id
+                            ) ? (
+                              <>
+                                {
+                                  contractDetail.delivery.find(
+                                    (val) => val.milestoneId === item.id
+                                  ).description
+                                }{" "}
+                              </>
+                            ) : (
+                              "đang chờ"
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
                 <Dialog
                   fullWidth
                   maxWidth="sm"
@@ -379,9 +486,85 @@ export default function SellerContractDetail() {
                     </Button>
                   </DialogActions>
                 </Dialog>
-              </Table>
-            </TableContainer>
-          </div>
+                <Dialog
+                  fullWidth
+                  maxWidth="sm"
+                  open={openDeleveryUpdate}
+                  onClose={handleCloseDeleveryUpdate}
+                  aria-labelledby="responsive-dialog-title"
+                >
+                  <DialogTitle id="responsive-dialog-title">
+                    {"Cập nhật bàn giao"}
+                  </DialogTitle>
+                  <DialogContent>
+                    <input
+                      accept="image/*,.doc,.docx,.xlsx,.xls,.csv,.pdf,text/plain"
+                      className="request_form_input"
+                      id="request-input-file"
+                      multiple
+                      type="file"
+                      onChange={handleUploadFile}
+                      hidden
+                    />
+                    <label
+                      htmlFor="request-input-file"
+                      // style={{ width: "30%", margin: "10px" }}
+                    >
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        component="span"
+                        style={{
+                          width: "100%",
+                          marginBottom: "10px",
+                          height: "55px",
+                        }}
+                        startIcon={<CloudUpload />}
+                      >
+                        {file ? file.name : "FILE ĐÍNH KÈM"}
+                      </Button>
+                    </label>{" "}
+                    {loading && <LinearProgress />}
+                    <TextField
+                      id="outlined-basic"
+                      label="Mô tả bàn giao"
+                      variant="outlined"
+                      multiline
+                      rows={5}
+                      value={descriptionDelevery}
+                      style={{ width: "100%" }}
+                      error={
+                        descriptionDelevery.length < 1 ||
+                        descriptionDelevery.length > 255
+                      }
+                      helperText={
+                        (descriptionDelevery.length < 1 ||
+                          descriptionDelevery.length > 255) &&
+                        "Không được để trống và tối đa 255 kí tự "
+                      }
+                      onChange={(e) => setDescriptionDelevery(e.target.value)}
+                    />
+                  </DialogContent>
+                  <DialogActions>
+                    <Button
+                      onClick={handleDeleveryUpdate}
+                      color="primary"
+                      variant="outlined"
+                    >
+                      Cập nhật
+                    </Button>
+                    <Button
+                      onClick={handleCloseDeleveryUpdate}
+                      color="default"
+                      variant="outlined"
+                    >
+                      Hủy
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+              </TableContainer>{" "}
+            </div>
+          </>
         )}
         {contractDetail.extraOffers && (
           <div className="paymentRow_ContentLast">

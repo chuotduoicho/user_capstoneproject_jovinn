@@ -81,7 +81,15 @@ const getServiceById = (serviceId) => {
   return axios
     .get(API_URL + "/box/box-details-guest/" + serviceId)
     .then((response) => {
-      localStorage.setItem("serviceDetail", JSON.stringify(response.data));
+      return response.data;
+    });
+};
+const getServiceByIdBuyer = (serviceId) => {
+  return axios
+    .get(API_URL + "/box/box-details/" + serviceId, {
+      headers: authHeader(),
+    })
+    .then((response) => {
       return response.data;
     });
 };
@@ -176,6 +184,7 @@ const serviceService = {
   pauseService,
   deleteService,
   getServicesHistory,
+  getServiceByIdBuyer,
 };
 
 export default serviceService;

@@ -27,6 +27,7 @@ import {
   deleteService,
   deleteServicePackage,
   fetchServiceDetail,
+  fetchServiceDetailBuyer,
   fetchServices,
   pauseService,
   selectServiceDetail,
@@ -87,7 +88,7 @@ export default function SellerServiceDetail() {
 
   const [selected, setSelected] = useState(false);
   useEffect(() => {
-    dispatch(fetchServiceDetail(serviceId));
+    dispatch(fetchServiceDetailBuyer(serviceId));
   }, []);
   useEffect(() => {
     if (status == "success") {

@@ -21,7 +21,7 @@ export default function ServiceHistory() {
   useEffect(() => {
     dispatch(fetchServicesHistory());
     setList(
-      listServiceImpression.map((item, index) => <ServiceItem item={item} />)
+      listServiceHistory.map((item, index) => <ServiceItem item={item} />)
     );
   }, []);
   console.log(list, "length");

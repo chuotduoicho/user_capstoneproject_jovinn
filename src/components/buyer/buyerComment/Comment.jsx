@@ -10,7 +10,6 @@ import {
 import {
   addComment,
   deleteComment,
-  fetchContractDetail,
   fetComments,
   getAvatar,
   selectAllComment,

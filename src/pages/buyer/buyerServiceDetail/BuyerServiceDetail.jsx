@@ -25,6 +25,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchRating,
   fetchServiceDetail,
+  fetchServiceDetailBuyer,
   selectListRating,
   selectServiceDetail,
   selectServiceDetailStatus,
@@ -99,7 +100,7 @@ export default function ServiceDetail() {
     setValue(newValue);
   };
   useEffect(() => {
-    dispatch(fetchServiceDetail(serviceId));
+    dispatch(fetchServiceDetailBuyer(serviceId));
     dispatch(fetchRating(serviceId));
   }, []);
   useEffect(() => {
@@ -199,8 +200,12 @@ export default function ServiceDetail() {
                     className="avatar"
                   />
                   <div className="seller_headerRight">
-                    {serviceDetail.brandName} | Cấp độ người bán: {serviceDetail.rankSeller}
-                    <p>Điểm đánh giá - {serviceDetail.ratingPoint} | Đã hoàn thành - {serviceDetail.totalFinalContract}</p>
+                    {serviceDetail.brandName} | Cấp độ người bán:{" "}
+                    {serviceDetail.rankSeller}
+                    <p>
+                      Điểm đánh giá - {serviceDetail.ratingPoint} | Đã hoàn
+                      thành - {serviceDetail.totalFinalContract}
+                    </p>
                   </div>
                 </div>
               </Link>
@@ -271,40 +276,42 @@ export default function ServiceDetail() {
             <div className="seller_header">
               <img
                 src={
-                  serviceDetail.avatar ? serviceDetail.avatar :
-                  "https://cdn1.iconfinder.com/data/icons/user-pictures/100/unknown-512.png"
+                  serviceDetail.avatar
+                    ? serviceDetail.avatar
+                    : "https://cdn1.iconfinder.com/data/icons/user-pictures/100/unknown-512.png"
                 }
                 alt="avatar"
                 className="avatar_seller"
               />
               <div className="card_seller_info">
-                {serviceDetail.lastName} {" "} {serviceDetail.firstName} | Cấp độ người bán: {serviceDetail.rankSeller}
-                <p>Điểm đánh giá - {serviceDetail.ratingPoint} | Tổng số hợp đồng đã hoàn thành - {serviceDetail.totalOrder}</p>
-                  <Link to={"/seller/" + serviceDetail.sellerId}>
-                    <button>
-                      Xem chi tiết
-                    </button>
-                  </Link>
+                {serviceDetail.lastName} {serviceDetail.firstName} | Cấp độ
+                người bán: {serviceDetail.rankSeller}
+                <p>
+                  Điểm đánh giá - {serviceDetail.ratingPoint} | Tổng số hợp đồng
+                  đã hoàn thành - {serviceDetail.totalOrder}
+                </p>
+                <Link to={"/seller/" + serviceDetail.sellerId}>
+                  <button>Xem chi tiết</button>
+                </Link>
               </div>
             </div>
 
             <div className="card_detail_seller_info">
               <div className="info">
-                <p>Đến từ - {serviceDetail.city} | Tham gia Jovinn - {ChangeFormateDate(serviceDetail.joinSellingAt)}</p>
+                <p>
+                  Đến từ - {serviceDetail.city} | Tham gia Jovinn -{" "}
+                  {ChangeFormateDate(serviceDetail.joinSellingAt)}
+                </p>
                 <p>Hòm thư liên hệ - {serviceDetail.email}</p>
               </div>
               <div className="description_bio">
-                <p>
-                  {serviceDetail.descriptionBio}
-                </p>
+                <p>{serviceDetail.descriptionBio}</p>
               </div>
             </div>
           </div>
           <div className="rating_box">
             <div className="rating_header">
-              <h3>
-                Đánh giá từ người mua
-              </h3>
+              <h3>Đánh giá từ người mua</h3>
               <CommentService ratings={listRating} />
             </div>
           </div>

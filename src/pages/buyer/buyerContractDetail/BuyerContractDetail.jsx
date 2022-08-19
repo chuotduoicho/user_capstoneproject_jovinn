@@ -244,9 +244,11 @@ export default function BuyerContractDetail() {
           <p>{format(contractDetail.expectCompleteDate)}</p>
         </div>
         {contractDetail.postRequest && (
-          <div className="paymentRow_ContentLast">
-            <h3>Giai đoạn bàn giao:</h3>
-            <TableContainer component={Paper}>
+          <>
+            <div className="paymentRow_Content">
+              <h2>Nội dung yêu cầu</h2>
+
+              {/* <TableContainer component={Paper}>
               <Table
                 sx={{ minWidth: 850 }}
                 size="small"
@@ -295,8 +297,153 @@ export default function BuyerContractDetail() {
                   })}
                 </TableBody>
               </Table>
-            </TableContainer>
-          </div>
+            </TableContainer> */}
+            </div>
+            <div className="paymentRow_Content">
+              {" "}
+              <h3>Tiêu đề:</h3>
+              <p>{contractDetail.postRequest.jobTitle} </p>
+            </div>
+            <div className="paymentRow_Content">
+              {" "}
+              <h3>Mô tả:</h3>
+              <p>{contractDetail.postRequest.shortRequirement} </p>
+            </div>
+            <div className="paymentRow_Content">
+              {" "}
+              <h3>File đính kèm:</h3>
+              <p>
+                {contractDetail.postRequest.attachFile ? (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() =>
+                      navigate(`//${deliveryNotMilstone.file.slice(8)}`)
+                    }
+                  >
+                    Xem file
+                  </Button>
+                ) : (
+                  "Không có"
+                )}{" "}
+              </p>
+            </div>
+            <div className="paymentRow_Content">
+              {" "}
+              <h3>Cấp độ người bán yêu cầu:</h3>
+              <p>{contractDetail.postRequest.recruitLevel} </p>
+            </div>
+            <div className="paymentRow_Content">
+              <TableContainer component={Paper}>
+                <Table
+                  sx={{ minWidth: 850 }}
+                  size="small"
+                  aria-label="a dense table"
+                >
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Số thứ tự</TableCell>
+                      <TableCell align="right">Mô tả</TableCell>
+                      <TableCell align="right">Ngày bắt đầu</TableCell>
+                      <TableCell align="right">Ngày kết thúc</TableCell>
+                      <TableCell align="right">Chi phí</TableCell>
+                      <TableCell align="right">Trạng thái</TableCell>
+                      <TableCell align="right">File</TableCell>
+                      <TableCell align="right">Chi tiết bàn giao</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {listStage.map((item, index) => {
+                      return (
+                        <TableRow
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            Giai đoạn {index + 1}
+                          </TableCell>
+                          <TableCell
+                            align="right"
+                            // style={{ maxWidth: "200px" }}
+                          >
+                            {" "}
+                            {item.description}
+                          </TableCell>
+                          <TableCell align="right">{item.startDate}</TableCell>
+                          <TableCell align="right">{item.endDate}</TableCell>
+                          <TableCell align="right">
+                            {item.milestoneFee}$
+                          </TableCell>
+                          <TableCell align="right">
+                            {" "}
+                            {item.status == "COMPLETE" ? (
+                              <Chip label="Đã bàn giao" />
+                            ) : (
+                              <Button
+                                color="primary"
+                                variant="outlined"
+                                onClick={() => {
+                                  handleAcceptDeleveryMilestone(item.id);
+                                }}
+                              >
+                                Xác nhận bàn giao
+                              </Button>
+                            )}
+                          </TableCell>
+                          <TableCell align="right">
+                            {" "}
+                            {contractDetail.delivery.find(
+                              (val) => val.milestoneId === item.id
+                            )
+                              ? contractDetail.delivery.find(
+                                  (val) => val.milestoneId === item.id
+                                ).file
+                                ? contractDetail.delivery.find(
+                                    (val) => val.milestoneId === item.id
+                                  ).file
+                                : "Không có"
+                              : "đang chờ"}
+                          </TableCell>
+                          <TableCell align="right">
+                            {contractDetail.delivery.find(
+                              (val) => val.milestoneId === item.id
+                            )
+                              ? contractDetail.delivery.find(
+                                  (val) => val.milestoneId === item.id
+                                ).description
+                              : "đang chờ"}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </div>
+            <div className="paymentRow_Content">
+              {" "}
+              <h3>Tổng thời gian bàn giao:</h3>
+              <p>{contractDetail.postRequest.totalDeliveryTime} ngày </p>
+            </div>
+            <div className="paymentRow_Content">
+              {" "}
+              <h3>Tổng chi phí:</h3>
+              <p>{contractDetail.postRequest.budget} $ </p>
+            </div>
+            <div className="paymentRow_ContentLast">
+              {" "}
+              <h3>Phí hủy hợp đồng:</h3>
+              <p>
+                {" "}
+                {contractDetail.postRequest.contractCancelFee}% ( =
+                {(contractDetail.postRequest.contractCancelFee *
+                  contractDetail.postRequest.budget) /
+                  100}{" "}
+                $ )
+              </p>
+            </div>
+          </>
         )}
         <div className="paymentRow_payment">
           <h4>Số lượng : </h4>

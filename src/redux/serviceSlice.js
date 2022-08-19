@@ -82,6 +82,15 @@ export const fetchServiceDetail = createAsyncThunk(
     return data;
   }
 );
+export const fetchServiceDetailBuyer = createAsyncThunk(
+  "service/fetchServiceDetailBuyer",
+  async (serviceId) => {
+    console.log(serviceId);
+    const data = await ServiceService.getServiceByIdBuyer(serviceId);
+    console.log(data);
+    return data;
+  }
+);
 export const fetchServicesByCategory = createAsyncThunk(
   "service/fetchServicesByCategory",
   async (cateId) => {
@@ -247,6 +256,16 @@ const serviceSlice = createSlice({
       state.statusServiceDetail = "success";
     },
     [fetchServiceDetail.rejected]: (state, action) => {
+      state.statusServiceDetail = "failed";
+    },
+    [fetchServiceDetailBuyer.pending]: (state, action) => {
+      state.statusServiceDetail = "loading";
+    },
+    [fetchServiceDetailBuyer.fulfilled]: (state, { payload }) => {
+      state.serviceDetail = payload;
+      state.statusServiceDetail = "success";
+    },
+    [fetchServiceDetailBuyer.rejected]: (state, action) => {
       state.statusServiceDetail = "failed";
     },
     [addService.pending]: (state, action) => {
