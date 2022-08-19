@@ -32,6 +32,7 @@ import {
   selectCurrentUser,
 } from "../../../redux/userSlice";
 import { fetchRequestsBuyer } from "../../../redux/requestSlice";
+import ServiceHistory from "../../../components/buyer/serviceHistory/ServiceHistory";
 export default function BuyerHome() {
   const navigate = useNavigate();
 
@@ -64,6 +65,7 @@ export default function BuyerHome() {
         page: page,
       };
       dispatch(fetchServices(obj));
+
       dispatch(fetchWallet());
     }
   }, [user]);
@@ -293,6 +295,7 @@ export default function BuyerHome() {
         </div>
       </div>
       <div className="sections">
+        <ServiceHistory />
         <Topseller />
         <Contact />
       </div>

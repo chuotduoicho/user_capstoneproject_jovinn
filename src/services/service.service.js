@@ -175,6 +175,7 @@ const serviceService = {
   getRating,
   pauseService,
   deleteService,
+  getServicesHistory,
 };
 
 export default serviceService;

@@ -17,7 +17,14 @@ const initialState = {
   status: "idle",
   statusServiceDetail: "idle",
 };
-
+export const fetchServicesHistory = createAsyncThunk(
+  "service/fetchServicesHistory",
+  async () => {
+    const data = await ServiceService.getServicesHistory();
+    console.log(data);
+    return data;
+  }
+);
 export const fetchServicesImpression = createAsyncThunk(
   "service/fetchServicesImpression",
   async () => {
@@ -151,6 +158,16 @@ const serviceSlice = createSlice({
   name: "service",
   initialState,
   extraReducers: {
+    [fetchServicesHistory.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [fetchServicesHistory.fulfilled]: (state, { payload }) => {
+      state.listServicesHistory = payload;
+      state.status = "success";
+    },
+    [fetchServicesHistory.rejected]: (state, action) => {
+      state.status = "failed";
+    },
     [fetchServicesImpression.pending]: (state, action) => {
       state.status = "loading";
     },
@@ -307,6 +324,8 @@ export default reducer;
 export const selectAllServices = (state) => state.service.listServices;
 export const selectServicesImpression = (state) =>
   state.service.listServicesImpression;
+export const selectServicesHistory = (state) =>
+  state.service.listServicesHistory;
 export const selectServiceDetail = (state) => state.service.serviceDetail;
 
 export const selectListRating = (state) => state.service.listRating;
