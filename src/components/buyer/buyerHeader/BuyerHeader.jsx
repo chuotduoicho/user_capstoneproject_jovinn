@@ -1,5 +1,10 @@
 import "./buyerHeader.scss";
-import { SearchOutlined } from "@material-ui/icons";
+import {
+  Delete,
+  NotificationImportant,
+  NotificationImportantOutlined,
+  SearchOutlined,
+} from "@material-ui/icons";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import Grow from "@material-ui/core/Grow";
 import Paper from "@material-ui/core/Paper";
@@ -15,22 +20,55 @@ import {
   Dialog,
   DialogActions,
   DialogTitle,
+  List,
+  ListItem,
+  ListItemSecondaryAction,
+  ListItemText,
+  Popover,
   TextField,
 } from "@material-ui/core";
 import { fetchCurrentUser, selectCurrentUser } from "../../../redux/userSlice";
+import moment from "moment";
+import {
+  deleteNotification,
+  fetchNotifications,
+  readNotification,
+  selectNotifications,
+  selectNumber,
+} from "../../../redux/notificationSlice";
 export default function BuyerHeader({ search, handleSearch }) {
+  const listNotification = useSelector(selectNotifications);
+  const list = [...listNotification].sort(
+    (a, b) => new Date(b.createAt).getTime() - new Date(a.createAt).getTime()
+  );
+
+  const number = useSelector(selectNumber);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const handleIconClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleIconClose = () => {
+    setAnchorEl(null);
+  };
+  const iconOpen = Boolean(anchorEl);
+
   const currentUser = useSelector(selectCurrentUser);
   const [open, setOpen] = useState(false);
+  const id = open ? "simple-popover" : undefined;
   const [text, setText] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const anchorRef = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
   };
   useEffect(() => {
     dispatch(fetchCurrentUser());
+    setInterval(() => {
+      dispatch(fetchNotifications());
+    }, 3000);
   }, []);
   const handleJoinSeller = () => {
     if (
@@ -108,6 +146,57 @@ export default function BuyerHeader({ search, handleSearch }) {
           />
         </div>
         <div className="right">
+          <div className="item">
+            <NotificationImportantOutlined
+              className="icon"
+              onClick={handleIconClick}
+            />
+            <div className="counter">{number}</div>
+            <Popover
+              id={id}
+              open={iconOpen}
+              anchorEl={anchorEl}
+              onClose={handleIconClose}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "center",
+              }}
+            >
+              <List>
+                {list.map((item) => (
+                  <ListItem
+                    button
+                    style={item.unread ? { background: "#B9D5E3" } : {}}
+                    onClick={() => {
+                      dispatch(readNotification(item.id))
+                        .unwrap()
+                        .then(() => {
+                          dispatch(fetchNotifications());
+                        });
+                      navigate("/sellerHome/" + item.link);
+                    }}
+                  >
+                    <ListItemText
+                      primary={item.shortContent}
+                      secondary={moment(item.createAt).fromNow()}
+                    />
+                    <ListItemSecondaryAction>
+                      <Delete
+                        style={{ color: "gray", cursor: "pointer" }}
+                        onClick={() => {
+                          dispatch(deleteNotification(item.id))
+                            .unwrap()
+                            .then(() => {
+                              dispatch(fetchNotifications());
+                            });
+                        }}
+                      />
+                    </ListItemSecondaryAction>
+                  </ListItem>
+                ))}
+              </List>
+            </Popover>
+          </div>
           <Button
             ref={anchorRef}
             aria-controls={open ? "menu-list-grow" : undefined}
