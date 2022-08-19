@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { selectTopSellers } from "../../../redux/userSlice";
@@ -8,7 +8,7 @@ export default function Topseller() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const topSellers = useSelector(selectTopSellers);
   console.log("top seller", topSellers);
-
+  const [list, setList] = useState([]);
   const handleClick = (way) => {
     way === "left"
       ? setCurrentSlide(currentSlide > 0 ? currentSlide - 1 : 2)
@@ -17,6 +17,9 @@ export default function Topseller() {
         );
   };
 
+  useEffect(() => {
+    setList(topSellers);
+  }, [topSellers]);
   const navigate = useNavigate();
   return (
     <div className="topseller" id="topseller">
@@ -25,7 +28,7 @@ export default function Topseller() {
         className="topseller_slider"
         style={{ transform: `translateX(-${currentSlide * 100}vw)` }}
       >
-        {topSellers.map((d) => (
+        {list.map((d) => (
           <div className="topseller_container" key={d}>
             <div className="topseller_item">
               <div className="topseller_left">

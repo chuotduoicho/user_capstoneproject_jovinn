@@ -300,7 +300,7 @@ export default function ServiceDetail() {
               <div className="info">
                 <p>
                   Đến từ - {serviceDetail.city} | Tham gia Jovinn -{" "}
-                  {ChangeFormateDate(serviceDetail.joinSellingAt)}
+                  {serviceDetail.joinSellingAt}
                 </p>
                 <p>Hòm thư liên hệ - {serviceDetail.email}</p>
               </div>

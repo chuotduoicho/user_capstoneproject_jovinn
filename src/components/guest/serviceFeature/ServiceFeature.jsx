@@ -12,17 +12,25 @@ import { useEffect } from "react";
 export default function ServiceFeature({ search, selected, setSelected }) {
   const listCategory = useSelector(selectAllCategories);
   const listService = useSelector(selectServicesImpression);
-
+  const [listC, setListC] = useState([]);
+  const [listS, setListS] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
     if (selected != "") dispatch(fetchServicesImpressionByCate(selected));
   }, [selected]);
+  useEffect(() => {
+    setListC(listCategory);
+  }, [listCategory]);
+  useEffect(() => {
+    setListS(listService);
+  }, [listService]);
+
   return (
     <div className="guest_service" id="service">
       <h1>DỊCH VỤ NỔI BẬT</h1>
       <ul>
-        {listCategory.map((item) => (
+        {listC.map((item) => (
           <CategoryList
             title={item.name}
             active={selected === item.id}
@@ -32,7 +40,7 @@ export default function ServiceFeature({ search, selected, setSelected }) {
         ))}
       </ul>
       <div className="guest_container">
-        {listService.slice(0, 8).map((d) => (
+        {listS.slice(0, 8).map((d) => (
           <div
             className="guest_item"
             onClick={() => navigate("/serviceDetail/" + d.id)}
