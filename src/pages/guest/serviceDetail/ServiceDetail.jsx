@@ -256,7 +256,7 @@ const ServiceDetail = () => {
                 return (
                   <TabPanel value={value} index={index} dir={theme.direction}>
                     <div style={{ display: "flex" }}>
-                      <h1>{item.price}$ </h1>
+                      <h1>{item.price.toLocaleString()}$ </h1>
                       <Typography
                         variant="h6"
                         style={{ margin: "10px", marginLeft: "100px" }}
@@ -283,7 +283,7 @@ const ServiceDetail = () => {
                     <h3>
                       Phí hủy hợp đồng :{item.contractCancelFee}% Tổng chi phí
                     </h3>
-                    <h2>Tổng giá :{item.price * amount}$</h2>
+                    <h2>Tổng giá :{(item.price * amount).toLocaleString()}$</h2>
                   </TabPanel>
                 );
               })}

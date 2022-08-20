@@ -386,7 +386,9 @@ export default function SellerManageOffer() {
                         <TableCell align="right">
                           {row.totalDeliveryTime}
                         </TableCell>
-                        <TableCell align="right">{row.offerPrice} $</TableCell>
+                        <TableCell align="right">
+                          {row.offerPrice.toLocaleString()} $
+                        </TableCell>
                         <TableCell align="right">{row.cancelFee} %</TableCell>
                         <TableCell align="right">
                           {row.offerRequestStatus}

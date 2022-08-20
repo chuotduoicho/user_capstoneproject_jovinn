@@ -41,6 +41,8 @@ import {
   selectWalletTransactions,
   topup,
   topupSuccess,
+  withdraw,
+  withdrawAddress,
 } from "../../../redux/userSlice";
 import { clearMessage } from "../../../redux/message";
 import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
@@ -179,8 +181,11 @@ const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
   const { numSelected } = props;
   const { handleOpenPayment } = props;
+  const { handleOpenWithDraw } = props;
+  const { handleOpenWithDraw2 } = props;
   const { price } = props;
   const { income } = props;
+  const { address } = props;
   return (
     <Toolbar
       className={clsx(classes.root, {
@@ -213,7 +218,7 @@ const EnhancedTableToolbar = (props) => {
             component="div"
           >
             <AccountBalanceWallet />
-            &nbsp; {price} $ <ArrowUpward /> {income} $
+            &nbsp; {price.toLocaleString()} $ <ArrowUpward /> {income} $
           </Typography>
         </>
       )}
@@ -229,7 +234,10 @@ const EnhancedTableToolbar = (props) => {
           <IconButton aria-label="filter list">
             <ButtonGroup variant="outlined" aria-label="outlined button group">
               <Button onClick={handleOpenPayment}>Nạp tiền</Button>
-              <Button>Rút tiền</Button>
+              <Button onClick={handleOpenWithDraw}>Rút tiền</Button>
+              {address && (
+                <Button onClick={handleOpenWithDraw2}>Sửa thông tin</Button>
+              )}
             </ButtonGroup>
           </IconButton>
         </Tooltip>
@@ -284,20 +292,18 @@ export default function BuyerManageWallet() {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const [openPayment, setOpenPayment] = useState(false);
-
   const [openPayment2, setOpenPayment2] = useState(false);
+  const [openWithDraw, setOpenWithDraw] = useState(false);
+  const [openWithDraw2, setOpenWithDraw2] = useState(false);
+  const [addressWithdraw, setAddresswithdraw] = useState(
+    wallet.withdrawAddress ? wallet.withdrawAddress : ""
+  );
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [price, setPrice] = useState(wallet.withdraw);
 
   console.log(rows);
-  const handleOpenPayment = () => {
-    setOpenPayment(true);
-  };
 
-  const handleClosePayment = () => {
-    setOpenPayment(false);
-  };
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -314,10 +320,61 @@ export default function BuyerManageWallet() {
         setError("thất bại!");
       });
   };
+  const addWithdrawAdress = (e) => {
+    // e.preventDefault();
+    const obj = { withdrawAddress: addressWithdraw };
+    dispatch(withdrawAddress(obj))
+      .unwrap()
+      .then(() => {
+        setOpenWithDraw(false);
+        setOpenWithDraw2(false);
+        dispatch(fetchWallet());
+        toast.success("Thêm địa chỉ rút tiền thành công !");
+      })
+      .catch(() => {
+        setOpenWithDraw(false);
+        setOpenWithDraw2(false);
+        toast.error("Thêm địa chỉ rút tiền thất bại !");
+      });
+  };
+  const withdrawMoney = (e) => {
+    // e.preventDefault();
+    const obj = { charge: price, currency: "USD" };
+    dispatch(withdraw(obj))
+      .unwrap()
+      .then(() => {
+        setOpenWithDraw(false);
+        setOpenWithDraw2(false);
+        dispatch(fetchWallet());
+        toast.success("Rút tiền thành công !");
+      })
+      .catch(() => {
+        setOpenWithDraw(false);
+        setOpenWithDraw2(false);
+        toast.error("Rút tiền thất bại !");
+      });
+  };
+  const handleOpenPayment = () => {
+    setOpenPayment(true);
+  };
+  const handleOpenWithDraw = () => {
+    setOpenWithDraw(true);
+  };
+  const handleOpenWithDraw2 = () => {
+    setOpenWithDraw2(true);
+  };
+  const handleClosePayment = () => {
+    setOpenPayment(false);
+  };
   const handleClosePayment2 = () => {
     setOpenPayment2(false);
   };
-
+  const handleCloseWithDraw2 = () => {
+    setOpenWithDraw2(false);
+  };
+  const handleCloseWithDraw = () => {
+    setOpenWithDraw(false);
+  };
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -333,25 +390,25 @@ export default function BuyerManageWallet() {
     setSelected([]);
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
+  // const handleClick = (event, name) => {
+  //   const selectedIndex = selected.indexOf(name);
+  //   let newSelected = [];
 
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
+  //   if (selectedIndex === -1) {
+  //     newSelected = newSelected.concat(selected, name);
+  //   } else if (selectedIndex === 0) {
+  //     newSelected = newSelected.concat(selected.slice(1));
+  //   } else if (selectedIndex === selected.length - 1) {
+  //     newSelected = newSelected.concat(selected.slice(0, -1));
+  //   } else if (selectedIndex > 0) {
+  //     newSelected = newSelected.concat(
+  //       selected.slice(0, selectedIndex),
+  //       selected.slice(selectedIndex + 1)
+  //     );
+  //   }
 
-    setSelected(newSelected);
-  };
+  //   setSelected(newSelected);
+  // };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -403,8 +460,11 @@ export default function BuyerManageWallet() {
           <EnhancedTableToolbar
             numSelected={selected.length}
             handleOpenPayment={handleOpenPayment}
+            handleOpenWithDraw={handleOpenWithDraw}
+            handleOpenWithDraw2={handleOpenWithDraw2}
             price={wallet.withdraw}
             income={wallet.income}
+            address={wallet.withdrawAddress}
           />
           <TableContainer>
             <Table
@@ -441,9 +501,11 @@ export default function BuyerManageWallet() {
                         <TableCell component="th" id={labelId} scope="row">
                           {row.paymentCode}
                         </TableCell>
-                        <TableCell align="right">{row.amount}$</TableCell>
                         <TableCell align="right">
-                          {row.type == "CHARGE" && "Nạp tiền"}
+                          {row.amount.toLocaleString()}$
+                        </TableCell>
+                        <TableCell align="right">
+                          {row.type == "CHARGE" ? "Nạp tiền" : "Rút tiền"}
                         </TableCell>
                         <TableCell align="right">{row.createAt}</TableCell>{" "}
                       </TableRow>
@@ -494,7 +556,7 @@ export default function BuyerManageWallet() {
       </Dialog>
       <Dialog
         fullWidth="true"
-        maxWidth="sm"
+        maxWidth="xs"
         open={openPayment}
         onClose={handleClosePayment}
         aria-labelledby="max-width-dialog-title"
@@ -511,6 +573,7 @@ export default function BuyerManageWallet() {
               inputProps: { min: 0 },
               endAdornment: <InputAdornment position="end">$</InputAdornment>,
             }}
+            style={{ width: "100%" }}
             onChange={(e) => setPrice(e.target.value)}
           />
         </DialogContent>
@@ -519,6 +582,117 @@ export default function BuyerManageWallet() {
             Xác nhận
           </Button>
           <Button onClick={handleClosePayment} color="primary">
+            Đóng
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        fullWidth="true"
+        maxWidth="sm"
+        open={openPayment2}
+        onClose={handleClosePayment2}
+        aria-labelledby="max-width-dialog-title"
+      >
+        {" "}
+        <DialogTitle id="max-width-dialog-title">
+          Hình thức nạp tiền
+        </DialogTitle>
+        <DialogContent>
+          <Checkout description={"Nạp tiền vào ví"} price={price} />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClosePayment2} color="primary">
+            Đóng
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        fullWidth="true"
+        maxWidth="xs"
+        open={openWithDraw}
+        onClose={handleCloseWithDraw}
+        aria-labelledby="max-width-dialog-title"
+      >
+        {" "}
+        <DialogTitle id="max-width-dialog-title">
+          {wallet.withdrawAddress ? "Nhập số tiền rút" : "Tạo địa chỉ rút tiền"}
+        </DialogTitle>
+        <DialogContent>
+          {!wallet.withdrawAddress ? (
+            <TextField
+              id="outlined-basic"
+              variant="outlined"
+              type="text"
+              label="Nhập địa chỉ"
+              style={{ width: "100%" }}
+              onChange={(e) => setAddresswithdraw(e.target.value)}
+            />
+          ) : (
+            <TextField
+              id="outlined-basic"
+              variant="outlined"
+              type="number"
+              label="Số tiền"
+              InputProps={{
+                inputProps: { min: 0 },
+                endAdornment: <InputAdornment position="end">$</InputAdornment>,
+              }}
+              style={{ width: "100%" }}
+              onChange={(e) => setPrice(e.target.value)}
+            />
+          )}
+        </DialogContent>
+        <DialogActions>
+          {wallet.withdrawAddress ? (
+            <Button onClick={withdrawMoney} color="primary" variant="contained">
+              Rút
+            </Button>
+          ) : (
+            <Button
+              onClick={addWithdrawAdress}
+              color="primary"
+              variant="contained"
+            >
+              Tạo
+            </Button>
+          )}
+
+          <Button onClick={handleCloseWithDraw} color="default">
+            Đóng
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        fullWidth="true"
+        maxWidth="xs"
+        open={openWithDraw2}
+        onClose={handleCloseWithDraw2}
+        aria-labelledby="max-width-dialog-title"
+      >
+        {" "}
+        <DialogTitle id="max-width-dialog-title">
+          Sửa thông tin rút tiền
+        </DialogTitle>
+        <DialogContent>
+          <TextField
+            id="outlined-basic"
+            variant="outlined"
+            type="text"
+            label="Địa chỉ rút tiền"
+            value={addressWithdraw}
+            style={{ width: "100%" }}
+            onChange={(e) => setAddresswithdraw(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={addWithdrawAdress}
+            color="primary"
+            variant="contained"
+          >
+            Sửa
+          </Button>
+          <Button onClick={handleCloseWithDraw2} color="default">
             Đóng
           </Button>
         </DialogActions>

@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import sellerService from "../services/seller.service";
 import urlService from "../services/url.service";
+import userService from "../services/user.service";
 import UserService from "../services/user.service";
 import walletService from "../services/wallet.service";
 import { setMessage } from "./message";
@@ -159,12 +160,27 @@ export const deleteEdu = createAsyncThunk("user/deleteEdu", async (id) => {
   console.log("current user update", data);
   return data;
 });
-export const joinSeller = createAsyncThunk("user/joinSeller", async (obj) => {
-  console.log(obj);
-  const data = await UserService.joinSeller(obj);
-  console.log("join seller update", data);
-  return data;
-});
+export const joinSeller = createAsyncThunk(
+  "user/joinSeller",
+  async (obj, thunkAPI) => {
+    console.log(obj);
+    try {
+      const data = await UserService.joinSeller(obj);
+      console.log("join seller update", data);
+      thunkAPI.dispatch(setMessage(data.data.message));
+      return data;
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      thunkAPI.dispatch(setMessage(message));
+      return thunkAPI.rejectWithValue();
+    }
+  }
+);
 export const changePassword = createAsyncThunk(
   "user/changePassword",
   async ({ oldPassword, newPassword, confirmPassword }, thunkAPI) => {
@@ -206,6 +222,19 @@ export const topup = createAsyncThunk("user/topup", async (obj, thunkAPI) => {
     return thunkAPI.rejectWithValue();
   }
 });
+export const withdraw = createAsyncThunk("user/withdraw", async (obj) => {
+  const response = await userService.withdraw(obj);
+  console.log(response);
+  return response.data;
+});
+export const withdrawAddress = createAsyncThunk(
+  "user/withdrawAddress",
+  async (obj) => {
+    const response = await userService.withdrawAddress(obj);
+    console.log(response);
+    return response.data;
+  }
+);
 export const uploadFile = createAsyncThunk(
   "user/uploadFile",
   async (obj, thunkAPI) => {
@@ -316,6 +345,15 @@ const userSlice = createSlice({
     [topup.rejected]: (state, action) => {
       state.status = "failed";
     },
+    [withdraw.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [withdraw.fulfilled]: (state, { payload }) => {
+      state.status = "success";
+    },
+    [withdraw.rejected]: (state, action) => {
+      state.status = "failed";
+    },
     [topupSuccess.pending]: (state, action) => {
       state.status = "loading";
     },
@@ -323,6 +361,15 @@ const userSlice = createSlice({
       state.status = "success";
     },
     [topupSuccess.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [withdrawAddress.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [withdrawAddress.fulfilled]: (state, { payload }) => {
+      state.status = "success";
+    },
+    [withdrawAddress.rejected]: (state, action) => {
       state.status = "failed";
     },
     [addSkills.pending]: (state, action) => {

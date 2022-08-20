@@ -332,7 +332,9 @@ export default function SellerManageContract() {
                         <TableCell align="right">
                           {row.contractCancelFee} %
                         </TableCell>
-                        <TableCell align="right">{row.totalPrice} $</TableCell>
+                        <TableCell align="right">
+                          {row.totalPrice.toLocaleString()} $
+                        </TableCell>
                         <TableCell align="right">
                           {row.expectCompleteDate}
                         </TableCell>{" "}

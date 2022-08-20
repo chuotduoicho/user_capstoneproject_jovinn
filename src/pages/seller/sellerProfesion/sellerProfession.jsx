@@ -19,7 +19,11 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { useNavigate } from "react-router-dom";
 import { Add, Delete } from "@material-ui/icons";
-import { fetchCurrentUser, joinSeller } from "../../../redux/userSlice";
+import {
+  fetchCurrentUser,
+  joinSeller,
+  selectCurrentUser,
+} from "../../../redux/userSlice";
 import Alert from "@material-ui/lab/Alert";
 import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
 import {
@@ -27,12 +31,17 @@ import {
   selectAllCategories,
   selectAllSkills,
 } from "../../../redux/categorySlice";
+import { clearMessage } from "../../../redux/message";
 export default function SellerProfession() {
   const listSkills = useSelector(selectAllSkills);
-  // const currentUser = useSelector(selectCurrentUser);
+  const { user } = useSelector((state) => state.auth);
+  const currentUser = useSelector(selectCurrentUser);
   const listCategory = useSelector(selectAllCategories);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [descriptionBio, setDescriptionBio] = useState("");
   const [checkError, setCheckError] = useState(false);
+  const { message } = useSelector((state) => state.message);
   const [brandName, setBrandName] = useState("");
   const [skills, setSkills] = useState([]);
   const [edus, setEdus] = useState([
@@ -46,6 +55,10 @@ export default function SellerProfession() {
   ]);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  useEffect(() => {
+    dispatch(clearMessage());
+    if (currentUser.joinSellingAt) navigate("/sellerHome");
+  }, [dispatch]);
   function handleKeyDown(e) {
     if (e.key !== "Enter") return;
     const value = e.target.value;
@@ -131,9 +144,6 @@ export default function SellerProfession() {
     setCertificates(list);
   };
 
-  const dispatch = useDispatch();
-
-  const navigate = useNavigate();
   const myArray = skills.map((str, index) => ({ name: str }));
   const info = {
     descriptionBio: descriptionBio,
@@ -221,11 +231,9 @@ export default function SellerProfession() {
             })
 
             .catch(() => {
-              toast.error("Tạo thông tin nâng cao thất bại");
-              setError("Đã đăng kí thông tin nâng cao rồi !");
+              toast.error(message);
             });
         }
-        console.log("abc");
       });
     }
   };
@@ -557,7 +565,7 @@ export default function SellerProfession() {
           </Button>
         </div>
         {error !== "" && <Alert severity="error">{error}</Alert>}
-        {success !== "" && <Alert severity="success">{success}</Alert>}
+        {message !== "" && <Alert severity="error">{message}</Alert>}
       </Container>
       <ToastContainer position="bottom-right" autoClose={5000} />
       <div className="sections_profile">

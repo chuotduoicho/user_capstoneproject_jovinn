@@ -96,13 +96,32 @@ const changePassword = (oldPassword, newPassword, confirmPassword) => {
     { headers: authHeader() }
   );
 };
-
+const withdrawAddress = (obj) => {
+  console.log("tien", obj);
+  return axios
+    .post(API_URL + "/add-withdraw-address", obj, { headers: authHeader() })
+    .then((response) => {
+      console.log(response.data);
+      return response.data;
+    });
+};
+const withdraw = (obj) => {
+  console.log("tien", obj);
+  return axios
+    .post(API_URL + "/withdrawal-money", obj, { headers: authHeader() })
+    .then((response) => {
+      console.log(response.data);
+      return response.data;
+    });
+};
 const userService = {
   getUser,
   updateUserProfile,
   joinSeller,
   changePassword,
   getWallet,
+  withdrawAddress,
+  withdraw,
 };
 
 export default userService;

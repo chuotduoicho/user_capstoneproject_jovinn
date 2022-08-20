@@ -56,7 +56,7 @@ export default function ServiceFeature({ search, selected, setSelected }) {
             <div className="guest_absolute">
               <h3>{d.branchName}</h3>
               <h4>{d.title}</h4>
-              <h3>{d.fromPrice} $</h3>
+              <h3>{d.fromPrice.toLocaleString()}$</h3>
             </div>
           </div>
         ))}

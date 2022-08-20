@@ -93,9 +93,11 @@ export default function SellerRequestDetail() {
       .then(() => {
         dispatch(fetchRequestsSeller());
         setSuccess("Ứng tuyển thành công!");
+        setError("");
       })
       .catch(() => {
         setError("Ứng tuyển thất bại!");
+        setSuccess("");
       });
   };
   const [error, setError] = useState("");
@@ -352,10 +354,9 @@ export default function SellerRequestDetail() {
           <div className="profession_row">
             <Typography variant="h4">
               Tổng chi phí :{" "}
-              {stages.reduce(
-                (total, item) => total + parseInt(item.milestoneFee),
-                0
-              )}{" "}
+              {stages
+                .reduce((total, item) => total + parseInt(item.milestoneFee), 0)
+                .toLocaleString()}{" "}
               $
             </Typography>
             <TextField

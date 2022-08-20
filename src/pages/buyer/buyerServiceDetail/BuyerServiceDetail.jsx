@@ -368,7 +368,7 @@ export default function ServiceDetail() {
                   <h3>
                     Phí hủy hợp đồng :{item.contractCancelFee}% Tổng chi phí
                   </h3>
-                  <h2>Tổng giá :{item.price * amount}$</h2>
+                  <h2>Tổng giá :{(item.price * amount).toLocaleString()}$</h2>
                   <Button
                     variant="contained"
                     color="primary"

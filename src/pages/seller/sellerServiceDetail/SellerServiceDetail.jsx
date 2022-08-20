@@ -603,7 +603,7 @@ export default function SellerServiceDetail() {
               return (
                 <TabPanel value={value} index={index} dir={theme.direction}>
                   <div style={{ display: "flex" }}>
-                    <h1>{item.price}$ </h1>
+                    <h1>{item.price.toLocaleString()}$ </h1>
                   </div>
                   <p style={{ marginTop: "15px", marginBottom: "15px" }}>
                     {item.title}

@@ -65,7 +65,7 @@ export default function ServiceList({
           </Typography>
         </CardContent>
         <CardActions className={"service_cardAction"}>
-          <p className="service_rating">Giá từ: {price} $</p>
+          <p className="service_rating">Giá từ: {price.toLocaleString()} $</p>
           <Typography variant="h7" className="name">
             Lượt mua: {totalOrderFinish} 🛒
           </Typography>

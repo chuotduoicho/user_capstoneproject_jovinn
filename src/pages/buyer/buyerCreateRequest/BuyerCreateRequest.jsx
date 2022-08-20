@@ -642,16 +642,6 @@ export default function BuyerCreateRequest() {
                 type="number"
                 value={stage.milestoneFee.toLocaleString()}
                 style={{ width: "30%", margin: "10px" }}
-                inputProps={{
-                  maxLength: 10,
-                  step: "0.01",
-                  lang: "en-US",
-                }}
-                // InputProps={{
-                //   endAdornment: (
-                //     <InputAdornment position="end">$</InputAdornment>
-                //   ),
-                // }}
                 name="milestoneFee"
                 onChange={(e) => handleStageChange(e, index)}
                 error={

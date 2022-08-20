@@ -66,9 +66,9 @@ export default function BuyerHeader({ search, handleSearch }) {
   };
   useEffect(() => {
     dispatch(fetchCurrentUser());
-    setInterval(() => {
-      dispatch(fetchNotifications());
-    }, 3000);
+    // setInterval(() => {
+    //   dispatch(fetchNotifications());
+    // }, 3000);
   }, []);
   const handleJoinSeller = () => {
     if (

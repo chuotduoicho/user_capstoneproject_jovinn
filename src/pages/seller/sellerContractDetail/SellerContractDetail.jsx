@@ -254,13 +254,17 @@ export default function SellerContractDetail() {
         </div>
         <div className="paymentRow_payment">
           <h4>Tổng chi phí : </h4>
-          <p>{contractDetail.totalPrice} $</p>
+          <p>{contractDetail.totalPrice.toLocaleString()} $</p>
         </div>
         <div className="paymentRow_paymentLast">
           <h4>Phí hủy hợp đồng : </h4>
           <p>
             {contractDetail.quantity}% ( =
-            {(contractDetail.totalPrice * contractDetail.quantity) / 100} $ )
+            {(
+              (contractDetail.totalPrice * contractDetail.quantity) /
+              100
+            ).toLocaleString()}{" "}
+            $ )
           </p>
         </div>
         {contractDetail.postRequest && (
@@ -342,7 +346,7 @@ export default function SellerContractDetail() {
                           <TableCell align="right">{item.startDate}</TableCell>
                           <TableCell align="right">{item.endDate}</TableCell>
                           <TableCell align="right">
-                            {item.milestoneFee}$
+                            {item.milestoneFee.toLocaleString()}$
                           </TableCell>
                           <TableCell align="right">
                             {" "}
@@ -600,7 +604,9 @@ export default function SellerContractDetail() {
                           {item.shortDescription}
                         </TableCell>
                         <TableCell align="right">{item.additionTime}</TableCell>
-                        <TableCell align="right">{item.extraPrice}</TableCell>
+                        <TableCell align="right">
+                          {item.extraPrice.toLocaleString()}$
+                        </TableCell>
                         <TableCell align="right">
                           {item.opened ? (
                             <Button

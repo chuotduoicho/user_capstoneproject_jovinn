@@ -335,7 +335,7 @@ export default function SellerManageOrder() {
                         </TableCell>
                         <TableCell align="right">{row.quantity}</TableCell>
                         <TableCell align="right">
-                          {row.totalPrice} $
+                          {row.totalPrice.toLocaleString()} $
                         </TableCell>{" "}
                         <TableCell align="right">
                           {row.contractCancelFee} %

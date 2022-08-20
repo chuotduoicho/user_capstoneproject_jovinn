@@ -247,57 +247,6 @@ export default function BuyerContractDetail() {
           <>
             <div className="paymentRow_Content">
               <h2>Nội dung yêu cầu</h2>
-
-              {/* <TableContainer component={Paper}>
-              <Table
-                sx={{ minWidth: 850 }}
-                size="small"
-                aria-label="a dense table"
-              >
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Số thứ tự</TableCell>
-                    <TableCell align="right">Mô tả</TableCell>
-                    <TableCell align="right">Chi phí</TableCell>
-                    <TableCell align="right">Trạng thái</TableCell>
-                    <TableCell align="right"></TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {listStage.map((item, index) => {
-                    return (
-                      <TableRow
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          Giai đoạn {index + 1}
-                        </TableCell>
-                        <TableCell align="right"> {item.description}</TableCell>
-                        <TableCell align="right">{item.milestoneFee}</TableCell>
-                        <TableCell align="right">{item.status}</TableCell>
-                        <TableCell align="right">
-                          {item.status == "COMPLETE" ? (
-                            <Chip label="Đã bàn giao" />
-                          ) : (
-                            <Button
-                              color="primary"
-                              variant="outlined"
-                              onClick={() => {
-                                handleAcceptDeleveryMilestone(item.id);
-                              }}
-                            >
-                              Xác nhận bàn giao
-                            </Button>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </TableContainer> */}
             </div>
             <div className="paymentRow_Content">
               {" "}
@@ -373,7 +322,7 @@ export default function BuyerContractDetail() {
                           <TableCell align="right">{item.startDate}</TableCell>
                           <TableCell align="right">{item.endDate}</TableCell>
                           <TableCell align="right">
-                            {item.milestoneFee}$
+                            {item.milestoneFee.toLocaleString()}$
                           </TableCell>
                           <TableCell align="right">
                             {" "}
@@ -429,7 +378,7 @@ export default function BuyerContractDetail() {
             <div className="paymentRow_Content">
               {" "}
               <h3>Tổng chi phí:</h3>
-              <p>{contractDetail.postRequest.budget} $ </p>
+              <p>{contractDetail.postRequest.budget.toLocaleString()} $ </p>
             </div>
             <div className="paymentRow_ContentLast">
               {" "}
@@ -451,13 +400,17 @@ export default function BuyerContractDetail() {
         </div>
         <div className="paymentRow_payment">
           <h4>Tổng chi phí : </h4>
-          <p>{contractDetail.totalPrice} $</p>
+          <p>{contractDetail.totalPrice.toLocaleString()} $</p>
         </div>
         <div className="paymentRow_paymentLast">
           <h4>Phí hủy hợp đồng : </h4>
           <p>
             {contractDetail.quantity}% ( =
-            {(contractDetail.totalPrice * contractDetail.quantity) / 100} $ )
+            {(
+              (contractDetail.totalPrice * contractDetail.quantity) /
+              100
+            ).toLocaleString()}{" "}
+            $ )
           </p>
         </div>
         {contractDetail.extraOffers && (
@@ -498,7 +451,9 @@ export default function BuyerContractDetail() {
                           <TableCell align="right">
                             {item.additionTime}
                           </TableCell>
-                          <TableCell align="right">{item.extraPrice}</TableCell>
+                          <TableCell align="right">
+                            {item.extraPrice.toLocaleString()}
+                          </TableCell>
                           <TableCell align="right">
                             {" "}
                             <Button

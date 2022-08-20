@@ -47,16 +47,18 @@ export default function BuyerOrderDetail() {
         </div>
         <div className="paymentRow_payment">
           <h4>Tổng chi phí : </h4>
-          <p>{contractDetail.totalPrice} $</p>
+          <p>{contractDetail.totalPrice.toLocaleString()} $</p>
         </div>
         <div className="paymentRow_paymentLast">
           <h4>Phí hủy hợp đồng : </h4>
           <p>
             {contractDetail.contractCancelFee}% ( =
-            {(contractDetail.totalPrice *
-              contractDetail.quantity *
-              contractDetail.contractCancelFee) /
-              100}{" "}
+            {(
+              (contractDetail.totalPrice *
+                contractDetail.quantity *
+                contractDetail.contractCancelFee) /
+              100
+            ).toLocaleString()}{" "}
             $ )
           </p>
         </div>
