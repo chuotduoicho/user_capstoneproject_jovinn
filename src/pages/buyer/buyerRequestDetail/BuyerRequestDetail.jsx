@@ -169,47 +169,62 @@ export default function BuyerCreateRequest() {
     };
     console.log(request);
     let check1 = false;
-    let check2 = true;
     let check3 = true;
-    stages.map((item, index) => {
-      if (item.startDate == "") {
+    setCheck(true);
+    stages.map((stage, index) => {
+      if (
+        new Date(stage.startDate) < maxDate ||
+        stage.startDate > stage.endDate ||
+        !stage.startDate
+      ) {
         check3 = false;
-        setError("Chưa nhập ngày bắt đầu của giai đoạn " + parseInt(index + 1));
-      } else if (item.endDate == "") {
+        // setError("Chưa nhập ngày bắt đầu của giai đoạn " + parseInt(index + 1));
+      } else if (
+        new Date(stage.endDate) < maxDate ||
+        stage.startDate > stage.endDate ||
+        !stage.endDate
+      ) {
         check3 = false;
-        setError(
-          "Chưa nhập ngày kết thúc của giai đoạn " + parseInt(index + 1)
-        );
-      } else if (item.description == "") {
+        // setError(
+        //   "Chưa nhập ngày kết thúc của giai đoạn " + parseInt(index + 1)
+        // );
+      } else if (
+        !/^[a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_\s]{1,500}$/.test(
+          stage.description
+        )
+      ) {
         check3 = false;
-        setError(
-          "Chưa nhập sản phẩm bàn giao của giai đoạn " + parseInt(index + 1)
-        );
-      } else if (item.milestoneFee == 0) {
+        // setError(
+        //   "Chưa nhập sản phẩm bàn giao của giai đoạn " + parseInt(index + 1)
+        // );
+      } else if (
+        stage.milestoneFee < 1 ||
+        stage.milestoneFee.length > 10 ||
+        stage.milestoneFee == ""
+      ) {
         check3 = false;
-        setError("Chưa nhập chi phí của giai đoạn " + parseInt(index + 1));
+        // setError("Chưa nhập chi phí của giai đoạn " + parseInt(index + 1));
       }
     });
-    if (subCateId == "") {
-      setError("Chưa chọn danh mục con!");
-    } else if (jobTitle == "") {
-      setError("Chưa nhập tiêu đề!");
-    } else if (description == "") {
-      setError("Chưa nhập mô tả!");
-    } else if (cancleFee == 0) {
-      setError("Chưa nhập phí hủy hợp đồng!");
+    if (
+      subCateId == "" ||
+      !/^[a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_\s]{1,50}$/.test(
+        jobTitle
+      ) ||
+      !/^[a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_\s]{1,500}$/.test(
+        description
+      ) ||
+      cancleFee < 0 ||
+      cancleFee > 100 ||
+      !cancleFee ||
+      skills.length == 0
+    ) {
+      // setError("Chưa nhập kĩ năng!");
     } else {
       check1 = true;
-
-      skills.map((item, index) => {
-        if (item == "") {
-          check2 = false;
-          setError("Chưa nhập kĩ năng " + parseInt(index + 1));
-        }
-      });
     }
 
-    if (check2 && check1 && check3) {
+    if (check1 && check3) {
       console.log(request);
       dispatch(updateRequest({ request, requestId }))
         .unwrap()
@@ -217,6 +232,7 @@ export default function BuyerCreateRequest() {
           dispatch(fetchRequestDetail(requestId));
           toast.success("Cập nhật yêu cầu thành công! ");
           setIsEdit(false);
+          setCheck(false);
         })
         .catch(() => {
           toast.error("Cập nhật yêu cầu thất bại! ");
@@ -293,16 +309,16 @@ export default function BuyerCreateRequest() {
             className={classes.disabledInput}
             onChange={(e) => setJobTitle(e.target.value)}
             error={
-              !/^[a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_\s]{5,50}$/.test(
+              !/^[a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_\s]{1,50}$/.test(
                 jobTitle
               ) && check
             }
             helperText={
-              !/^[a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_\s]{5,50}$/.test(
+              !/^[a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_\s]{1,50}$/.test(
                 jobTitle
               ) &&
               check &&
-              "Từ 5 đến 50 kí tự không được bắt đầu với khoảng trắng"
+              "Không được để trống và tối đa 50 kí tự!"
             }
           />
         </div>
@@ -319,16 +335,16 @@ export default function BuyerCreateRequest() {
             disabled={!isEdit}
             onChange={(e) => setDescription(e.target.value)}
             error={
-              !/^[a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_\s]{30,500}$/.test(
+              !/^[a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_\s]{1,500}$/.test(
                 description
               ) && check
             }
             helperText={
-              !/^[a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_\s]{30,500}$/.test(
+              !/^[a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_\s]{1,500}$/.test(
                 description
               ) &&
               check &&
-              "Từ 30 đến 500 kí tự không được bắt đầu với khoảng trắng"
+              "Không được để trống và tối đa 500 kí tự !"
             }
           />
         </div>{" "}
@@ -555,16 +571,16 @@ export default function BuyerCreateRequest() {
                 disabled={!isEdit}
                 onChange={(e) => handleStageChange(e, index)}
                 error={
-                  !/^[a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_\s]{30,500}$/.test(
+                  !/^[a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_\s]{1,500}$/.test(
                     stage.description
                   ) && check
                 }
                 helperText={
-                  !/^[a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_\s]{30,500}$/.test(
+                  !/^[a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_\s]{1,500}$/.test(
                     stage.description
                   ) &&
                   check &&
-                  "Từ 30 đến 500 kí tự không được bắt đầu với khoảng trắng"
+                  "Không được để trống và tối đa 500 kí tự !"
                 }
               />
             </div>

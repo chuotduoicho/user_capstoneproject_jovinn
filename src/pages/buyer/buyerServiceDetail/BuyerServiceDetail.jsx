@@ -148,7 +148,7 @@ export default function ServiceDetail() {
     };
     console.log("order", order);
 
-    if (requirement.length >= 30 && requirement.length <= 500) {
+    if (requirement.length >= 1 && requirement.length <= 500) {
       navigate("/buyerHome/payment", { state: { order, pack } });
     } else {
       setCheck(true);
@@ -436,13 +436,13 @@ export default function ServiceDetail() {
                     style={{ width: "100%" }}
                     onChange={(e) => setRequirement(e.target.value)}
                     error={
-                      (requirement.length < 30 || requirement.length > 500) &&
+                      (requirement.length < 1 || requirement.length > 500) &&
                       check
                     }
                     helperText={
-                      (requirement.length < 30 || requirement.length > 500) &&
+                      (requirement.length < 1 || requirement.length > 500) &&
                       check &&
-                      "Mô tả phải từ 30 đến 500 kí tự"
+                      "Không được để trống và tối đa 500 kí tự"
                     }
                   />
                 </div>

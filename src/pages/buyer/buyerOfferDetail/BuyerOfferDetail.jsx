@@ -1,20 +1,18 @@
 import {
   Button,
   Container,
-  MenuItem,
   TextField,
   InputAdornment,
   makeStyles,
 } from "@material-ui/core";
-import Alert from "@material-ui/lab/Alert";
 
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
 
 import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
 import Contact from "../../../components/guest/contact/Contact";
-import { selectAllCategories } from "../../../redux/categorySlice";
 import { selectOfferById } from "../../../redux/requestSlice";
 import { selectWallet } from "../../../redux/userSlice";
 import "./buyerOfferDetail.scss";
@@ -30,14 +28,11 @@ export default function BuyerOfferDetail() {
   const offerDetail = useSelector((state) => selectOfferById(state, offerId));
   console.log("offerDetail", offerDetail);
   const wallet = useSelector(selectWallet);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const classes = useStyles();
   const acceptOffer = () => {
     if (offerDetail.offerPrice > wallet.withdraw) {
-      alert("Không đủ tiền để chấp nhận đề nghị này!");
+      toast.error("Không đủ tiền để chấp nhận đề nghị này!");
     } else {
       navigate("/buyerHome/paymentOffer", { state: { offerDetail } });
     }
@@ -125,10 +120,9 @@ export default function BuyerOfferDetail() {
           >
             Quay lại
           </Button>
-          {error !== "" && <Alert severity="error">{error}</Alert>}
-          {success !== "" && <Alert severity="success">{success}</Alert>}
         </div>
       </Container>
+      <ToastContainer limit={3000} position="bottom-right" />
       <div className="sections_profile">
         <Contact />
       </div>

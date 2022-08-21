@@ -18,15 +18,10 @@ import {
   LinearProgress,
 } from "@material-ui/core";
 import React, { useState } from "react";
-import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
 import Contact from "../../../components/guest/contact/Contact";
 import "./sellerContractDetail.scss";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  selectContractSellerById,
-  selectCurrentUser,
-  uploadFile,
-} from "../../../redux/userSlice";
+import { selectCurrentUser, uploadFile } from "../../../redux/userSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import { CloudUpload, EditRounded, StarBorder } from "@material-ui/icons";
 import {
@@ -74,6 +69,7 @@ export default function SellerContractDetail() {
   const [listComment, setListComment] = useState([]);
   const [listStage, setListStage] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [check, setCheck] = useState(false);
   const handleRating = () => {};
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -100,7 +96,7 @@ export default function SellerContractDetail() {
       .unwrap()
       .then(() => {
         setLoading(false);
-        toast.success("Ảnh 1 tải lên thành công");
+        toast.success("Tải file lên thành công");
       })
       .catch(() => {
         setLoading(false);
@@ -112,17 +108,22 @@ export default function SellerContractDetail() {
       file: url,
       description: descriptionDelevery,
     };
-    dispatch(deleveryMilestone({ contractId, delevery }))
-      .unwrap()
-      .then(() => {
-        toast.success("Bàn giao thành công!");
-        setOpenDelevery(false);
-        dispatch(fetchContractDetail(contractId));
-      })
-      .catch(() => {
-        toast.error("Bàn giao thất bại!");
-        setOpenDelevery(false);
-      });
+    if (descriptionDelevery.length < 1 || descriptionDelevery.length > 255) {
+      setCheck(true);
+    } else
+      dispatch(deleveryMilestone({ contractId, delevery }))
+        .unwrap()
+        .then(() => {
+          toast.success("Bàn giao thành công!");
+          setOpenDelevery(false);
+          dispatch(fetchContractDetail(contractId));
+          setCheck(false);
+        })
+        .catch(() => {
+          toast.error("Bàn giao thất bại!");
+          setOpenDelevery(false);
+          setCheck(false);
+        });
   };
   const handleDeleveryUpdate = () => {
     const delevery = {
@@ -130,17 +131,22 @@ export default function SellerContractDetail() {
       file: url,
       description: descriptionDelevery,
     };
-    dispatch(deleveryMilestoneUpdate({ contractId, delevery }))
-      .unwrap()
-      .then(() => {
-        toast.success("Sửa thành công!");
-        setOpenDeleveryUpdate(false);
-        dispatch(fetchContractDetail(contractId));
-      })
-      .catch(() => {
-        toast.error("Sửa thất bại!");
-        setOpenDeleveryUpdate(false);
-      });
+    if (descriptionDelevery.length < 1 || descriptionDelevery.length > 255) {
+      setCheck(true);
+    } else
+      dispatch(deleveryMilestoneUpdate({ contractId, delevery }))
+        .unwrap()
+        .then(() => {
+          toast.success("Sửa thành công!");
+          setOpenDeleveryUpdate(false);
+          dispatch(fetchContractDetail(contractId));
+          setCheck(false);
+        })
+        .catch(() => {
+          toast.error("Sửa thất bại!");
+          setOpenDeleveryUpdate(false);
+          setCheck(false);
+        });
   };
   const handleDeleveryNotMileStone = () => {
     const delevery = {
@@ -148,17 +154,22 @@ export default function SellerContractDetail() {
       file: url,
       description: descriptionDelevery,
     };
-    dispatch(uploadDeleveryContract({ contractId, delevery }))
-      .unwrap()
-      .then(() => {
-        toast.success("Bàn giao thành công!");
-        setOpenDeleveryNotMileStone(false);
-        dispatch(fetchContractDetail(contractId));
-      })
-      .catch(() => {
-        toast.error("Bàn giao thất bại!");
-        setOpenDeleveryNotMileStone(false);
-      });
+    if (descriptionDelevery.length < 1 || descriptionDelevery.length > 255) {
+      setCheck(true);
+    } else
+      dispatch(uploadDeleveryContract({ contractId, delevery }))
+        .unwrap()
+        .then(() => {
+          toast.success("Bàn giao thành công!");
+          setOpenDeleveryNotMileStone(false);
+          dispatch(fetchContractDetail(contractId));
+          setCheck(false);
+        })
+        .catch(() => {
+          toast.error("Bàn giao thất bại!");
+          setOpenDeleveryNotMileStone(false);
+          setCheck(false);
+        });
   };
   const handleAcceptOffer = (value) => {
     const extraOfferId = value;
@@ -258,7 +269,7 @@ export default function SellerContractDetail() {
         </div>
         <div className="paymentRow_payment">
           <h4>Tổng chi phí : </h4>
-          <p>{contractDetail.totalPrice.toLocaleString()} $</p>
+          <p>{contractDetail.totalPrice} $</p>
         </div>
         <div className="paymentRow_paymentLast">
           <h4>Phí hủy hợp đồng : </h4>
@@ -466,12 +477,14 @@ export default function SellerContractDetail() {
                       rows={5}
                       style={{ width: "100%" }}
                       error={
-                        descriptionDelevery.length < 1 ||
-                        descriptionDelevery.length > 255
+                        (descriptionDelevery.length < 1 ||
+                          descriptionDelevery.length > 255) &&
+                        check
                       }
                       helperText={
                         (descriptionDelevery.length < 1 ||
                           descriptionDelevery.length > 255) &&
+                        check &&
                         "Không được để trống và tối đa 255 kí tự "
                       }
                       onChange={(e) => setDescriptionDelevery(e.target.value)}
@@ -542,12 +555,14 @@ export default function SellerContractDetail() {
                       value={descriptionDelevery}
                       style={{ width: "100%" }}
                       error={
-                        descriptionDelevery.length < 1 ||
-                        descriptionDelevery.length > 255
+                        (descriptionDelevery.length < 1 ||
+                          descriptionDelevery.length > 255) &&
+                        check
                       }
                       helperText={
                         (descriptionDelevery.length < 1 ||
                           descriptionDelevery.length > 255) &&
+                        check &&
                         "Không được để trống và tối đa 255 kí tự "
                       }
                       onChange={(e) => setDescriptionDelevery(e.target.value)}
@@ -717,12 +732,14 @@ export default function SellerContractDetail() {
               rows={5}
               style={{ width: "100%" }}
               error={
-                descriptionDelevery.length < 1 ||
-                descriptionDelevery.length > 255
+                (descriptionDelevery.length < 1 ||
+                  descriptionDelevery.length > 255) &&
+                check
               }
               helperText={
                 (descriptionDelevery.length < 1 ||
                   descriptionDelevery.length > 255) &&
+                check &&
                 "Không được để trống và tối đa 255 kí tự "
               }
               onChange={(e) => setDescriptionDelevery(e.target.value)}

@@ -89,7 +89,7 @@ export default function SellerServiceDetail() {
   const listRating = useSelector(selectListRating);
   const theme = useTheme();
   const [value, setValue] = useState(0);
-
+  const [check, setCheck] = useState(false);
   const [selected, setSelected] = useState(false);
   useEffect(() => {
     dispatch(fetchServiceDetailBuyer(serviceId));
@@ -772,6 +772,7 @@ export default function SellerServiceDetail() {
                   errorTitle={errorTitle}
                   errorDescription={errorDescription}
                   errorSubcate={errorSubcate}
+                  check={check}
                 />
               </DialogContent>
               <DialogActions>
@@ -814,6 +815,7 @@ export default function SellerServiceDetail() {
                   deliveryTimeE={deliveryTimeE}
                   priceE={priceE}
                   contractCancelFeeE={contractCancelFeeE}
+                  check={check}
                 />
               </DialogContent>
               <DialogActions>

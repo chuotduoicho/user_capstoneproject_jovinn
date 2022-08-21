@@ -31,7 +31,7 @@ import {
   InputAdornment,
   TextField,
 } from "@material-ui/core";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AccountBalanceWallet, ArrowUpward } from "@material-ui/icons";
 import Checkout from "../../../components/payment/Checkout";
 import { useDispatch, useSelector } from "react-redux";
@@ -47,10 +47,6 @@ import {
 import { clearMessage } from "../../../redux/message";
 import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
 import { toast, ToastContainer } from "react-toastify";
-import { green } from "@material-ui/core/colors";
-function createData(description, subCate, skills, price, cancleFee) {
-  return { description, subCate, skills, price, cancleFee };
-}
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -291,7 +287,7 @@ export default function BuyerManageWallet() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
+  const [check, setCheck] = useState(false);
   const [openPayment, setOpenPayment] = useState(false);
   const [openPayment2, setOpenPayment2] = useState(false);
   const [openWithDraw, setOpenWithDraw] = useState(false);
@@ -312,48 +308,67 @@ export default function BuyerManageWallet() {
   const handleOpenPayment2 = (e) => {
     // e.preventDefault();
     const obj = { charge: price, currency: "USD" };
-    dispatch(topup(obj))
-      .unwrap()
-      .then(() => {
-        setOpenPayment(false);
-      })
-      .catch(() => {
-        setError("thất bại!");
-      });
+    if (price < 1 || price.length > 10 || price == "") {
+      setCheck(true);
+    } else
+      dispatch(topup(obj))
+        .unwrap()
+        .then(() => {
+          setOpenPayment(false);
+          setCheck(false);
+        })
+        .catch(() => {
+          toast.error("Nạp thất bại");
+          setOpenPayment(false);
+          setCheck(false);
+        });
   };
   const addWithdrawAdress = (e) => {
     // e.preventDefault();
     const obj = { withdrawAddress: addressWithdraw };
-    dispatch(withdrawAddress(obj))
-      .unwrap()
-      .then(() => {
-        setOpenWithDraw(false);
-        setOpenWithDraw2(false);
-        dispatch(fetchWallet());
-        toast.success("Thêm địa chỉ rút tiền thành công !");
-      })
-      .catch(() => {
-        setOpenWithDraw(false);
-        setOpenWithDraw2(false);
-        toast.error("Thêm địa chỉ rút tiền thất bại !");
-      });
+    if (/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(addressWithdraw)) {
+      setCheck(false);
+      dispatch(withdrawAddress(obj))
+        .unwrap()
+        .then(() => {
+          setOpenWithDraw(false);
+          setOpenWithDraw2(false);
+          dispatch(fetchWallet());
+          toast.success("Thêm địa chỉ rút tiền thành công !");
+        })
+        .catch(() => {
+          setOpenWithDraw(false);
+          setOpenWithDraw2(false);
+          toast.error("Thêm địa chỉ rút tiền thất bại !");
+        });
+    } else setCheck(true);
   };
   const withdrawMoney = (e) => {
     // e.preventDefault();
     const obj = { charge: price, currency: "USD" };
-    dispatch(withdraw(obj))
-      .unwrap()
-      .then(() => {
-        setOpenWithDraw(false);
-        setOpenWithDraw2(false);
-        dispatch(fetchWallet());
-        toast.success("Rút tiền thành công !");
-      })
-      .catch(() => {
-        setOpenWithDraw(false);
-        setOpenWithDraw2(false);
-        toast.error("Rút tiền thất bại !");
-      });
+    if (
+      price < 1 ||
+      price.length > 10 ||
+      price == "" ||
+      price > wallet.withdraw
+    ) {
+      setCheck(true);
+    } else
+      dispatch(withdraw(obj))
+        .unwrap()
+        .then(() => {
+          setOpenWithDraw(false);
+          setOpenWithDraw2(false);
+          dispatch(fetchWallet());
+          toast.success("Rút tiền thành công !");
+          setCheck(false);
+        })
+        .catch(() => {
+          setOpenWithDraw(false);
+          setOpenWithDraw2(false);
+          toast.error("Rút tiền thất bại !");
+          setCheck(false);
+        });
   };
   const handleOpenPayment = () => {
     setOpenPayment(true);
@@ -584,6 +599,12 @@ export default function BuyerManageWallet() {
               endAdornment: <InputAdornment position="end">$</InputAdornment>,
             }}
             style={{ width: "100%" }}
+            error={(price < 1 || price.length > 10 || price == "") && check}
+            helperText={
+              (price < 1 || price.length > 10 || price == "") &&
+              check &&
+              "Tối thiểu là 1$ ,độ dài tối đa 10"
+            }
             onChange={(e) => setPrice(e.target.value)}
           />
         </DialogContent>
@@ -650,6 +671,15 @@ export default function BuyerManageWallet() {
               type="text"
               label="Nhập địa chỉ"
               style={{ width: "100%" }}
+              error={
+                !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(addressWithdraw) &&
+                check
+              }
+              helperText={
+                !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(addressWithdraw) &&
+                check &&
+                "Địa chỉ rút không hợp lệ"
+              }
               onChange={(e) => setAddresswithdraw(e.target.value)}
             />
           ) : (
@@ -662,6 +692,21 @@ export default function BuyerManageWallet() {
                 inputProps: { min: 0 },
                 endAdornment: <InputAdornment position="end">$</InputAdornment>,
               }}
+              error={
+                (price < 1 ||
+                  price.length > 10 ||
+                  price > wallet.withdraw ||
+                  price == "") &&
+                check
+              }
+              helperText={
+                (price < 1 ||
+                  price.length > 10 ||
+                  price > wallet.withdraw ||
+                  price == "") &&
+                check &&
+                "Tối thiểu là 1$ ,độ dài tối đa 10 và không được lớn hơn số dư trong ví"
+              }
               style={{ width: "100%" }}
               onChange={(e) => setPrice(e.target.value)}
             />
@@ -717,6 +762,14 @@ export default function BuyerManageWallet() {
             label="Địa chỉ rút tiền"
             value={addressWithdraw}
             style={{ width: "100%" }}
+            error={
+              !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(addressWithdraw) && check
+            }
+            helperText={
+              !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(addressWithdraw) &&
+              check &&
+              "Địa chỉ rút không hợp lệ"
+            }
             onChange={(e) => setAddresswithdraw(e.target.value)}
           />
         </DialogContent>
