@@ -4,15 +4,17 @@ import { Button, TextField } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useState, useEffect } from "react";
 import { clearMessage } from "../../../redux/message";
-import { login } from "../../../redux/authSlice";
+import { login, logout } from "../../../redux/authSlice";
 import Link from "@material-ui/core/Link";
-import { fetchCurrentUser } from "../../../redux/userSlice";
+import { fetchCurrentUser, selectCurrentUser } from "../../../redux/userSlice";
 import { toast, ToastContainer } from "react-toastify";
 const Login = () => {
   const { user } = useSelector((state) => state.auth);
+  const currentUser = useSelector(selectCurrentUser);
   const [successful, setSuccessful] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [check, setCheck] = useState(false);
   const { message } = useSelector((state) => state.message);
   const navigate = useNavigate();
@@ -23,10 +25,19 @@ const Login = () => {
     dispatch(clearMessage());
     if (user) navigate("/buyerHome");
   }, [dispatch]);
-
+  useEffect(() => {
+    if (currentUser.isEnabled && successful) navigate("/buyerHome");
+    else {
+      if (successful) {
+        setSuccessful(false);
+        setError("Tài khoản chưa được xác thực");
+        dispatch(logout());
+      }
+    }
+  }, [currentUser]);
   const handleLogin = (e) => {
     e.preventDefault();
-
+    setError("");
     console.log("user name password: ", { username, password });
     if (
       (!(
@@ -44,10 +55,9 @@ const Login = () => {
         .then(() => {
           setSuccessful(true);
           dispatch(fetchCurrentUser());
+          dispatch(clearMessage());
         })
-        .then(() => {
-          navigate("/buyerhome");
-        })
+
         .catch(() => {
           setSuccessful(false);
         });
@@ -122,6 +132,14 @@ const Login = () => {
             role="alert"
           >
             {message}
+          </div>
+        )}
+        {error && (
+          <div
+            className={successful ? "login_success" : "login_error"}
+            role="alert"
+          >
+            {error}
           </div>
         )}
       </form>
