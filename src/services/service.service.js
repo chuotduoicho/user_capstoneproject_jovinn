@@ -6,7 +6,7 @@ const API_URL = API_PATH + "/api/v1";
 // const API_URL = "http://jovinnserver.site/api/v1";
 const getAllServices = () => {
   return axios.get(API_URL + "/box/box-services").then((response) => {
-    localStorage.setItem("services", JSON.stringify(response.data));
+    // localStorage.setItem("services", JSON.stringify(response.data));
     return response.data;
   });
 };
@@ -15,13 +15,12 @@ const getRating = (serviceId) => {
   return axios
     .get(API_URL + "/box/rating-list/" + serviceId)
     .then((response) => {
-      localStorage.setItem("services", JSON.stringify(response.data));
+      // localStorage.setItem("services", JSON.stringify(response.data));
       return response.data;
     });
 };
 const get8ServicesImpression = () => {
   return axios.get(API_URL + "/box/top-8-impression").then((response) => {
-    localStorage.setItem("servicesImpression", JSON.stringify(response.data));
     return response.data;
   });
 };
@@ -29,7 +28,7 @@ const get8ServicesImpressionByCate = (cateId) => {
   return axios
     .get(API_URL + "/box/top-8-impression/" + cateId)
     .then((response) => {
-      localStorage.setItem("servicesImpression", JSON.stringify(response.data));
+      // localStorage.setItem("servicesImpression", JSON.stringify(response.data));
       return response.data;
     });
 };
@@ -38,7 +37,7 @@ const getServices = (obj) => {
   return axios
     .post(API_URL + "/box/search-and-filter", obj)
     .then((response) => {
-      localStorage.setItem("services", JSON.stringify(response.data));
+      // localStorage.setItem("services", JSON.stringify(response.data));
       return response.data;
     });
 };
@@ -52,7 +51,7 @@ const getServicesSeller = (obj) => {
       headers: authHeader(),
     })
     .then((response) => {
-      localStorage.setItem("services", JSON.stringify(response.data));
+      // localStorage.setItem("services", JSON.stringify(response.data));
       return response.data;
     });
 };
@@ -63,7 +62,7 @@ const getServicesSearchFilter = (obj) => {
   return axios
     .get(API_URL + "/box/search/" + search, { params: params })
     .then((response) => {
-      localStorage.setItem("services", JSON.stringify(response.data));
+      // localStorage.setItem("services", JSON.stringify(response.data));
       return response.data;
     });
 };

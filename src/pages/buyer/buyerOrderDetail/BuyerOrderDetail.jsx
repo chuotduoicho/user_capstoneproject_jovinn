@@ -39,7 +39,7 @@ export default function BuyerOrderDetail() {
         </div>
         <div className="paymentRow_ContentLast">
           <h3>Ngày hoàn thành dự kiến:</h3>
-          <p>{contractDetail.expectCompleteDate}</p>
+          <p>{contractDetail.expectCompleteDate.replaceAll("-", "/")}</p>
         </div>
         <div className="paymentRow_payment">
           <h4>Số lượng : </h4>

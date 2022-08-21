@@ -30,12 +30,23 @@ import {
   selectServiceDetail,
   selectServiceDetailStatus,
 } from "../../../redux/serviceSlice";
-import { selectWallet } from "../../../redux/userSlice";
+import { selectCurrentUser, selectWallet } from "../../../redux/userSlice";
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import { autoPlay } from "react-swipeable-views-utils";
 import { useEffect } from "react";
 import CommentService from "../../../components/guest/commentService/CommentService";
+import ServiceHistory from "../../../components/buyer/serviceHistory/ServiceHistory";
+import { toast, ToastContainer } from "react-toastify";
+function format(date) {
+  date = new Date(date);
+
+  var day = ("0" + date.getDate()).slice(-2);
+  var month = ("0" + (date.getMonth() + 1)).slice(-2);
+  var year = date.getFullYear();
+
+  return day + "-" + month + "-" + year;
+}
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -56,10 +67,6 @@ function TabPanel(props) {
   );
 }
 
-function ChangeFormateDate(oldDate) {
-  return oldDate.toString().split("-").reverse().join("/");
-}
-
 TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.any.isRequired,
@@ -75,6 +82,7 @@ function a11yProps(index) {
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 export default function ServiceDetail() {
   const { serviceId } = useParams();
+  const currentUser = useSelector(selectCurrentUser);
   const status = useSelector(selectServiceDetailStatus);
   const listRating = useSelector(selectListRating);
   const navigate = useNavigate();
@@ -83,9 +91,6 @@ export default function ServiceDetail() {
   const [packageId, setPackageId] = useState("");
   const [pack, setPack] = useState();
   const [check, setCheck] = useState(false);
-  // const serviceDetail = useSelector((state) =>
-  //   selectServiceById(state, serviceId)
-  // );
   const serviceDetail = useSelector(selectServiceDetail);
   const wallet = useSelector(selectWallet);
   console.log("service", serviceDetail);
@@ -189,26 +194,24 @@ export default function ServiceDetail() {
               }}
             >
               <h2>{serviceDetail.title}</h2>
-              <Link to={"/seller/" + serviceDetail.sellerId}>
-                <div className="seller_header">
-                  <img
-                    src={
-                      serviceDetail.avatar
-                        ? serviceDetail.avatar
-                        : "https://cdn1.iconfinder.com/data/icons/user-pictures/100/unknown-512.png"
-                    }
-                    className="avatar"
-                  />
-                  <div className="seller_headerRight">
-                    {serviceDetail.brandName} | Cấp độ người bán:{" "}
-                    {serviceDetail.rankSeller}
-                    <p>
-                      Điểm đánh giá - {serviceDetail.ratingPoint} | Đã hoàn
-                      thành - {serviceDetail.totalFinalContract}
-                    </p>
-                  </div>
+              <div className="seller_header">
+                <img
+                  src={
+                    serviceDetail.avatar
+                      ? serviceDetail.avatar
+                      : "https://cdn1.iconfinder.com/data/icons/user-pictures/100/unknown-512.png"
+                  }
+                  className="avatar"
+                />
+                <div className="seller_headerRight">
+                  {serviceDetail.brandName} | Cấp độ người bán:{" "}
+                  {serviceDetail.rankSeller}
+                  <p>
+                    Điểm đánh giá - {serviceDetail.ratingPoint} | Đã hoàn thành
+                    - {serviceDetail.totalFinalContract}
+                  </p>
                 </div>
-              </Link>
+              </div>
             </Paper>
             <AutoPlaySwipeableViews
               axis={theme.direction === "rtl" ? "x-reverse" : "x"}
@@ -300,7 +303,7 @@ export default function ServiceDetail() {
               <div className="info">
                 <p>
                   Đến từ - {serviceDetail.city} | Tham gia Jovinn -{" "}
-                  {serviceDetail.joinSellingAt}
+                  {format(serviceDetail.joinSellingAt)}
                 </p>
                 <p>Hòm thư liên hệ - {serviceDetail.email}</p>
               </div>
@@ -362,32 +365,42 @@ export default function ServiceDetail() {
                   <p style={{ marginTop: "15px", marginBottom: "15px" }}>
                     {item.title}
                   </p>
-                  <h4>⏲️ {item.deliveryTime} Day Delivery</h4>
+                  <h4>⏲️ {item.deliveryTime} Ngày để bàn giao</h4>
                   <p>✔️ {item.shortDescription}</p>
 
                   <h3>
-                    Phí hủy hợp đồng :{item.contractCancelFee}% Tổng chi phí
+                    Phí hủy hợp đồng: {item.contractCancelFee}% Tổng chi phí
                   </h3>
-                  <h2>Tổng giá :{(item.price * amount).toLocaleString()}$</h2>
+                  <h2 style={{ marginTop: "20px", color: "#397754" }}>
+                    Tổng giá: {(item.price * amount).toLocaleString()}$
+                  </h2>
                   <Button
                     variant="contained"
                     color="primary"
                     style={{
                       marginTop: "15px",
                       marginBottom: "15px",
-                      marginLeft: "180px",
+                      marginLeft: "230px",
                     }}
                     onClick={(e) => {
                       setPackageId(item.id);
                       setPack(item);
                       if (item.price * amount > wallet.withdraw) {
-                        alert("Không đủ tiền mua gói này!");
+                        toast.warning(
+                          "Số dư hiện tại trong ví của bạn không đủ để gửi đi"
+                        );
+                      } else if (
+                        currentUser.seller.id == serviceDetail.sellerId
+                      ) {
+                        toast.warning(
+                          "Không được phép mua dịch vụ của chính bạn"
+                        );
                       } else {
                         setOpen(true);
                       }
                     }}
                   >
-                    Mua
+                    Chọn gói này
                   </Button>
                 </TabPanel>
               );
@@ -397,7 +410,9 @@ export default function ServiceDetail() {
                 .fill("Không có gói này")
                 .map((val, idx) => (
                   <>
-                    <h1>{val}</h1>
+                    <h1 style={{ textAlign: "center", padding: "20px 0px" }}>
+                      {val}
+                    </h1>
                   </>
                 ))}
             <Dialog
@@ -448,6 +463,8 @@ export default function ServiceDetail() {
           </SwipeableViews>
         </div>
       </div>
+      <ToastContainer limit={3000} position="bottom-right" />
+      <ServiceHistory />
       <div className="sections">
         <Contact />
       </div>

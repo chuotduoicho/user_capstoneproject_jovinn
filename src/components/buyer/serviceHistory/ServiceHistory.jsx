@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { selectTopSellers } from "../../../redux/userSlice";
 import { Carousel } from "3d-react-carousal";
+import AliceCarousel from "react-alice-carousel";
+import "react-alice-carousel/lib/alice-carousel.css";
 import "./serviceHistory.scss";
 import ServiceItem from "../serviceItem/ServiceItem";
 import {
@@ -20,15 +22,30 @@ export default function ServiceHistory() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchServicesHistory());
+    // setList(
+    //   listServiceHistory.map((item, index) => <ServiceItem item={item} />)
+    // );
+  }, []);
+  useEffect(() => {
     setList(
       listServiceHistory.map((item, index) => <ServiceItem item={item} />)
     );
-  }, []);
-  console.log(list, "length");
+  }, [listServiceHistory]);
+  const responsive = {
+    0: { items: 1 },
+    568: { items: 2 },
+    1024: { items: 3 },
+  };
+
   return (
     <div className="serviceHistory" id="serviceHistory">
-      <h1>DỊCH VỤ GẦN ĐÂY</h1>
-      <Carousel slides={list} autoplay={true} interval={3000} />
+      <div className="history_title">ĐÃ XEM GẦN ĐÂY</div>
+      <AliceCarousel
+        items={list}
+        responsive={responsive}
+        autoplay={true}
+        interval={3000}
+      />
     </div>
   );
 }

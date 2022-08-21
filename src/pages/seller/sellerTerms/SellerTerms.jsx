@@ -4,6 +4,7 @@ import Button from "@material-ui/core/Button";
 import "./sellerTerms.scss";
 import { useNavigate } from "react-router-dom";
 import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
+import { useState } from "react";
 
 export default function SellerTerms() {
   const navigate = useNavigate();
@@ -13,6 +14,12 @@ export default function SellerTerms() {
   const handleContinue = () => {
     navigate("/sellerHome/professionInfo");
   };
+
+  const [change, setChange] = useState(true);
+  function isChecked() {
+    setChange(!change);
+  }
+
   return (
     <div className="seller_term">
       <BuyerHeader />
@@ -37,8 +44,36 @@ export default function SellerTerms() {
           trên bất kỳ thông tin dịch vụ nào, bao gồm cả hình ảnh, hồ sơ công
           khai.
         </p>
+        <p className="seller_term_content_p">
+          5. Lưu ý rằng! Bạn sẽ bị trừ số tiền tương ứng phí hủy hợp đồng để
+          nhận 1 hợp đồng dịch vụ. Chúng tôi sẽ hoàn trả lại số tiền này cho bạn
+          sau khi hợp đồng của bạn được thực hiện hoàn tất.
+        </p>
+        <p className="seller_term_content_p">
+          6. Bạn sẽ nhận được 90% lợi nhuận trên tổng giá trị của một hợp đồng
+          thành công.
+        </p>
+        <p className="seller_term_content_p">
+          7. Bạn sẽ mất 100% phí hủy hợp đồng nếu đơn phương yêu cầu hủy hợp
+          đồng khi đang trong quá trình thực hiện .
+        </p>
+        <p className="seller_term_content_p">
+          8. Chúng tôi là người trung gian kết nối, vì thế không có trách nhiệm
+          và nghĩa vụ trong việc giải quyết các tranh chấp, xung đột lợi ích
+          giữa bên mua và bán dịch vụ.
+        </p>
+        <p className="seller_term_content_p">
+          9. Chúng tôi không chịu trách nhiệm nếu bạn cung cấp sai thông tin tài
+          khoản Paypal dẫn đến việc không nhận được tiền khi yêu cầu rút.
+        </p>
       </div>
       <div className="seller_term_content">
+        <div style={{ marginTop: "20px" }}>
+          <label>
+            <input type="checkbox" onChange={isChecked} /> Tôi đã đọc và chấp
+            nhận các điều khoản trên
+          </label>
+        </div>
         <Button
           variant="contained"
           className="seller_term_content_btn"
@@ -47,9 +82,11 @@ export default function SellerTerms() {
           Quay lại
         </Button>
         <Button
+          id="continue_btn"
           variant="contained"
           className="seller_term_content_btn"
           color="primary"
+          disabled={change}
           onClick={handleContinue}
         >
           Tiếp tục

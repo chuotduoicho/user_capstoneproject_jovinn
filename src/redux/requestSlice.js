@@ -5,8 +5,8 @@ const requests = JSON.parse(localStorage.getItem("requests"));
 const offers = JSON.parse(localStorage.getItem("offers"));
 const requestDetail = JSON.parse(localStorage.getItem("postRequestDetail"));
 const initialState = {
-  listRequests: requests ? requests : [],
-  postRequestDetail: requestDetail ? requestDetail : {},
+  listRequests: [],
+  postRequestDetail: {},
   listOffers: offers ? offers : [],
   listSellersInvite: [],
   listSellersApply: [],

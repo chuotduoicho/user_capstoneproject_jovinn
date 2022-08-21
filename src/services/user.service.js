@@ -17,7 +17,7 @@ const getWallet = () => {
     .get(API_URL + "/wallet", { headers: authHeader() })
     .then((response) => {
       console.log(response.data);
-      localStorage.setItem("wallet", JSON.stringify(response.data));
+      // localStorage.setItem("wallet", JSON.stringify(response.data));
       return response.data;
     });
 };

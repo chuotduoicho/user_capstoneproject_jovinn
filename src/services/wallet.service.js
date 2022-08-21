@@ -28,15 +28,7 @@ const topupSuccess = (obj) => {
       return response.data;
     });
 };
-const withdrawAddress = (obj) => {
-  console.log("tien", obj);
-  return axios
-    .get(API_URL + "/success" + obj, { headers: authHeader() })
-    .then((response) => {
-      console.log(response.data);
-      return response.data;
-    });
-};
+
 const walletService = {
   topup,
   topupSuccess,

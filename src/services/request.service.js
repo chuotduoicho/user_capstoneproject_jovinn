@@ -67,7 +67,7 @@ const getAllRequests = () => {
   return axios
     .get(API_URL + "/postRequest/getAllPostRequest", { headers: authHeader() })
     .then((response) => {
-      localStorage.setItem("requests", JSON.stringify(response.data));
+      // localStorage.setItem("requests", JSON.stringify(response.data));
       return response.data;
     });
 };
@@ -95,7 +95,7 @@ const getRequestsOfBuyer = () => {
       headers: authHeader(),
     })
     .then((response) => {
-      localStorage.setItem("requests", JSON.stringify(response.data));
+      // localStorage.setItem("requests", JSON.stringify(response.data));
       return response.data;
     });
 };

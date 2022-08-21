@@ -1,16 +1,24 @@
-.buyer_profile {
+.contract-details {
   height: 100vh;
   overflow-x: hidden;
-  .buyer_profile_title {
+  .contract-title {
     text-align: center;
     color: blueviolet;
+    padding: 30px 0px;
   }
-  .profession_form {
+
+  .contract-form {
     flex-direction: column;
     width: 1600px;
     text-align: center;
     border: 2px solid #6a50ca;
     padding-top: 15px;
+
+    .contract-button {
+      margin-bottom: 30px;
+      display: block;
+    }
+
     .paymentRow {
       display: flex;
       margin-bottom: 20px;
@@ -20,15 +28,17 @@
         margin-right: 50px;
       }
     }
-    .paymentRow_Title {
+
+    .contract-id {
       display: flex;
       margin-bottom: 20px;
       padding-bottom: 20px;
       width: 100%;
       border-bottom: 2px groove #f0efef;
       flex-direction: row;
+
       .chip_pending {
-        background-color: #ffeb3b;
+        background-color: #eb6b40;
         color: black;
         width: 10%;
       }
@@ -46,7 +56,26 @@
         top: 50%;
       }
     }
-    .paymentRow_Content {
+
+    .contract-content-require {
+      display: flex;
+      margin-bottom: 15px;
+      width: 100%;
+      h3 {
+        width: 30%;
+        float: left;
+        text-align: left;
+      }
+
+      #require {
+        border: 1px solid #e9e4ee;
+        top: 50%;
+        width: 100%;
+        padding: 15px;
+      }
+    }
+
+    .contract-content-time {
       display: flex;
       margin-bottom: 15px;
       width: 100%;
@@ -55,26 +84,31 @@
         float: left;
         text-align: left;
       }
+
       p {
         top: 50%;
       }
     }
-    .paymentRow_ContentLast {
+
+    .contract-expect-date {
       border-bottom: 2px groove #f0efef;
       display: flex;
       margin-bottom: 15px;
       padding-bottom: 20px;
       width: 100%;
+
       h3 {
         width: 25%;
         float: left;
         text-align: left;
       }
+
       p {
         top: 50%;
       }
     }
-    .paymentRow_payment {
+
+    .contract-quantity {
       display: flex;
       padding-bottom: 20px;
       width: 100%;
@@ -90,13 +124,15 @@
         top: 50%;
       }
     }
-    .paymentRow_paymentLast {
+
+    .contract-cancel-fee {
       display: flex;
       margin-bottom: 20px;
       padding-bottom: 20px;
       width: 100%;
       float: right;
       border-bottom: 2px groove #f0efef;
+
       h4 {
         width: 30%;
         margin-left: 60%;

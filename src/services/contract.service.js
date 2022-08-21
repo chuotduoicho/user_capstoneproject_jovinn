@@ -59,7 +59,7 @@ const getContractDetail = (obj) => {
   return axios
     .get(API_URL + "/contract/details/" + obj, { headers: authHeader() })
     .then((response) => {
-      localStorage.setItem("contracts", JSON.stringify(response.data));
+      // localStorage.setItem("contracts", JSON.stringify(response.data));
       return response.data;
     });
 };
@@ -68,7 +68,7 @@ const getContracts = () => {
   return axios
     .get(API_URL + "/contract/list-contract", { headers: authHeader() })
     .then((response) => {
-      localStorage.setItem("contracts", JSON.stringify(response.data));
+      // localStorage.setItem("contracts", JSON.stringify(response.data));
       return response.data;
     });
 };

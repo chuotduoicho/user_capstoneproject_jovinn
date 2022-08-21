@@ -8,10 +8,11 @@ const servicesImpression = JSON.parse(
 );
 const servicesHistory = JSON.parse(localStorage.getItem("servicesHistory"));
 const initialState = {
-  listServices: services ? services : {},
-  listServicesImpression: servicesImpression ? servicesImpression : [],
-  listServicesHistory: servicesHistory ? servicesHistory : [],
-  serviceDetail: serviceDetail ? serviceDetail : {},
+  listServices: {},
+  listServicesImpression: [],
+  list8Boxes: [],
+  listServicesHistory: [],
+  serviceDetail: {},
   listRating: [],
   newServiceId: null,
   status: "idle",
@@ -21,7 +22,6 @@ export const fetchServicesHistory = createAsyncThunk(
   "service/fetchServicesHistory",
   async () => {
     const data = await ServiceService.getServicesHistory();
-    console.log(data);
     return data;
   }
 );
@@ -29,7 +29,6 @@ export const fetchServicesImpression = createAsyncThunk(
   "service/fetchServicesImpression",
   async () => {
     const data = await ServiceService.get8ServicesImpression();
-    console.log(data);
     return data;
   }
 );
@@ -37,7 +36,6 @@ export const fetchRating = createAsyncThunk(
   "service/fetchRating",
   async (serviceId) => {
     const data = await ServiceService.getRating(serviceId);
-    console.log(data);
     return data;
   }
 );
@@ -45,7 +43,6 @@ export const fetchServicesImpressionByCate = createAsyncThunk(
   "service/fetchServicesImpressionByCate",
   async (cateId) => {
     const data = await ServiceService.get8ServicesImpressionByCate(cateId);
-    console.log(data);
     return data;
   }
 );
@@ -53,7 +50,6 @@ export const fetchServices = createAsyncThunk(
   "service/fetchServices",
   async (obj) => {
     const data = await ServiceService.getServices(obj);
-    console.log(data);
     return data;
   }
 );
@@ -61,7 +57,6 @@ export const fetchServicesSeller = createAsyncThunk(
   "service/fetchServicesSeller",
   async (obj) => {
     const data = await ServiceService.getServicesSeller(obj);
-    console.log(data);
     return data;
   }
 );
@@ -69,7 +64,6 @@ export const fetchServicesSearchFilter = createAsyncThunk(
   "service/fetchServicesSearchFilter",
   async (obj) => {
     const data = await ServiceService.getServicesSearchFilter(obj);
-    console.log(data);
     return data;
   }
 );
@@ -78,88 +72,69 @@ export const fetchServiceDetail = createAsyncThunk(
   async (serviceId) => {
     console.log(serviceId);
     const data = await ServiceService.getServiceById(serviceId);
-    console.log(data);
     return data;
   }
 );
 export const fetchServiceDetailBuyer = createAsyncThunk(
   "service/fetchServiceDetailBuyer",
   async (serviceId) => {
-    console.log(serviceId);
     const data = await ServiceService.getServiceByIdBuyer(serviceId);
-    console.log(data);
     return data;
   }
 );
 export const fetchServicesByCategory = createAsyncThunk(
   "service/fetchServicesByCategory",
   async (cateId) => {
-    console.log(cateId);
     const data = await ServiceService.getServiceByCateId(cateId);
-    console.log(data);
     return data;
   }
 );
 export const addService = createAsyncThunk(
   "service/addService",
   async (service) => {
-    console.log(service);
     const data = await ServiceService.addService(service);
-    console.log(data);
     return data;
   }
 );
 export const updateService = createAsyncThunk(
   "service/updateService",
   async (obj) => {
-    console.log(obj);
     const data = await ServiceService.updateService(obj);
-    console.log(data);
     return data;
   }
 );
 export const pauseService = createAsyncThunk(
   "service/pauseService",
   async (obj) => {
-    console.log(obj);
     const data = await ServiceService.pauseService(obj);
-    console.log(data);
     return data;
   }
 );
 export const updateServicePackage = createAsyncThunk(
   "service/updateServicePackage",
   async (obj) => {
-    console.log(obj);
     const data = await ServiceService.updateServicePackage(obj);
-    console.log(data);
     return data;
   }
 );
 export const addServicePackage = createAsyncThunk(
   "service/addServicePackage",
   async (obj) => {
-    console.log(obj);
     const data = await ServiceService.addServicePackage(obj);
-    console.log(data);
     return data;
   }
 );
 export const deleteServicePackage = createAsyncThunk(
   "service/deleteServicePackage",
   async (obj) => {
-    console.log(obj);
     const data = await ServiceService.deleteServicePackage(obj);
-    console.log(data);
     return data;
   }
 );
 export const deleteService = createAsyncThunk(
   "service/deleteService",
   async (obj) => {
-    console.log(obj);
     const data = await ServiceService.deleteService(obj);
-    console.log(data);
     return data;
   }
 );
@@ -181,7 +156,7 @@ const serviceSlice = createSlice({
       state.status = "loading";
     },
     [fetchServicesImpression.fulfilled]: (state, { payload }) => {
-      state.listServicesImpression = payload;
+      state.list8Boxes = payload;
       state.status = "success";
     },
     [fetchServicesImpression.rejected]: (state, action) => {
@@ -354,3 +329,4 @@ export const selectServiceDetailStatus = (state) =>
   state.service.statusServiceDetail;
 export const selectServiceById = (state, serviceId) =>
   state.service.listServices.find((service) => service.id === serviceId);
+export const selectTop8Boxes = (state) => state.service.list8Boxes;

@@ -86,7 +86,7 @@ export default function BuyerPayment() {
         </div>
         <div className="paymentRow_payment">
           <h4>Giá : </h4>
-          <p> {pack.price.toLocalString()}$</p>
+          <p> {pack.price}$</p>
         </div>
         <div className="paymentRow_payment">
           <h4>Số lượng : </h4>
@@ -94,18 +94,14 @@ export default function BuyerPayment() {
         </div>
         <div className="paymentRow_payment">
           <h4>Tổng giá:</h4>
-          <p>{(order.quantity * pack.price).toLocalString()} $</p>
+          <p>{order.quantity * pack.price} $</p>
         </div>
         <div className="paymentRow_paymentLast">
           <h4>Phí hủy hợp đồng:</h4>
           <p>
             {" "}
             {pack.contractCancelFee}% ( =
-            {(
-              (pack.contractCancelFee * order.quantity * pack.price) /
-              100
-            ).toLocalString()}{" "}
-            $ )
+            {(pack.contractCancelFee * order.quantity * pack.price) / 100} $ )
           </p>
         </div>
 

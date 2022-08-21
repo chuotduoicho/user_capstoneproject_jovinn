@@ -5,7 +5,7 @@ const API_URL = API_PATH + "/api/v1";
 // const API_URL = "http://jovinnserver.site/api/v1";
 const getTopSellers = () => {
   return axios.get(API_URL + "/seller/sellers").then((response) => {
-    localStorage.setItem("topSeller", JSON.stringify(response.data));
+    // localStorage.setItem("topSeller", JSON.stringify(response.data));
     return response.data;
   });
 };

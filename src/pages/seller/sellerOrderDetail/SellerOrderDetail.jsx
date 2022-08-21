@@ -70,35 +70,35 @@ export default function SellerOrderDetail() {
     setOpenDelete(false);
   };
   return (
-    <div className="buyer_profile">
+    <div className="contract-details">
       <SellerHeader />
-      <h1 className="buyer_profile_title">Chi tiết đơn hàng</h1>
-      <Container maxWidth="lg" className="profession_form">
-        <div className="paymentRow_Title">
+      <h1 className="contract-title">Chi tiết đơn hàng</h1>
+      <Container maxWidth="lg" className="contract-form">
+        <div className="contract-id">
           <h2>Mã đơn hàng : {contractDetail.contractCode} </h2>
           <Chip label={contractDetail.orderStatus} className="chip_pending" />
         </div>
-        <div className="paymentRow_Content">
+        <div className="contract-content-require">
           <h3>Yêu cầu:</h3>
-          <p>{contractDetail.requirement}</p>
+          <p id="require">{contractDetail.requirement}</p>
         </div>
-        <div className="paymentRow_Content">
+        <div className="contract-content-time">
           <h3>Tổng thời gian bàn giao:</h3>
           <p>{contractDetail.totalDeliveryTime} ngày</p>
         </div>
-        <div className="paymentRow_ContentLast">
+        <div className="contract-expect-date">
           <h3>Ngày hoàn thành dự kiến:</h3>
           <p>{contractDetail.expectCompleteDate}</p>
         </div>
-        <div className="paymentRow_payment">
+        <div className="contract-quantity">
           <h4>Số lượng : </h4>
           <p>{contractDetail.quantity}</p>
         </div>
-        <div className="paymentRow_payment">
+        <div className="contract-quantity">
           <h4>Tổng chi phí : </h4>
-          <p>{contractDetail.totalPrice.toLocaleString()} $</p>
+          <p>{contractDetail.totalPrice} $</p>
         </div>
-        <div className="paymentRow_paymentLast">
+        <div className="contract-cancel-fee">
           <h4>Phí hủy hợp đồng : </h4>
           <p>
             {contractDetail.contractCancelFee}% ( =
@@ -111,13 +111,14 @@ export default function SellerOrderDetail() {
             $ )
           </p>
         </div>
-        <div className="paymentRow">
+        <div className="contract-button">
           <Button
             variant="contained"
             color="primary"
+            style={{ marginRight: "30px" }}
             onClick={handleAcceptOrder}
           >
-            Duyệt đơn
+            Thực hiện
           </Button>
           <Button
             variant="contained"

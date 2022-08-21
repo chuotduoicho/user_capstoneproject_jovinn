@@ -34,6 +34,8 @@ import {
   selectServiceDetailStatus,
   updateService,
   updateServicePackage,
+  fetchRating,
+  selectListRating,
 } from "../../../redux/serviceSlice";
 import Overview from "../../../components/seller/sellerCreateService/overview/Overview";
 import { selectAllCategories } from "../../../redux/categorySlice";
@@ -44,6 +46,7 @@ import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import { autoPlay } from "react-swipeable-views-utils";
 import { toast, ToastContainer } from "react-toastify";
+import CommentService from "../../../components/guest/commentService/CommentService";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -83,12 +86,14 @@ export default function SellerServiceDetail() {
   const serviceDetail = useSelector(selectServiceDetail);
   const [listImg, setListImg] = useState([]);
   const [listPack, setListPack] = useState([]);
+  const listRating = useSelector(selectListRating);
   const theme = useTheme();
   const [value, setValue] = useState(0);
 
   const [selected, setSelected] = useState(false);
   useEffect(() => {
     dispatch(fetchServiceDetailBuyer(serviceId));
+    dispatch(fetchRating(serviceId));
   }, []);
   useEffect(() => {
     if (status == "success") {
@@ -545,8 +550,52 @@ export default function SellerServiceDetail() {
               }
             />
           </Box>
-          <h2>Mô tả về dịch vụ</h2>{" "}
-          <p className="detail_des">{serviceDetail.description}</p>
+          <h2 className="padding-card">Mô tả về hộp dịch vụ</h2>
+          <div className="description_box">{serviceDetail.description}</div>
+          {/* <div className="seller_info">
+              <h2 className="padding-card">Thông tin người bán</h2>
+              <div className="seller_header">
+                <img
+                  src={
+                    serviceDetail.avatar
+                      ? serviceDetail.avatar
+                      : "https://cdn1.iconfinder.com/data/icons/user-pictures/100/unknown-512.png"
+                  }
+                  alt="avatar"
+                  className="avatar_seller"
+                />
+                <div className="card_seller_info">
+                  {serviceDetail.lastName} {serviceDetail.firstName} | Cấp độ
+                  người bán: {serviceDetail.rankSeller}
+                  <p>
+                    Điểm đánh giá - {serviceDetail.ratingPoint} | Tổng số hợp
+                    đồng đã hoàn thành - {serviceDetail.totalOrder}
+                  </p>
+                  <Link to={"/seller/" + serviceDetail.sellerId}>
+                    <button>Xem chi tiết</button>
+                  </Link>
+                </div>
+              </div>
+
+              <div className="card_detail_seller_info">
+                <div className="info">
+                  <p>
+                    Đến từ - {serviceDetail.city} | Tham gia Jovinn -{" "}
+                    {format(serviceDetail.joinSellingAt)}
+                  </p>
+                  <p>Hòm thư liên hệ - {serviceDetail.email}</p>
+                </div>
+                <div className="description_bio">
+                  <p>{serviceDetail.descriptionBio}</p>
+                </div>
+              </div>
+            </div> */}
+          <div className="rating_box">
+            <div className="rating_header">
+              <h3>Đánh giá từ người mua</h3>
+              <CommentService ratings={listRating} />
+            </div>
+          </div>
         </div>
         <div className="detail_right">
           <ButtonGroup
@@ -608,15 +657,16 @@ export default function SellerServiceDetail() {
                   <p style={{ marginTop: "15px", marginBottom: "15px" }}>
                     {item.title}
                   </p>
-                  <h4>⏲️ {item.deliveryTime} Day Delivery</h4>
+                  <h4>⏲️ {item.deliveryTime} Ngày để bàn giao</h4>
                   <p>✔️ {item.shortDescription}</p>
                   {/* <p>✔️ Sản phẩm bàn giao 2</p> */}
                   <h3>
-                    Phí hủy hợp đồng :{item.contractCancelFee}% Tổng chi phí
+                    Phí hủy hợp đồng: {item.contractCancelFee}% Tổng chi phí
                   </h3>
                   <Button
                     variant="outlined"
                     color="primary"
+                    style={{ margin: "20px 0px 10px 0px" }}
                     onClick={() => {
                       setOpenPack(true);
                       setPackId(item.id);
@@ -674,10 +724,13 @@ export default function SellerServiceDetail() {
                 .fill("Không có gói này")
                 .map((val, idx) => (
                   <>
-                    <h1>{val}</h1>
+                    <h1 style={{ textAlign: "center", marginTop: "20px" }}>
+                      {val}
+                    </h1>
                     <Button
                       variant="outlined"
                       color="primary"
+                      className="button_add_package"
                       onClick={() => {
                         setOpenPack(true);
                         setPackId("");

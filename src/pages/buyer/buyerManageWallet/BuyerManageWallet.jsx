@@ -47,6 +47,7 @@ import {
 import { clearMessage } from "../../../redux/message";
 import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
 import { toast, ToastContainer } from "react-toastify";
+import { green } from "@material-ui/core/colors";
 function createData(description, subCate, skills, price, cancleFee) {
   return { description, subCate, skills, price, cancleFee };
 }
@@ -218,7 +219,7 @@ const EnhancedTableToolbar = (props) => {
             component="div"
           >
             <AccountBalanceWallet />
-            &nbsp; {price.toLocaleString()} $ <ArrowUpward /> {income} $
+            &nbsp; {price} $ <ArrowUpward /> {income} $
           </Typography>
         </>
       )}
@@ -230,13 +231,13 @@ const EnhancedTableToolbar = (props) => {
           </IconButton>
         </Tooltip>
       ) : (
-        <Tooltip title="với paypal">
+        <Tooltip title="Thực hiện với Paypal">
           <IconButton aria-label="filter list">
             <ButtonGroup variant="outlined" aria-label="outlined button group">
               <Button onClick={handleOpenPayment}>Nạp tiền</Button>
               <Button onClick={handleOpenWithDraw}>Rút tiền</Button>
               {address && (
-                <Button onClick={handleOpenWithDraw2}>Sửa thông tin</Button>
+                <Button onClick={handleOpenWithDraw2}>Địa chỉ rút tiền</Button>
               )}
             </ButtonGroup>
           </IconButton>
@@ -432,6 +433,9 @@ export default function BuyerManageWallet() {
     dispatch(clearMessage());
     if (message) navigate(`//${message.slice(8)}`);
   }, [dispatch, message]);
+  // useEffect(() => {
+  //   if (message) navigate(`//${message.slice(8)}`);
+  // }, [message]);
   useEffect(() => {
     dispatch(fetchWallet());
     if (param) {
@@ -501,11 +505,17 @@ export default function BuyerManageWallet() {
                         <TableCell component="th" id={labelId} scope="row">
                           {row.paymentCode}
                         </TableCell>
-                        <TableCell align="right">
-                          {row.amount.toLocaleString()}$
+                        <TableCell
+                          align="right"
+                          style={{
+                            color:
+                              row.type == "WITHDRAW" ? "#ff0000" : "#50dc35",
+                          }}
+                        >
+                          {row.type == "CHARGE" ? "+" : "-"} {row.amount}$
                         </TableCell>
                         <TableCell align="right">
-                          {row.type == "CHARGE" ? "Nạp tiền" : "Rút tiền"}
+                          {row.method == "paypal" ? "Paypal" : "Other"}
                         </TableCell>
                         <TableCell align="right">{row.createAt}</TableCell>{" "}
                       </TableRow>
@@ -578,8 +588,12 @@ export default function BuyerManageWallet() {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleOpenPayment2} color="primary">
-            Xác nhận
+          <Button
+            onClick={handleOpenPayment2}
+            color="primary"
+            variant="contained"
+          >
+            Nạp
           </Button>
           <Button onClick={handleClosePayment} color="primary">
             Đóng
@@ -617,6 +631,17 @@ export default function BuyerManageWallet() {
         <DialogTitle id="max-width-dialog-title">
           {wallet.withdrawAddress ? "Nhập số tiền rút" : "Tạo địa chỉ rút tiền"}
         </DialogTitle>
+        <ul className="rules-withdraw">
+          <li>Số tiền rút cần nhỏ hơn số tiền hiện tại và phải lớn hơn 0</li>
+          <li>
+            Hệ thống sẽ chi trả vào ngày cuối tháng vào tài khoản:{" "}
+            {addressWithdraw}
+          </li>
+          <li>
+            Hãy chắc chắn rằng địa chỉ rút của bạn là chính xác, vì nó có thể
+            ảnh hưởng tới số tiền mà bạn nhận được
+          </li>
+        </ul>
         <DialogContent>
           {!wallet.withdrawAddress ? (
             <TextField
@@ -674,6 +699,17 @@ export default function BuyerManageWallet() {
           Sửa thông tin rút tiền
         </DialogTitle>
         <DialogContent>
+          <ul className="rules-add">
+            <li>Hãy chắc chắn thông tin địa chỉ rút tiền của bạn là đúng</li>
+            <li>
+              Địa chỉ rút tiền là account mà bạn dùng để đăng nhập vào hệ thống
+              của Paypal
+            </li>
+            <li>
+              Chúng tôi sẽ duyệt số tiền của bạn thông qua địa chỉ ví Paypal của
+              bạn vào ngày cuối tháng
+            </li>
+          </ul>
           <TextField
             id="outlined-basic"
             variant="outlined"
@@ -690,7 +726,7 @@ export default function BuyerManageWallet() {
             color="primary"
             variant="contained"
           >
-            Sửa
+            Cập nhật
           </Button>
           <Button onClick={handleCloseWithDraw2} color="default">
             Đóng

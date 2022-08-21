@@ -17,24 +17,23 @@ import {
   fetchServiceDetail,
   selectServiceDetail,
   selectServiceDetailStatus,
+  fetchRating,
+  selectListRating,
 } from "../../../redux/serviceSlice";
 import { useEffect } from "react";
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import { autoPlay } from "react-swipeable-views-utils";
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 500,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-  display: "flex",
-  flexDirection: "column",
-};
+import CommentService from "../../../components/guest/commentService/CommentService";
+function format(date) {
+  date = new Date(date);
+
+  var day = ("0" + date.getDate()).slice(-2);
+  var month = ("0" + (date.getMonth() + 1)).slice(-2);
+  var year = date.getFullYear();
+
+  return day + "-" + month + "-" + year;
+}
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -76,10 +75,12 @@ const ServiceDetail = () => {
   const status = useSelector(selectServiceDetailStatus);
   const dispatch = useDispatch();
   const serviceDetail = useSelector(selectServiceDetail);
+  const listRating = useSelector(selectListRating);
   const [listImg, setListImg] = useState([]);
   const [listPack, setListPack] = useState([]);
   useEffect(() => {
     dispatch(fetchServiceDetail(serviceId));
+    dispatch(fetchRating(serviceId));
   }, []);
   useEffect(() => {
     if (status == "success") {
@@ -227,8 +228,52 @@ const ServiceDetail = () => {
                 }
               />
             </Box>
-            <h2>Mô tả về dịch vụ</h2>{" "}
-            <p className="detail_des">{serviceDetail.description}</p>
+            <h2 className="padding-card">Mô tả về hộp dịch vụ</h2>
+            <div className="description_box">{serviceDetail.description}</div>
+            <div className="seller_info">
+              <h2 className="padding-card">Thông tin người bán</h2>
+              <div className="seller_header">
+                <img
+                  src={
+                    serviceDetail.avatar
+                      ? serviceDetail.avatar
+                      : "https://cdn1.iconfinder.com/data/icons/user-pictures/100/unknown-512.png"
+                  }
+                  alt="avatar"
+                  className="avatar_seller"
+                />
+                <div className="card_seller_info">
+                  {serviceDetail.lastName} {serviceDetail.firstName} | Cấp độ
+                  người bán: {serviceDetail.rankSeller}
+                  <p>
+                    Điểm đánh giá - {serviceDetail.ratingPoint} | Tổng số hợp
+                    đồng đã hoàn thành - {serviceDetail.totalOrder}
+                  </p>
+                  <Link to={"/seller/" + serviceDetail.sellerId}>
+                    <button>Xem chi tiết</button>
+                  </Link>
+                </div>
+              </div>
+
+              <div className="card_detail_seller_info">
+                <div className="info">
+                  <p>
+                    Đến từ - {serviceDetail.city} | Tham gia Jovinn -{" "}
+                    {format(serviceDetail.joinSellingAt)}
+                  </p>
+                  <p>Hòm thư liên hệ - {serviceDetail.email}</p>
+                </div>
+                <div className="description_bio">
+                  <p>{serviceDetail.descriptionBio}</p>
+                </div>
+              </div>
+            </div>
+            <div className="rating_box">
+              <div className="rating_header">
+                <h3>Đánh giá từ người mua</h3>
+                <CommentService ratings={listRating} />
+              </div>
+            </div>
           </div>
           <div className="detail_right">
             <AppBar position="static" color="default">

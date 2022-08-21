@@ -358,9 +358,7 @@ export default function SellerManageRequest() {
                               ).name
                           }
                         </TableCell>
-                        <TableCell align="right">
-                          {row.budget.toLocaleString()} $
-                        </TableCell>
+                        <TableCell align="right">{row.budget} $</TableCell>
                         <TableCell align="right">
                           {row.contractCancelFee} %
                         </TableCell>{" "}

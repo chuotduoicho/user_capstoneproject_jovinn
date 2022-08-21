@@ -15,6 +15,7 @@ const initialState =
     topSellers: topSeller ? topSeller : [],
     currentUser: currentUser ? currentUser : {},
     wallet: wallet ? wallet : {},
+    listTransaction: [],
     status: "idle",
   };
 // : { topSellers: [], currentUser: {}, wallet: {}, status: "idle" };
@@ -275,6 +276,7 @@ const userSlice = createSlice({
     },
     [fetchWallet.fulfilled]: (state, { payload }) => {
       state.wallet = payload;
+      state.listTransaction = payload.transactions;
       state.status = "success";
     },
     [fetchWallet.rejected]: (state, action) => {
@@ -454,7 +456,6 @@ export const selectTopSellers = (state) => state.user.topSellers;
 export const selectCurrentUser = (state) => state.user.currentUser;
 
 export const selectWallet = (state) => state.user.wallet;
-export const selectWalletTransactions = (state) =>
-  state.user.wallet.transactions;
+export const selectWalletTransactions = (state) => state.user.listTransaction;
 export const selectSeller = (state, sellerId) =>
   state.user.topSellers.find((seller) => seller.id === sellerId);

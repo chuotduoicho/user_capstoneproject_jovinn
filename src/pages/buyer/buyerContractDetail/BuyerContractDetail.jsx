@@ -48,7 +48,7 @@ function format(date) {
   var month = ("0" + (date.getMonth() + 1)).slice(-2);
   var year = date.getFullYear();
 
-  return day + "-" + month + "-" + year;
+  return day + "/" + month + "/" + year;
 }
 export default function BuyerContractDetail() {
   const { contractId } = useParams();
@@ -400,7 +400,7 @@ export default function BuyerContractDetail() {
         </div>
         <div className="paymentRow_payment">
           <h4>Tổng chi phí : </h4>
-          <p>{contractDetail.totalPrice.toLocaleString()} $</p>
+          <p>{contractDetail.totalPrice} $</p>
         </div>
         <div className="paymentRow_paymentLast">
           <h4>Phí hủy hợp đồng : </h4>

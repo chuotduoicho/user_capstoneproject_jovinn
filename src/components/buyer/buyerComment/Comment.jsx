@@ -31,9 +31,9 @@ export default function Comment({ comments, contractId }) {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getAvatar(contractId));
-    // setInterval(() => {
-    //   dispatch(fetComments(contractId));
-    // }, 3000);
+    setInterval(() => {
+      dispatch(fetComments(contractId));
+    }, 3000);
     dispatch(fetComments(contractId));
   }, []);
   const handleComment = () => {
@@ -77,7 +77,7 @@ export default function Comment({ comments, contractId }) {
   return (
     <div style={{ padding: 14 }}>
       {" "}
-      <h1>Bình luận</h1>
+      <h1>Trao đổi thông tin</h1>
       <Paper
         style={{
           padding: "40px 20px",

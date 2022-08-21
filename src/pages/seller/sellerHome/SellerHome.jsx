@@ -39,7 +39,7 @@ import { fetchRequestsSeller } from "../../../redux/requestSlice";
 import { fetchContracts } from "../../../redux/contractSlice";
 import CategoryList from "../../../components/guest/categoryList/CategoryList";
 import usePagination from "../../../Pagination";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 function ChangeFormateDate(oldDate) {
   return oldDate.toString().split("-").reverse().join("/");
 }
@@ -83,14 +83,17 @@ export default function SellerHome() {
   const handleChange = (e, p) => {
     setPage(p);
   };
-  const handleChangeSortBy = (e) => {
-    // setPage(1);
-    // setSortBy(e.target.value);
-    // const obj = {
-    //   sortBy: e.target.value,
-    //   sortDir: sortDir,
-    // };
-    // dispatch(fetchServices(obj));
+  const handleCreateService = (e) => {
+    if (
+      (currentUser.seller.rankSeller == "BEGINNER" &&
+        currentUser.seller.boxes.length == 5) ||
+      (currentUser.seller.rankSeller == "ADVANCED" &&
+        currentUser.seller.boxes.length == 10)
+    ) {
+      toast.warning("Đã đủ dịch vụ cho cấp độ của bạn");
+    } else {
+      navigate("/sellerHome/createService");
+    }
   };
 
   const list = listService.content ? listService.content : [];
@@ -169,16 +172,17 @@ export default function SellerHome() {
             ))}
           </ul> */}
           <div className="sellerHome_rightbar">
-            <Link to="/sellerHome/createService">
-              <Button
-                variant="contained"
-                color="primary"
-                className="sellerHome_right_btn"
-              >
-                <AddSharp />
-                Tạo dịch vụ{" "}
-              </Button>{" "}
-            </Link>
+            {/* <Link to="/sellerHome/createService"> */}
+            <Button
+              variant="contained"
+              color="primary"
+              className="sellerHome_right_btn"
+              onClick={handleCreateService}
+            >
+              <AddSharp />
+              Tạo dịch vụ{" "}
+            </Button>{" "}
+            {/* </Link> */}
             <FormControl className="sellerHome_left_btn">
               <InputLabel id="demo-simple-select-label">Trạng thái</InputLabel>
               <Select

@@ -11,7 +11,7 @@ const getAllCategories = () => {
 };
 const getAllSkills = () => {
   return axios.get(API_URL + "/skill/meta-data-list").then((response) => {
-    localStorage.setItem("skills", JSON.stringify(response.data));
+    // localStorage.setItem("skills", JSON.stringify(response.data));
     return response.data;
   });
 };

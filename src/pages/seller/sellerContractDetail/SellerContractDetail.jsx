@@ -53,7 +53,7 @@ function format(date) {
   var month = ("0" + (date.getMonth() + 1)).slice(-2);
   var year = date.getFullYear();
 
-  return day + "-" + month + "-" + year;
+  return day + "/" + month + "/" + year;
 }
 export default function SellerContractDetail() {
   const { contractId } = useParams();
@@ -205,7 +205,11 @@ export default function SellerContractDetail() {
                 ? "Đã hoàn thành"
                 : "Đang xử lí"
             }
-            className="chip_pending"
+            className={
+              contractDetail.contractStatus == "COMPLETE"
+                ? "chip_success"
+                : "chip_pending"
+            }
           />
         </div>
         <div className="paymentRow_Content">

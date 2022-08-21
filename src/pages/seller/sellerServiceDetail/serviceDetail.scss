@@ -5,26 +5,43 @@
     display: flex;
     width: inherit;
     height: auto;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    max-width: 100rem;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0px 30px;
+
     .detail_left {
-      margin-left: 20px;
-      flex: 9;
+      //margin-left: 200px;
+      width: 100%;
+      // flex: 6;
+
       h2 {
         margin-top: 20px;
       }
+
       img {
         width: 600px;
         height: 400px;
       }
+
       .seller_header {
         display: flex;
         margin: 10px;
+
         .avatar {
           width: 50px;
           height: 50px;
           border-radius: 50%;
+          object-fit: cover;
           margin-right: 5px;
           margin-right: 10px;
         }
+
         .seller_headerRight {
           p {
             margin-top: 4px;
@@ -32,14 +49,98 @@
           }
         }
       }
+
+      .rating_box {
+        margin-top: 50px;
+        margin-bottom: 50px;
+        border: 1px solid #dadbdd;
+        padding: 20px;
+
+        .rating_header {
+          padding-bottom: 14px;
+        }
+
+        .rating_details {
+          margin: 10px;
+          .avatar_buyer {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+          }
+
+          .card_rating {
+            display: flex;
+            padding: 25px;
+            border-top: 1px solid #dadbdd;
+
+            p {
+              margin-left: 20px;
+              margin-top: 5px;
+            }
+          }
+
+          .comment_rating {
+            margin-left: 95px;
+            padding-right: 60px;
+            padding-bottom: 30px;
+          }
+        }
+      }
+
+      .padding-card {
+        padding: 25px 0px 15px 0px;
+      }
+
+      .description_box {
+        border: 1px solid #dadbdd;
+        padding: 20px;
+      }
+
+      .seller_info {
+        .avatar_seller {
+          width: 150px;
+          height: 150px;
+          object-fit: cover;
+          border-radius: 50%;
+        }
+
+        .card_seller_info {
+          font-size: 18px;
+          padding: 30px;
+          border-bottom: 1px solid;
+        }
+
+        .card_detail_seller_info {
+          border: 1px solid #dadbdd;
+          padding: 20px;
+
+          .info {
+            //border-bottom: 1px solid #dadbdd;
+            margin-bottom: 30px;
+          }
+
+          .description_bio {
+            border-top: 1px solid #dadbdd;
+            p {
+              margin-top: 30px;
+            }
+          }
+        }
+      }
+
       .detail_des {
         border-style: groove;
         padding: 10px;
       }
     }
     .detail_right {
-      margin-right: 20px;
+      // margin-right: 20px;
       width: 40%;
+
+      .button_add_package {
+        margin: 20px 0px 25px 200px;
+      }
     }
   }
   .sections {

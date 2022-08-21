@@ -6,10 +6,16 @@
   align-items: center;
   justify-content: center;
   position: relative;
+  width: 100%;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  max-width: 100rem;
+  margin-left: auto;
+  margin-right: auto;
 
-  h1 {
+  .history_title {
     text-align: center;
-    font-size: 50px;
+    font-size: 22px;
     padding-top: 100px;
     padding-bottom: 50px;
   }
