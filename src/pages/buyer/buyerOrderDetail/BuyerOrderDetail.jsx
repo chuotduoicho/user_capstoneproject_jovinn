@@ -39,7 +39,7 @@ export default function BuyerOrderDetail() {
         </div>
         <div className="paymentRow_ContentLast">
           <h3>Ngày hoàn thành dự kiến:</h3>
-          <p>{contractDetail.expectCompleteDate.replaceAll("-", "/")}</p>
+          <p>{contractDetail.expectCompleteDate}</p>
         </div>
         <div className="paymentRow_payment">
           <h4>Số lượng : </h4>
@@ -47,7 +47,7 @@ export default function BuyerOrderDetail() {
         </div>
         <div className="paymentRow_payment">
           <h4>Tổng chi phí : </h4>
-          <p>{contractDetail.totalPrice.toLocaleString()} $</p>
+          <p>{contractDetail.totalPrice} $</p>
         </div>
         <div className="paymentRow_paymentLast">
           <h4>Phí hủy hợp đồng : </h4>

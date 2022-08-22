@@ -1,8 +1,8 @@
 import axios from "axios";
 import { API_PATH } from "../config";
 import authHeader from "./auth-header";
-const API_URL = API_PATH + "/api/v1/payment";
-// const API_URL = "http://jovinnserver.site/api/v1/payment";
+// const API_URL = API_PATH + "/api/v1/payment";
+const API_URL = process.env.REACT_APP_API_URL + "/api/v1/payment";
 
 const topup = (obj) => {
   console.log("tien", obj);

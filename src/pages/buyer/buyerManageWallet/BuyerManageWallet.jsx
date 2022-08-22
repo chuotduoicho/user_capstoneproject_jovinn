@@ -297,7 +297,7 @@ export default function BuyerManageWallet() {
   );
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [price, setPrice] = useState(wallet.withdraw);
+  const [price, setPrice] = useState(wallet.withdraw ? wallet.withdraw : "");
 
   console.log(rows);
 

@@ -142,7 +142,7 @@ export default function SellerOrderDetail() {
         </DialogTitle>
         <DialogActions>
           <Button
-            onClick={() => handleRejectOrder}
+            onClick={handleRejectOrder}
             color="secondary"
             variant="outlined"
           >

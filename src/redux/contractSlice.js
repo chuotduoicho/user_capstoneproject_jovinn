@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import commentService from "../services/comment.service";
 import contractService from "../services/contract.service";
+import { setMessage } from "./message";
 const initialState = {
   listContracts: [],
   listComment: [],
@@ -95,11 +96,23 @@ export const cancleExtra = createAsyncThunk(
 );
 export const addContract = createAsyncThunk(
   "contract/addContract",
-  async (order) => {
-    console.log(order);
-    const data = await contractService.addContract(order);
-    console.log(data);
-    return data;
+  async (order, thunkAPI) => {
+    try {
+      console.log(order);
+      const data = await contractService.addContract(order);
+      console.log(data);
+      // thunkAPI.dispatch(setMessage(data.data.message));
+      return data;
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.messages) ||
+        error.messages ||
+        error.toString();
+      thunkAPI.dispatch(setMessage(message));
+      return thunkAPI.rejectWithValue();
+    }
   }
 );
 export const acceptOrder = createAsyncThunk(

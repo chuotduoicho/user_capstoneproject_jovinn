@@ -359,9 +359,7 @@ export default function BuyerManageRequest() {
                         <TableCell align="right">
                           {row.milestoneContracts.length}
                         </TableCell>
-                        <TableCell align="right">
-                          {row.budget.toLocaleString()} $
-                        </TableCell>
+                        <TableCell align="right">{row.budget} $</TableCell>
                         <TableCell align="right">
                           {row.contractCancelFee} %
                         </TableCell>{" "}

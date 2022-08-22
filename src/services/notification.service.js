@@ -1,7 +1,7 @@
 import axios from "axios";
 import authHeader from "./auth-header";
-const API_URL = "http://localhost:8080/api/v1";
-
+// const API_URL = "http://localhost:8080/api/v1";
+const API_URL = process.env.REACT_APP_API_URL + "/api/v1";
 const getAllNotification = () => {
   return axios
     .get(API_URL + "/users/notifications", { headers: authHeader() })

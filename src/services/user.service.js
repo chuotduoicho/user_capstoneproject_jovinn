@@ -1,8 +1,8 @@
 import axios from "axios";
 import { API_PATH } from "../config";
 import authHeader from "./auth-header";
-const API_URL = API_PATH + "/api/v1/users";
-// const API_URL = "http://jovinnserver.site/api/v1/users";
+// const API_URL = API_PATH + "/api/v1/users";
+const API_URL = process.env.REACT_APP_API_URL + "/api/v1/users";
 const getUser = () => {
   return axios
     .get(API_URL + "/me", { headers: authHeader() })

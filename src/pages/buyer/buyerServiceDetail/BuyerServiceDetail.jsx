@@ -85,6 +85,7 @@ export default function ServiceDetail() {
   const currentUser = useSelector(selectCurrentUser);
   const status = useSelector(selectServiceDetailStatus);
   const listRating = useSelector(selectListRating);
+
   const navigate = useNavigate();
   const [amount, setAmount] = useState(1);
   const [requirement, setRequirement] = useState("");
@@ -148,7 +149,7 @@ export default function ServiceDetail() {
     };
     console.log("order", order);
 
-    if (requirement.length >= 1 && requirement.length <= 500) {
+    if (requirement.length >= 30 && requirement.length <= 500) {
       navigate("/buyerHome/payment", { state: { order, pack } });
     } else {
       setCheck(true);
@@ -389,12 +390,14 @@ export default function ServiceDetail() {
                         toast.warning(
                           "Số dư hiện tại trong ví của bạn không đủ để gửi đi"
                         );
-                      } else if (
-                        currentUser.seller.id == serviceDetail.sellerId
-                      ) {
-                        toast.warning(
-                          "Không được phép mua dịch vụ của chính bạn"
-                        );
+                      } else if (currentUser.seller) {
+                        if (currentUser.seller.id == serviceDetail.sellerId) {
+                          toast.warning(
+                            "Bạn không thể mua dịch vụ của chính mình"
+                          );
+                        } else {
+                          setOpen(true);
+                        }
                       } else {
                         setOpen(true);
                       }
@@ -436,13 +439,13 @@ export default function ServiceDetail() {
                     style={{ width: "100%" }}
                     onChange={(e) => setRequirement(e.target.value)}
                     error={
-                      (requirement.length < 1 || requirement.length > 500) &&
+                      (requirement.length < 30 || requirement.length > 500) &&
                       check
                     }
                     helperText={
-                      (requirement.length < 1 || requirement.length > 500) &&
+                      (requirement.length < 30 || requirement.length > 500) &&
                       check &&
-                      "Không được để trống và tối đa 500 kí tự"
+                      "Yêu cầu cần đạt tối thiểu 30 ký tự và tối đa 500 ký tự"
                     }
                   />
                 </div>

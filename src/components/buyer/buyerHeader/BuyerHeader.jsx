@@ -36,6 +36,7 @@ import {
   selectNotifications,
   selectNumber,
 } from "../../../redux/notificationSlice";
+import { clearMessage } from "../../../redux/message";
 export default function BuyerHeader({ search, handleSearch }) {
   const listNotification = useSelector(selectNotifications);
   const list = [...listNotification].sort(
@@ -65,6 +66,7 @@ export default function BuyerHeader({ search, handleSearch }) {
     setOpen((prevOpen) => !prevOpen);
   };
   useEffect(() => {
+    dispatch(clearMessage());
     dispatch(fetchCurrentUser());
     // setInterval(() => {
     //   dispatch(fetchNotifications());

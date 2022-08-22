@@ -26,6 +26,7 @@ export default function BuyerPayment() {
   const { pack } = state || {};
   console.log("order", order);
   console.log("pack", pack);
+  const { message } = useSelector((state) => state.message);
   //dialog
   const [openPayment, setOpenPayment] = useState(false);
   const [error, setError] = useState("");
@@ -115,7 +116,7 @@ export default function BuyerPayment() {
           </Button>
         </div>
         <div className="paymentRow" style={{ justifyContent: "center" }}>
-          {error !== "" && <Alert severity="error">{error}</Alert>}
+          {message !== "" && <Alert severity="error">{message}</Alert>}
           {successfull !== "" && (
             <Alert severity="success">{successfull}</Alert>
           )}
