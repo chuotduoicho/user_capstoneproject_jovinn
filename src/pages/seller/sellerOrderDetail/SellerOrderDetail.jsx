@@ -29,6 +29,7 @@ export default function SellerOrderDetail() {
   useEffect(() => {
     dispatch(fetchContractDetail(orderId));
   }, []);
+  const { message } = useSelector((state) => state.message);
   const status = useSelector(selectContractStatus);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -157,6 +158,7 @@ export default function SellerOrderDetail() {
           </Button>
         </DialogActions>
       </Dialog>
+      {message !== "" && <Alert severity="error">{message}</Alert>}
       {error !== "" && <Alert severity="error">{error}</Alert>}
       {success !== "" && <Alert severity="success">{success}</Alert>}
       <div className="sections_profile">

@@ -126,11 +126,24 @@ export const acceptOrder = createAsyncThunk(
 );
 export const acceptRequestBuyer = createAsyncThunk(
   "contract/acceptRequestBuyer",
-  async (obj) => {
+  async (obj, thunkAPI) => {
     console.log(obj);
-    const data = await contractService.acceptRequestBuyer(obj);
-    console.log(data);
-    return data;
+    try {
+      const data = await contractService.acceptRequestBuyer(obj);
+      console.log(data);
+      // thunkAPI.dispatch(setMessage(data.data.message));
+      return data;
+    } catch (error) {
+      console.log("eror", error.response);
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      thunkAPI.dispatch(setMessage(message));
+      return thunkAPI.rejectWithValue();
+    }
   }
 );
 export const acceptDeleveryContract = createAsyncThunk(
