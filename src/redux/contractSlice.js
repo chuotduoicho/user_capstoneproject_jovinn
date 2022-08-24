@@ -208,11 +208,22 @@ export const deleteComment = createAsyncThunk(
 );
 export const flagContract = createAsyncThunk(
   "contract/flagContract",
-  async (id) => {
-    console.log(id);
-    const data = await contractService.flagContract(id);
-    console.log(data);
-    return data;
+  async (id, thunkAPI) => {
+    try {
+      console.log(id);
+      const data = await contractService.flagContract(id);
+      console.log(data);
+      return data;
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      thunkAPI.dispatch(setMessage(message));
+      return thunkAPI.rejectWithValue();
+    }
   }
 );
 export const getAvatar = createAsyncThunk("contract/getAvatar", async (id) => {

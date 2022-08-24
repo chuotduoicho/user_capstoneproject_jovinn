@@ -287,7 +287,7 @@ export default function SellerContractDetail() {
             <div className="paymentRow_Content">
               <h2>Nội dung yêu cầu</h2>
             </div>
-            <div className="paymentRow_Content">
+            {/* <div className="paymentRow_Content">
               {" "}
               <h3>Tiêu đề:</h3>
               <p>{contractDetail.postRequest.jobTitle} </p>
@@ -315,7 +315,7 @@ export default function SellerContractDetail() {
                   "Không có"
                 )}{" "}
               </p>
-            </div>
+            </div> */}
             <div className="paymentRow_Content">
               {" "}
               <h3>Cấp độ người bán yêu cầu:</h3>

@@ -130,7 +130,7 @@ const ServiceDetail = () => {
   const handleStepChange = (step) => {
     setActiveStep(step);
   };
-  console.log("service", serviceDetail);
+  const packages = [...listPack].sort((a, b) => a.price - b.price);
   return (
     <div className="service_detail">
       <Topbar />
@@ -297,7 +297,7 @@ const ServiceDetail = () => {
               onChangeIndex={handleChangeIndex}
               style={{ border: "2px groove #d8d0d2" }}
             >
-              {listPack.map((item, index) => {
+              {packages.map((item, index) => {
                 return (
                   <TabPanel value={value} index={index} dir={theme.direction}>
                     <div style={{ display: "flex" }}>

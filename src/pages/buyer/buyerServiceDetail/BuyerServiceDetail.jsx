@@ -176,7 +176,7 @@ export default function ServiceDetail() {
   const handleStepChange = (step) => {
     setActiveStep(step);
   };
-
+  const packages = [...listPack].sort((a, b) => a.price - b.price);
   return (
     <div className="buyer_service_detail">
       <BuyerHeader />
@@ -341,7 +341,7 @@ export default function ServiceDetail() {
             onChangeIndex={handleChangeIndex}
             style={{ border: "2px groove #d8d0d2" }}
           >
-            {listPack.map((item, index) => {
+            {packages.map((item, index) => {
               return (
                 <TabPanel value={value} index={index} dir={theme.direction}>
                   <div style={{ display: "flex" }}>

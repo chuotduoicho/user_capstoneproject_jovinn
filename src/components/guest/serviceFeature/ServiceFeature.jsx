@@ -24,6 +24,7 @@ export default function ServiceFeature({ search, selected, setSelected }) {
   }, [selected]);
   useEffect(() => {
     setListC(listCategory);
+    setSelected(listCategory[0].id);
   }, [listCategory]);
   useEffect(() => {
     setListS(listService);
@@ -63,7 +64,7 @@ export default function ServiceFeature({ search, selected, setSelected }) {
       >
         Xem thêm
       </button>
-      <h1>DỊCH VỤ NỔI BẬT</h1>
+      <h1>DỊCH VỤ NỔI BẬT THEO DANH MỤC</h1>
       <ul>
         {listC.map((item) => (
           <CategoryList

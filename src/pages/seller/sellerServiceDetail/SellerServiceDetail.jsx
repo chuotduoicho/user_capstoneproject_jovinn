@@ -684,6 +684,7 @@ export default function SellerServiceDetail() {
                     <Button
                       variant="outlined"
                       color="secondary"
+                      style={{ margin: "20px 0px 10px 10px" }}
                       onClick={handleClickOpenDelete}
                     >
                       <Delete />

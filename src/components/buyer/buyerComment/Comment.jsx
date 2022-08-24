@@ -31,9 +31,9 @@ export default function Comment({ comments, contractId }) {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getAvatar(contractId));
-    setInterval(() => {
-      dispatch(fetComments(contractId));
-    }, 3000);
+    // setInterval(() => {
+    //   dispatch(fetComments(contractId));
+    // }, 3000);
     dispatch(fetComments(contractId));
   }, []);
   const handleComment = () => {
@@ -43,6 +43,7 @@ export default function Comment({ comments, contractId }) {
       .unwrap()
       .then(() => {
         setText("");
+        dispatch(fetComments(contractId));
       })
       .catch(() => {
         // setError("Tải lên bàn giao thất bại!");
@@ -62,6 +63,7 @@ export default function Comment({ comments, contractId }) {
     dispatch(deleteComment(value))
       .unwrap()
       .then(() => {
+        dispatch(fetComments(contractId));
         setText("");
       })
       .catch(() => {
@@ -153,11 +155,10 @@ export default function Comment({ comments, contractId }) {
                         color: "white",
                       }}
                     /> */}
-                    <EditOutlined style={{ cursor: "pointer" }} />
-                    <DeleteOutline
+                    {/* <DeleteOutline
                       style={{ cursor: "pointer" }}
                       onClick={() => handleDeleteComment(item.id)}
-                    />
+                    /> */}
                   </h4>
                   <p style={{ textAlign: "left" }}>{item.text}</p>
                   {/* <p style={{ textAlign: "left", color: "gray" }}>

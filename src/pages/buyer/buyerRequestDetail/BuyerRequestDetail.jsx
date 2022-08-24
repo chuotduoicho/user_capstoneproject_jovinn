@@ -434,11 +434,9 @@ export default function BuyerCreateRequest() {
             style={{ width: "47%", margin: "10px" }}
             variant="outlined"
           >
-            <MenuItem value="BEGINNER">BEGINNER</MenuItem>
-            <MenuItem value="ADVANCED">ADVANCED</MenuItem>
-            <MenuItem value="COMPETENT">COMPETENT</MenuItem>
-            <MenuItem value="PROFICIENT">PROFICIENT</MenuItem>
-            <MenuItem value="EXPERT">EXPERT</MenuItem>
+            <MenuItem value="BEGINNER">Sơ cấp</MenuItem>
+            <MenuItem value="ADVANCED">Có kinh nghiệm</MenuItem>
+            <MenuItem value="PROFESSIONAL">Chuyên nghiệp</MenuItem>
           </TextField>
           <input
             accept="image/*,.doc,.docx,.xlsx,.xls,.csv,.pdf,text/plain"

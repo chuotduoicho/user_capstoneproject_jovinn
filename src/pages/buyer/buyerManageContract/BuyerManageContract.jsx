@@ -91,6 +91,12 @@ const headCells = [
     label: "Ngày bàn giao(dự kiến)",
   },
   {
+    id: "createAt",
+    numeric: true,
+    disablePadding: false,
+    label: "Ngày tạo",
+  },
+  {
     id: "contractStatus",
     numeric: true,
     disablePadding: false,
@@ -351,6 +357,7 @@ export default function BuyerManageContract() {
                         <TableCell align="right">
                           {row.expectCompleteDate}
                         </TableCell>{" "}
+                        <TableCell align="right">{row.createAt}</TableCell>{" "}
                         <TableCell align="right">
                           {row.contractStatus}
                         </TableCell>{" "}

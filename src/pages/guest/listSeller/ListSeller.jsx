@@ -35,25 +35,10 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { acceptRequestBuyer } from "../../../redux/contractSlice";
 import { toast, ToastContainer } from "react-toastify";
+import Alert from "@material-ui/lab/Alert";
 function createData(description, subCate, skills, price, cancleFee) {
   return { description, subCate, skills, price, cancleFee };
 }
-
-const rows = [
-  createData("Mô tả ngắn abcdsssssssssss", "Kinh doanh tự do", "HTML", 67, 4.3),
-  createData("Donut", "Kinh doanh tự dosdsd", "JS", 51, 4.9),
-  createData("Eclair", "Kinh doanh tự dsdsdao", "JS", 24, 6.0),
-  createData("Frozen yoghurt", "Kinh doanh tự áddo", "HTML", 24, 4.0),
-  createData("Gingerbread", "Kinh doanh tựád do", "CSS", 49, 3.9),
-  createData("Honeycomb", "Kinh doanh tự do", "HTML", 87, 6.5),
-  createData("Ice cream ", "Kinh doanh tự do", "JS", 37, 4.3),
-  createData("Jelly Bean", "Kinh doanh tự do", "CSS", 94, 0.0),
-  createData("KitKat", "Kinh doanh tự do", "HTML", 65, 7.0),
-  createData("Lollipop", "Kinh doanh tự do", "HTML", 98, 0.0),
-  createData("Marshmallow", "Kinh doanh tự do", "CSS", 81, 2.0),
-  createData("Nougat", "Kinh doanh tự do", "CSS", 9, 37.0),
-  createData("Oreo", "Kinh doanh tự do", "CSS", 63, 4.0),
-];
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -256,6 +241,7 @@ const useStyles = makeStyles((theme) => ({
 export default function ListSeller() {
   const list = useSelector(selectAllSellersAplly);
   const [search, setSearch] = useState("");
+  const { message } = useSelector((state) => state.message);
   const rows = list.filter((val) => val.user.lastName.includes(search));
   const { requestId } = useParams();
   const classes = useStyles();
@@ -434,6 +420,7 @@ export default function ListSeller() {
           label="Dày đặc"
         />
       </div>
+      {message !== "" && <Alert severity="error">{message}</Alert>}
       <ToastContainer limit={3000} position="bottom-right" />
       <div className="sections_profile">
         <Contact />

@@ -268,31 +268,31 @@ export default function BuyerHome() {
 
           <div className="serviceList" id="intro">
             <Container className="service_cardGrid" maxWidth="1500px">
-              {list?.length == 0 ? (
+              {/* {list?.length == 0 ? (
                 <img
                   src={
                     "https://previews.123rf.com/images/pa3x/pa3x1605/pa3x160500012/56425147-404-error-web-page-background-vector-design-page-not-found-template-with-typography-.jpg"
                   }
                 />
-              ) : (
-                <Grid container spacing={4}>
-                  {list.map((item) => (
-                    <ServiceList
-                      className="service"
-                      id={item.id}
-                      image={item.imageGallery1}
-                      title={item.title}
-                      price={item.fromPrice}
-                      avatar={item.avatar}
-                      impression={item.impression}
-                      branchName={item.branchName}
-                      rankSeller={item.rankSeller}
-                      ratingPoint={item.ratingPoint}
-                      totalOrderFinish={item.totalOrderFinish}
-                    />
-                  ))}
-                </Grid>
-              )}
+              ) : ( */}
+              <Grid container spacing={4}>
+                {list.map((item) => (
+                  <ServiceList
+                    className="service"
+                    id={item.id}
+                    image={item.imageGallery1}
+                    title={item.title}
+                    price={item.fromPrice}
+                    avatar={item.avatar}
+                    impression={item.impression}
+                    branchName={item.branchName}
+                    rankSeller={item.rankSeller}
+                    ratingPoint={item.ratingPoint}
+                    totalOrderFinish={item.totalOrderFinish}
+                  />
+                ))}
+              </Grid>
+              {/* )} */}
               <Pagination
                 count={listService.totalPages}
                 color="primary"

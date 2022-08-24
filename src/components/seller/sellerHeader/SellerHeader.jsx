@@ -64,6 +64,7 @@ export default function SellerHeader({ search, handleSearch }) {
   };
   useEffect(() => {
     dispatch(fetchCurrentUser());
+    dispatch(fetchNotifications());
     // setInterval(() => {
     //   dispatch(fetchNotifications());
     // }, 3000);

@@ -54,6 +54,7 @@ export default function BuyerContractDetail() {
   const { contractId } = useParams();
   const contractDetail = useSelector(selectContractDetail);
   const contractDetailStatus = useSelector(selectContractDetailStatus);
+  const { message } = useSelector((state) => state.message);
   const [open, setOpen] = useState(false);
   const [fullWidth, setFullWidth] = useState(true);
   const [maxWidth, setMaxWidth] = useState("sm");
@@ -111,7 +112,10 @@ export default function BuyerContractDetail() {
       .then(() => {
         toast.success("Xác nhận bàn giao thành công!");
         dispatch(fetchContractDetail(contractId));
-        setOpen(true);
+        if (contractDetail.type == "REQUEST") {
+        } else {
+          setOpen(true);
+        }
       })
       .catch(() => {
         toast.error("Xác nhận bàn giao thất bại");
@@ -199,9 +203,19 @@ export default function BuyerContractDetail() {
         <div className="paymentRow_Title">
           <h2>Mã hợp đồng : {contractDetail.contractCode} </h2>
           {!contractDetail.flag ? (
-            <FlagOutlined onClick={handleFlag} style={{ cursor: "pointer" }} />
+            <>
+              {" "}
+              {message !== "" && <Alert severity="error">{message}</Alert>}{" "}
+              <FlagOutlined
+                onClick={handleFlag}
+                style={{ cursor: "pointer" }}
+              />
+            </>
           ) : (
-            <Flag onClick={handleFlag} style={{ cursor: "pointer" }} />
+            <>
+              {" "}
+              <Flag onClick={handleFlag} style={{ cursor: "pointer" }} />
+            </>
           )}
           <Chip
             label={
@@ -248,7 +262,7 @@ export default function BuyerContractDetail() {
             <div className="paymentRow_Content">
               <h2>Nội dung yêu cầu</h2>
             </div>
-            <div className="paymentRow_Content">
+            {/* <div className="paymentRow_Content">
               {" "}
               <h3>Tiêu đề:</h3>
               <p>{contractDetail.postRequest.jobTitle} </p>
@@ -276,7 +290,7 @@ export default function BuyerContractDetail() {
                   "Không có"
                 )}{" "}
               </p>
-            </div>
+            </div> */}
             <div className="paymentRow_Content">
               {" "}
               <h3>Cấp độ người bán yêu cầu:</h3>
@@ -325,18 +339,29 @@ export default function BuyerContractDetail() {
                             {item.milestoneFee}$
                           </TableCell>
                           <TableCell align="right">
-                            {" "}
-                            {item.status == "COMPLETE" ? (
-                              <Chip label="Đã bàn giao" />
+                            {contractDetail.delivery.find(
+                              (val) => val.milestoneId === item.id
+                            ) ? (
+                              item.status == "COMPLETE" ? (
+                                <Chip label="Đã bàn giao" />
+                              ) : (
+                                <Button
+                                  color="primary"
+                                  variant="outlined"
+                                  onClick={() => {
+                                    handleAcceptDeleveryMilestone(item.id);
+                                  }}
+                                >
+                                  Xác nhận bàn giao
+                                </Button>
+                              )
                             ) : (
                               <Button
-                                color="primary"
                                 variant="outlined"
-                                onClick={() => {
-                                  handleAcceptDeleveryMilestone(item.id);
-                                }}
+                                disabled
+                                style={{ color: "gray", borderColor: "gray" }}
                               >
-                                Xác nhận bàn giao
+                                Đang chờ tải lên bàn giao
                               </Button>
                             )}
                           </TableCell>
@@ -344,15 +369,31 @@ export default function BuyerContractDetail() {
                             {" "}
                             {contractDetail.delivery.find(
                               (val) => val.milestoneId === item.id
-                            )
-                              ? contractDetail.delivery.find(
-                                  (val) => val.milestoneId === item.id
-                                ).file
-                                ? contractDetail.delivery.find(
-                                    (val) => val.milestoneId === item.id
-                                  ).file
-                                : "Không có"
-                              : "đang chờ"}
+                            ) ? (
+                              contractDetail.delivery.find(
+                                (val) => val.milestoneId === item.id
+                              ).file ? (
+                                <Button
+                                  variant="contained"
+                                  color="primary"
+                                  onClick={() =>
+                                    navigate(
+                                      `//${contractDetail.delivery
+                                        .find(
+                                          (val) => val.milestoneId === item.id
+                                        )
+                                        .file.slice(8)}`
+                                    )
+                                  }
+                                >
+                                  Xem file
+                                </Button>
+                              ) : (
+                                "Không có"
+                              )
+                            ) : (
+                              "đang chờ"
+                            )}
                           </TableCell>
                           <TableCell align="right">
                             {contractDetail.delivery.find(

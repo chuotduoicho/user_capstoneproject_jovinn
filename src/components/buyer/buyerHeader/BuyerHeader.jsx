@@ -68,6 +68,7 @@ export default function BuyerHeader({ search, handleSearch }) {
   useEffect(() => {
     dispatch(clearMessage());
     dispatch(fetchCurrentUser());
+    dispatch(fetchNotifications());
     // setInterval(() => {
     //   dispatch(fetchNotifications());
     // }, 3000);

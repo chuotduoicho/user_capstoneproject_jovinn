@@ -16,7 +16,6 @@ import { useEffect } from "react";
 
 export default function ServiceHistory() {
   const listServiceHistory = useSelector(selectServicesHistory);
-  const listServiceImpression = useSelector(selectServicesImpression);
   const [list, setList] = useState([]);
 
   const dispatch = useDispatch();
