@@ -177,6 +177,15 @@ const rejectOrder = (orderId) => {
       return response.data;
     });
 };
+const rejectContractBuyer = (orderId) => {
+  return axios
+    .put(API_URL + "/contract/buyer/reject/" + orderId, null, {
+      headers: authHeader(),
+    })
+    .then((response) => {
+      return response.data;
+    });
+};
 const flagContract = (orderId) => {
   return axios
     .post(API_URL + "/contract/flag/" + orderId, null, {
@@ -213,6 +222,7 @@ const contractService = {
   acceptExtra,
   cancleExtra,
   getAvatar,
+  rejectContractBuyer,
 };
 
 export default contractService;

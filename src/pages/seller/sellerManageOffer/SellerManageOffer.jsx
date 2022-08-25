@@ -391,7 +391,11 @@ export default function SellerManageOffer() {
                         </TableCell>
                         <TableCell align="right">{row.cancelFee} %</TableCell>
                         <TableCell align="right">
-                          {row.offerRequestStatus}
+                          {row.offerRequestStatus == "PENDING"
+                            ? "Đang chờ"
+                            : row.offerRequestStatus == "ACCEPTED"
+                            ? "Đã chấp nhận"
+                            : "Đã từ chối"}
                         </TableCell>{" "}
                         <TableCell align="right">
                           <Link to={row.id}>

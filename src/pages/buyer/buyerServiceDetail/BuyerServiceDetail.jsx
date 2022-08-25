@@ -20,7 +20,7 @@ import {
   TextField,
 } from "@material-ui/core";
 import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchRating,
@@ -98,7 +98,8 @@ export default function ServiceDetail() {
   console.log("list Ratign", listRating);
   const theme = useTheme();
   const [value, setValue] = useState(0);
-
+  const location = useLocation();
+  console.log(location.pathname);
   const [listImg, setListImg] = useState([]);
   const [listPack, setListPack] = useState([]);
   const dispatch = useDispatch();
@@ -108,7 +109,7 @@ export default function ServiceDetail() {
   useEffect(() => {
     dispatch(fetchServiceDetailBuyer(serviceId));
     dispatch(fetchRating(serviceId));
-  }, []);
+  }, [location]);
   useEffect(() => {
     if (status == "success") {
       if (serviceDetail.gallery.imageGallery1) {

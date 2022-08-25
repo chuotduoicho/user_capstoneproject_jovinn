@@ -29,7 +29,7 @@ export default function SellerOrderDetail() {
   useEffect(() => {
     dispatch(fetchContractDetail(orderId));
   }, []);
-  const { message } = useSelector((state) => state.message);
+
   const status = useSelector(selectContractStatus);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -42,7 +42,11 @@ export default function SellerOrderDetail() {
       .then(() => {
         dispatch(fetchContracts());
         setSuccess("Duyệt đơn thành công!");
-        navigate("/sellerHome/manageContract");
+        navigate("/sellerHome/manageContract", {
+          state: {
+            alert: "Duyệt đơn thành công!",
+          },
+        });
       })
       .catch(() => {
         setError("Duyệt đơn thất bại!");
@@ -55,7 +59,11 @@ export default function SellerOrderDetail() {
       .unwrap()
       .then(() => {
         dispatch(fetchContracts());
-        navigate("/sellerHome/manageOrder");
+        navigate("/sellerHome/manageOrder", {
+          state: {
+            alert: "Từ chối đơn thành công!",
+          },
+        });
         setSuccess("Từ chối đơn thành công!");
       })
       .catch(() => {
@@ -77,7 +85,12 @@ export default function SellerOrderDetail() {
       <Container maxWidth="lg" className="contract-form">
         <div className="contract-id">
           <h2>Mã đơn hàng : {contractDetail.contractCode} </h2>
-          <Chip label={contractDetail.orderStatus} className="chip_pending" />
+          <Chip
+            label={
+              contractDetail.orderStatus == "PENDING" ? "Đang chờ" : "Đã hủy"
+            }
+            className="chip_pending"
+          />
         </div>
         <div className="contract-content-require">
           <h3>Yêu cầu:</h3>
@@ -113,21 +126,30 @@ export default function SellerOrderDetail() {
           </p>
         </div>
         <div className="contract-button">
-          <Button
-            variant="contained"
-            color="primary"
-            style={{ marginRight: "30px" }}
-            onClick={handleAcceptOrder}
-          >
-            Thực hiện
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={handleClickOpenDelete}
-          >
-            Từ chối
-          </Button>
+          {contractDetail.orderStatus == "PENDING" ? (
+            <>
+              {" "}
+              <Button
+                variant="contained"
+                color="primary"
+                style={{ marginRight: "30px" }}
+                onClick={handleAcceptOrder}
+              >
+                Duyệt đơn
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleClickOpenDelete}
+              >
+                Từ chối
+              </Button>
+            </>
+          ) : (
+            <Button variant="outlined" style={{ color: "gray" }} disabled>
+              Đơn hàng đã hủy
+            </Button>
+          )}
         </div>{" "}
         {status == "loading" && (
           <CircularProgress style={{ margin: "0 auto" }} />
@@ -158,9 +180,9 @@ export default function SellerOrderDetail() {
           </Button>
         </DialogActions>
       </Dialog>
-      {message !== "" && <Alert severity="error">{message}</Alert>}
-      {error !== "" && <Alert severity="error">{error}</Alert>}
-      {success !== "" && <Alert severity="success">{success}</Alert>}
+
+      {error && <Alert severity="error">{error}</Alert>}
+      {success && <Alert severity="success">{success}</Alert>}
       <div className="sections_profile">
         <Contact />
       </div>

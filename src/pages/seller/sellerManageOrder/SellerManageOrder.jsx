@@ -22,7 +22,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { Button } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentUser } from "../../../redux/userSlice";
 import SellerHeader from "../../../components/seller/sellerHeader/SellerHeader";
@@ -31,7 +31,16 @@ import {
   selectAllContracts,
   selectOrders,
 } from "../../../redux/contractSlice";
+import { toast, ToastContainer } from "react-toastify";
+function format(date) {
+  date = new Date(date);
 
+  var day = ("0" + date.getDate()).slice(-2);
+  var month = ("0" + (date.getMonth() + 1)).slice(-2);
+  var year = date.getFullYear();
+
+  return day + "-" + month + "-" + year;
+}
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -83,12 +92,11 @@ const headCells = [
     disablePadding: false,
     label: "Phí hủy hợp đồng(%)",
   },
-
   {
-    id: "expectCompleteDate",
+    id: "createAt",
     numeric: true,
     disablePadding: false,
-    label: "Ngày bàn giao(dự kiến)",
+    label: "Ngày tạo",
   },
   {
     id: "deliveryStatus",
@@ -254,8 +262,13 @@ export default function SellerManageOrder() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const { state } = useLocation();
+  const { alert } = state || {};
   const dispatch = useDispatch();
   useEffect(() => {
+    if (alert) {
+      toast.success(alert);
+    }
     dispatch(fetchContracts());
   }, []);
   const handleRequestSort = (event, property) => {
@@ -341,9 +354,12 @@ export default function SellerManageOrder() {
                           {row.contractCancelFee} %
                         </TableCell>
                         <TableCell align="right">
-                          {row.expectCompleteDate}
+                          {" "}
+                          {format(row.createAt)}
                         </TableCell>{" "}
-                        <TableCell align="right">{row.orderStatus}</TableCell>{" "}
+                        <TableCell align="right">
+                          {row.orderStatus == "PENDING" ? "Đang chờ" : "Đã hủy"}
+                        </TableCell>{" "}
                         <TableCell align="right">
                           <Link to={row.id}>
                             <Button variant="outlined" color="primary">
@@ -377,6 +393,7 @@ export default function SellerManageOrder() {
           label="Dày đặc"
         />
       </div>
+      <ToastContainer limit={5000} position="bottom-right" />
       <div className="sections_profile">
         <Contact />
       </div>

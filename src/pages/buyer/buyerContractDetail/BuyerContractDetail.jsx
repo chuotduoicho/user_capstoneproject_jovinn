@@ -14,6 +14,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  CircularProgress,
 } from "@material-ui/core";
 import React, { useState } from "react";
 import BuyerHeader from "../../../components/buyer/buyerHeader/BuyerHeader";
@@ -30,9 +31,11 @@ import {
   deleveryMilestoneAccept,
   fetchContractDetail,
   flagContract,
+  rejectOrderFromBuyer,
   selectContractBuyerById,
   selectContractDetail,
   selectContractDetailStatus,
+  selectContractStatus,
 } from "../../../redux/contractSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import Rating from "@material-ui/lab/Rating";
@@ -56,6 +59,7 @@ export default function BuyerContractDetail() {
   const contractDetailStatus = useSelector(selectContractDetailStatus);
   const { message } = useSelector((state) => state.message);
   const [open, setOpen] = useState(false);
+  const status = useSelector(selectContractStatus);
   const [fullWidth, setFullWidth] = useState(true);
   const [maxWidth, setMaxWidth] = useState("sm");
   const [text, setText] = useState("");
@@ -92,7 +96,18 @@ export default function BuyerContractDetail() {
         toast.error("Đánh giá thất bại!");
       });
   };
-
+  const handleRejectContract = () => {
+    dispatch(rejectOrderFromBuyer(contractId))
+      .unwrap()
+      .then(() => {
+        toast.success("Hủy hợp đồng thành công!");
+        dispatch(fetchContractDetail(contractId));
+        setOpen(false);
+      })
+      .catch(() => {
+        toast.error("Hủy hợp đồng thất bại!");
+      });
+  };
   const handleFlag = () => {
     dispatch(flagContract(contractId))
       .unwrap()
@@ -221,9 +236,17 @@ export default function BuyerContractDetail() {
             label={
               contractDetail.contractStatus == "COMPLETE"
                 ? "Đã hoàn thành"
-                : "Đang xử lí"
+                : contractDetail.contractStatus == "PROCESSING"
+                ? "Đang xử lí"
+                : "Đã hủy"
             }
-            className="chip_pending"
+            className={
+              contractDetail.contractStatus == "COMPLETE"
+                ? "chip_success"
+                : contractDetail.contractStatus == "PROCESSING"
+                ? "chip_pending"
+                : "chip_reject"
+            }
           />
         </div>
         <div className="paymentRow_Content">
@@ -339,9 +362,17 @@ export default function BuyerContractDetail() {
                             {item.milestoneFee}$
                           </TableCell>
                           <TableCell align="right">
-                            {contractDetail.delivery.find(
-                              (val) => val.milestoneId === item.id
-                            ) ? (
+                            {contractDetail.contractStatus == "CANCEL" ? (
+                              <Button
+                                variant="outlined"
+                                disabled
+                                style={{ color: "red", borderColor: "red" }}
+                              >
+                                Hợp đồng đã hủy
+                              </Button>
+                            ) : contractDetail.delivery.find(
+                                (val) => val.milestoneId === item.id
+                              ) ? (
                               item.status == "COMPLETE" ? (
                                 <Chip label="Đã bàn giao" />
                               ) : (
@@ -512,7 +543,15 @@ export default function BuyerContractDetail() {
           </div>
         )}
         <div className="paymentRow">
-          {contractDetail.contractStatus !== "COMPLETE" ? (
+          {contractDetail.contractStatus == "COMPLETE" ? (
+            <Button
+              variant="outlined"
+              disabled
+              style={{ color: "green", borderColor: "green" }}
+            >
+              Đã xác nhận bàn giao
+            </Button>
+          ) : contractDetail.contractStatus == "PROCESSING" ? (
             <>
               {contractDetail.deliveryStatus == "SENDING" ? (
                 <Button
@@ -540,14 +579,25 @@ export default function BuyerContractDetail() {
               >
                 Thêm đề nghị
               </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                style={{ marginLeft: "10px" }}
+                onClick={handleRejectContract}
+              >
+                Hủy hợp đồng
+              </Button>
+              {status == "loading" && (
+                <CircularProgress style={{ margin: "0 auto" }} />
+              )}
             </>
           ) : (
             <Button
               variant="outlined"
               disabled
-              style={{ color: "green", borderColor: "green" }}
+              style={{ color: "red", borderColor: "red" }}
             >
-              Đã xác nhận bàn giao
+              Hợp đồng đã hủy
             </Button>
           )}
         </div>

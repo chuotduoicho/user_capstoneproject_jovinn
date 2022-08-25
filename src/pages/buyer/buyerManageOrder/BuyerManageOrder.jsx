@@ -31,7 +31,15 @@ import {
   selectOrders,
 } from "../../../redux/contractSlice";
 import Alert from "@material-ui/lab/Alert";
+function format(date) {
+  date = new Date(date);
 
+  var day = ("0" + date.getDate()).slice(-2);
+  var month = ("0" + (date.getMonth() + 1)).slice(-2);
+  var year = date.getFullYear();
+
+  return day + "-" + month + "-" + year;
+}
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -85,10 +93,10 @@ const headCells = [
   },
 
   {
-    id: "expectCompleteDate",
+    id: "createAt",
     numeric: true,
     disablePadding: false,
-    label: "Ngày bàn giao(dự kiến)",
+    label: "Ngày tạo",
   },
   {
     id: "deliveryStatus",
@@ -351,9 +359,12 @@ export default function BuyerManageOrder() {
                           {row.contractCancelFee} %
                         </TableCell>
                         <TableCell align="right">
-                          {row.expectCompleteDate}
+                          {" "}
+                          {format(row.createAt)}
                         </TableCell>{" "}
-                        <TableCell align="right">{row.orderStatus}</TableCell>{" "}
+                        <TableCell align="right">
+                          {row.orderStatus == "PENDING" && "Đang chờ"}
+                        </TableCell>{" "}
                         <TableCell align="right">
                           <Link to={row.id}>
                             <Button variant="outlined" color="primary">

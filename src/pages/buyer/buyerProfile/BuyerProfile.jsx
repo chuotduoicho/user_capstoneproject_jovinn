@@ -17,6 +17,7 @@ import {
   RadioGroup,
   TextField,
   MenuItem,
+  LinearProgress,
 } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -62,6 +63,7 @@ export default function BuyerProfile() {
   const [alert, setAlert] = useState(message);
   const [check1, setCheck1] = useState(false);
   const [check2, setCheck2] = useState(false);
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const location = useLocation();
   useEffect(() => {
@@ -70,6 +72,7 @@ export default function BuyerProfile() {
   }, [dispatch, url]);
   const handleUploadFile = async (e) => {
     setFile(e.target.files[0]);
+    setLoading(true);
     const formData = new FormData();
     console.log(file);
     formData.append("file", e.target.files[0]);
@@ -79,9 +82,11 @@ export default function BuyerProfile() {
       .unwrap()
       .then(() => {
         setSuccessful(true);
+        setLoading(false);
       })
       .catch(() => {
         setSuccessful(false);
+        setLoading(false);
       });
   };
   const handleUpdate = () => {
@@ -214,6 +219,7 @@ export default function BuyerProfile() {
               type="file"
               onChange={handleUploadFile}
             />
+            {loading && <LinearProgress />}
           </div>
           <div className="form_right">
             <div className="form_right_row">

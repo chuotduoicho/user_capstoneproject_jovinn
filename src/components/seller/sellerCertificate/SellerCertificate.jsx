@@ -137,7 +137,7 @@ export default function SellerCertificate({ certificates, id }) {
                           </TableCell>
                           <TableCell align="right"> {item.name}</TableCell>
                           <TableCell align="right">
-                            <a href={`//${item.linkCer}`}>LINK</a>
+                            <a href={`//${item.linkCer.slice(8)}`}>LINK</a>
                           </TableCell>
                           {editStatus && (
                             <TableCell align="right">

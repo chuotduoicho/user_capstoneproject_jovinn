@@ -173,6 +173,15 @@ export const rejectOrder = createAsyncThunk(
     return data;
   }
 );
+export const rejectOrderFromBuyer = createAsyncThunk(
+  "contract/rejectOrderFromBuyer",
+  async (orderId) => {
+    console.log(orderId);
+    const data = await contractService.rejectContractBuyer(orderId);
+    console.log(data);
+    return data;
+  }
+);
 export const addRating = createAsyncThunk("contract/addRating", async (obj) => {
   console.log(obj);
   const data = await commentService.addRating(obj);
@@ -347,6 +356,15 @@ const contractSlice = createSlice({
       state.status = "success";
     },
     [rejectOrder.rejected]: (state, action) => {
+      state.status = "failed";
+    },
+    [rejectOrderFromBuyer.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [rejectOrderFromBuyer.fulfilled]: (state, { payload }) => {
+      state.status = "success";
+    },
+    [rejectOrderFromBuyer.rejected]: (state, action) => {
       state.status = "failed";
     },
     [acceptOrder.pending]: (state, action) => {

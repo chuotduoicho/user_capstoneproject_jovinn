@@ -97,7 +97,14 @@ export default function BuyerOfferDetail() {
           />
         </div>
         <div className="profession_row">
-          <h3>Trạng thái: {offerDetail.offerRequestStatus}</h3>
+          <h3>
+            Trạng thái:{" "}
+            {offerDetail.offerRequestStatus == "PENDING"
+              ? "Đang chờ"
+              : offerDetail.offerRequestStatus == "ACCEPTED"
+              ? "Đã chấp nhận"
+              : "Đã từ chối"}
+          </h3>
         </div>
         <div className="profession_row">
           {offerDetail.offerRequestStatus !== "ACCEPTED" && (

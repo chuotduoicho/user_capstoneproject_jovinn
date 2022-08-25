@@ -30,6 +30,7 @@ import {
   deleveryMilestone,
   deleveryMilestoneUpdate,
   fetchContractDetail,
+  rejectOrder,
   selectContractBuyerById,
   selectContractDetail,
   selectContractDetailStatus,
@@ -100,6 +101,18 @@ export default function SellerContractDetail() {
       })
       .catch(() => {
         setLoading(false);
+      });
+  };
+  const handleRejectContract = () => {
+    dispatch(rejectOrder(contractId))
+      .unwrap()
+      .then(() => {
+        toast.success("Hủy hợp đồng thành công!");
+        dispatch(fetchContractDetail(contractId));
+        setOpen(false);
+      })
+      .catch(() => {
+        toast.error("Hủy hợp đồng thất bại!");
       });
   };
   const handleDelevery = () => {
@@ -214,12 +227,16 @@ export default function SellerContractDetail() {
             label={
               contractDetail.contractStatus == "COMPLETE"
                 ? "Đã hoàn thành"
-                : "Đang xử lí"
+                : contractDetail.contractStatus == "PROCESSING"
+                ? "Đang xử lí"
+                : "Đã hủy"
             }
             className={
               contractDetail.contractStatus == "COMPLETE"
                 ? "chip_success"
-                : "chip_pending"
+                : contractDetail.contractStatus == "PROCESSING"
+                ? "chip_pending"
+                : "chip_reject"
             }
           />
         </div>
@@ -364,8 +381,15 @@ export default function SellerContractDetail() {
                             {item.milestoneFee.toLocaleString()}$
                           </TableCell>
                           <TableCell align="right">
-                            {" "}
-                            {item.status == "COMPLETE" ? (
+                            {contractDetail.contractStatus == "CANCEL" ? (
+                              <Button
+                                variant="outlined"
+                                disabled
+                                style={{ color: "red", borderColor: "red" }}
+                              >
+                                Hợp đồng đã hủy
+                              </Button>
+                            ) : item.status == "COMPLETE" ? (
                               <Chip label="Đã hoàn thành" />
                             ) : (
                               <Button
@@ -663,7 +687,7 @@ export default function SellerContractDetail() {
             >
               Đã tải lên bàn giao
             </Button>
-          ) : (
+          ) : contractDetail.contractStatus == "PROCESSING" ? (
             <>
               {deliveryNotMilstone ? (
                 <Button
@@ -682,7 +706,23 @@ export default function SellerContractDetail() {
                   Tải lên bàn giao
                 </Button>
               )}
+              <Button
+                variant="contained"
+                color="secondary"
+                style={{ marginLeft: "10px" }}
+                onClick={handleRejectContract}
+              >
+                Hủy hợp đồng
+              </Button>
             </>
+          ) : (
+            <Button
+              variant="outlined"
+              disabled
+              style={{ color: "red", borderColor: "red" }}
+            >
+              Hợp đồng đã hủy
+            </Button>
           )}
         </div>
         <Dialog

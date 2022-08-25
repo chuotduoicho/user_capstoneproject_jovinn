@@ -43,8 +43,19 @@
       width: 100%;
       border-bottom: 2px groove #f0efef;
       flex-direction: row;
-      .chip_pending {
+      .chip_reject {
         background-color: #eb6b40;
+        color: black;
+        width: 10%;
+      }
+      .chip_pending {
+        background-color: #e0eb40;
+        color: black;
+        width: 10%;
+      }
+
+      .chip_success {
+        background-color: #70be51;
         color: black;
         width: 10%;
       }

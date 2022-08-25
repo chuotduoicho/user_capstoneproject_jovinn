@@ -32,7 +32,15 @@ import {
   selectContracts,
 } from "../../../redux/contractSlice";
 import Alert from "@material-ui/lab/Alert";
+function format(date) {
+  date = new Date(date);
 
+  var day = ("0" + date.getDate()).slice(-2);
+  var month = ("0" + (date.getMonth() + 1)).slice(-2);
+  var year = date.getFullYear();
+
+  return day + "-" + month + "-" + year;
+}
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -83,12 +91,6 @@ const headCells = [
     numeric: true,
     disablePadding: false,
     label: "Tổng chi phí ($)",
-  },
-  {
-    id: "expectCompleteDate",
-    numeric: true,
-    disablePadding: false,
-    label: "Ngày bàn giao(dự kiến)",
   },
   {
     id: "createAt",
@@ -355,11 +357,15 @@ export default function BuyerManageContract() {
                           {row.totalPrice.toLocaleString()} $
                         </TableCell>
                         <TableCell align="right">
-                          {row.expectCompleteDate}
+                          {" "}
+                          {format(row.createAt)}
                         </TableCell>{" "}
-                        <TableCell align="right">{row.createAt}</TableCell>{" "}
                         <TableCell align="right">
-                          {row.contractStatus}
+                          {row.contractStatus == "COMPLETE"
+                            ? "Đã hoàn thành"
+                            : row.contractStatus == "PROCESSING"
+                            ? "Đang xử lí"
+                            : "Đã hủy"}
                         </TableCell>{" "}
                         <TableCell align="right">
                           <Link to={row.id}>

@@ -255,7 +255,6 @@ export default function BuyerManageRequest() {
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const { state } = useLocation();
-
   const { alert } = state || {};
   const dispatch = useDispatch();
   useEffect(() => {
